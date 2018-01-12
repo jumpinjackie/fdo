@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: cpl_vsil_buffered_reader.cpp 22109 2011-04-03 18:39:59Z rouault $
  *
  * Project:  VSI Virtual File System
  * Purpose:  Implementation of buffered reader IO functions.
  * Author:   Even Rouault, even.rouault at mines-paris.org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault
+ * Copyright (c) 2010-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,63 +26,122 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-/* The intent of this class is to be a wrapper around an underlying virtual */
-/* handle and add very basic caching of last read bytes, so that a backward */
-/* seek of a few bytes doesn't require a seek on the underlying virtual handle. */
-/* This enable us to improve dramatically the performance of CPLReadLine2L() on */
-/* a gzip file */
+//! @cond Doxygen_Suppress
 
+// The intent of this class is to be a wrapper around an underlying virtual
+// handle and add very basic caching of last read bytes, so that a backward
+// seek of a few bytes doesn't require a seek on the underlying virtual handle.
+// This enable us to improve dramatically the performance of CPLReadLine2L() on
+// a gzip file.
+
+#include "cpl_port.h"
 #include "cpl_vsi_virtual.h"
 
-#define MAX_BUFFER_SIZE 65536
+#include <cstddef>
+#include <cstring>
+#if HAVE_FCNTL_H
+#  include <fcntl.h>
+#endif
 
-CPL_CVSID("$Id: cpl_vsil_buffered_reader.cpp 22109 2011-04-03 18:39:59Z rouault $");
+#include <algorithm>
+#include <vector>
 
-class VSIBufferedReaderHandle : public VSIVirtualHandle
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_vsi.h"
+
+static const int MAX_BUFFER_SIZE = 65536;
+
+CPL_CVSID("$Id: cpl_vsil_buffered_reader.cpp 36848 2016-12-13 14:31:42Z goatbar $");
+
+class VSIBufferedReaderHandle CPL_FINAL : public VSIVirtualHandle
 {
-    VSIVirtualHandle* poBaseHandle;
-    char              pabyBuffer[MAX_BUFFER_SIZE];
+    VSIVirtualHandle* m_poBaseHandle;
+    GByte*            pabyBuffer;
     GUIntBig          nBufferOffset;
     int               nBufferSize;
     GUIntBig          nCurOffset;
-    int               bNeedBaseHandleSeek;
-    int               bEOF;
+    bool              bNeedBaseHandleSeek;
+    bool              bEOF;
+    vsi_l_offset      nCheatFileSize;
+
+    int               SeekBaseTo( vsi_l_offset nTargetOffset );
 
   public:
+    explicit VSIBufferedReaderHandle( VSIVirtualHandle* poBaseHandle );
+    VSIBufferedReaderHandle( VSIVirtualHandle* poBaseHandle,
+                             const GByte* pabyBeginningContent,
+                             vsi_l_offset nCheatFileSizeIn );
+    // TODO(schwehr): Add override when support dropped for VS2008.
+    virtual ~VSIBufferedReaderHandle();
 
-    VSIBufferedReaderHandle(VSIVirtualHandle* poBaseHandle);
-    ~VSIBufferedReaderHandle();
-
-    virtual int       Seek( vsi_l_offset nOffset, int nWhence );
-    virtual vsi_l_offset Tell();
-    virtual size_t    Read( void *pBuffer, size_t nSize, size_t nMemb );
-    virtual size_t    Write( const void *pBuffer, size_t nSize, size_t nMemb );
-    virtual int       Eof();
-    virtual int       Flush();
-    virtual int       Close();
+    virtual int       Seek( vsi_l_offset nOffset, int nWhence ) override;
+    virtual vsi_l_offset Tell() override;
+    virtual size_t    Read( void *pBuffer, size_t nSize,
+                            size_t nMemb ) override;
+    virtual size_t    Write( const void *pBuffer, size_t nSize,
+                             size_t nMemb ) override;
+    virtual int       Eof() override;
+    virtual int       Flush() override;
+    virtual int       Close() override;
 };
+
+//! @endcond
 
 /************************************************************************/
 /*                    VSICreateBufferedReaderHandle()                   */
 /************************************************************************/
 
-VSIVirtualHandle* VSICreateBufferedReaderHandle(VSIVirtualHandle* poBaseHandle)
+VSIVirtualHandle *
+VSICreateBufferedReaderHandle( VSIVirtualHandle* poBaseHandle )
 {
     return new VSIBufferedReaderHandle(poBaseHandle);
 }
+
+VSIVirtualHandle* VSICreateBufferedReaderHandle(
+    VSIVirtualHandle* poBaseHandle,
+    const GByte* pabyBeginningContent,
+    vsi_l_offset nCheatFileSizeIn )
+{
+    return new VSIBufferedReaderHandle(poBaseHandle,
+                                       pabyBeginningContent,
+                                       nCheatFileSizeIn);
+}
+
+//! @cond Doxygen_Suppress
 
 /************************************************************************/
 /*                        VSIBufferedReaderHandle()                     */
 /************************************************************************/
 
-VSIBufferedReaderHandle::VSIBufferedReaderHandle(VSIVirtualHandle* poBaseHandle)
+VSIBufferedReaderHandle::VSIBufferedReaderHandle(
+    VSIVirtualHandle* poBaseHandle) :
+    m_poBaseHandle(poBaseHandle),
+    pabyBuffer(static_cast<GByte*>(CPLMalloc(MAX_BUFFER_SIZE))),
+    nBufferOffset(0),
+    nBufferSize(0),
+    nCurOffset(0),
+    bNeedBaseHandleSeek(false),
+    bEOF(false),
+    nCheatFileSize(0)
+{}
+
+VSIBufferedReaderHandle::VSIBufferedReaderHandle(
+    VSIVirtualHandle* poBaseHandle,
+    const GByte* pabyBeginningContent,
+    vsi_l_offset nCheatFileSizeIn ) :
+    m_poBaseHandle(poBaseHandle),
+    pabyBuffer(static_cast<GByte *>(
+        CPLMalloc(std::max(MAX_BUFFER_SIZE,
+                           static_cast<int>(poBaseHandle->Tell()))))),
+    nBufferOffset(0),
+    nBufferSize(static_cast<int>(poBaseHandle->Tell())),
+    nCurOffset(0),
+    bNeedBaseHandleSeek(true),
+    bEOF(false),
+    nCheatFileSize(nCheatFileSizeIn)
 {
-    this->poBaseHandle = poBaseHandle;
-    nBufferOffset = 0;
-    nBufferSize = 0;
-    nCurOffset = 0;
-    bNeedBaseHandleSeek = FALSE;
-    bEOF = FALSE;
+    memcpy(pabyBuffer, pabyBeginningContent, nBufferSize);
 }
 
 /************************************************************************/
@@ -92,7 +150,8 @@ VSIBufferedReaderHandle::VSIBufferedReaderHandle(VSIVirtualHandle* poBaseHandle)
 
 VSIBufferedReaderHandle::~VSIBufferedReaderHandle()
 {
-    delete poBaseHandle;
+    delete m_poBaseHandle;
+    CPLFree(pabyBuffer);
 }
 
 /************************************************************************/
@@ -101,18 +160,32 @@ VSIBufferedReaderHandle::~VSIBufferedReaderHandle()
 
 int VSIBufferedReaderHandle::Seek( vsi_l_offset nOffset, int nWhence )
 {
-    //CPLDebug( "BUFFERED", "Seek(%d,%d)", (int)nOffset, (int)nWhence);
-    bEOF = FALSE;
-    if (nWhence == SEEK_CUR)
-        nCurOffset += nOffset;
-    else if (nWhence == SEEK_END)
+#ifdef DEBUG_VERBOSE
+    CPLDebug( "BUFFERED", "Seek(%d,%d)",
+              static_cast<int>(nOffset), static_cast<int>(nWhence) );
+#endif
+    bEOF = false;
+    if( nWhence == SEEK_CUR )
     {
-        poBaseHandle->Seek(nOffset, nWhence);
-        nCurOffset = poBaseHandle->Tell();
-        bNeedBaseHandleSeek = TRUE;
+        nCurOffset += nOffset;
+    }
+    else if( nWhence == SEEK_END )
+    {
+        if( nCheatFileSize )
+        {
+            nCurOffset = nCheatFileSize;
+        }
+        else
+        {
+            m_poBaseHandle->Seek(nOffset, nWhence);
+            nCurOffset = m_poBaseHandle->Tell();
+            bNeedBaseHandleSeek = true;
+        }
     }
     else
+    {
         nCurOffset = nOffset;
+    }
 
     return 0;
 }
@@ -123,91 +196,163 @@ int VSIBufferedReaderHandle::Seek( vsi_l_offset nOffset, int nWhence )
 
 vsi_l_offset VSIBufferedReaderHandle::Tell()
 {
-    //CPLDebug( "BUFFERED", "Tell() = %d", (int)nCurOffset);
+#ifdef DEBUG_VERBOSE
+    CPLDebug( "BUFFERED", "Tell() = %d", static_cast<int>(nCurOffset));
+#endif
     return nCurOffset;
 }
+
+/************************************************************************/
+/*                           SeekBaseTo()                               */
+/************************************************************************/
+
+int VSIBufferedReaderHandle::SeekBaseTo( vsi_l_offset nTargetOffset )
+{
+    if( m_poBaseHandle->Seek(nTargetOffset, SEEK_SET) == 0 )
+        return TRUE;
+
+    nCurOffset = m_poBaseHandle->Tell();
+    if( nCurOffset > nTargetOffset )
+        return FALSE;
+
+    const vsi_l_offset nMaxOffset = 8192;
+
+    std::vector<char> oTemp(nMaxOffset, 0);
+    char *pabyTemp = &oTemp[0];
+
+    while( true )
+    {
+        const size_t nToRead = static_cast<size_t>(
+            std::min(nMaxOffset, nTargetOffset - nCurOffset));
+        const size_t nRead = m_poBaseHandle->Read(pabyTemp, 1, nToRead);
+
+        nCurOffset += nRead;
+
+        if( nRead < nToRead )
+        {
+            bEOF = true;
+            return FALSE;
+        }
+        if( nToRead < nMaxOffset )
+            break;
+    }
+    return TRUE;
+}
+
 /************************************************************************/
 /*                               Read()                                 */
 /************************************************************************/
 
-size_t VSIBufferedReaderHandle::Read( void *pBuffer, size_t nSize, size_t nMemb )
+size_t VSIBufferedReaderHandle::Read( void *pBuffer, size_t nSize,
+                                      size_t nMemb )
 {
     const size_t nTotalToRead = nSize * nMemb;
-    //CPLDebug( "BUFFERED", "Read(%d)", (int)nTotalToRead);
+#ifdef DEBUG_VERBOSE
+    CPLDebug( "BUFFERED", "Read(%d)", static_cast<int>(nTotalToRead));
+#endif
 
-    if (nSize == 0)
+    if( nSize == 0 )
         return 0;
 
-    if (nBufferSize != 0 &&
-        nCurOffset >= nBufferOffset && nCurOffset <= nBufferOffset + nBufferSize)
+    if( nBufferSize != 0 &&
+        nCurOffset >= nBufferOffset &&
+        nCurOffset <= nBufferOffset + nBufferSize )
     {
-        /* We try to read from an offset located within the buffer */
-        const int nReadInBuffer = (int) MIN(nTotalToRead, nBufferOffset + nBufferSize - nCurOffset);
+        // We try to read from an offset located within the buffer.
+        const size_t nReadInBuffer =
+            static_cast<size_t>(
+                std::min(nTotalToRead,
+                         static_cast<size_t>(nBufferOffset + nBufferSize -
+                                             nCurOffset)));
         memcpy(pBuffer, pabyBuffer + nCurOffset - nBufferOffset, nReadInBuffer);
-        const int nToReadInFile = nTotalToRead - nReadInBuffer;
-        if (nToReadInFile > 0)
+        const size_t nToReadInFile = nTotalToRead - nReadInBuffer;
+        if( nToReadInFile > 0 )
         {
-            /* The beginning of the the data to read is located in the buffer */
-            /* but the end must be read from the file */
-            if (bNeedBaseHandleSeek)
-                poBaseHandle->Seek(nBufferOffset + nBufferSize, SEEK_SET);
-            bNeedBaseHandleSeek = FALSE;
-            //CPLAssert(poBaseHandle->Tell() == nBufferOffset + nBufferSize);
+            // The beginning of the data to read is located in the buffer
+            // but the end must be read from the file.
+            if( bNeedBaseHandleSeek )
+            {
+                if( !SeekBaseTo(nBufferOffset + nBufferSize) )
+                {
+                    nCurOffset += nReadInBuffer;
+                    return nReadInBuffer / nSize;
+                }
+            }
+            bNeedBaseHandleSeek = false;
+#ifdef DEBUG_VERBOSE
+            CPLAssert(m_poBaseHandle->Tell() == nBufferOffset + nBufferSize);
+#endif
 
-            const int nReadInFile = poBaseHandle->Read((GByte*)pBuffer + nReadInBuffer, 1, nToReadInFile);
-            const int nRead = nReadInBuffer + nReadInFile;
+            const size_t nReadInFile =
+                m_poBaseHandle->Read(
+                    static_cast<GByte *>(pBuffer) + nReadInBuffer,
+                    1, nToReadInFile);
+            const size_t nRead = nReadInBuffer + nReadInFile;
 
-            nBufferSize = MIN(nRead, MAX_BUFFER_SIZE);
+            nBufferSize = static_cast<int>(
+                std::min(nRead, static_cast<size_t>(MAX_BUFFER_SIZE)));
             nBufferOffset = nCurOffset + nRead - nBufferSize;
-            memcpy(pabyBuffer, (GByte*)pBuffer + nRead - nBufferSize, nBufferSize);
+            memcpy(pabyBuffer,
+                   static_cast<GByte *>(pBuffer) + nRead - nBufferSize,
+                   nBufferSize);
 
             nCurOffset += nRead;
-            //CPLAssert(poBaseHandle->Tell() == nBufferOffset + nBufferSize);
-            //CPLAssert(poBaseHandle->Tell() == nCurOffset);
+#ifdef DEBUG_VERBOSE
+            CPLAssert(m_poBaseHandle->Tell() == nBufferOffset + nBufferSize);
+            CPLAssert(m_poBaseHandle->Tell() == nCurOffset);
+#endif
 
-            bEOF = poBaseHandle->Eof();
+            bEOF = CPL_TO_BOOL(m_poBaseHandle->Eof());
 
             return nRead / nSize;
         }
         else
         {
-            /* The data to read is completely located within the buffer */
+            // The data to read is completely located within the buffer.
             nCurOffset += nTotalToRead;
             return nTotalToRead / nSize;
         }
     }
     else
     {
-        /* We try either to read before or after the buffer, so a seek is necessary */
-        poBaseHandle->Seek(nCurOffset, SEEK_SET);
-        bNeedBaseHandleSeek = FALSE;
-        const int nReadInFile = poBaseHandle->Read(pBuffer, 1, nTotalToRead);
-        nBufferSize = MIN(nReadInFile, MAX_BUFFER_SIZE);
+        // We try either to read before or after the buffer, so a seek is
+        // necessary.
+        if( !SeekBaseTo(nCurOffset) )
+            return 0;
+        bNeedBaseHandleSeek = false;
+        const size_t nReadInFile =
+            m_poBaseHandle->Read(pBuffer, 1, nTotalToRead);
+        nBufferSize = static_cast<int>(
+            std::min(nReadInFile, static_cast<size_t>(MAX_BUFFER_SIZE)));
         nBufferOffset = nCurOffset + nReadInFile - nBufferSize;
-        memcpy(pabyBuffer, (GByte*)pBuffer + nReadInFile - nBufferSize, nBufferSize);
+        memcpy(pabyBuffer,
+               static_cast<GByte *>(pBuffer) + nReadInFile - nBufferSize,
+               nBufferSize);
 
         nCurOffset += nReadInFile;
-        //CPLAssert(poBaseHandle->Tell() == nBufferOffset + nBufferSize);
-        //CPLAssert(poBaseHandle->Tell() == nCurOffset);
+#ifdef DEBUG_VERBOSE
+        CPLAssert(m_poBaseHandle->Tell() == nBufferOffset + nBufferSize);
+        CPLAssert(m_poBaseHandle->Tell() == nCurOffset);
+#endif
 
-        bEOF = poBaseHandle->Eof();
+        bEOF = CPL_TO_BOOL(m_poBaseHandle->Eof());
 
         return nReadInFile / nSize;
     }
-
 }
 
 /************************************************************************/
 /*                              Write()                                 */
 /************************************************************************/
 
-size_t VSIBufferedReaderHandle::Write( const void *pBuffer, size_t nSize, size_t nMemb )
+size_t VSIBufferedReaderHandle::Write( const void * /* pBuffer */,
+                                       size_t /* nSize */,
+                                       size_t /* nMemb */)
 {
     CPLError(CE_Failure, CPLE_NotSupported,
-             "VSIFWriteL is not supported on buffer reader streams\n");
+             "VSIFWriteL is not supported on buffer reader streams");
     return 0;
 }
-
 
 /************************************************************************/
 /*                               Eof()                                  */
@@ -233,11 +378,13 @@ int VSIBufferedReaderHandle::Flush()
 
 int VSIBufferedReaderHandle::Close()
 {
-    if (poBaseHandle)
+    if( m_poBaseHandle )
     {
-        poBaseHandle->Close();
-        delete poBaseHandle;
-        poBaseHandle = NULL;
+        m_poBaseHandle->Close();
+        delete m_poBaseHandle;
+        m_poBaseHandle = NULL;
     }
     return 0;
 }
+
+//! @endcond

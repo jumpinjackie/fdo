@@ -1,17 +1,17 @@
 /******************************************************************************
- * $Id: coasp_dataset.cpp 25311 2012-12-15 12:48:14Z rouault $
  *
  * Project:  DRDC Configurable Airborne SAR Processor (COASP) data reader
  * Purpose:  Support in GDAL for the DRDC COASP format data, both Metadata
- *	     and complex imagery.
+ *           and complex imagery.
  * Author:   Philippe Vachon <philippe@cowpig.ca>
  * Notes:    I have seen a grand total of 2 COASP scenes (3 sets of headers).
- *	     This is based on my best observations, some educated guesses and
- *	     such. So if you have a scene that doesn't work, send it to me
- *	     please and I will make it work... with violence.
+ *           This is based on my best observations, some educated guesses and
+ *           such. So if you have a scene that doesn't work, send it to me
+ *           please and I will make it work... with violence.
  *
  ******************************************************************************
  * Copyright (c) 2007, Philippe Vachon
+ * Copyright (c) 2009-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,30 +32,24 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "gdal_priv.h"
-#include "cpl_port.h"
 #include "cpl_conv.h"
-#include "cpl_vsi.h"
+#include "cpl_port.h"
 #include "cpl_string.h"
+#include "cpl_vsi.h"
+#include "gdal_frmts.h"
+#include "gdal_priv.h"
 
-CPL_CVSID("$Id: coasp_dataset.cpp 25311 2012-12-15 12:48:14Z rouault $");
+CPL_CVSID("$Id: coasp_dataset.cpp 36501 2016-11-25 14:09:24Z rouault $");
 
-CPL_C_START
-void    GDALRegister_COASP(void);
-CPL_C_END
-
-#define TYPE_GENERIC 0
-#define TYPE_GEOREF  1
-
-
+static const int TYPE_GENERIC = 0;
+static const int TYPE_GEOREF = 1;
 
 enum ePolarization {
-	hh = 0,
-	hv,
-	vh,
-	vv
+    hh = 0,
+    hv,
+    vh,
+    vv
 };
-
 
 /*******************************************************************
  * Declaration of the COASPMetadata classes                        *
@@ -65,49 +59,56 @@ class COASPMetadataItem;
 
 class COASPMetadataReader
 {
-	VSILFILE *fp;
-	char **papszMetadata;
-	int nMetadataCount;
-	int nCurrentItem;
+        VSILFILE *fp;
+        char **papszMetadata;
+        int nMetadataCount;
+        int nCurrentItem;
 public:
-	COASPMetadataReader(char *pszFname);
-	COASPMetadataItem *GetNextItem();
-	COASPMetadataItem *GetItem(int nItem);
-	int GotoMetadataItem(int nItemNumber);
-	int GotoMetadataItem(const char *pszName);
-	int GetCurrentItem() { return nCurrentItem; }
+        explicit COASPMetadataReader(char *pszFname);
+        ~COASPMetadataReader();
+        COASPMetadataItem *GetNextItem();
+        COASPMetadataItem *GetItem(int nItem);
+        int GotoMetadataItem(int nItemNumber);
+        int GotoMetadataItem(const char *pszName);
+        int GetCurrentItem() { return nCurrentItem; }
 };
 
 /* Your average metadata item */
 class COASPMetadataItem
 {
 protected:
-	char *pszItemName;
-	char *pszItemValue;
+    char *pszItemName;
+    char *pszItemValue;
+
 public:
-	COASPMetadataItem() { }
-	COASPMetadataItem(char *pszItemName, char *pszItemValue);
-	char *GetItemName();
-	char *GetItemValue();
-	int GetType() { return TYPE_GENERIC; }
+    COASPMetadataItem() : pszItemName(NULL), pszItemValue(NULL) { }
+    COASPMetadataItem(char *pszItemName, char *pszItemValue);
+    ~COASPMetadataItem();
+
+    char *GetItemName();
+    char *GetItemValue();
+    static int GetType() { return TYPE_GENERIC; }
 };
 
 /* Same as MetadataItem class except parses GCP properly and returns
- * a GDAL_GCP struct 
+ * a GDAL_GCP struct
  */
 class COASPMetadataGeorefGridItem : public COASPMetadataItem
 {
-	int nId;
-	int nPixels;
-	int nLines;
-	double ndLat;
-	double ndLong;
+#ifdef unused
+        int nId;
+        int nPixels;
+        int nLines;
+        double ndLat;
+        double ndLong;
+#endif
+
 public:
-	COASPMetadataGeorefGridItem(int nId, int nPixels, int nLines, 
-		double ndLat, double ndLong);
-	const char *GetItemName() { return "georef_grid"; }
-	GDAL_GCP *GetItemValue();
-	int GetType() { return TYPE_GEOREF; }
+        COASPMetadataGeorefGridItem( int nId, int nPixels, int nLines,
+                                     double ndLat, double ndLong );
+        static const char *GetItemName() { return "georef_grid"; }
+        GDAL_GCP *GetItemValue();
+        static int GetType() { return TYPE_GEOREF; }
 };
 
 /********************************************************************
@@ -116,39 +117,46 @@ public:
  * ================================================================ *
  ********************************************************************/
 
-COASPMetadataItem::COASPMetadataItem(char *pszItemName, char *pszItemValue) 
+COASPMetadataItem::COASPMetadataItem(char *pszItemName_, char *pszItemValue_) :
+    pszItemName(VSIStrdup(pszItemName_)),
+    pszItemValue(VSIStrdup(pszItemValue_))
+{}
+
+COASPMetadataItem::~COASPMetadataItem()
 {
-	this->pszItemName = VSIStrdup(pszItemName);
-	this->pszItemValue = VSIStrdup(pszItemValue);
+    CPLFree(pszItemName);
+    CPLFree(pszItemValue);
 }
 
-char *COASPMetadataItem::GetItemName() 
+char *COASPMetadataItem::GetItemName()
 {
-	return VSIStrdup(pszItemName);
+        return VSIStrdup(pszItemName);
 }
 
-char *COASPMetadataItem::GetItemValue() 
+char *COASPMetadataItem::GetItemValue()
 {
-	return VSIStrdup(pszItemValue);
+        return VSIStrdup(pszItemValue);
 }
 
-COASPMetadataGeorefGridItem::COASPMetadataGeorefGridItem(int nId, int nPixels, 
-	int nLines, double ndLat, double ndLong)
+COASPMetadataGeorefGridItem::COASPMetadataGeorefGridItem(
+    int /*nIdIn*/, int /*nPixelsIn*/,
+    int /*nLinesIn*/, double /*ndLatIn*/, double /*ndLongIn*/ )
+#ifdef unused
+:
+    nId(nIdIn),
+    nPixels(nPixelsIn),
+    nLines(nLinesIn),
+    ndLat(ndLatIn),
+    ndLong(ndLongIn)
+#endif
 {
-	this->nId = nId;
-	this->nPixels = nPixels;
-	this->nLines = nLines;
-	this->ndLat = ndLat;
-	this->ndLong = ndLong;
-	this->pszItemName = VSIStrdup("georef_grid");
-
+    pszItemName = VSIStrdup("georef_grid");
 }
 
-GDAL_GCP *COASPMetadataGeorefGridItem::GetItemValue() 
+GDAL_GCP *COASPMetadataGeorefGridItem::GetItemValue()
 {
-	return NULL;
+    return NULL;
 }
-
 
 /********************************************************************
  * ================================================================ *
@@ -156,88 +164,93 @@ GDAL_GCP *COASPMetadataGeorefGridItem::GetItemValue()
  * ================================================================ *
  ********************************************************************/
 
-COASPMetadataReader::COASPMetadataReader(char *pszFname) 
+COASPMetadataReader::COASPMetadataReader(char *pszFname) :
+    fp(NULL),
+    papszMetadata(CSLLoad(pszFname)),
+    nMetadataCount(0),
+    nCurrentItem(0)
 {
-	this->fp = NULL;
-	this->nCurrentItem = 0;
-	this->papszMetadata = CSLLoad(pszFname);
-	this->nMetadataCount = CSLCount(this->papszMetadata);
+    nMetadataCount = CSLCount(papszMetadata);
 }
 
-COASPMetadataItem *COASPMetadataReader::GetNextItem() 
+COASPMetadataReader::~COASPMetadataReader()
 {
-	COASPMetadataItem *poMetadata;
-	char **papszMDTokens;
-	char *pszItemName;
-	char *pszItemValue;
-	if (nCurrentItem >= nMetadataCount)
-		return NULL;
+    if (fp)
+        VSIFCloseL(fp);
+    CSLDestroy(papszMetadata);
+}
 
+COASPMetadataItem *COASPMetadataReader::GetNextItem()
+{
+        if (nCurrentItem >= nMetadataCount)
+            return NULL;
 
-	papszMDTokens = CSLTokenizeString2(papszMetadata[nCurrentItem], " ", 
-		CSLT_HONOURSTRINGS );
-	pszItemName = papszMDTokens[0];
-	if (EQUALN(pszItemName, "georef_grid", 11)) {
-		double ndLat, ndLong;
-		int nPixels, nLines;
-		// georef_grid ( pixels lines ) ( lat long )
-		// 0           1 2      3     4 5 6   7    8
-		nPixels = atoi(papszMDTokens[2]);
-		nLines = atoi(papszMDTokens[3]);
-		ndLat = CPLAtof(papszMDTokens[6]);
-		ndLong = CPLAtof(papszMDTokens[7]);
-		poMetadata = new COASPMetadataGeorefGridItem(nCurrentItem, nPixels, 
-			nLines, ndLat, ndLong);
-	}
-	else {
-		int nCount = CSLCount(papszMDTokens);
-		pszItemValue = strdup(papszMDTokens[1]); 
-		for (int i = 2; i < nCount; i++) {
-			int nSize = strlen(papszMDTokens[i]);
-			pszItemValue = (char *)CPLRealloc(pszItemValue, 
-				strlen(pszItemValue) + 1 + nSize);
-			sprintf(pszItemValue,"%s %s",pszItemValue, 
-				papszMDTokens[i]);
-		}
-		
-		poMetadata = new COASPMetadataItem(pszItemName,
-			pszItemValue);
+        COASPMetadataItem *poMetadata = NULL;
 
-		free(pszItemValue);
-	}
-	free(pszItemName);
-	nCurrentItem++;
-	return poMetadata;
+        char **papszMDTokens
+            = CSLTokenizeString2(papszMetadata[nCurrentItem], " ",
+                                 CSLT_HONOURSTRINGS );
+        char *pszItemName = papszMDTokens[0];
+        if (STARTS_WITH_CI(pszItemName, "georef_grid"))
+        {
+            // georef_grid ( pixels lines ) ( lat long )
+            // 0           1 2      3     4 5 6   7    8
+            int nPixels = atoi(papszMDTokens[2]);
+            int nLines = atoi(papszMDTokens[3]);
+            double dfLat = CPLAtof(papszMDTokens[6]);
+            double dfLong = CPLAtof(papszMDTokens[7]);
+            poMetadata = new COASPMetadataGeorefGridItem(
+                nCurrentItem, nPixels, nLines, dfLat, dfLong);
+        }
+        else
+        {
+            int nCount = CSLCount(papszMDTokens);
+            char *pszItemValue = CPLStrdup(papszMDTokens[1]);
+            for (int i = 2; i < nCount; i++)
+            {
+                const size_t nSize = strlen(pszItemValue) + 1 + strlen(papszMDTokens[i]);
+                pszItemValue = (char *)CPLRealloc(pszItemValue, nSize);
+                snprintf(pszItemValue + strlen(pszItemValue),
+                         nSize - strlen(pszItemValue), " %s",
+                         papszMDTokens[i]);
+            }
+
+            poMetadata = new COASPMetadataItem(pszItemName, pszItemValue);
+
+            CPLFree(pszItemValue);
+        }
+        CSLDestroy(papszMDTokens);
+        nCurrentItem++;
+        return poMetadata;
 }
 
 /* Goto a particular metadata item, listed by number */
 int COASPMetadataReader::GotoMetadataItem(int nItemNumber)
 {
-	if (nItemNumber > nMetadataCount || nItemNumber < 0) {
-		nItemNumber = 0;
-		return 0;
-	}
-	nCurrentItem = nItemNumber;
-	return nCurrentItem;
+        if (nItemNumber >= nMetadataCount || nItemNumber < 0) {
+            nCurrentItem = 0;
+        }
+        else
+            nCurrentItem = nItemNumber;
+        return nCurrentItem;
 }
 
 /* Goto the first metadata item with a particular name */
 int COASPMetadataReader::GotoMetadataItem(const char *pszName)
 {
-	nCurrentItem = CSLPartialFindString(papszMetadata, pszName);
-	return nCurrentItem;
+        nCurrentItem = CSLPartialFindString(papszMetadata, pszName);
+        return nCurrentItem;
 }
 
 /*******************************************************************
  * Declaration of the COASPDataset class                           *
  *******************************************************************/
 
-
 class COASPRasterBand;
 
 /* A couple of observations based on the data I have available to me:
  * a) the headers don't really change, beyond indicating data sources
- *    and such. As such, I only read the first header specified by the 
+ *    and such. As such, I only read the first header specified by the
  *    user. Note that this is agnostic: you can specify hh, vv, vh, hv and
  *    all the data needed will be immediately available.
  * b) Lots of GCPs are present in the headers. This is most excellent.
@@ -247,22 +260,32 @@ class COASPRasterBand;
 
 class COASPDataset : public GDALDataset
 {
-	friend class COASPRasterBand;
-	FILE *fpHdr; /* File pointer for the header file */
-	VSILFILE *fpBinHH; /* File pointer for the binary matrix */
-	VSILFILE *fpBinHV;
-	VSILFILE *fpBinVH;
-	VSILFILE *fpBinVV;
+        friend class COASPRasterBand;
+        VSILFILE *fpHdr; /* File pointer for the header file */
+        VSILFILE *fpBinHH; /* File pointer for the binary matrix */
+        VSILFILE *fpBinHV;
+        VSILFILE *fpBinVH;
+        VSILFILE *fpBinVV;
 
-	char *pszFileName; /* line and mission ID, mostly, i.e. l27p7 */
+        char *pszFileName; /* line and mission ID, mostly, i.e. l27p7 */
 
-	int nGCPCount;
-	GDAL_GCP *pasGCP;
+        int nGCPCount;
+        GDAL_GCP *pasGCP;
 public:
-	static GDALDataset *Open( GDALOpenInfo * );
-	static int Identify( GDALOpenInfo * poOpenInfo );
-	int GetGCPCount();
-	const GDAL_GCP *GetGCPs();
+        COASPDataset():
+            fpHdr(NULL),
+            fpBinHH(NULL),
+            fpBinHV(NULL),
+            fpBinVH(NULL),
+            fpBinVV(NULL),
+            pszFileName(NULL),
+            nGCPCount(0),
+            pasGCP(NULL) {}
+
+        static GDALDataset *Open( GDALOpenInfo * );
+        static int Identify( GDALOpenInfo * poOpenInfo );
+        int GetGCPCount() override;
+        const GDAL_GCP *GetGCPs() override;
 };
 
 /********************************************************************
@@ -272,50 +295,50 @@ public:
  ********************************************************************/
 
 class COASPRasterBand : public GDALRasterBand {
-	VSILFILE *fp;
-	int ePol;
+        VSILFILE *fp;
+        /*int ePol;*/
 public:
-	COASPRasterBand( COASPDataset *poDS, GDALDataType eDataType, int ePol, VSILFILE *fp );
-	virtual CPLErr IReadBlock( int nBlockXOff, int nBlockYOff, 
-		void *pImage);
+        COASPRasterBand( COASPDataset *poDS, GDALDataType eDataType,
+                         int ePol, VSILFILE *fp );
+        virtual CPLErr IReadBlock( int nBlockXOff, int nBlockYOff,
+                                   void *pImage) override;
 };
 
-COASPRasterBand::COASPRasterBand( COASPDataset *poDS, GDALDataType eDataType,
-	int ePol, VSILFILE *fp)
+COASPRasterBand::COASPRasterBand( COASPDataset *poDSIn,
+                                  GDALDataType eDataTypeIn,
+                                  int /*ePolIn*/, VSILFILE *fpIn ) :
+        fp(fpIn)/*,
+        ePol(ePolIn)*/
 {
-	this->fp = fp;
-	this->ePol = ePol;
-	this->poDS = poDS;
-	this->eDataType = eDataType;
-	this->nBlockXSize = poDS->GetRasterXSize();
-	this->nBlockYSize = 1;
+        poDS = poDSIn;
+        eDataType = eDataTypeIn;
+        nBlockXSize = poDS->GetRasterXSize();
+        nBlockYSize = 1;
 }
 
-CPLErr COASPRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff, 
-	void *pImage )
+CPLErr COASPRasterBand::IReadBlock( CPL_UNUSED int nBlockXOff,
+                                    int nBlockYOff,
+                                    void *pImage )
 {
-	if (this->fp == NULL) {
-		CPLError(CE_Fatal, 1, "file pointer freed unexpectedly\n");
-		return CE_Fatal;
-	}
+        if (this->fp == NULL)
+        {
+            CPLError(CE_Fatal, CPLE_AppDefined,
+                     "File pointer freed unexpectedly");
+            return CE_Fatal;
+        }
 
-	/* 8 bytes per pixel: 4 bytes I, 4 bytes Q */
-	unsigned long nByteNum = poDS->GetRasterXSize() * 8 * nBlockYOff;
+        /* 8 bytes per pixel: 4 bytes I, 4 bytes Q */
+        unsigned long nByteNum = poDS->GetRasterXSize() * 8 * nBlockYOff;
 
-	VSIFSeekL(this->fp, nByteNum, SEEK_SET);
-	int nReadSize = (GDALGetDataTypeSize(eDataType)/8) * poDS->GetRasterXSize();
-	VSIFReadL((char *)pImage, 1, nReadSize, 
-		this->fp);
+        VSIFSeekL(this->fp, nByteNum, SEEK_SET);
+        int nReadSize = (GDALGetDataTypeSize(eDataType)/8) * poDS->GetRasterXSize();
+        VSIFReadL((char *)pImage, 1, nReadSize, this->fp);
 
 #ifdef CPL_LSB
-	GDALSwapWords( pImage, 4, nBlockXSize * 2, 4 ); 
+        GDALSwapWords( pImage, 4, nBlockXSize * 2, 4 );
 #endif
-
-
-	return CE_None;
-	
+        return CE_None;
 }
-
 
 /********************************************************************
  * ================================================================ *
@@ -323,14 +346,13 @@ CPLErr COASPRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
  * ================================================================ *
  ********************************************************************/
 
-
 /************************************************************************/
 /*                            GetGCPCount()                             */
 /************************************************************************/
 
 int COASPDataset::GetGCPCount()
 {
-	return nGCPCount;
+        return nGCPCount;
 }
 
 /************************************************************************/
@@ -339,100 +361,104 @@ int COASPDataset::GetGCPCount()
 
 const GDAL_GCP *COASPDataset::GetGCPs()
 {
-	return pasGCP;
+        return pasGCP;
 }
 
 /************************************************************************/
 /*                              Identify()                              */
 /************************************************************************/
 
-int COASPDataset::Identify( GDALOpenInfo *poOpenInfo ) 
+int COASPDataset::Identify( GDALOpenInfo *poOpenInfo )
 {
-	if(poOpenInfo->fp == NULL || poOpenInfo->nHeaderBytes < 256)
-		return 0;
+    if(poOpenInfo->fpL == NULL || poOpenInfo->nHeaderBytes < 256)
+        return 0;
 
-	/* With a COASP .hdr file, the first line or so is:
- 	 * time_first_datarec
- 	 */
-	if(EQUALN((char *)poOpenInfo->pabyHeader,"time_first_datarec",18))
-		return 1;
+    // With a COASP .hdr file, the first line or so is: time_first_datarec
 
-	return 0;
+    if(STARTS_WITH_CI((char *)poOpenInfo->pabyHeader, "time_first_datarec"))
+        return 1;
+
+    return 0;
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-GDALDataset *COASPDataset::Open( GDALOpenInfo *poOpenInfo ) 
+GDALDataset *COASPDataset::Open( GDALOpenInfo *poOpenInfo )
 {
-	if (!COASPDataset::Identify(poOpenInfo))
-		return NULL;
-        
+    if (!COASPDataset::Identify(poOpenInfo))
+        return NULL;
+
 /* -------------------------------------------------------------------- */
 /*      Confirm the requested access is supported.                      */
 /* -------------------------------------------------------------------- */
     if( poOpenInfo->eAccess == GA_Update )
     {
-        CPLError( CE_Failure, CPLE_NotSupported, 
+        CPLError( CE_Failure, CPLE_NotSupported,
                   "The COASP driver does not support update access to existing"
                   " datasets.\n" );
         return NULL;
     }
-	/* Create a fresh dataset for us to work with */
-	COASPDataset *poDS;
-	poDS = new COASPDataset();
-	
-	if (poDS == NULL)
-		return NULL;
 
-	/* Steal the file pointer for the header */
-	poDS->fpHdr = poOpenInfo->fp;
-	poOpenInfo->fp = NULL;
-	
-	/* Set the binary matrix file pointers to NULL, for now */
-	poDS->fpBinHH = NULL;
-	poDS->fpBinHV = NULL;
-	poDS->fpBinVH = NULL;
-	poDS->fpBinVV = NULL;
+    /* Create a fresh dataset for us to work with */
+    COASPDataset *poDS = new COASPDataset();
 
-	poDS->pszFileName = VSIStrdup(poOpenInfo->pszFilename);
+    if (poDS == NULL)
+        return NULL;
 
-	/* determine the file name prefix */
-	const char *pszFilename;
-	char *pszBaseName = VSIStrdup(CPLGetBasename(poDS->pszFileName));
-	char *pszDir = VSIStrdup(CPLGetPath(poDS->pszFileName));
-	const char *pszExt = "rc";
-	int nNull = strlen(pszBaseName) - 1;
-	char *pszBase = (char *)CPLMalloc(nNull);
-	strncpy(pszBase, pszBaseName, nNull);
-	pszBase[nNull - 1] = '\0';
-	free(pszBaseName);
+    /* Steal the file pointer for the header */
+    poDS->fpHdr = poOpenInfo->fpL;
+    poOpenInfo->fpL = NULL;
 
-	char *psChan = strstr(pszBase,"hh");;
-	if (psChan == NULL) {
-		psChan = strstr(pszBase, "hv");
-	}
-	if (psChan == NULL) {
-		psChan = strstr(pszBase, "vh");
-	}
-	if (psChan == NULL) {
-		psChan = strstr(pszBase, "vv");
-	}
+    /* Set the binary matrix file pointers to NULL, for now */
+    poDS->fpBinHH = NULL;
+    poDS->fpBinHV = NULL;
+    poDS->fpBinVH = NULL;
+    poDS->fpBinVV = NULL;
+    poDS->nGCPCount = 0;
+    poDS->pasGCP = NULL;
 
-	if (psChan == NULL) {
-		CPLError(CE_Fatal, 1, "unable to recognize file as COASP.\n");
-		free(poDS->pszFileName);
-		free(pszBase);
-		free(pszDir);
-		delete poDS;
-		return NULL;
-	}
+    poDS->pszFileName = VSIStrdup(poOpenInfo->pszFilename);
+
+    /* determine the file name prefix */
+    char *pszBaseName = VSIStrdup(CPLGetBasename(poDS->pszFileName));
+    char *pszDir = VSIStrdup(CPLGetPath(poDS->pszFileName));
+    const char *pszExt = "rc";
+    int nNull = static_cast<int>(strlen(pszBaseName)) - 1;
+    char *pszBase = (char *)CPLMalloc(nNull);
+    strncpy(pszBase, pszBaseName, nNull);
+    pszBase[nNull - 1] = '\0';
+    free(pszBaseName);
+
+    char *psChan = strstr(pszBase,"hh");
+    if( psChan == NULL )
+    {
+        psChan = strstr(pszBase, "hv");
+    }
+    if (psChan == NULL)
+    {
+        psChan = strstr(pszBase, "vh");
+    }
+    if (psChan == NULL)
+    {
+        psChan = strstr(pszBase, "vv");
+    }
+
+    if (psChan == NULL)
+    {
+        CPLError(CE_Fatal, CPLE_AppDefined,
+                 "Unable to recognize file as COASP.");
+        free(poDS->pszFileName);
+        free(pszBase);
+        free(pszDir);
+        delete poDS;
+        return NULL;
+    }
 
     /* Read Metadata, set GCPs as is appropriate */
     COASPMetadataReader *poReader = new COASPMetadataReader(
         poDS->pszFileName);
-
 
     /* Get Image X and Y widths */
     poReader->GotoMetadataItem("number_lines");
@@ -442,111 +468,111 @@ GDALDataset *COASPDataset::Open( GDALOpenInfo *poOpenInfo )
     free(nValue);
 
     poReader->GotoMetadataItem("number_samples");
+    delete poItem;
     poItem = poReader->GetNextItem();
     nValue = poItem->GetItemValue();
     poDS->nRasterXSize = atoi(nValue);
     free(nValue);
 
+    /* Horizontal transmit, horizontal receive */
+    psChan[0] = 'h';
+    psChan[1] = 'h';
+    const char *pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
 
-	/* Horizontal transmit, horizontal receive */
-	psChan[0] = 'h';
-	psChan[1] = 'h';
-	pszFilename = CPLFormFilename(pszDir, pszBase, pszExt); 
+    poDS->fpBinHH = VSIFOpenL(pszFilename, "r");
 
-	poDS->fpBinHH = VSIFOpenL(pszFilename, "r");
+    if (poDS->fpBinHH != NULL)
+    {
+        /* Set raster band */
+        poDS->SetBand(1, new COASPRasterBand(poDS, GDT_CFloat32,
+                                             hh , poDS->fpBinHH));
+    }
 
-	if (poDS->fpBinHH != 0) {
-		/* Set raster band */
-		poDS->SetBand(1, new COASPRasterBand(poDS, GDT_CFloat32, 
-			hh , poDS->fpBinHH));
-	}
-	
-	/* Horizontal transmit, vertical receive */
-    psChan[0] = 'h'; 
-    psChan[1] = 'v'; 
-    pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
- 
-	poDS->fpBinHV = VSIFOpenL(pszFilename, "r");
-
-	if (poDS->fpBinHV != 0) {
-		poDS->SetBand(2, new COASPRasterBand(poDS, GDT_CFloat32,
-			hv, poDS->fpBinHV));
-	}
-
-	/* Vertical transmit, horizontal receive */
-    psChan[0] = 'v'; 
-    psChan[1] = 'h'; 
-    pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
- 
-	poDS->fpBinVH = VSIFOpenL(pszFilename, "r");
-
-	if (poDS->fpBinVH != 0) {
-    	poDS->SetBand(3, new COASPRasterBand(poDS, GDT_CFloat32,
-			vh, poDS->fpBinVH));
-	}
-
-	/* Vertical transmit, vertical receive */
-    psChan[0] = 'v'; 
-    psChan[1] = 'v'; 
+    /* Horizontal transmit, vertical receive */
+    psChan[0] = 'h';
+    psChan[1] = 'v';
     pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
 
-	poDS->fpBinVV = VSIFOpenL(pszFilename, "r");
+    poDS->fpBinHV = VSIFOpenL(pszFilename, "r");
 
-	if (poDS->fpBinVV != 0) {
-		poDS->SetBand(4, new COASPRasterBand(poDS, GDT_CFloat32,
-			vv, poDS->fpBinVV));
-	}
+    if (poDS->fpBinHV != NULL)
+    {
+        poDS->SetBand(2, new COASPRasterBand(poDS, GDT_CFloat32,
+                                             hv, poDS->fpBinHV));
+    }
 
+    /* Vertical transmit, horizontal receive */
+    psChan[0] = 'v';
+    psChan[1] = 'h';
+    pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
 
-	/* Oops, missing all the data? */
+    poDS->fpBinVH = VSIFOpenL(pszFilename, "r");
 
-	if (poDS->fpBinHH == NULL && poDS->fpBinHV == NULL 
-		&& poDS->fpBinVH == NULL && poDS->fpBinVV == NULL) 
-	{
-		CPLError(CE_Fatal,1,"Unable to find any data! Aborting.");
-		free(pszBase);
-		free(pszDir);
-		delete poDS;
+    if (poDS->fpBinVH != NULL)
+    {
+        poDS->SetBand(3, new COASPRasterBand(poDS, GDT_CFloat32,
+                                             vh, poDS->fpBinVH));
+    }
 
-		return NULL;
-	}
+    /* Vertical transmit, vertical receive */
+    psChan[0] = 'v';
+    psChan[1] = 'v';
+    pszFilename = CPLFormFilename(pszDir, pszBase, pszExt);
 
-    if ( poDS->GetRasterCount() == 4 ) {
+    poDS->fpBinVV = VSIFOpenL(pszFilename, "r");
+
+    if (poDS->fpBinVV != NULL)
+    {
+        poDS->SetBand(4, new COASPRasterBand(poDS, GDT_CFloat32,
+                                             vv, poDS->fpBinVV));
+    }
+
+    /* Oops, missing all the data? */
+    if (poDS->fpBinHH == NULL && poDS->fpBinHV == NULL
+        && poDS->fpBinVH == NULL && poDS->fpBinVV == NULL)
+    {
+        CPLError(CE_Fatal,CPLE_AppDefined,"Unable to find any data! Aborting.");
+        free(pszBase);
+        free(pszDir);
+        delete poDS;
+        delete poItem;
+        delete poReader;
+        return NULL;
+    }
+
+    if( poDS->GetRasterCount() == 4 )
+    {
         poDS->SetMetadataItem( "MATRIX_REPRESENTATION", "SCATTERING" );
     }
 
-	free(pszBase);
-	free(pszDir);
-	
-	poDS->nGCPCount = 0;
-	poDS->pasGCP = NULL;
+    free(pszBase);
+    free(pszDir);
 
-	delete poItem;
-	delete poReader; 
+    delete poItem;
+    delete poReader;
 
-	return poDS;
-
+    return poDS;
 }
 
 /************************************************************************/
 /*                         GDALRegister_COASP()                         */
 /************************************************************************/
 
-void GDALRegister_COASP(void)
+void GDALRegister_COASP()
 {
-	GDALDriver *poDriver;
-	if ( GDALGetDriverByName( "COASP" ) == NULL ) {
-		poDriver = new GDALDriver();
-		poDriver->SetDescription( "COASP" );
-		poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
-			"DRDC COASP SAR Processor Raster" );
-		poDriver->SetMetadataItem( GDAL_DMD_EXTENSION,
-			"hdr" );
-/*		poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
-			"frmt_coasp.html"); */
-		poDriver->pfnIdentify = COASPDataset::Identify;
-		poDriver->pfnOpen = COASPDataset::Open;
-		GetGDALDriverManager()->RegisterDriver( poDriver );
-	}
+    if( GDALGetDriverByName( "COASP" ) != NULL )
+        return;
 
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "COASP" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "DRDC COASP SAR Processor Raster" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION,
+                               "hdr" );
+    // poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "frmt_coasp.html");
+    poDriver->pfnIdentify = COASPDataset::Identify;
+    poDriver->pfnOpen = COASPDataset::Open;
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }

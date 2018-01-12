@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrpgeoselectlayer.cpp 20194 2010-08-06 18:28:05Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRPGeoSelectLayer class, layer access to the results
@@ -8,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam
+ * Copyright (c) 2010-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,15 +31,15 @@
 #include "cpl_conv.h"
 #include "ogr_pgeo.h"
 
-CPL_CVSID("$Id: ogrpgeoselectlayer.cpp 20194 2010-08-06 18:28:05Z rouault $");
+CPL_CVSID("$Id: ogrpgeoselectlayer.cpp 35198 2016-08-24 19:34:58Z goatbar $");
 
 /************************************************************************/
 /*                          OGRPGeoSelectLayer()                        */
 /************************************************************************/
 
 OGRPGeoSelectLayer::OGRPGeoSelectLayer( OGRPGeoDataSource *poDSIn,
-                                        CPLODBCStatement * poStmtIn )
-
+                                        CPLODBCStatement * poStmtIn ) :
+    pszBaseStatement(CPLStrdup(poStmtIn->GetCommand()))
 {
     poDS = poDSIn;
 
@@ -48,7 +48,21 @@ OGRPGeoSelectLayer::OGRPGeoSelectLayer( OGRPGeoDataSource *poDSIn,
     poFeatureDefn = NULL;
 
     poStmt = poStmtIn;
-    pszBaseStatement = CPLStrdup( poStmtIn->GetCommand() );
+
+    // Just to make test_ogrsf happy, but would/could need be extended to
+    // other cases.
+    if( STARTS_WITH_CI(pszBaseStatement, "SELECT * FROM ") )
+    {
+
+        OGRLayer* poBaseLayer =
+            poDSIn->GetLayerByName(pszBaseStatement + strlen("SELECT * FROM "));
+        if( poBaseLayer != NULL )
+        {
+            poSRS = poBaseLayer->GetSpatialRef();
+            if( poSRS != NULL )
+                poSRS->Reference();
+        }
+    }
 
     BuildFeatureDefn( "SELECT", poStmt );
 }
@@ -133,7 +147,7 @@ void OGRPGeoSelectLayer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRPGeoSelectLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRPGeoSelectLayer::GetFeature( GIntBig nFeatureId )
 
 {
     return OGRPGeoLayer::GetFeature( nFeatureId );
@@ -158,7 +172,7 @@ int OGRPGeoSelectLayer::TestCapability( const char * pszCap )
 /*      way of counting features matching a spatial query.              */
 /************************************************************************/
 
-int OGRPGeoSelectLayer::GetFeatureCount( int bForce )
+GIntBig OGRPGeoSelectLayer::GetFeatureCount( int bForce )
 
 {
     return OGRPGeoLayer::GetFeatureCount( bForce );

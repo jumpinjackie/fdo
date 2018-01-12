@@ -1,18 +1,18 @@
 /******************************************************************************
- * $Id: pdsdataset.cpp 24757 2012-08-11 15:24:44Z rouault $
  *
  * Project:  PDS Driver; Planetary Data System Format
  * Purpose:  Implementation of PDSDataset
  * Author:   Trent Hare (thare@usgs.gov),
  *           Robert Soricone (rsoricone@usgs.gov)
  *
- * NOTE: Original code authored by Trent and Robert and placed in the public 
- * domain as per US government policy.  I have (within my rights) appropriated 
- * it and placed it under the following license.  This is not intended to 
- * diminish Trent and Roberts contribution. 
+ * NOTE: Original code authored by Trent and Robert and placed in the public
+ * domain as per US government policy.  I have (within my rights) appropriated
+ * it and placed it under the following license.  This is not intended to
+ * diminish Trent and Roberts contribution.
  ******************************************************************************
  * Copyright (c) 2007, Frank Warmerdam <warmerdam@pobox.com>
- * 
+ * Copyright (c) 2008-2013, Even Rouault <even dot rouault at mines-paris dot org>
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -33,41 +33,45 @@
  ****************************************************************************/
 
 // Set up PDS NULL values
-#define NULL1 0
-#define NULL2 -32768
+static const int NULL1 = 0;
+static const int NULL2 = -32768;
 //#define NULL3 -0.3402822655089E+39
 //Same as ESRI_GRID_FLOAT_NO_DATA
 //#define NULL3 -340282346638528859811704183484516925440.0
-#define NULL3 -3.4028226550889044521e+38
+static const double NULL3 = -3.4028226550889044521e+38;
 
-#include "rawdataset.h"
+#include "cpl_string.h"
+#include "gdal_frmts.h"
 #include "gdal_proxy.h"
-#include "ogr_spatialref.h"
-#include "cpl_string.h" 
 #include "nasakeywordhandler.h"
+#include "ogr_spatialref.h"
+#include "rawdataset.h"
 
-CPL_CVSID("$Id: pdsdataset.cpp 24757 2012-08-11 15:24:44Z rouault $");
+CPL_CVSID("$Id: pdsdataset.cpp 36981 2016-12-20 19:46:41Z rouault $");
 
-CPL_C_START
-void	GDALRegister_PDS(void);
-CPL_C_END
+enum PDSLayout
+{
+    PDS_BSQ,
+    PDS_BIP,
+    PDS_BIL
+};
 
 /************************************************************************/
 /* ==================================================================== */
-/*			       PDSDataset	                        */
+/*                             PDSDataset                               */
 /* ==================================================================== */
 /************************************************************************/
 
 class PDSDataset : public RawDataset
 {
-    VSILFILE	*fpImage;	// image data file.
+    VSILFILE    *fpImage;  // image data file.
     GDALDataset *poCompressedDS;
 
     NASAKeywordHandler  oKeywords;
-  
+
     int         bGotTransform;
     double      adfGeoTransform[6];
-  
+
     CPLString   osProjection;
 
     CPLString   osTempResult;
@@ -76,36 +80,39 @@ class PDSDataset : public RawDataset
 
     void        ParseSRS();
     int         ParseCompressedImage();
-    int	        ParseImage( CPLString osPrefix = "" );
-    void        CleanString( CPLString &osInput );
+    int         ParseImage( CPLString osPrefix, CPLString osFilenamePrefix );
+    static void        CleanString( CPLString &osInput );
 
     const char *GetKeyword( std::string osPath,
                             const char *pszDefault = "");
     const char *GetKeywordSub( std::string osPath,
-                               int iSubscript, 
+                               int iSubscript,
                                const char *pszDefault = "");
-    const char *GetKeywordUnit( const char *pszPath, 
-                               int iSubscript, 
+    const char *GetKeywordUnit( const char *pszPath,
+                               int iSubscript,
                                const char *pszDefault = "");
 
   protected:
-    virtual int         CloseDependentDatasets();
+    virtual int         CloseDependentDatasets() override;
 
 public:
     PDSDataset();
-    ~PDSDataset();
-  
-    virtual CPLErr GetGeoTransform( double * padfTransform );
-    virtual const char *GetProjectionRef(void);
-  
-    virtual char      **GetFileList(void);
+    virtual ~PDSDataset();
+
+    virtual CPLErr GetGeoTransform( double * padfTransform ) override;
+    virtual const char *GetProjectionRef(void) override;
+
+    virtual char      **GetFileList(void) override;
 
     virtual CPLErr IBuildOverviews( const char *, int, int *,
-                                    int, int *, GDALProgressFunc, void * );
-    
+                                    int, int *, GDALProgressFunc, void * ) override;
+
     virtual CPLErr IRasterIO( GDALRWFlag, int, int, int, int,
                               void *, int, int, GDALDataType,
-                              int, int *, int, int, int );
+                              int, int *,
+                              GSpacing nPixelSpace, GSpacing nLineSpace,
+                              GSpacing nBandSpace,
+                              GDALRasterIOExtraArg* psExtraArg) override;
 
     static int          Identify( GDALOpenInfo * );
     static GDALDataset *Open( GDALOpenInfo * );
@@ -118,17 +125,17 @@ public:
 /*                            PDSDataset()                            */
 /************************************************************************/
 
-PDSDataset::PDSDataset()
+PDSDataset::PDSDataset() :
+    fpImage(NULL),
+    poCompressedDS(NULL),
+    bGotTransform(FALSE)
 {
-    fpImage = NULL;
-    bGotTransform = FALSE;
     adfGeoTransform[0] = 0.0;
     adfGeoTransform[1] = 1.0;
     adfGeoTransform[2] = 0.0;
     adfGeoTransform[3] = 0.0;
     adfGeoTransform[4] = 0.0;
     adfGeoTransform[5] = 1.0;
-    poCompressedDS = NULL;
 }
 
 /************************************************************************/
@@ -155,7 +162,7 @@ int PDSDataset::CloseDependentDatasets()
 
     if( poCompressedDS )
     {
-        bHasDroppedRef = TRUE;
+        bHasDroppedRef = FALSE;
         delete poCompressedDS;
         poCompressedDS = NULL;
     }
@@ -182,7 +189,7 @@ char **PDSDataset::GetFileList()
     {
         char **papszCFileList = poCompressedDS->GetFileList();
 
-        papszFileList = CSLInsertStrings( papszFileList, -1, 
+        papszFileList = CSLInsertStrings( papszFileList, -1,
                                           papszCFileList );
         CSLDestroy( papszCFileList );
     }
@@ -199,24 +206,24 @@ char **PDSDataset::GetFileList()
 /*                          IBuildOverviews()                           */
 /************************************************************************/
 
-CPLErr PDSDataset::IBuildOverviews( const char *pszResampling, 
-                                    int nOverviews, int *panOverviewList, 
+CPLErr PDSDataset::IBuildOverviews( const char *pszResampling,
+                                    int nOverviews, int *panOverviewList,
                                     int nListBands, int *panBandList,
-                                    GDALProgressFunc pfnProgress, 
+                                    GDALProgressFunc pfnProgress,
                                     void * pProgressData )
 {
     if( poCompressedDS != NULL )
-        return poCompressedDS->BuildOverviews( pszResampling, 
+        return poCompressedDS->BuildOverviews( pszResampling,
                                                nOverviews, panOverviewList,
-                                               nListBands, panBandList, 
+                                               nListBands, panBandList,
                                                pfnProgress, pProgressData );
-    else
-        return RawDataset::IBuildOverviews( pszResampling, 
-                                            nOverviews, panOverviewList,
-                                            nListBands, panBandList, 
-                                            pfnProgress, pProgressData );
+
+    return RawDataset::IBuildOverviews( pszResampling,
+                                        nOverviews, panOverviewList,
+                                        nListBands, panBandList,
+                                        pfnProgress, pProgressData );
 }
-        
+
 /************************************************************************/
 /*                             IRasterIO()                              */
 /************************************************************************/
@@ -224,23 +231,26 @@ CPLErr PDSDataset::IBuildOverviews( const char *pszResampling,
 CPLErr PDSDataset::IRasterIO( GDALRWFlag eRWFlag,
                               int nXOff, int nYOff, int nXSize, int nYSize,
                               void * pData, int nBufXSize, int nBufYSize,
-                              GDALDataType eBufType, 
+                              GDALDataType eBufType,
                               int nBandCount, int *panBandMap,
-                              int nPixelSpace, int nLineSpace, int nBandSpace)
+                              GSpacing nPixelSpace, GSpacing nLineSpace,
+                              GSpacing nBandSpace,
+                              GDALRasterIOExtraArg* psExtraArg)
 
 {
     if( poCompressedDS != NULL )
-        return poCompressedDS->RasterIO( eRWFlag, 
-                                         nXOff, nYOff, nXSize, nYSize, 
-                                         pData, nBufXSize, nBufYSize, 
+        return poCompressedDS->RasterIO( eRWFlag,
+                                         nXOff, nYOff, nXSize, nYSize,
+                                         pData, nBufXSize, nBufYSize,
                                          eBufType, nBandCount, panBandMap,
-                                         nPixelSpace, nLineSpace, nBandSpace );
-    else
-        return RawDataset::IRasterIO( eRWFlag, 
-                                      nXOff, nYOff, nXSize, nYSize, 
-                                      pData, nBufXSize, nBufYSize, 
-                                      eBufType, nBandCount, panBandMap,
-                                      nPixelSpace, nLineSpace, nBandSpace );
+                                         nPixelSpace, nLineSpace, nBandSpace,
+                                         psExtraArg);
+
+    return RawDataset::IRasterIO( eRWFlag,
+                                  nXOff, nYOff, nXSize, nYSize,
+                                  pData, nBufXSize, nBufYSize,
+                                  eBufType, nBandCount, panBandMap,
+                                  nPixelSpace, nLineSpace, nBandSpace, psExtraArg );
 }
 
 /************************************************************************/
@@ -250,10 +260,10 @@ CPLErr PDSDataset::IRasterIO( GDALRWFlag eRWFlag,
 const char *PDSDataset::GetProjectionRef()
 
 {
-    if( strlen(osProjection) > 0 )
+    if( !osProjection.empty() )
         return osProjection;
-    else
-        return GDALPamDataset::GetProjectionRef();
+
+    return GDALPamDataset::GetProjectionRef();
 }
 
 /************************************************************************/
@@ -268,10 +278,8 @@ CPLErr PDSDataset::GetGeoTransform( double * padfTransform )
         memcpy( padfTransform, adfGeoTransform, sizeof(double) * 6 );
         return CE_None;
     }
-    else
-    {
-        return GDALPamDataset::GetGeoTransform( padfTransform );
-    }
+
+    return GDALPamDataset::GetGeoTransform( padfTransform );
 }
 
 /************************************************************************/
@@ -283,6 +291,11 @@ void PDSDataset::ParseSRS()
 {
     const char *pszFilename = GetDescription();
 
+    CPLString osPrefix;
+    if( strlen(GetKeyword( "IMAGE_MAP_PROJECTION.MAP_PROJECTION_TYPE")) == 0 &&
+        strlen(GetKeyword( "UNCOMPRESSED_FILE.IMAGE_MAP_PROJECTION.MAP_PROJECTION_TYPE")) != 0 )
+        osPrefix = "UNCOMPRESSED_FILE.";
+
 /* ==================================================================== */
 /*      Get the geotransform.                                           */
 /* ==================================================================== */
@@ -290,21 +303,17 @@ void PDSDataset::ParseSRS()
     //example:
     //MAP_SCALE   = 14.818 <KM/PIXEL>
     //added search for unit (only checks for CM, KM - defaults to Meters)
-    const char *value;
     //Georef parameters
-    double dfULXMap=0.5;
-    double dfULYMap = 0.5;
     double dfXDim = 1.0;
     double dfYDim = 1.0;
-    double xulcenter = 0.0;
-    double yulcenter = 0.0;
 
-    value = GetKeyword("IMAGE_MAP_PROJECTION.MAP_SCALE");
+    const char *value = GetKeyword(osPrefix + "IMAGE_MAP_PROJECTION.MAP_SCALE");
     if (strlen(value) > 0 ) {
-        dfXDim = atof(value);
-        dfYDim = atof(value) * -1;
-        
-        CPLString unit = GetKeywordUnit("IMAGE_MAP_PROJECTION.MAP_SCALE",2); //KM
+        dfXDim = CPLAtof(value);
+        dfYDim = CPLAtof(value) * -1;
+
+        CPLString osKey(osPrefix + "IMAGE_MAP_PROJECTION.MAP_SCALE");
+        CPLString unit = GetKeywordUnit(osKey,2); //KM
         //value = GetKeywordUnit("IMAGE_MAP_PROJECTION.MAP_SCALE",3); //PIXEL
         if((EQUAL(unit,"M"))  || (EQUAL(unit,"METER")) || (EQUAL(unit,"METERS"))) {
             // do nothing
@@ -317,111 +326,106 @@ void PDSDataset::ParseSRS()
             //defaults to convert km to m
             dfXDim = dfXDim * 1000.0;
             dfYDim = dfYDim * 1000.0;
-        }            
+        }
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Calculate upper left corner of pixel in meters from the         */
 /*      upper  left center pixel sample/line offsets.  It doesn't       */
 /*      mean the defaults will work for every PDS image, as these       */
-/*      values are used inconsistantly.  Thus we have included          */
+/*      values are used inconsistently.  Thus we have included          */
 /*      conversion options to allow the user to override the            */
 /*      documented PDS3 default. Jan. 2011, for known mapping issues    */
 /*      see GDAL PDS page or mapping within ISIS3 source (USGS)         */
 /*      $ISIS3DATA/base/translations/pdsProjectionLineSampToXY.def      */
 /* -------------------------------------------------------------------- */
-   
+
     // defaults should be correct for what is documented in the PDS3 standard
-    double   dfSampleOffset_Shift;
-    double   dfLineOffset_Shift;
-    double   dfSampleOffset_Mult;
-    double   dfLineOffset_Mult;
 
-    dfSampleOffset_Shift = 
-        atof(CPLGetConfigOption( "PDS_SampleProjOffset_Shift", "-0.5" ));
-    
-    dfLineOffset_Shift = 
-        atof(CPLGetConfigOption( "PDS_LineProjOffset_Shift", "-0.5" ));
+    // https://trac.osgeo.org/gdal/ticket/5941 has the history of the default
+    /* value of PDS_SampleProjOffset_Shift and PDS_LineProjOffset_Shift */
+    double dfSampleOffset_Shift =
+        CPLAtof(CPLGetConfigOption( "PDS_SampleProjOffset_Shift", "0.5" ));
 
-    dfSampleOffset_Mult =
-        atof(CPLGetConfigOption( "PDS_SampleProjOffset_Mult", "-1.0") );
+    const double dfLineOffset_Shift =
+        CPLAtof(CPLGetConfigOption( "PDS_LineProjOffset_Shift", "0.5" ));
 
-    dfLineOffset_Mult = 
-        atof( CPLGetConfigOption( "PDS_LineProjOffset_Mult", "1.0") );
+    const double dfSampleOffset_Mult =
+        CPLAtof(CPLGetConfigOption( "PDS_SampleProjOffset_Mult", "-1.0") );
+
+    const double dfLineOffset_Mult =
+        CPLAtof( CPLGetConfigOption( "PDS_LineProjOffset_Mult", "1.0") );
 
     /***********   Grab LINE_PROJECTION_OFFSET ************/
-    value = GetKeyword("IMAGE_MAP_PROJECTION.LINE_PROJECTION_OFFSET");
+    double dfULYMap = 0.5;
+    double yulcenter = 0.0;
+
+    value = GetKeyword(osPrefix + "IMAGE_MAP_PROJECTION.LINE_PROJECTION_OFFSET");
     if (strlen(value) > 0) {
-        yulcenter = atof(value);
+        yulcenter = CPLAtof(value);
         dfULYMap = ((yulcenter + dfLineOffset_Shift) * -dfYDim * dfLineOffset_Mult);
         //notice dfYDim is negative here which is why it is again negated here
     }
     /***********   Grab SAMPLE_PROJECTION_OFFSET ************/
-    value = GetKeyword("IMAGE_MAP_PROJECTION.SAMPLE_PROJECTION_OFFSET");
+    double dfULXMap = 0.5;
+    double xulcenter = 0.0;
+
+    value = GetKeyword(osPrefix + "IMAGE_MAP_PROJECTION.SAMPLE_PROJECTION_OFFSET");
     if( strlen(value) > 0 ) {
-        xulcenter = atof(value);
+        xulcenter = CPLAtof(value);
         dfULXMap = ((xulcenter + dfSampleOffset_Shift) * dfXDim * dfSampleOffset_Mult);
     }
 
 /* ==================================================================== */
 /*      Get the coordinate system.                                      */
 /* ==================================================================== */
-    int	bProjectionSet = TRUE;
-    double semi_major = 0.0;
-    double semi_minor = 0.0;
-    double iflattening = 0.0;
-    double center_lat = 0.0;
-    double center_lon = 0.0;
-    double first_std_parallel = 0.0;
-    double second_std_parallel = 0.0;
-    OGRSpatialReference oSRS;
 
     /***********  Grab TARGET_NAME  ************/
     /**** This is the planets name i.e. MARS ***/
     CPLString target_name = GetKeyword("TARGET_NAME");
     CleanString( target_name );
-     
+
     /**********   Grab MAP_PROJECTION_TYPE *****/
-    CPLString map_proj_name = 
-        GetKeyword( "IMAGE_MAP_PROJECTION.MAP_PROJECTION_TYPE");
+    CPLString map_proj_name =
+        GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.MAP_PROJECTION_TYPE");
     CleanString( map_proj_name );
-     
+
     /******  Grab semi_major & convert to KM ******/
-    semi_major = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.A_AXIS_RADIUS")) * 1000.0;
-    
+    const double semi_major =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.A_AXIS_RADIUS")) * 1000.0;
+
     /******  Grab semi-minor & convert to KM ******/
-    semi_minor = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.C_AXIS_RADIUS")) * 1000.0;
+    const double semi_minor =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.C_AXIS_RADIUS")) * 1000.0;
 
     /***********   Grab CENTER_LAT ************/
-    center_lat = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.CENTER_LATITUDE"));
+    const double center_lat =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.CENTER_LATITUDE"));
 
     /***********   Grab CENTER_LON ************/
-    center_lon = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.CENTER_LONGITUDE"));
+    const double center_lon =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.CENTER_LONGITUDE"));
 
     /**********   Grab 1st std parallel *******/
-    first_std_parallel = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.FIRST_STANDARD_PARALLEL"));
+    const double first_std_parallel =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.FIRST_STANDARD_PARALLEL"));
 
     /**********   Grab 2nd std parallel *******/
-    second_std_parallel = 
-        atof(GetKeyword( "IMAGE_MAP_PROJECTION.SECOND_STANDARD_PARALLEL"));
-     
+    const double second_std_parallel =
+        CPLAtof(GetKeyword( osPrefix + "IMAGE_MAP_PROJECTION.SECOND_STANDARD_PARALLEL"));
+
     /*** grab  PROJECTION_LATITUDE_TYPE = "PLANETOCENTRIC" ****/
     // Need to further study how ocentric/ographic will effect the gdal library.
     // So far we will use this fact to define a sphere or ellipse for some projections
     // Frank - may need to talk this over
     char bIsGeographic = TRUE;
-    value = GetKeyword("IMAGE_MAP_PROJECTION.COORDINATE_SYSTEM_NAME");
+    value = GetKeyword(osPrefix + "IMAGE_MAP_PROJECTION.COORDINATE_SYSTEM_NAME");
     if (EQUAL( value, "PLANETOCENTRIC" ))
-        bIsGeographic = FALSE; 
+        bIsGeographic = FALSE;
 
 /**   Set oSRS projection and parameters --- all PDS supported types added if apparently supported in oSRS
       "AITOFF",  ** Not supported in GDAL??
-      "ALBERS", 
+      "ALBERS",
       "BONNE",
       "BRIESEMEISTER",   ** Not supported in GDAL??
       "CYLINDRICAL EQUAL AREA",
@@ -441,9 +445,12 @@ void PDSDataset::ParseSRS()
       "STEREOGRAPHIC",
       "TRANSVERSE MERCATOR",
       "VAN DER GRINTEN",     ** Not supported in GDAL??
-      "WERNER"     ** Not supported in GDAL?? 
-**/ 
+      "WERNER"     ** Not supported in GDAL??
+**/
     CPLDebug( "PDS","using projection %s\n\n", map_proj_name.c_str());
+
+    bool bProjectionSet = true;
+    OGRSpatialReference oSRS;
 
     if ((EQUAL( map_proj_name, "EQUIRECTANGULAR" )) ||
         (EQUAL( map_proj_name, "SIMPLE_CYLINDRICAL" )) ||
@@ -462,7 +469,7 @@ void PDSDataset::ParseSRS()
     } else if (EQUAL( map_proj_name, "TRANSVERSE_MERCATOR" )) {
         oSRS.SetTM ( center_lat, center_lon, 1, 0, 0 );
     } else if (EQUAL( map_proj_name, "LAMBERT_CONFORMAL_CONIC" )) {
-        oSRS.SetLCC ( first_std_parallel, second_std_parallel, 
+        oSRS.SetLCC ( first_std_parallel, second_std_parallel,
                       center_lat, center_lon, 0, 0 );
     } else if (EQUAL( map_proj_name, "LAMBERT_AZIMUTHAL_EQUAL_AREA" )) {
         oSRS.SetLAEA( center_lat, center_lon, 0, 0 );
@@ -471,89 +478,91 @@ void PDSDataset::ParseSRS()
     } else if (EQUAL( map_proj_name, "MOLLWEIDE" )) {
         oSRS.SetMollweide ( center_lon, 0, 0 );
     } else if (EQUAL( map_proj_name, "ALBERS" )) {
-        oSRS.SetACEA ( first_std_parallel, second_std_parallel, 
+        oSRS.SetACEA ( first_std_parallel, second_std_parallel,
                        center_lat, center_lon, 0, 0 );
     } else if (EQUAL( map_proj_name, "BONNE" )) {
         oSRS.SetBonne ( first_std_parallel, center_lon, 0, 0 );
     } else if (EQUAL( map_proj_name, "GNOMONIC" )) {
         oSRS.SetGnomonic ( center_lat, center_lon, 0, 0 );
-    } else if (EQUAL( map_proj_name, "OBLIQUE_CYLINDRICAL" )) { 
+    } else if (EQUAL( map_proj_name, "OBLIQUE_CYLINDRICAL" )) {
         // hope Swiss Oblique Cylindrical is the same
         oSRS.SetSOC ( center_lat, center_lon, 0, 0 );
     } else {
         CPLDebug( "PDS",
                   "Dataset projection %s is not supported. Continuing...",
                   map_proj_name.c_str() );
-        bProjectionSet = FALSE;
+        bProjectionSet = false;
     }
 
     if (bProjectionSet) {
         //Create projection name, i.e. MERCATOR MARS and set as ProjCS keyword
-        CPLString proj_target_name = map_proj_name + " " + target_name;
+        const CPLString proj_target_name = map_proj_name + " " + target_name;
         oSRS.SetProjCS(proj_target_name); //set ProjCS keyword
-     
+
         //The geographic/geocentric name will be the same basic name as the body name
         //'GCS' = Geographic/Geocentric Coordinate System
-        CPLString geog_name = "GCS_" + target_name;
-        
+        const CPLString geog_name = "GCS_" + target_name;
+
         //The datum and sphere names will be the same basic name aas the planet
-        CPLString datum_name = "D_" + target_name;
-        CPLString sphere_name = target_name; // + "_IAU_IAG");  //Might not be IAU defined so don't add
-          
+        const CPLString datum_name = "D_" + target_name;
+        // Might not be IAU defined so don't add.
+        CPLString sphere_name = target_name; // + "_IAU_IAG");
+
         //calculate inverse flattening from major and minor axis: 1/f = a/(a-b)
-        if ((semi_major - semi_minor) < 0.0000001) 
+        double iflattening;
+        if ((semi_major - semi_minor) < 0.0000001)
             iflattening = 0;
         else
             iflattening = semi_major / (semi_major - semi_minor);
-     
+
         //Set the body size but take into consideration which proj is being used to help w/ compatibility
-        //Notice that most PDS projections are spherical based on the fact that ISIS/PICS are spherical 
+        //Notice that most PDS projections are spherical based on the fact that ISIS/PICS are spherical
         //Set the body size but take into consideration which proj is being used to help w/ proj4 compatibility
         //The use of a Sphere, polar radius or ellipse here is based on how ISIS does it internally
-        if ( ( (EQUAL( map_proj_name, "STEREOGRAPHIC" ) && (fabs(center_lat) == 90)) ) || 
-             (EQUAL( map_proj_name, "POLAR_STEREOGRAPHIC" )))  
+        if ( ( (EQUAL( map_proj_name, "STEREOGRAPHIC" ) && (fabs(center_lat) == 90)) ) ||
+             (EQUAL( map_proj_name, "POLAR_STEREOGRAPHIC" )))
         {
-            if (bIsGeographic) { 
+            if (bIsGeographic) {
                 //Geograpraphic, so set an ellipse
                 oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                                semi_major, iflattening, 
+                                semi_major, iflattening,
                                 "Reference_Meridian", 0.0 );
             } else {
-                //Geocentric, so force a sphere using the semi-minor axis. I hope... 
+                //Geocentric, so force a sphere using the semi-minor axis. I hope...
                 sphere_name += "_polarRadius";
                 oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                                semi_minor, 0.0, 
+                                semi_minor, 0.0,
                                 "Reference_Meridian", 0.0 );
             }
         }
-        else if ( (EQUAL( map_proj_name, "SIMPLE_CYLINDRICAL" )) || 
-                  (EQUAL( map_proj_name, "EQUIDISTANT" )) || 
-                  (EQUAL( map_proj_name, "ORTHOGRAPHIC" )) || 
-                  (EQUAL( map_proj_name, "STEREOGRAPHIC" )) || 
+        else if ( (EQUAL( map_proj_name, "SIMPLE_CYLINDRICAL" )) ||
+                  (EQUAL( map_proj_name, "EQUIDISTANT" )) ||
+                  (EQUAL( map_proj_name, "ORTHOGRAPHIC" )) ||
+                  (EQUAL( map_proj_name, "STEREOGRAPHIC" )) ||
                   (EQUAL( map_proj_name, "SINUSOIDAL" )) ) {
             //isis uses the spherical equation for these projections so force a sphere
             oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                            semi_major, 0.0, 
+                            semi_major, 0.0,
                             "Reference_Meridian", 0.0 );
-        } 
-        else if (EQUAL( map_proj_name, "EQUIRECTANGULAR" )) { 
+        }
+        else if (EQUAL( map_proj_name, "EQUIRECTANGULAR" )) {
             //isis uses local radius as a sphere, which is pre-calculated in the PDS label as the semi-major
             sphere_name += "_localRadius";
             oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                            semi_major, 0.0, 
+                            semi_major, 0.0,
                             "Reference_Meridian", 0.0 );
-        } 
-        else { 
+        }
+        else {
             //All other projections: Mercator, Transverse Mercator, Lambert Conformal, etc.
             //Geographic, so set an ellipse
             if (bIsGeographic) {
                 oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                                semi_major, iflattening, 
+                                semi_major, iflattening,
                                 "Reference_Meridian", 0.0 );
-            } else { 
-                //Geocentric, so force a sphere. I hope... 
+            } else {
+                //Geocentric, so force a sphere. I hope...
                 oSRS.SetGeogCS( geog_name, datum_name, sphere_name,
-                                semi_major, 0.0, 
+                                semi_major, 0.0,
                                 "Reference_Meridian", 0.0 );
             }
         }
@@ -569,27 +578,23 @@ void PDSDataset::ParseSRS()
 /*      Check for a .prj and world file to override the georeferencing. */
 /* ==================================================================== */
     {
-        CPLString osPath, osName;
-        VSILFILE *fp;
-
-        osPath = CPLGetPath( pszFilename );
-        osName = CPLGetBasename(pszFilename);
+        const CPLString osPath = CPLGetPath( pszFilename );
+        const CPLString osName = CPLGetBasename(pszFilename);
         const char  *pszPrjFile = CPLFormCIFilename( osPath, osName, "prj" );
 
-        fp = VSIFOpenL( pszPrjFile, "r" );
+        VSILFILE *fp = VSIFOpenL( pszPrjFile, "r" );
         if( fp != NULL )
         {
-            char	**papszLines;
-            OGRSpatialReference oSRS;
+            OGRSpatialReference oSRS2;
 
             VSIFCloseL( fp );
-        
-            papszLines = CSLLoad( pszPrjFile );
 
-            if( oSRS.importFromESRI( papszLines ) == OGRERR_NONE )
+            char **papszLines = CSLLoad( pszPrjFile );
+
+            if( oSRS2.importFromESRI( papszLines ) == OGRERR_NONE )
             {
                 char *pszResult = NULL;
-                oSRS.exportToWkt( &pszResult );
+                oSRS2.exportToWkt( &pszResult );
                 osProjection = pszResult;
                 CPLFree( pszResult );
             }
@@ -597,8 +602,8 @@ void PDSDataset::ParseSRS()
             CSLDestroy( papszLines );
         }
     }
-    
-    if( dfULYMap != 0.5 || dfULYMap != 0.5 || dfXDim != 1.0 || dfYDim != 1.0 )
+
+    if( dfULXMap != 0.5 || dfULYMap != 0.5 || dfXDim != 1.0 || dfYDim != 1.0 )
     {
         bGotTransform = TRUE;
         adfGeoTransform[0] = dfULXMap;
@@ -608,104 +613,123 @@ void PDSDataset::ParseSRS()
         adfGeoTransform[4] = 0.0;
         adfGeoTransform[5] = dfYDim;
     }
-    
+
     if( !bGotTransform )
-        bGotTransform = 
-            GDALReadWorldFile( pszFilename, "psw", 
+        bGotTransform =
+            GDALReadWorldFile( pszFilename, "psw",
                                adfGeoTransform );
 
     if( !bGotTransform )
-        bGotTransform = 
-            GDALReadWorldFile( pszFilename, "wld", 
+        bGotTransform =
+            GDALReadWorldFile( pszFilename, "wld",
                                adfGeoTransform );
+}
 
+/************************************************************************/
+/*                        PDSConvertFromHex()                           */
+/************************************************************************/
+
+static GUInt32 PDSConvertFromHex(const char* pszVal)
+{
+    if( !STARTS_WITH_CI(pszVal, "16#") )
+        return 0;
+
+    pszVal += 3;
+    GUInt32 nVal = 0;
+    while( *pszVal != '#' && *pszVal != '\0' )
+    {
+        nVal <<= 4;
+        if( *pszVal >= '0' && *pszVal <= '9' )
+            nVal += *pszVal - '0';
+        else if( *pszVal >= 'A' && *pszVal <= 'F' )
+            nVal += *pszVal - 'A' + 10;
+        else
+            return 0;
+        pszVal ++;
+    }
+
+    return nVal;
 }
 
 /************************************************************************/
 /*                             ParseImage()                             */
 /************************************************************************/
 
-int PDSDataset::ParseImage( CPLString osPrefix )
+int PDSDataset::ParseImage( CPLString osPrefix, CPLString osFilenamePrefix )
 {
 /* ------------------------------------------------------------------- */
-/*	We assume the user is pointing to the label (ie. .lbl) file.  	   */
+/*      We assume the user is pointing to the label (i.e. .lbl) file.  */
 /* ------------------------------------------------------------------- */
     // IMAGE can be inline or detached and point to an image name
     // ^IMAGE = 3
     // ^IMAGE             = "GLOBAL_ALBEDO_8PPD.IMG"
     // ^IMAGE             = "MEGT90N000CB.IMG"
-    // ^IMAGE		  = ("BLAH.IMG",1)	 -- start at record 1 (1 based)
-    // ^IMAGE		  = ("BLAH.IMG")	 -- still start at record 1 (equiv of "BLAH.IMG")
-    // ^IMAGE		  = ("BLAH.IMG", 5 <BYTES>) -- start at byte 5 (the fifth byte in the file)
+    // ^IMAGE             = ("BLAH.IMG",1)       -- start at record 1 (1 based)
+    // ^IMAGE             = ("BLAH.IMG")         -- still start at record 1 (equiv of "BLAH.IMG")
+    // ^IMAGE             = ("BLAH.IMG", 5 <BYTES>) -- start at byte 5 (the fifth byte in the file)
     // ^IMAGE             = 10851 <BYTES>
     // ^SPECTRAL_QUBE = 5  for multi-band images
 
-    CPLString osImageKeyword = osPrefix + "^IMAGE";
-    CPLString osQube = GetKeyword( osImageKeyword, "" );
+    CPLString osImageKeyword = "IMAGE";
+    CPLString osQube = GetKeyword( osPrefix + "^" + osImageKeyword, "" );
     CPLString osTargetFile = GetDescription();
 
     if (EQUAL(osQube,"")) {
-        osImageKeyword = "^SPECTRAL_QUBE";
-        osQube = GetKeyword( osImageKeyword );
+        osImageKeyword = "SPECTRAL_QUBE";
+        osQube = GetKeyword( osPrefix + "^" + osImageKeyword );
     }
 
-    int nQube = atoi(osQube);
+    const int nQube = atoi(osQube);
     int nDetachedOffset = 0;
-    int bDetachedOffsetInBytes = FALSE;
+    bool bDetachedOffsetInBytes = false;
 
-    if( osQube.size() && osQube[0] == '(' )
+    if( !osQube.empty() && osQube[0] == '(' )
     {
         osQube = "\"";
-        osQube += GetKeywordSub( osImageKeyword, 1 );
+        osQube += GetKeywordSub( osPrefix + "^" + osImageKeyword, 1 );
         osQube +=  "\"";
-        nDetachedOffset = atoi(GetKeywordSub( osImageKeyword, 2, "1")) - 1;
+        nDetachedOffset = atoi(GetKeywordSub( osPrefix + "^" + osImageKeyword, 2, "1")) - 1;
 
         // If this is not explicitly in bytes, then it is assumed to be in
         // records, and we need to translate to bytes.
-        if (strstr(GetKeywordSub(osImageKeyword,2),"<BYTES>") != NULL)
-            bDetachedOffsetInBytes = TRUE;
+        if (strstr(GetKeywordSub(osPrefix + "^" + osImageKeyword, 2),"<BYTES>") != NULL)
+            bDetachedOffsetInBytes = true;
     }
 
-    if( osQube.size() && osQube[0] == '"' )
+    if( !osQube.empty() && osQube[0] == '"' )
     {
-        CPLString osTPath = CPLGetPath(GetDescription());
         CPLString osFilename = osQube;
         CleanString( osFilename );
-        osTargetFile = CPLFormCIFilename( osTPath, osFilename, NULL );
-        osExternalCube = osTargetFile;
+        if( !osFilenamePrefix.empty() )
+        {
+            osTargetFile = osFilenamePrefix + osFilename;
+        }
+        else
+        {
+            CPLString osTPath = CPLGetPath(GetDescription());
+            osTargetFile = CPLFormCIFilename( osTPath, osFilename, NULL );
+            osExternalCube = osTargetFile;
+        }
     }
 
-    GDALDataType eDataType = GDT_Byte;
-
-    
-    //image parameters
-    int	nRows, nCols, nBands = 1;
-    int nSkipBytes = 0;
-    int itype;
-    int record_bytes;
-    char chByteOrder = 'M';  //default to MSB
-    double dfNoData = 0.0;
- 
     /* -------------------------------------------------------------------- */
     /*      Checks to see if this is raw PDS image not compressed image     */
     /*      so ENCODING_TYPE either does not exist or it equals "N/A".      */
     /*      Compressed types will not be supported in this routine          */
     /* -------------------------------------------------------------------- */
-    const char *value;
 
     CPLString osEncodingType = GetKeyword(osPrefix+"IMAGE.ENCODING_TYPE","N/A");
     CleanString(osEncodingType);
     if ( !EQUAL(osEncodingType.c_str(),"N/A") )
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
+        CPLError( CE_Failure, CPLE_OpenFailed,
                   "*** PDS image file has an ENCODING_TYPE parameter:\n"
                   "*** gdal pds driver does not support compressed image types\n"
                   "found: (%s)\n\n", osEncodingType.c_str() );
         return FALSE;
-    } 
+    }
     /**************** end ENCODING_TYPE check ***********************/
-    
-    
+
     /***********   Grab layout type (BSQ, BIP, BIL) ************/
     //  AXIS_NAME = (SAMPLE,LINE,BAND)
     /***********   Grab samples lines band        **************/
@@ -713,47 +737,50 @@ int PDSDataset::ParseImage( CPLString osPrefix )
     /** are there own keywords  "LINES" and "LINE_SAMPLES"    **/
     /** if not NULL then CORE_ITEMS keyword i.e. (234,322,2)  **/
     /***********************************************************/
-    char szLayout[10] = "BSQ"; //default to band seq.
-    value = GetKeyword( osPrefix+"IMAGE.AXIS_NAME", "" );
+    int eLayout = PDS_BSQ; //default to band seq.
+    int nRows, nCols, l_nBands = 1;
+
+    CPLString value = GetKeyword( osPrefix+osImageKeyword+".AXIS_NAME", "" );
     if (EQUAL(value,"(SAMPLE,LINE,BAND)") ) {
-        strcpy(szLayout,"BSQ");
-        nCols = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",1));
-        nRows = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",2));
-        nBands = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",3));
+        eLayout = PDS_BSQ;
+        nCols = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",1));
+        nRows = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",2));
+        l_nBands = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",3));
     }
     else if (EQUAL(value,"(BAND,LINE,SAMPLE)") ) {
-        strcpy(szLayout,"BIP");
-        nBands = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",1));
-        nRows = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",2));
-        nCols = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",3));
+        eLayout = PDS_BIP;
+        l_nBands = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",1));
+        nRows = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",2));
+        nCols = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",3));
     }
     else if (EQUAL(value,"(SAMPLE,BAND,LINE)") ) {
-        strcpy(szLayout,"BIL");
-        nCols = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",1));
-        nBands = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",2));
-        nRows = atoi(GetKeywordSub(osPrefix+"IMAGE.CORE_ITEMS",3));
+        eLayout = PDS_BIL;
+        nCols = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",1));
+        l_nBands = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",2));
+        nRows = atoi(GetKeywordSub(osPrefix+osImageKeyword+".CORE_ITEMS",3));
     }
     else if ( EQUAL(value,"") ) {
-        strcpy(szLayout,"BSQ");
-        nCols = atoi(GetKeyword(osPrefix+"IMAGE.LINE_SAMPLES",""));
-        nRows = atoi(GetKeyword(osPrefix+"IMAGE.LINES",""));
-        nBands = atoi(GetKeyword(osPrefix+"IMAGE.BANDS","1"));
+        eLayout = PDS_BSQ;
+        nCols = atoi(GetKeyword(osPrefix+osImageKeyword+".LINE_SAMPLES",""));
+        nRows = atoi(GetKeyword(osPrefix+osImageKeyword+".LINES",""));
+        l_nBands = atoi(GetKeyword(osPrefix+osImageKeyword+".BANDS","1"));
     }
     else {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "%s layout not supported. Abort\n\n", value);
+        CPLError( CE_Failure, CPLE_OpenFailed,
+                  "%s layout not supported. Abort\n\n", value.c_str() );
         return FALSE;
     }
-    
+
     /***********   Grab Qube record bytes  **********/
-    record_bytes = atoi(GetKeyword(osPrefix+"IMAGE.RECORD_BYTES"));
+    int record_bytes = atoi(GetKeyword(osPrefix+"IMAGE.RECORD_BYTES"));
     if (record_bytes == 0)
         record_bytes = atoi(GetKeyword(osPrefix+"RECORD_BYTES"));
 
-    // this can happen with "record_type = undefined". 
+    // this can happen with "record_type = undefined".
     if( record_bytes == 0 )
         record_bytes = 1;
 
+    int nSkipBytes = 0;
     if( nQube >0 && osQube.find("<BYTES>") != CPLString::npos )
         nSkipBytes = nQube - 1;
     else if (nQube > 0 )
@@ -766,77 +793,167 @@ int PDSDataset::ParseImage( CPLString osPrefix )
             nSkipBytes = nDetachedOffset * record_bytes;
     }
     else
-        nSkipBytes = 0;     
+        nSkipBytes = 0;
 
     nSkipBytes += atoi(GetKeyword(osPrefix+"IMAGE.LINE_PREFIX_BYTES",""));
-    
+
     /***********   Grab SAMPLE_TYPE *****************/
     /** if keyword not found leave as "M" or "MSB" **/
+
     CPLString osST = GetKeyword( osPrefix+"IMAGE.SAMPLE_TYPE" );
-    if( osST.size() >= 2 && osST[0] == '"' && osST[osST.size()-1] == '"' )
+    if( osST.size() >= 2 && osST[0] == '"' && osST.back() == '"' )
         osST = osST.substr( 1, osST.size() - 2 );
 
-    if( (EQUAL(osST,"LSB_INTEGER")) || 
-        (EQUAL(osST,"LSB")) || // just incase
-        (EQUAL(osST,"LSB_UNSIGNED_INTEGER")) || 
-        (EQUAL(osST,"LSB_SIGNED_INTEGER")) || 
-        (EQUAL(osST,"UNSIGNED_INTEGER")) || 
-        (EQUAL(osST,"VAX_REAL")) || 
-        (EQUAL(osST,"VAX_INTEGER")) || 
-        (EQUAL(osST,"PC_INTEGER")) ||  //just incase 
+    char chByteOrder = 'M';  //default to MSB
+    if( (EQUAL(osST,"LSB_INTEGER")) ||
+        (EQUAL(osST,"LSB")) || // just in case
+        (EQUAL(osST,"LSB_UNSIGNED_INTEGER")) ||
+        (EQUAL(osST,"LSB_SIGNED_INTEGER")) ||
+        (EQUAL(osST,"UNSIGNED_INTEGER")) ||
+        (EQUAL(osST,"VAX_REAL")) ||
+        (EQUAL(osST,"VAX_INTEGER")) ||
+        (EQUAL(osST,"PC_INTEGER")) ||  //just in case
         (EQUAL(osST,"PC_REAL")) ) {
         chByteOrder = 'I';
     }
 
     /**** Grab format type - pds supports 1,2,4,8,16,32,64 (in theory) **/
     /**** I have only seen 8, 16, 32 (float) in released datasets      **/
-    itype = atoi(GetKeyword(osPrefix+"IMAGE.SAMPLE_BITS",""));
-    switch(itype) {
-      case 8 :
-        eDataType = GDT_Byte;
-        dfNoData = NULL1;
-        break;
-      case 16 :
-        if( strstr(osST,"UNSIGNED") != NULL )
-            eDataType = GDT_UInt16;
-        else
-            eDataType = GDT_Int16;
-        dfNoData = NULL2;
-        break;
-      case 32 :
-        eDataType = GDT_Float32;
-        dfNoData = NULL3;
-        break;
-      case 64 :
-        eDataType = GDT_Float64;
-        dfNoData = NULL3;
-        break;
-      default :
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Sample_bits of %d is not supported in this gdal PDS reader.",
-                  itype); 
-        return FALSE;
+    GDALDataType eDataType = GDT_Byte;
+    int nSuffixItems = 0;
+    int nSuffixLines = 0;
+    int nSuffixBytes = 4; // Default as per PDS specification
+    double dfNoData = 0.0;
+    double dfScale = 1.0;
+    double dfOffset = 0.0;
+    const char *pszUnit = NULL;
+    const char *pszDesc = NULL;
+
+    CPLString osSB = GetKeyword(osPrefix+"IMAGE.SAMPLE_BITS","");
+    if ( !osSB.empty() )
+    {
+        const int itype = atoi(osSB);
+        switch(itype) {
+          case 8 :
+            eDataType = GDT_Byte;
+            dfNoData = NULL1;
+            break;
+          case 16 :
+            if( strstr(osST,"UNSIGNED") != NULL )
+            {
+                dfNoData = NULL1;
+                eDataType = GDT_UInt16;
+            }
+            else
+            {
+                eDataType = GDT_Int16;
+                dfNoData = NULL2;
+            }
+            break;
+          case 32 :
+            eDataType = GDT_Float32;
+            dfNoData = NULL3;
+            break;
+          case 64 :
+            eDataType = GDT_Float64;
+            dfNoData = NULL3;
+            break;
+          default :
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "Sample_bits of %d is not supported in this gdal PDS reader.",
+                      itype);
+            return FALSE;
+        }
+
+        dfOffset = CPLAtofM(GetKeyword(osPrefix+"IMAGE.OFFSET","0.0"));
+        dfScale = CPLAtofM(GetKeyword(osPrefix+"IMAGE.SCALING_FACTOR","1.0"));
+    }
+    else /* No IMAGE object, search for the QUBE. */
+    {
+        osSB = GetKeyword(osPrefix+"SPECTRAL_QUBE.CORE_ITEM_BYTES","");
+        const int itype = atoi(osSB);
+        switch(itype) {
+          case 1 :
+            eDataType = GDT_Byte;
+            break;
+          case 2 :
+            if( strstr(osST,"UNSIGNED") != NULL )
+                eDataType = GDT_UInt16;
+            else
+                eDataType = GDT_Int16;
+            break;
+          case 4 :
+            eDataType = GDT_Float32;
+            break;
+          default :
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "CORE_ITEM_BYTES of %d is not supported in this gdal PDS reader.",
+                      itype);
+            return FALSE;
+        }
+
+        /* Parse suffix dimensions if defined. */
+        value = GetKeyword( osPrefix + "SPECTRAL_QUBE.SUFFIX_ITEMS", "" );
+        if ( !value.empty() )
+        {
+            value = GetKeyword(osPrefix + "SPECTRAL_QUBE.SUFFIX_BYTES", "");
+            if ( !value.empty() )
+                nSuffixBytes = atoi( value );
+
+            nSuffixItems = atoi(
+                GetKeywordSub(osPrefix+"SPECTRAL_QUBE.SUFFIX_ITEMS",1));
+            nSuffixLines = atoi(
+                GetKeywordSub(osPrefix+"SPECTRAL_QUBE.SUFFIX_ITEMS",2));
+        }
+
+        value = GetKeyword( osPrefix + "SPECTRAL_QUBE.CORE_NULL", "" );
+        if ( !value.empty() )
+            dfNoData = CPLAtofM( value );
+
+        dfOffset = CPLAtofM(
+            GetKeyword(osPrefix + "SPECTRAL_QUBE.CORE_BASE", "0.0") );
+        dfScale = CPLAtofM(
+            GetKeyword(osPrefix + "SPECTRAL_QUBE.CORE_MULTIPLIER", "1.0") );
+        pszUnit = GetKeyword(osPrefix + "SPECTRAL_QUBE.CORE_UNIT", NULL);
+        pszDesc = GetKeyword(osPrefix + "SPECTRAL_QUBE.CORE_NAME", NULL);
     }
 
 /* -------------------------------------------------------------------- */
 /*      Is there a specific nodata value in the file? Either the        */
 /*      MISSING or MISSING_CONSTANT keywords are nodata.                */
 /* -------------------------------------------------------------------- */
-    if( GetKeyword( osPrefix+"IMAGE.MISSING", NULL ) != NULL )
-        dfNoData = CPLAtofM( GetKeyword( osPrefix+"IMAGE.MISSING", "" ) );
 
-    if( GetKeyword( osPrefix+"IMAGE.MISSING_CONSTANT", NULL ) != NULL )
-        dfNoData = CPLAtofM( GetKeyword( osPrefix+"IMAGE.MISSING_CONSTANT",""));
+    const char* pszMissing = GetKeyword( osPrefix+"IMAGE.MISSING", NULL );
+    if( pszMissing == NULL )
+        pszMissing = GetKeyword( osPrefix+"IMAGE.MISSING_CONSTANT", NULL );
+
+    if( pszMissing != NULL )
+    {
+        if( *pszMissing == '"' )
+            pszMissing ++;
+
+        /* For example : MISSING_CONSTANT             = "16#FF7FFFFB#" */
+        if( STARTS_WITH_CI(pszMissing, "16#") && strlen(pszMissing) >= 3 + 8 + 1 &&
+            pszMissing[3 + 8] == '#' && (eDataType == GDT_Float32 || eDataType == GDT_Float64) )
+        {
+            GUInt32 nVal = PDSConvertFromHex(pszMissing);
+            float fVal;
+            memcpy(&fVal, &nVal, 4);
+            dfNoData = fVal;
+        }
+        else
+            dfNoData = CPLAtofM( pszMissing );
+    }
 
 /* -------------------------------------------------------------------- */
 /*      Did we get the required keywords?  If not we return with        */
 /*      this never having been considered to be a match. This isn't     */
 /*      an error!                                                       */
 /* -------------------------------------------------------------------- */
-    if( nRows < 1 || nCols < 1 || nBands < 1 )
+    if( nRows < 1 || nCols < 1 || l_nBands < 1 )
     {
         CPLError( CE_Failure, CPLE_AppDefined,
-                  "File %s appears to be a PDS file, but failed to find some required keywords.", 
+                  "File %s appears to be a PDS file, but failed to find some required keywords.",
                   GetDescription() );
         return FALSE;
     }
@@ -850,14 +967,14 @@ int PDSDataset::ParseImage( CPLString osPrefix )
 /* -------------------------------------------------------------------- */
 /*      Open target binary file.                                        */
 /* -------------------------------------------------------------------- */
-    
+
     if( eAccess == GA_ReadOnly )
     {
         fpImage = VSIFOpenL( osTargetFile, "rb" );
         if( fpImage == NULL )
         {
-            CPLError( CE_Failure, CPLE_OpenFailed, 
-                    "Failed to open %s.\n%s", 
+            CPLError( CE_Failure, CPLE_OpenFailed,
+                    "Failed to open %s.\n%s",
                     osTargetFile.c_str(),
                     VSIStrerror( errno ) );
             return FALSE;
@@ -868,8 +985,8 @@ int PDSDataset::ParseImage( CPLString osPrefix )
         fpImage = VSIFOpenL( osTargetFile, "r+b" );
         if( fpImage == NULL )
         {
-            CPLError( CE_Failure, CPLE_OpenFailed, 
-                    "Failed to open %s with write permission.\n%s", 
+            CPLError( CE_Failure, CPLE_OpenFailed,
+                    "Failed to open %s with write permission.\n%s",
                     osTargetFile.c_str(),
                     VSIStrerror( errno ) );
             return FALSE;
@@ -879,23 +996,25 @@ int PDSDataset::ParseImage( CPLString osPrefix )
 /* -------------------------------------------------------------------- */
 /*      Compute the line offset.                                        */
 /* -------------------------------------------------------------------- */
-    int     nItemSize = GDALGetDataTypeSize(eDataType)/8;
-    int     nLineOffset = record_bytes;
-    int	    nPixelOffset, nBandOffset;
+    const int nItemSize = GDALGetDataTypeSize(eDataType)/8;
+    int nLineOffset;
+    int nPixelOffset;
+    int nBandOffset;
 
-    if( EQUAL(szLayout,"BIP") )
+    if( eLayout == PDS_BIP )
     {
-        nPixelOffset = nItemSize * nBands;
+        nPixelOffset = nItemSize * l_nBands;
         nBandOffset = nItemSize;
         nLineOffset = ((nPixelOffset * nCols + record_bytes - 1)/record_bytes)
             * record_bytes;
     }
-    else if( EQUAL(szLayout,"BSQ") )
+    else if( eLayout == PDS_BSQ )
     {
         nPixelOffset = nItemSize;
         nLineOffset = ((nPixelOffset * nCols + record_bytes - 1)/record_bytes)
             * record_bytes;
-        nBandOffset = nLineOffset * nRows;
+        nBandOffset = nLineOffset * nRows
+            + nSuffixLines * (nCols + nSuffixItems) * nSuffixBytes;
     }
     else /* assume BIL */
     {
@@ -904,28 +1023,24 @@ int PDSDataset::ParseImage( CPLString osPrefix )
         nLineOffset = ((nBandOffset * nCols + record_bytes - 1)/record_bytes)
             * record_bytes;
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
-    int i;
-
-    for( i = 0; i < nBands; i++ )
+    for( int i = 0; i < l_nBands; i++ )
     {
-        RawRasterBand	*poBand;
-
-        poBand = 
+        RawRasterBand *poBand =
             new RawRasterBand( this, i+1, fpImage,
-                               nSkipBytes + nBandOffset * i, 
+                               nSkipBytes + nBandOffset * i,
                                nPixelOffset, nLineOffset, eDataType,
-#ifdef CPL_LSB                               
+#ifdef CPL_LSB
                                chByteOrder == 'I' || chByteOrder == 'L',
 #else
                                chByteOrder == 'M',
-#endif        
+#endif
                                TRUE );
 
-        if( nBands == 1 )
+        if( l_nBands == 1 )
         {
             const char* pszMin = GetKeyword(osPrefix+"IMAGE.MINIMUM", NULL);
             const char* pszMax = GetKeyword(osPrefix+"IMAGE.MAXIMUM", NULL);
@@ -940,16 +1055,18 @@ int PDSDataset::ParseImage( CPLString osPrefix )
                                        CPLAtofM(pszStdDev));
             }
         }
-        
+
         poBand->SetNoDataValue( dfNoData );
 
         SetBand( i+1, poBand );
 
         // Set offset/scale values at the PAM level.
-        poBand->SetOffset( 
-            CPLAtofM(GetKeyword(osPrefix+"IMAGE.OFFSET","0.0")));
-        poBand->SetScale( 
-            CPLAtofM(GetKeyword(osPrefix+"IMAGE.SCALING_FACTOR","1.0")));
+        poBand->SetOffset( dfOffset );
+        poBand->SetScale( dfScale );
+        if ( pszUnit )
+            poBand->SetUnitType( pszUnit );
+        if ( pszDesc )
+            poBand->SetDescription( pszDesc );
     }
 
     return TRUE;
@@ -967,12 +1084,12 @@ class PDSWrapperRasterBand : public GDALProxyRasterBand
   GDALRasterBand* poBaseBand;
 
   protected:
-    virtual GDALRasterBand* RefUnderlyingRasterBand() { return poBaseBand; }
+    virtual GDALRasterBand* RefUnderlyingRasterBand() override { return poBaseBand; }
 
   public:
-    PDSWrapperRasterBand( GDALRasterBand* poBaseBand ) 
+    explicit PDSWrapperRasterBand( GDALRasterBand* poBaseBandIn )
         {
-            this->poBaseBand = poBaseBand;
+            this->poBaseBand = poBaseBandIn;
             eDataType = poBaseBand->GetRasterDataType();
             poBaseBand->GetBlockSize(&nBlockXSize, &nBlockYSize);
         }
@@ -989,23 +1106,23 @@ int PDSDataset::ParseCompressedImage()
     CPLString osFileName = GetKeyword( "COMPRESSED_FILE.FILE_NAME", "" );
     CleanString( osFileName );
 
-    CPLString osPath = CPLGetPath(GetDescription());
-    CPLString osFullFileName = CPLFormFilename( osPath, osFileName, NULL );
-    int iBand;
+    const CPLString osPath = CPLGetPath(GetDescription());
+    const CPLString osFullFileName = CPLFormFilename( osPath, osFileName, NULL );
 
-    poCompressedDS = (GDALDataset*) GDALOpen( osFullFileName, GA_ReadOnly );
-    
+    poCompressedDS = reinterpret_cast<GDALDataset *>(
+        GDALOpen( osFullFileName, GA_ReadOnly ) );
+
     if( poCompressedDS == NULL )
         return FALSE;
 
     nRasterXSize = poCompressedDS->GetRasterXSize();
     nRasterYSize = poCompressedDS->GetRasterYSize();
 
-    for( iBand = 0; iBand < poCompressedDS->GetRasterCount(); iBand++ )
+    for( int iBand = 0; iBand < poCompressedDS->GetRasterCount(); iBand++ )
     {
         SetBand( iBand+1, new PDSWrapperRasterBand( poCompressedDS->GetRasterBand( iBand+1 ) ) );
     }
-    
+
     return TRUE;
 }
 
@@ -1019,7 +1136,10 @@ int PDSDataset::Identify( GDALOpenInfo * poOpenInfo )
     if( poOpenInfo->pabyHeader == NULL )
         return FALSE;
 
-    return strstr((char*)poOpenInfo->pabyHeader,"PDS_VERSION_ID") != NULL;
+    return strstr(reinterpret_cast<char *>( poOpenInfo->pabyHeader ),
+                  "PDS_VERSION_ID") != NULL ||
+           strstr(reinterpret_cast<char *>( poOpenInfo->pabyHeader ),
+                  "ODL_VERSION_ID") != NULL;
 }
 
 /************************************************************************/
@@ -1031,7 +1151,9 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
     if( !Identify( poOpenInfo ) )
         return NULL;
 
-    if( strstr((const char *)poOpenInfo->pabyHeader,"PDS3") == NULL )
+    if( strstr(reinterpret_cast<char *>( poOpenInfo->pabyHeader ),
+                  "PDS_VERSION_ID") != NULL &&
+        strstr((const char *)poOpenInfo->pabyHeader,"PDS3") == NULL )
     {
         CPLError( CE_Failure, CPLE_OpenFailed,
                   "It appears this is an older PDS image type.  Only PDS_VERSION_ID = PDS3 are currently supported by this gdal PDS reader.");
@@ -1047,16 +1169,14 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
     if( fpQube == NULL )
         return NULL;
 
-    PDSDataset 	*poDS;
-
-    poDS = new PDSDataset();
+    PDSDataset *poDS = new PDSDataset();
     poDS->SetDescription( poOpenInfo->pszFilename );
     poDS->eAccess = poOpenInfo->eAccess;
-    
+
     const char* pszPDSVersionID = strstr((const char *)poOpenInfo->pabyHeader,"PDS_VERSION_ID");
     int nOffset = 0;
     if (pszPDSVersionID)
-        nOffset = pszPDSVersionID - (const char *)poOpenInfo->pabyHeader;
+        nOffset = static_cast<int>(pszPDSVersionID - (const char *)poOpenInfo->pabyHeader);
 
     if( ! poDS->oKeywords.Ingest( fpQube, nOffset ) )
     {
@@ -1074,7 +1194,34 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     CPLString osEncodingType = poDS->GetKeyword( "COMPRESSED_FILE.ENCODING_TYPE", "" );
 
-    if( osEncodingType.size() != 0 )
+    CPLString osCompressedFilename = poDS->GetKeyword( "COMPRESSED_FILE.FILE_NAME", "" );
+    CleanString( osCompressedFilename );
+
+    CPLString osUncompressedFilename = poDS->GetKeyword( "UNCOMPRESSED_FILE.IMAGE.NAME", "");
+    if( osUncompressedFilename.empty() )
+        osUncompressedFilename = poDS->GetKeyword( "UNCOMPRESSED_FILE.FILE_NAME", "");
+    CleanString( osUncompressedFilename );
+
+    VSIStatBufL sStat;
+    CPLString osFilenamePrefix;
+
+    if( EQUAL(osEncodingType, "ZIP") &&
+        !osCompressedFilename.empty() &&
+        !osUncompressedFilename.empty() )
+    {
+        const CPLString osPath = CPLGetPath(poDS->GetDescription());
+        osCompressedFilename = CPLFormFilename( osPath, osCompressedFilename, NULL );
+        osUncompressedFilename = CPLFormFilename( osPath, osUncompressedFilename, NULL );
+        if( VSIStatExL(osCompressedFilename, &sStat, VSI_STAT_EXISTS_FLAG) == 0 &&
+            VSIStatExL(osUncompressedFilename, &sStat, VSI_STAT_EXISTS_FLAG) != 0 )
+        {
+            osFilenamePrefix = "/vsizip/" + osCompressedFilename + "/";
+            poDS->osExternalCube = osCompressedFilename;
+        }
+        osEncodingType = "";
+    }
+
+    if( !osEncodingType.empty() )
     {
         if( !poDS->ParseCompressedImage() )
         {
@@ -1085,12 +1232,11 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
     else
     {
         CPLString osPrefix;
-    	CPLString osObject = poDS->GetKeyword( "UNCOMPRESSED_FILE.IMAGE.NAME", "");
 
-        if( osObject != "" )
+        if( osUncompressedFilename != "" )
             osPrefix = "UNCOMPRESSED_FILE.";
-        
-        if( !poDS->ParseImage(osPrefix) )
+
+        if( !poDS->ParseImage(osPrefix, osFilenamePrefix) )
         {
             delete poDS;
             return NULL;
@@ -1105,16 +1251,15 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Transfer a few interesting keywords as metadata.                */
 /* -------------------------------------------------------------------- */
-    int i;
-    static const char *apszKeywords[] = 
-        { "FILTER_NAME", "DATA_SET_ID", "PRODUCT_ID", 
+    static const char * const apszKeywords[] =
+        { "FILTER_NAME", "DATA_SET_ID", "PRODUCT_ID",
           "PRODUCER_INSTITUTION_NAME", "PRODUCT_TYPE", "MISSION_NAME",
-          "SPACECRAFT_NAME", "INSTRUMENT_NAME", "INSTRUMENT_ID", 
+          "SPACECRAFT_NAME", "INSTRUMENT_NAME", "INSTRUMENT_ID",
           "TARGET_NAME", "CENTER_FILTER_WAVELENGTH", "BANDWIDTH",
           "PRODUCT_CREATION_TIME", "NOTE",
           NULL };
-    
-    for( i = 0; apszKeywords[i] != NULL; i++ )
+
+    for( int i = 0; apszKeywords[i] != NULL; i++ )
     {
         const char *pszKeywordValue = poDS->GetKeyword( apszKeywords[i] );
 
@@ -1132,7 +1277,7 @@ GDALDataset *PDSDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -1156,14 +1301,14 @@ const char *PDSDataset::GetKeywordSub( std::string osPath,
 
 {
     const char *pszResult = oKeywords.GetKeyword( osPath.c_str(), NULL );
-    
+
     if( pszResult == NULL )
         return pszDefault;
 
-    if( pszResult[0] != '(' ) 
+    if( pszResult[0] != '(' )
         return pszDefault;
 
-    char **papszTokens = CSLTokenizeString2( pszResult, "(,)", 
+    char **papszTokens = CSLTokenizeString2( pszResult, "(,)",
                                              CSLT_HONOURSTRINGS );
 
     if( iSubscript <= CSLCount(papszTokens) )
@@ -1172,28 +1317,26 @@ const char *PDSDataset::GetKeywordSub( std::string osPath,
         CSLDestroy( papszTokens );
         return osTempResult.c_str();
     }
-    else
-    {
-        CSLDestroy( papszTokens );
-        return pszDefault;
-    }
+
+    CSLDestroy( papszTokens );
+    return pszDefault;
 }
 
 /************************************************************************/
 /*                            GetKeywordUnit()                          */
 /************************************************************************/
 
-const char *PDSDataset::GetKeywordUnit( const char *pszPath, 
+const char *PDSDataset::GetKeywordUnit( const char *pszPath,
                                          int iSubscript,
                                          const char *pszDefault )
 
 {
     const char *pszResult = oKeywords.GetKeyword( pszPath, NULL );
-    
+
     if( pszResult == NULL )
         return pszDefault;
- 
-    char **papszTokens = CSLTokenizeString2( pszResult, "</>", 
+
+    char **papszTokens = CSLTokenizeString2( pszResult, "</>",
                                              CSLT_HONOURSTRINGS );
 
     if( iSubscript <= CSLCount(papszTokens) )
@@ -1202,11 +1345,9 @@ const char *PDSDataset::GetKeywordUnit( const char *pszPath,
         CSLDestroy( papszTokens );
         return osTempResult.c_str();
     }
-    else
-    {
-        CSLDestroy( papszTokens );
-        return pszDefault;
-    }
+
+    CSLDestroy( papszTokens );
+    return pszDefault;
 }
 
 /************************************************************************/
@@ -1220,16 +1361,15 @@ void PDSDataset::CleanString( CPLString &osInput )
 
 {
    if(  ( osInput.size() < 2 ) ||
-        ((osInput.at(0) != '"'   || osInput.at(osInput.size()-1) != '"' ) &&
-        ( osInput.at(0) != '\'' || osInput.at(osInput.size()-1) != '\'')) )
+        ((osInput.at(0) != '"'   || osInput.back() != '"' ) &&
+        ( osInput.at(0) != '\'' || osInput.back() != '\'')) )
         return;
 
     char *pszWrk = CPLStrdup(osInput.c_str() + 1);
-    int i;
 
     pszWrk[strlen(pszWrk)-1] = '\0';
-    
-    for( i = 0; pszWrk[i] != '\0'; i++ )
+
+    for( int i = 0; pszWrk[i] != '\0'; i++ )
     {
         if( pszWrk[i] == ' ' )
             pszWrk[i] = '_';
@@ -1239,29 +1379,27 @@ void PDSDataset::CleanString( CPLString &osInput )
     CPLFree( pszWrk );
 }
 /************************************************************************/
-/*                         GDALRegister_PDS()                         */
+/*                         GDALRegister_PDS()                           */
 /************************************************************************/
 
 void GDALRegister_PDS()
 
 {
-    GDALDriver	*poDriver;
+    if( GDALGetDriverByName( "PDS" ) != NULL )
+        return;
 
-    if( GDALGetDriverByName( "PDS" ) == NULL )
-    {
-        poDriver = new GDALDriver();
-        
-        poDriver->SetDescription( "PDS" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
-                                   "NASA Planetary Data System" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
-                                   "frmt_pds.html" );
-        poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    GDALDriver *poDriver = new GDALDriver();
 
-        poDriver->pfnOpen = PDSDataset::Open;
-        poDriver->pfnIdentify = PDSDataset::Identify;
+    poDriver->SetDescription( "PDS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "NASA Planetary Data System" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
+                               "frmt_pds.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->pfnOpen = PDSDataset::Open;
+    poDriver->pfnIdentify = PDSDataset::Identify;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-

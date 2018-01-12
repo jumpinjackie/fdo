@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #******************************************************************************
-#  $Id: attachpct.py 25345 2012-12-25 21:19:27Z rouault $
-# 
+#  $Id: attachpct.py 33791 2016-03-26 12:51:23Z goatbar $
+#
 #  Project:  GDAL
 #  Purpose:  Simple command line program for copying the color table of a
 #            raster into another raster.
 #  Author:   Frank Warmerdam, warmerda@home.com
-# 
+#
 #******************************************************************************
 #  Copyright (c) 2000, Frank Warmerdam
-# 
+#
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
 #  to deal in the Software without restriction, including without limitation
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included
 #  in all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 #  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -30,13 +30,9 @@
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
 
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
-
 import sys
-import string
+
+from osgeo import gdal
 
 if len(sys.argv) < 3:
     print('Usage: attachpct.py <pctfile> <infile> <outfile>')
@@ -57,7 +53,7 @@ ct = ct.Clone()
 ds = None
 
 # =============================================================================
-# Create a MEM clone of the source file. 
+# Create a MEM clone of the source file.
 # =============================================================================
 
 src_ds = gdal.Open( sys.argv[2] )
@@ -72,7 +68,7 @@ mem_ds.GetRasterBand(1).SetRasterColorTable( ct )
 mem_ds.GetRasterBand(1).SetRasterColorInterpretation( gdal.GCI_PaletteIndex )
 
 # =============================================================================
-# Write the dataset to the output file. 
+# Write the dataset to the output file.
 # =============================================================================
 
 drv = gdal.GetDriverByName( 'GTiff' )

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_edigeo.h 23423 2011-11-26 18:40:30Z rouault $
+ * $Id: ogr_edigeo.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  EDIGEO Translator
  * Purpose:  Definition of classes for OGR .edigeo driver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_EDIGEO_H_INCLUDED
-#define _OGR_EDIGEO_H_INCLUDED
+#ifndef OGR_EDIGEO_H_INCLUDED
+#define OGR_EDIGEO_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include <vector>
@@ -61,22 +61,20 @@ class OGREDIGEOLayer : public OGRLayer
                         OGREDIGEOLayer(OGREDIGEODataSource* poDS,
                                        const char* pszName, OGRwkbGeometryType eType,
                                        OGRSpatialReference* poSRS);
-                        ~OGREDIGEOLayer();
+                        virtual ~OGREDIGEOLayer();
 
+    virtual void                ResetReading() override;
+    virtual OGRFeature *        GetNextFeature() override;
+    virtual OGRFeature *        GetFeature(GIntBig nFID) override;
+    virtual GIntBig             GetFeatureCount( int bForce ) override;
 
-    virtual void                ResetReading();
-    virtual OGRFeature *        GetNextFeature();
-    virtual OGRFeature *        GetFeature(long nFID);
-    virtual int                 GetFeatureCount( int bForce );
+    virtual OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    virtual int                 TestCapability( const char * ) override;
 
-    virtual int                 TestCapability( const char * );
-
-    virtual OGRSpatialReference *GetSpatialRef() { return poSRS; }
-
-    virtual OGRErr              GetExtent(OGREnvelope *psExtent, int bForce);
-
+    virtual OGRErr              GetExtent(OGREnvelope *psExtent, int bForce) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
+                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
 
     void                        AddFeature(OGRFeature* poFeature);
 
@@ -121,7 +119,7 @@ class OGREDIGEOObjectDescriptor
 class OGREDIGEOAttributeDescriptor
 {
     public:
-        OGREDIGEOAttributeDescriptor() {}
+        OGREDIGEOAttributeDescriptor() : nWidth(0) {}
 
         CPLString osRID;        /* e.g. TEX2_id */
         CPLString osNameRID;    /* e.g. ID_N_ATT_TEX2 */
@@ -152,6 +150,7 @@ class OGREDIGEODataSource : public OGRDataSource
     VSILFILE*           OpenFile(const char *pszType,
                                  const CPLString& osExt);
 
+    // TODO: Translate comments to English.
     CPLString osLON; /* Nom du lot */
     CPLString osGNN; /* Nom du sous-ensemble de données générales */
     CPLString osGON; /* Nom du sous-ensemble de la référence de coordonnées */
@@ -228,34 +227,18 @@ class OGREDIGEODataSource : public OGRDataSource
 
   public:
                         OGREDIGEODataSource();
-                        ~OGREDIGEODataSource();
+                        virtual ~OGREDIGEODataSource();
 
-    int                 Open( const char * pszFilename,
-                              int bUpdate );
+    int                 Open( const char * pszFilename );
 
-    virtual const char*         GetName() { return pszName; }
+    virtual const char*         GetName() override { return pszName; }
 
-    virtual int                 GetLayerCount();
-    virtual OGRLayer*           GetLayer( int );
+    virtual int                 GetLayerCount() override;
+    virtual OGRLayer*           GetLayer( int ) override;
 
-    virtual int                 TestCapability( const char * );
+    virtual int                 TestCapability( const char * ) override;
 
     int                         HasUTF8ContentOnly() { return bHasUTF8ContentOnly; }
 };
 
-/************************************************************************/
-/*                           OGREDIGEODriver                            */
-/************************************************************************/
-
-class OGREDIGEODriver : public OGRSFDriver
-{
-  public:
-                ~OGREDIGEODriver();
-
-    virtual const char*         GetName();
-    virtual OGRDataSource*      Open( const char *, int );
-    virtual int                 TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_EDIGEO_H_INCLUDED */
+#endif /* ndef OGR_EDIGEO_H_INCLUDED */

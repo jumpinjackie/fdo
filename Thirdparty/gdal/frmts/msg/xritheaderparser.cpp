@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: xritheaderparser.cpp 15066 2008-07-28 20:21:59Z mloskot $
  *
  * Purpose:  Implementation of XRITHeaderParser class. Parse the header
  *           of the combined XRIT header/data files.
@@ -27,15 +26,19 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
+ #include "cpl_port.h"  // Must be first.
+
 #include "xritheaderparser.h"
 #include <cstdlib> // malloc, free
 #include <cstring> // memcpy
+
+CPL_CVSID("$Id: xritheaderparser.cpp 35929 2016-10-25 16:09:00Z goatbar $");
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //
 // Upon successful parsing of a header in ifile, isValid() returns true
-// and ifile is seeked to the beginning of the image data
+// and ifile is sought to the beginning of the image data
 //////////////////////////////////////////////////////////////////////
 
 XRITHeaderParser::XRITHeaderParser(std::ifstream & ifile)
@@ -48,7 +51,7 @@ XRITHeaderParser::XRITHeaderParser(std::ifstream & ifile)
 , m_scanNorth(false)
 {
   const unsigned int probeSize = 8;
- 
+
   unsigned char probeBuf[probeSize];
   ifile.read((char*)probeBuf, probeSize); // Probe file by reading first 8 bytes
 
@@ -59,17 +62,17 @@ XRITHeaderParser::XRITHeaderParser(std::ifstream & ifile)
     {
       unsigned char * buf = (unsigned char*)std::malloc(totalHeaderLength);
       std::memcpy(buf, probeBuf, probeSize); // save what we have already read when probing
-      ifile.read((char*)buf + probeSize, totalHeaderLength - probeSize); // read the rest of the header section  
+      ifile.read((char*)buf + probeSize, totalHeaderLength - probeSize); // read the rest of the header section
       parseHeader(buf, totalHeaderLength);
       std::free(buf);
 
       m_isValid = true;
     }
   }
-  
+
   if (!m_isValid) // seek back to original position
   {
-#if _MSC_VER > 1000 && _MSC_VER < 1300  
+#if _MSC_VER > 1000 && _MSC_VER < 1300
     ifile.seekg(-probeSize, std::ios_base::seekdir::cur);
 #else
     ifile.seekg(-probeSize, std::ios_base::cur);
@@ -77,10 +80,7 @@ XRITHeaderParser::XRITHeaderParser(std::ifstream & ifile)
   }
 }
 
-XRITHeaderParser::~XRITHeaderParser()
-{
-
-}
+XRITHeaderParser::~XRITHeaderParser() {}
 
 int XRITHeaderParser::parseInt16(unsigned char * num)
 {
@@ -94,7 +94,7 @@ long XRITHeaderParser::parseInt32(unsigned char * num)
 
 void XRITHeaderParser::parseHeader(unsigned char * buf, long totalHeaderLength)
 {
-  int remainingHeaderLength = totalHeaderLength;
+  int remainingHeaderLength = static_cast<int>(totalHeaderLength);
 
   while (remainingHeaderLength > 0)
   {
@@ -123,10 +123,10 @@ void XRITHeaderParser::parseHeader(unsigned char * buf, long totalHeaderLength)
         break;
       case 2: // image navigation
         {
-          long cfac = parseInt32(&buf[35]); // column scaling factor
+          /*long cfac =*/ parseInt32(&buf[35]); // column scaling factor
           long lfac = parseInt32(&buf[39]); // line scaling factor
-          long coff = parseInt32(&buf[43]); // column offset
-          long loff = parseInt32(&buf[47]); // line offset
+          /*long coff =*/ parseInt32(&buf[43]); // column offset
+          /*long loff =*/ parseInt32(&buf[47]); // line offset
           if (lfac >= 0)
             m_scanNorth = true;
           else

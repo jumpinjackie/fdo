@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogringresresultlayer.cpp 11522 2007-05-15 14:26:10Z mloskot $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRIngresResultLayer class.
@@ -30,13 +29,13 @@
 #include "cpl_conv.h"
 #include "ogr_ingres.h"
 
-CPL_CVSID("$Id: ogringresresultlayer.cpp 11522 2007-05-15 14:26:10Z mloskot $");
+CPL_CVSID("$Id: ogringresresultlayer.cpp 36384 2016-11-21 12:13:10Z rouault $");
 
 /************************************************************************/
 /*                        OGRIngresResultLayer()                         */
 /************************************************************************/
 
-OGRIngresResultLayer::OGRIngresResultLayer( OGRIngresDataSource *poDSIn, 
+OGRIngresResultLayer::OGRIngresResultLayer( OGRIngresDataSource *poDSIn,
                                             const char * pszRawQueryIn,
                                             OGRIngresStatement *poResultSetIn )
 {
@@ -51,6 +50,7 @@ OGRIngresResultLayer::OGRIngresResultLayer( OGRIngresDataSource *poDSIn,
     BuildFullQueryStatement();
 
     poFeatureDefn = ReadResultDefinition();
+    nFeatureCount = 0;
 }
 
 /************************************************************************/
@@ -80,11 +80,11 @@ OGRFeatureDefn *OGRIngresResultLayer::ReadResultDefinition()
 
     poDefn->Reference();
 
-    for( iRawField = 0; 
-         iRawField < (int) poResultSet->getDescrParm.gd_descriptorCount; 
+    for( iRawField = 0;
+         iRawField < (int) poResultSet->getDescrParm.gd_descriptorCount;
          iRawField++ )
     {
-        IIAPI_DESCRIPTOR *psFDesc = 
+        IIAPI_DESCRIPTOR *psFDesc =
             poResultSet->getDescrParm.gd_descriptor + iRawField;
         OGRFieldDefn    oField( psFDesc->ds_columnName, OFTString);
 
@@ -128,7 +128,7 @@ OGRFeatureDefn *OGRIngresResultLayer::ReadResultDefinition()
             break;
 
           default:
-            // any other field we ignore. 
+            // any other field we ignore.
             break;
         }
     }
@@ -162,7 +162,7 @@ void OGRIngresResultLayer::ResetReading()
 /*                          GetFeatureCount()                           */
 /************************************************************************/
 
-int OGRIngresResultLayer::GetFeatureCount( int bForce )
+GIntBig OGRIngresResultLayer::GetFeatureCount( int bForce )
 
 {
     // I wonder if we could do anything smart here...

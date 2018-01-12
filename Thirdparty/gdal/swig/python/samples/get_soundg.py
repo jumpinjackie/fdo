@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: get_soundg.py 18195 2009-12-06 20:24:39Z rouault $
+# $Id: get_soundg.py 33791 2016-03-26 12:51:23Z goatbar $
 #
 # Project:  OGR Python samples
 # Purpose:  Extract SOUNDGings from an S-57 dataset, and write them to
 #           Shapefile format, creating one feature for each sounding, and
-#           adding the elevation as an attribute for easier use. 
+#           adding the elevation as an attribute for easier use.
 # Author:   Frank Warmerdam, warmerdam@pobox.com
 #
 ###############################################################################
 # Copyright (c) 2003, Frank Warmerdam <warmerdam@pobox.com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -30,15 +30,9 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import osr
-    from osgeo import ogr
-except ImportError:
-    import osr
-    import ogr
-
-import string
 import sys
+
+from osgeo import ogr
 
 #############################################################################
 def Usage():
@@ -62,7 +56,7 @@ ds = ogr.Open( s57filename )
 src_soundg = ds.GetLayerByName( 'SOUNDG' )
 
 #############################################################################-
-# Create the output shapefile. 
+# Create the output shapefile.
 
 shp_driver = ogr.GetDriverByName( 'ESRI Shapefile' )
 shp_driver.DeleteDataSource( shpfilename )
@@ -80,7 +74,7 @@ field_count = src_defn.GetFieldCount()
 out_mapping = []
 for fld_index in range(field_count):
     src_fd = src_defn.GetFieldDefn( fld_index )
-    
+
     fd = ogr.FieldDefn( src_fd.GetName(), src_fd.GetType() )
     fd.SetWidth( src_fd.GetWidth() )
     fd.SetPrecision( src_fd.GetPrecision() )
@@ -93,7 +87,7 @@ fd = ogr.FieldDefn( 'ELEV', ogr.OFTReal )
 fd.SetWidth( 12 )
 fd.SetPrecision( 4 )
 shp_layer.CreateField( fd )
-    
+
 #############################################################################
 # Process all SOUNDG features.
 

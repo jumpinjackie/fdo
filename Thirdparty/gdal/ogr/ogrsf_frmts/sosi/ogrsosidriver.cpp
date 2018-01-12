@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrsosidriver.cpp 25330 2012-12-18 11:12:05Z mloskot $
  *
  * Project:  SOSI Translator
  * Purpose:  Implements OGRSOSIDriver.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2010, Thomas Hirsch
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,50 +29,41 @@
 
 #include "ogr_sosi.h"
 
-void RegisterOGRSOSI() {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRSOSIDriver );
-}
+CPL_CVSID("$Id: ogrsosidriver.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
-static int nFYBAInitCounter = 0;
+static int bFYBAInit = FALSE;
 
 /************************************************************************/
-/*                           OGRSOSIDriver()                           */
-/************************************************************************/
-OGRSOSIDriver::OGRSOSIDriver() {
-    if ( nFYBAInitCounter == 0 )
-    {
-        LC_Init();  /* Init FYBA */
-    }
-    nFYBAInitCounter++;
-}
-
-/************************************************************************/
-/*                           ~OGRSOSIDriver()                           */
+/*                        OGRSOSIDriverUnload()                         */
 /************************************************************************/
 
-OGRSOSIDriver::~OGRSOSIDriver() {
-    nFYBAInitCounter--;
-    if ( nFYBAInitCounter == 0 )
+static void OGRSOSIDriverUnload(CPL_UNUSED GDALDriver* poDriver) {
+
+    if ( bFYBAInit )
     {
         LC_Close(); /* Close FYBA */
+        bFYBAInit = FALSE;
     }
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRSOSIDriver::GetName() {
-    return "SOSI";
 }
 
 /************************************************************************/
 /*                              Open()                                  */
 /************************************************************************/
 
-OGRDataSource *OGRSOSIDriver::Open( const char * pszFilename, int bUpdate ) {
+static GDALDataset *OGRSOSIDriverOpen( GDALOpenInfo* poOpenInfo )
+{
+    if( poOpenInfo->fpL == NULL ||
+        strstr((const char*)poOpenInfo->pabyHeader, ".HODE") == NULL )
+        return NULL;
+
+    if ( !bFYBAInit )
+    {
+        LC_Init();  /* Init FYBA */
+        bFYBAInit = TRUE;
+    }
+
     OGRSOSIDataSource   *poDS = new OGRSOSIDataSource();
-    if ( !poDS->Open( pszFilename, 0 ) ) {
+    if ( !poDS->Open( poOpenInfo->pszFilename, 0 ) ) {
         delete poDS;
         return NULL;
     }
@@ -80,10 +71,21 @@ OGRDataSource *OGRSOSIDriver::Open( const char * pszFilename, int bUpdate ) {
     return poDS;
 }
 
+#ifdef WRITE_SUPPORT
 /************************************************************************/
-/*                              CreateDataSource()                      */
+/*                              Create()                                */
 /************************************************************************/
-OGRDataSource *OGRSOSIDriver::CreateDataSource( const char *pszName, char **papszOptions) {
+
+static GDALDataset *OGRSOSIDriverCreate( const char * pszName,
+                                         CPL_UNUSED int nBands, CPL_UNUSED int nXSize,
+                                         CPL_UNUSED int nYSize, CPL_UNUSED GDALDataType eDT,
+                                         CPL_UNUSED char **papszOptions )
+{
+    if ( !bFYBAInit )
+    {
+        LC_Init();  /* Init FYBA */
+        bFYBAInit = TRUE;
+    }
     OGRSOSIDataSource   *poDS = new OGRSOSIDataSource();
     if ( !poDS->Create( pszName ) ) {
         delete poDS;
@@ -91,17 +93,28 @@ OGRDataSource *OGRSOSIDriver::CreateDataSource( const char *pszName, char **paps
     }
     return poDS;
 }
-
+#endif
 
 /************************************************************************/
-/*                              TestCapability()                        */
+/*                         RegisterOGRSOSI()                            */
 /************************************************************************/
 
-int OGRSOSIDriver::TestCapability( const char * pszCap ) {
-    if (strcmp("CreateDataSource",pszCap) == 0) {
-        return TRUE; 
-    } else {
-        CPLDebug( "[TestCapability]","Capability %s not supported by SOSI driver", pszCap);
-    }
-    return FALSE;
+void RegisterOGRSOSI() {
+    if( GDALGetDriverByName( "SOSI" ) != NULL )
+        return;
+
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "SOSI" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Norwegian SOSI Standard" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_sosi.html" );
+
+    poDriver->pfnOpen = OGRSOSIDriverOpen;
+#ifdef WRITE_SUPPORT
+    poDriver->pfnCreate = OGRSOSIDriverCreate;
+#endif
+    poDriver->pfnUnloadDriver = OGRSOSIDriverUnload;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }

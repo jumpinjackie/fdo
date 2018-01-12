@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogropenairdatasource.cpp 23042 2011-09-04 15:07:22Z rouault $
  *
  * Project:  OpenAir Translator
  * Purpose:  Implements OGROpenAirDataSource class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,20 +30,17 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogropenairdatasource.cpp 23042 2011-09-04 15:07:22Z rouault $");
+CPL_CVSID("$Id: ogropenairdatasource.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                        OGROpenAirDataSource()                        */
 /************************************************************************/
 
-OGROpenAirDataSource::OGROpenAirDataSource()
-
-{
-    papoLayers = NULL;
-    nLayers = 0;
-
-    pszName = NULL;
-}
+OGROpenAirDataSource::OGROpenAirDataSource() :
+    pszName(NULL),
+    papoLayers(NULL),
+    nLayers(0)
+{}
 
 /************************************************************************/
 /*                       ~OGROpenAirDataSource()                        */
@@ -64,8 +60,7 @@ OGROpenAirDataSource::~OGROpenAirDataSource()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGROpenAirDataSource::TestCapability( const char * pszCap )
-
+int OGROpenAirDataSource::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
@@ -79,60 +74,39 @@ OGRLayer *OGROpenAirDataSource::GetLayer( int iLayer )
 {
     if( iLayer < 0 || iLayer >= nLayers )
         return NULL;
-    else
-        return papoLayers[iLayer];
+
+    return papoLayers[iLayer];
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-int OGROpenAirDataSource::Open( const char * pszFilename, int bUpdateIn)
+int OGROpenAirDataSource::Open( const char * pszFilename )
 
 {
-    if (bUpdateIn)
-    {
-        return FALSE;
-    }
-
     pszName = CPLStrdup( pszFilename );
-
-// -------------------------------------------------------------------- 
-//      Does this appear to be an openair file?
-// --------------------------------------------------------------------
 
     VSILFILE* fp = VSIFOpenL(pszFilename, "rb");
     if (fp == NULL)
         return FALSE;
 
-    char szBuffer[10000];
-    int nbRead = (int)VSIFReadL(szBuffer, 1, sizeof(szBuffer) - 1, fp);
-    szBuffer[nbRead] = '\0';
-
-    int bIsOpenAir = (strstr(szBuffer, "\nAC ") != NULL &&
-                  strstr(szBuffer, "\nAN ") != NULL &&
-                  strstr(szBuffer, "\nAL ") != NULL &&
-                  strstr(szBuffer, "\nAH") != NULL);
-
-    if (bIsOpenAir)
+    VSILFILE* fp2 = VSIFOpenL(pszFilename, "rb");
+    if (fp2)
     {
-        VSIFSeekL( fp, 0, SEEK_SET );
-
-        VSILFILE* fp2 = VSIFOpenL(pszFilename, "rb");
-        if (fp2)
-        {
-            nLayers = 2;
-            papoLayers = (OGRLayer**) CPLMalloc(2 * sizeof(OGRLayer*));
-            papoLayers[0] = new OGROpenAirLayer(fp);
-            papoLayers[1] = new OGROpenAirLabelLayer(fp2);
-        }
+        nLayers = 2;
+        papoLayers = (OGRLayer**) CPLMalloc(2 * sizeof(OGRLayer*));
+        papoLayers[0] = new OGROpenAirLayer(fp);
+        papoLayers[1] = new OGROpenAirLabelLayer(fp2);
     }
     else
+    {
         VSIFCloseL(fp);
+        return FALSE;
+    }
 
-    return bIsOpenAir;
+    return TRUE;
 }
-
 
 /************************************************************************/
 /*                              GetLatLon()                             */
@@ -140,33 +114,38 @@ int OGROpenAirDataSource::Open( const char * pszFilename, int bUpdateIn)
 
 enum { DEGREE, MINUTE, SECOND };
 
-int OGROpenAirGetLatLon(const char* pszStr, double& dfLat, double& dfLon)
+bool OGROpenAirGetLatLon( const char* pszStr, double& dfLat, double& dfLon )
 {
     dfLat = 0;
     dfLon = 0;
 
-    int nCurInt = 0;
+    GUIntBig nCurInt = 0;
     double dfExp = 1.;
-    int bHasExp = FALSE;
+    bool bHasExp = false;
     int nCurPart = DEGREE;
-    double dfDegree = 0, dfMinute = 0, dfSecond = 0;
-    char c;
-    int bHasLat = FALSE, bHasLon = FALSE;
+    double dfDegree = 0;
+    double dfMinute = 0;
+    double dfSecond = 0;
+    char c = '\0';
+    bool bHasLat = false;
+    bool bHasLon = false;
     while((c = *pszStr) != 0)
     {
         if (c >= '0' && c <= '9')
         {
-            nCurInt = nCurInt * 10 + c - '0';
-            if (bHasExp)
+            nCurInt = nCurInt * 10U + static_cast<unsigned char>(c) - '0';
+            if( nCurInt >> 60 ) // to avoid uint64 overflow at next iteration
+                return FALSE;
+            if( bHasExp )
                 dfExp *= 10;
         }
         else if (c == '.')
         {
-            bHasExp = TRUE;
+            bHasExp = true;
         }
         else if (c == ':')
         {
-            double dfVal = nCurInt / dfExp;
+            const double dfVal = nCurInt / dfExp;
             if (nCurPart == DEGREE)
                 dfDegree = dfVal;
             else if (nCurPart == MINUTE)
@@ -176,7 +155,7 @@ int OGROpenAirGetLatLon(const char* pszStr, double& dfLat, double& dfLon)
             nCurPart ++;
             nCurInt = 0;
             dfExp = 1.;
-            bHasExp = FALSE;
+            bHasExp = false;
         }
         else if (c == ' ')
         {
@@ -184,7 +163,7 @@ int OGROpenAirGetLatLon(const char* pszStr, double& dfLat, double& dfLon)
         }
         else if (c == 'N' || c == 'S')
         {
-            double dfVal = nCurInt / dfExp;
+            const double dfVal = nCurInt / dfExp;
             if (nCurPart == DEGREE)
                 dfDegree = dfVal;
             else if (nCurPart == MINUTE)
@@ -197,13 +176,13 @@ int OGROpenAirGetLatLon(const char* pszStr, double& dfLat, double& dfLon)
                 dfLat = -dfLat;
             nCurInt = 0;
             dfExp = 1.;
-            bHasExp = FALSE;
+            bHasExp = false;
             nCurPart = DEGREE;
-            bHasLat = TRUE;
+            bHasLat = true;
         }
         else if (c == 'E' || c == 'W')
         {
-            double dfVal = nCurInt / dfExp;
+            const double dfVal = nCurInt / dfExp;
             if (nCurPart == DEGREE)
                 dfDegree = dfVal;
             else if (nCurPart == MINUTE)
@@ -214,7 +193,7 @@ int OGROpenAirGetLatLon(const char* pszStr, double& dfLat, double& dfLon)
             dfLon = dfDegree + dfMinute / 60 + dfSecond / 3600;
             if (c == 'W')
                 dfLon = -dfLon;
-            bHasLon = TRUE;
+            bHasLon = true;
             break;
         }
 

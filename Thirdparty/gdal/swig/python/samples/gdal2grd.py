@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: gdal2grd.py 18195 2009-12-06 20:24:39Z rouault $
+# $Id: gdal2grd.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 # Project:  GDAL Python samples
 # Purpose:  Script to write out ASCII GRD rasters (used in Golden Software
-#	    Surfer)
+#           Surfer)
 #           from any source supported by GDAL.
 # Author:   Andrey Kiselev, dron@remotesensing.org
 #
 ###############################################################################
 # Copyright (c) 2003, Andrey Kiselev <dron@remotesensing.org>
-# 
+# Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -30,22 +31,10 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import gdal
-    from osgeo.gdalconst import *
-    gdal.TermProgress = gdal.TermProgress_nocb
-except ImportError:
-    import gdal
-    from gdalconst import *
-
-try:
-    import numpy as Numeric
-    Numeric.arrayrange = Numeric.arange
-except ImportError:
-    import Numeric
-
-
 import sys
+
+from osgeo import gdal
+gdal.TermProgress = gdal.TermProgress_nocb
 
 # =============================================================================
 def Usage():
@@ -94,7 +83,7 @@ if infile is None:
 if  outfile is None:
     Usage()
 
-indataset = gdal.Open(infile, GA_ReadOnly)
+indataset = gdal.Open(infile, gdal.GA_ReadOnly)
 if infile == None:
     print('Cannot open', infile)
     sys.exit(2)

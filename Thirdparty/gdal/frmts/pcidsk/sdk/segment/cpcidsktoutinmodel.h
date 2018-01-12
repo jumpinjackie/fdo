@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
-#define __INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
+#ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
+#define INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
  
 #include "pcidsk_toutin.h"
 #include "segment/cpcidsksegment.h"
@@ -41,11 +41,11 @@ namespace PCIDSK {
         CPCIDSKToutinModelSegment(PCIDSKFile *file, int segment,const char *segment_pointer);
         ~CPCIDSKToutinModelSegment();
 
-        SRITInfo_t GetInfo() const;
-        void SetInfo(const SRITInfo_t& poInfo);
+        SRITInfo_t GetInfo() const override;
+        void SetInfo(const SRITInfo_t& poInfo) override;
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
         
         // Helper housekeeping functions
@@ -54,7 +54,7 @@ namespace PCIDSK {
 
     //functions to read/write binary information
     private:
-        //Toutin informations.
+        //Toutin information.
         SRITInfo_t* mpoInfo;
 
         SRITInfo_t *BinaryToSRITInfo();
@@ -65,4 +65,4 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H
+#endif // INCLUDE_PCIDSK_SEGMENT_PCIDSKTOUTINMODEL_H

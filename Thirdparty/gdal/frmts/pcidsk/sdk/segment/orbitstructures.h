@@ -24,25 +24,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_ORBIT_INFORMATION_H
-#define __INCLUDE_PCIDSK_ORBIT_INFORMATION_H
+#ifndef INCLUDE_PCIDSK_ORBIT_INFORMATION_H
+#define INCLUDE_PCIDSK_ORBIT_INFORMATION_H
 
 #include <string>
+#include <cstring>
 #include <vector>
 
 namespace PCIDSK
 {
 /* -------------------------------------------------------------------- */
-/*	Structure for ephemeris segment (ORBIT segment, type 160).	*/
+/*      Structure for ephemeris segment (ORBIT segment, type 160).      */
 /* -------------------------------------------------------------------- */
-#define EPHEMERIS_BLK		8
+#define EPHEMERIS_BLK           8
 #define EPHEMERIS_RADAR_BLK     10
-#define EPHEMERIS_ATT_BLK	9
+#define EPHEMERIS_ATT_BLK       9
 /* -------------------------------------------------------------------- */
-/*	Structure for Satellite Radar segment.				*/
+/*      Structure for Satellite Radar segment.                          */
 /* -------------------------------------------------------------------- */
-#define ANC_DATA_PER_BLK	16
-#define ANC_DATA_SIZE		32
+#define ANC_DATA_PER_BLK        16
+#define ANC_DATA_SIZE           32
     /**
      * Ancillary data structure.
      */
@@ -51,7 +52,15 @@ namespace PCIDSK
         /**
          * Default constrcutor
          */
-        AncillaryData_t()
+        AncillaryData_t() :
+            SlantRangeFstPixel(0),
+            SlantRangeLastPixel(0),
+            FstPixelLat(0.f),
+            MidPixelLat(0.f),
+            LstPixelLat(0.f),
+            FstPixelLong(0.f),
+            MidPixelLong(0.f),
+            LstPixelLong(0.f)
         {
         }
         /**
@@ -64,7 +73,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oAD the ancillary data to assign
          */
         AncillaryData_t& operator=(const AncillaryData_t& oAD)
@@ -83,24 +92,24 @@ namespace PCIDSK
             {
                 return;
             }
-            SlantRangeFstPixel = oAD.SlantRangeFstPixel;	
-            SlantRangeLastPixel = oAD.SlantRangeLastPixel;	
-            FstPixelLat = oAD.FstPixelLat;		
-            MidPixelLat = oAD.MidPixelLat;		
-            LstPixelLat = oAD.LstPixelLat;		
-            FstPixelLong = oAD.FstPixelLong;		
-            MidPixelLong = oAD.MidPixelLong;		
-            LstPixelLong = oAD.LstPixelLong;	
+            SlantRangeFstPixel = oAD.SlantRangeFstPixel;
+            SlantRangeLastPixel = oAD.SlantRangeLastPixel;
+            FstPixelLat = oAD.FstPixelLat;
+            MidPixelLat = oAD.MidPixelLat;
+            LstPixelLat = oAD.LstPixelLat;
+            FstPixelLong = oAD.FstPixelLong;
+            MidPixelLong = oAD.MidPixelLong;
+            LstPixelLong = oAD.LstPixelLong;
         }
 
-        int   SlantRangeFstPixel;	/* Slant Range to First Pixel (m)	     */
-        int   SlantRangeLastPixel;	/* Slant Range to Last Pixel (m)	     */
-        float FstPixelLat;		/* First Pixel Latitude (millionths degrees) */
-        float MidPixelLat;		/* Mid Pixel Latitude (millionths degrees)   */
-        float LstPixelLat;		/* Last Pixel Latitude (millionths degrees)  */
-        float FstPixelLong;		/* First Pixel Longitude (millionths degrees)*/
-        float MidPixelLong;		/* Mid Pixel Longitude (millionths degrees)  */
-        float LstPixelLong;		/* Last Pixel Longitude (millionths degrees) */
+        int   SlantRangeFstPixel;   /* Slant Range to First Pixel (m) */
+        int   SlantRangeLastPixel;  /* Slant Range to Last Pixel (m) */
+        float FstPixelLat;          /* First Pixel Latitude (millionths degrees) */
+        float MidPixelLat;          /* Mid Pixel Latitude (millionths degrees)   */
+        float LstPixelLat;          /* Last Pixel Latitude (millionths degrees)  */
+        float FstPixelLong;         /* First Pixel Longitude (millionths degrees)*/
+        float MidPixelLong;         /* Mid Pixel Longitude (millionths degrees)  */
+        float LstPixelLong;         /* Last Pixel Longitude (millionths degrees) */
     } ;
 
     /**
@@ -111,7 +120,15 @@ namespace PCIDSK
         /**
          * Default constrcutor
          */
-        RadarSeg_t()
+        RadarSeg_t() :
+            EquatorialRadius(0.0),
+            PolarRadius(0.0),
+            IncidenceAngle(0.0),
+            PixelSpacing(0.0),
+            LineSpacing(0.0),
+            ClockAngle(0.0),
+            NumberBlockData(0),
+            NumberData(0)
         {
         }
         /**
@@ -124,7 +141,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oRS the radar segment to assign
          */
         RadarSeg_t& operator=(const RadarSeg_t& oRS)
@@ -143,24 +160,24 @@ namespace PCIDSK
             {
                 return;
             }
-            Identifier = oRS.Identifier;	
-            Facility = oRS.Facility;	
-            Ellipsoid = oRS.Ellipsoid;	
-            EquatorialRadius = oRS.EquatorialRadius;    
-            PolarRadius = oRS.PolarRadius;		
-            IncidenceAngle = oRS.IncidenceAngle;	
-            PixelSpacing = oRS.PixelSpacing;	
-            LineSpacing = oRS.LineSpacing;		
-            ClockAngle = oRS.ClockAngle;		
+            Identifier = oRS.Identifier;
+            Facility = oRS.Facility;
+            Ellipsoid = oRS.Ellipsoid;
+            EquatorialRadius = oRS.EquatorialRadius;
+            PolarRadius = oRS.PolarRadius;
+            IncidenceAngle = oRS.IncidenceAngle;
+            PixelSpacing = oRS.PixelSpacing;
+            LineSpacing = oRS.LineSpacing;
+            ClockAngle = oRS.ClockAngle;
 
-            NumberBlockData = oRS.NumberBlockData;	
-            NumberData = oRS.NumberData;		
+            NumberBlockData = oRS.NumberBlockData;
+            NumberData = oRS.NumberData;
 
-            Line = oRS.Line;	
+            Line = oRS.Line;
         }
 
         std::string   Identifier; /* Product identifier */
-        std::string   Facility;	/* Processing facility */
+        std::string   Facility; /* Processing facility */
         std::string   Ellipsoid; /* Ellipsoid designator */
         double EquatorialRadius; /* Equatorial radius of earth */
         double PolarRadius; /* Polar radius of earth */
@@ -169,17 +186,17 @@ namespace PCIDSK
         double LineSpacing; /* Nominal line spacing in metre */
         double ClockAngle; /* Clock angle in degree */
 
-        int    NumberBlockData;	/* Number of blocks of ancillary data */
+        int    NumberBlockData; /* Number of blocks of ancillary data */
         int  NumberData; /* Number of ancillary data */
 
         std::vector<AncillaryData_t> Line; /* Pointer to ancillary line */
     } ;
 
 /* -------------------------------------------------------------------- */
-/*	Structure for Satellite attitude segment.			*/
+/*       Structure for Satellite attitude segment.                      */
 /* -------------------------------------------------------------------- */
-#define ATT_SEG_BLK		604
-#define ATT_SEG_MAX_LINE	6000
+#define ATT_SEG_BLK             604
+#define ATT_SEG_MAX_LINE        6000
 #define ATT_SEG_LINE_PER_BLOCK  10
 
     /**
@@ -190,7 +207,9 @@ namespace PCIDSK
         /**
          * Default constrcutor
          */
-        AttitudeLine_t()
+        AttitudeLine_t():
+            ChangeInAttitude(0.0),
+            ChangeEarthSatelliteDist(0.0)
         {
         }
         /**
@@ -203,7 +222,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oAL the attitude line to assign
          */
         AttitudeLine_t& operator=(const AttitudeLine_t& oAL)
@@ -226,7 +245,7 @@ namespace PCIDSK
             ChangeEarthSatelliteDist = oAL.ChangeEarthSatelliteDist;
         }
 
-        double ChangeInAttitude; /* Change in satellite attiutde (D22.16) */
+        double ChangeInAttitude; /* Change in satellite attitude (D22.16) */
         double ChangeEarthSatelliteDist; /* Change in earth-satellite distance
                                          (D22.16) */
     } ;
@@ -239,7 +258,12 @@ namespace PCIDSK
         /**
          * Default constrcutor
          */
-        AttitudeSeg_t()
+        AttitudeSeg_t() :
+            Roll(0.0),
+            Pitch(0.0),
+            Yaw(0.0),
+            NumberOfLine(0),
+            NumberBlockData(0)
         {
         }
         /**
@@ -252,7 +276,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oAS the avhrr segment to assign
          */
         AttitudeSeg_t& operator=(const AttitudeSeg_t& oAS)
@@ -290,10 +314,10 @@ namespace PCIDSK
     } ;
 
 /* -------------------------------------------------------------------- */
-/*	AVHRR orbit segment. Composed of 11 blocks plus extra blocks	*/
-/*	for holding per-scanline information.				*/
+/*      AVHRR orbit segment. Composed of 11 blocks plus extra blocks    */
+/*      for holding per-scanline information.                           */
 /* -------------------------------------------------------------------- */
-#define AVH_SEG_BASE_NUM_BLK	11
+#define AVH_SEG_BASE_NUM_BLK    11
 
     /**
      * Avhrr line information
@@ -305,6 +329,14 @@ namespace PCIDSK
          */
         AvhrrLine_t()
         {
+            nScanLineNum = 0;
+            nStartScanTimeGMTMsec = 0;
+            std::memset(abyScanLineQuality, 0, sizeof(abyScanLineQuality));
+            std::memset(aabyBadBandIndicators, 0, sizeof(aabyBadBandIndicators));
+            std::memset(abySatelliteTimeCode, 0, sizeof(abySatelliteTimeCode));
+            std::memset(anTargetTempData, 0, sizeof(anTargetTempData));
+            std::memset(anTargetScanData, 0, sizeof(anTargetScanData));
+            std::memset(anSpaceScanData, 0, sizeof(anSpaceScanData));
         }
         /**
          * Copy constructor
@@ -316,7 +348,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oAL the avhrr line to assign
          */
         AvhrrLine_t& operator=(const AvhrrLine_t& oAL)
@@ -376,7 +408,16 @@ namespace PCIDSK
         /**
          * Default constrcutor
          */
-        AvhrrSeg_t()
+        AvhrrSeg_t() :
+            nImageXSize(0),
+            nImageYSize(0),
+            bIsAscending(false),
+            bIsImageRotated(false),
+            nRecordSize(0),
+            nBlockSize(0),
+            nNumRecordsPerBlock(0),
+            nNumBlocks(0),
+            nNumScanlineRecords(0)
         {
         }
         /**
@@ -389,7 +430,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oAS the avhrr segment to assign
          */
         AvhrrSeg_t& operator=(const AvhrrSeg_t& oAS)
@@ -446,14 +487,14 @@ namespace PCIDSK
             Line = oAS.Line;
         }
 
-        /* Nineth Block Part 1 - General/header information */
+        /* Ninth Block Part 1 - General/header information */
         std::string  szImageFormat;
         int   nImageXSize;
         int   nImageYSize;
         bool bIsAscending;
         bool bIsImageRotated;
 
-        /* Nineth Block Part 2 - Ephemeris information */
+        /* Ninth Block Part 2 - Ephemeris information */
         std::string  szOrbitNumber;
         std::string  szAscendDescendNodeFlag;
         std::string  szEpochYearAndDay;
@@ -515,6 +556,74 @@ namespace PCIDSK
          */
         EphemerisSeg_t()
         {
+            SupSegExist = false;
+            FieldOfView = 0.0;
+            ViewAngle = 0.0;
+            NumColCentre = 0.0;
+            RadialSpeed = 0.0;
+            Eccentricity = 0.0;
+            Height = 0.0;
+            Inclination = 0.0;
+            TimeInterval = 0.0;
+            NumLineCentre = 0.0;
+            LongCentre = 0.0;
+            AngularSpd = 0.0;
+            AscNodeLong = 0.0; 
+            ArgPerigee = 0.0;
+            LatCentre = 0.0;
+            EarthSatelliteDist = 0.0;
+            NominalPitch = 0.0;
+            TimeAtCentre = 0.0;
+            SatelliteArg = 0.0;
+            XCentre = 0.0;
+            YCentre = 0.0;
+            UtmYCentre = 0.0;
+            UtmXCentre = 0.0;
+            PixelRes = 0.0;
+            LineRes = 0.0;
+            CornerAvail = false;
+            XUL = 0.0;
+            YUL = 0.0;
+            XUR = 0.0;
+            YUR = 0.0;
+            XLR = 0.0;
+            YLR = 0.0;
+            XLL = 0.0;
+            YLL = 0.0;
+            UtmYUL = 0.0;
+            UtmXUL = 0.0;
+            UtmYUR = 0.0;
+            UtmXUR = 0.0;
+            UtmYLR = 0.0;
+            UtmXLR = 0.0;
+            UtmYLL = 0.0;
+            UtmXLL = 0.0;
+            LatCentreDeg = 0.0;
+            LongCentreDeg = 0.0;
+            LatUL = 0.0;
+            LongUL = 0.0;
+            LatUR = 0.0;
+            LongUR = 0.0;
+            LatLR = 0.0;
+            LongLR = 0.0;
+            LatLL = 0.0;
+            LongLL = 0.0;
+            HtCentre = 0.0;
+            HtUL = 0.0;
+            HtUR = 0.0;
+            HtLR = 0.0;
+            HtLL = 0.0;
+            std::memset(SPCoeff1B, 0, sizeof(SPCoeff1B));
+            std::memset(SPCoeffSg, 0, sizeof(SPCoeffSg));
+            ImageRecordLength = 0;
+            NumberImageLine = 0;
+            NumberBytePerPixel = 0;
+            NumberSamplePerLine = 0;
+            NumberPrefixBytes = 0;
+            NumberSuffixBytes = 0;
+            SPNCoeff = 0;
+            bDescending = false;
+            Type = OrbNone;
             AttitudeSeg = NULL;
             RadarSeg = NULL;
             AvhrrSeg = NULL;
@@ -543,7 +652,7 @@ namespace PCIDSK
         }
 
         /**
-         * assignement operator
+         * assignment operator
          * @param oES the ephemeris segment to assign
          */
         EphemerisSeg_t& operator=(const EphemerisSeg_t& oES)
@@ -662,7 +771,7 @@ namespace PCIDSK
         /// Satellite sensor
         std::string SatelliteSensor;
         /// Satellite sensor no.
-        std::string SensorNo;		
+        std::string SensorNo;
         /// Date of image taken
         std::string DateImageTaken;
         /// Flag to indicate supplemental segment
@@ -790,19 +899,19 @@ namespace PCIDSK
         int    SPCoeffSg[4];
 
         /// Image record length
-        int	   ImageRecordLength;
+        int        ImageRecordLength;
         /// Number of image line
-        int	   NumberImageLine;
+        int        NumberImageLine;
         /// Number of bytes per pixel
-        int	   NumberBytePerPixel;
+        int        NumberBytePerPixel;
         /// Number of samples per line
-        int	   NumberSamplePerLine;
+        int        NumberSamplePerLine;
         /// Number of prefix bytes
-        int    NumberPrefixBytes;
+        int        NumberPrefixBytes;
         /// Number of suffix bytes
-        int	   NumberSuffixBytes;
+        int        NumberSuffixBytes;
         /// Number of coefficients for SPOT 1B
-        int	   SPNCoeff;
+        int        SPNCoeff;
 
         /// Flag to indicate ascending or descending
         bool  bDescending;
@@ -818,28 +927,28 @@ namespace PCIDSK
      * List of sensor type
      */
     typedef enum {PLA_1, MLA_1, PLA_2, MLA_2, PLA_3, MLA_3, PLA_4, MLA_4,
-		ASTER, SAR, LISS_1, LISS_2, LISS_3, LISS_L3, LISS_L3_L2,
-		LISS_L4, LISS_L4_L2, LISS_P3, LISS_P3_L2, LISS_W3, LISS_W3_L2,
-		LISS_AWF, LISS_AWF_L2, LISS_M3, EOC, IRS_1, RSAT_FIN, 
-		RSAT_STD, ERS_1, ERS_2, TM, ETM, IKO_PAN, IKO_MULTI, 
-		ORBVIEW_PAN, ORBVIEW_MULTI, OV3_PAN_BASIC, OV3_PAN_GEO, 
-		OV3_MULTI_BASIC, OV3_MULTI_GEO, OV5_PAN_BASIC, OV5_PAN_GEO, 
-		OV5_MULTI_BASIC, OV5_MULTI_GEO, QBIRD_PAN, QBIRD_PAN_STD, 
-		QBIRD_PAN_STH, QBIRD_MULTI, QBIRD_MULTI_STD, QBIRD_MULTI_STH, 
-		FORMOSAT_PAN, FORMOSAT_MULTI, FORMOSAT_PAN_L2,
-		FORMOSAT_MULTIL2, SPOT5_PAN_2_5, SPOT5_PAN_5, SPOT5_HRS,
-		SPOT5_MULTI, MERIS_FR, MERIS_RR, MERIS_LR, ASAR, EROS, 
-		MODIS_250, MODIS_500, MODIS_1000, CBERS_HRC, CBERS_HRC_L2,
-		CBERS_CCD, CBERS_CCD_L2, CBERS_IRM_80, CBERS_IRM_80_L2, 
-	        CBERS_IRM_160, CBERS_IRM_160_L2, CBERS_WFI, CBERS_WFI_L2, 
-	 	CARTOSAT1_L1, CARTOSAT1_L2, ALOS_PRISM_L1, ALOS_PRISM_L2, 
-		ALOS_AVNIR_L1, ALOS_AVNIR_L2, PALSAR, DMC_1R, DMC_1T, 
-		KOMPSAT2_PAN, KOMPSAT2_MULTI, TERRASAR, WVIEW_PAN,
-		WVIEW_PAN_STD, WVIEW_MULTI, WVIEW_MULTI_STD,
-		RAPIDEYE_L1B, THEOS_PAN_L1, THEOS_PAN_L2,
-		THEOS_MS_L1, THEOS_MS_L2, 
-		GOSAT_500_L1, GOSAT_500_L2, GOSAT_1500_L1, GOSAT_1500_L2, 
-		HJ_CCD_1A, HJ_CCD_1B, NEW, AVHRR} TypeDeCapteur;
+                    ASTER, SAR, LISS_1, LISS_2, LISS_3, LISS_L3, LISS_L3_L2,
+                    LISS_L4, LISS_L4_L2, LISS_P3, LISS_P3_L2, LISS_W3, LISS_W3_L2,
+                    LISS_AWF, LISS_AWF_L2, LISS_M3, EOC, IRS_1, RSAT_FIN, 
+                    RSAT_STD, ERS_1, ERS_2, TM, ETM, IKO_PAN, IKO_MULTI, 
+                    ORBVIEW_PAN, ORBVIEW_MULTI, OV3_PAN_BASIC, OV3_PAN_GEO, 
+                    OV3_MULTI_BASIC, OV3_MULTI_GEO, OV5_PAN_BASIC, OV5_PAN_GEO, 
+                    OV5_MULTI_BASIC, OV5_MULTI_GEO, QBIRD_PAN, QBIRD_PAN_STD, 
+                    QBIRD_PAN_STH, QBIRD_MULTI, QBIRD_MULTI_STD, QBIRD_MULTI_STH, 
+                    FORMOSAT_PAN, FORMOSAT_MULTI, FORMOSAT_PAN_L2,
+                    FORMOSAT_MULTIL2, SPOT5_PAN_2_5, SPOT5_PAN_5, SPOT5_HRS,
+                    SPOT5_MULTI, MERIS_FR, MERIS_RR, MERIS_LR, ASAR, EROS, 
+                    MODIS_250, MODIS_500, MODIS_1000, CBERS_HRC, CBERS_HRC_L2,
+                    CBERS_CCD, CBERS_CCD_L2, CBERS_IRM_80, CBERS_IRM_80_L2, 
+                    CBERS_IRM_160, CBERS_IRM_160_L2, CBERS_WFI, CBERS_WFI_L2, 
+                    CARTOSAT1_L1, CARTOSAT1_L2, ALOS_PRISM_L1, ALOS_PRISM_L2, 
+                    ALOS_AVNIR_L1, ALOS_AVNIR_L2, PALSAR, DMC_1R, DMC_1T, 
+                    KOMPSAT2_PAN, KOMPSAT2_MULTI, TERRASAR, WVIEW_PAN,
+                    WVIEW_PAN_STD, WVIEW_MULTI, WVIEW_MULTI_STD,
+                    RAPIDEYE_L1B, THEOS_PAN_L1, THEOS_PAN_L2,
+                    THEOS_MS_L1, THEOS_MS_L2, 
+                    GOSAT_500_L1, GOSAT_500_L2, GOSAT_1500_L1, GOSAT_1500_L2, 
+                    HJ_CCD_1A, HJ_CCD_1B, NEW, AVHRR} TypeDeCapteur;
 }
 
-#endif // __INCLUDE_PCIDSK_ORBIT_INFORMATION_H
+#endif // INCLUDE_PCIDSK_ORBIT_INFORMATION_H

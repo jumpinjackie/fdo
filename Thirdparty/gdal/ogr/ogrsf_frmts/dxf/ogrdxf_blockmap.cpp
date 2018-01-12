@@ -1,8 +1,7 @@
 /******************************************************************************
- * $Id: ogrdxf_blockmap.cpp 23668 2011-12-30 21:44:47Z rouault $
  *
  * Project:  DXF Translator
- * Purpose:  Implements BlockMap reading and management portion of 
+ * Purpose:  Implements BlockMap reading and management portion of
  *           OGRDXFDataSource class
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
@@ -33,31 +32,32 @@
 #include "cpl_string.h"
 #include "cpl_csv.h"
 
-CPL_CVSID("$Id: ogrdxf_blockmap.cpp 23668 2011-12-30 21:44:47Z rouault $");
+CPL_CVSID("$Id: ogrdxf_blockmap.cpp 38342 2017-05-14 18:13:16Z rouault $");
 
 /************************************************************************/
 /*                          ReadBlockSection()                          */
 /************************************************************************/
 
-void OGRDXFDataSource::ReadBlocksSection()
+bool OGRDXFDataSource::ReadBlocksSection()
 
 {
-    char szLineBuf[257];
-    int  nCode;
-    OGRDXFLayer *poReaderLayer = (OGRDXFLayer *) GetLayerByName( "Entities" );
-    int bMergeBlockGeometries = CSLTestBoolean(
+    OGRDXFLayer *poReaderLayer = static_cast<OGRDXFLayer *>(
+        GetLayerByName( "Entities" ));
+    const bool bMergeBlockGeometries = CPLTestBool(
         CPLGetConfigOption( "DXF_MERGE_BLOCK_GEOMETRIES", "TRUE" ) );
 
     iEntitiesSectionOffset = oReader.iSrcBufferFileOffset + oReader.iSrcBufferOffset;
 
-    while( (nCode = ReadValue( szLineBuf, sizeof(szLineBuf) )) > -1 
+    char szLineBuf[257];
+    int nCode = 0;
+    while( (nCode = ReadValue( szLineBuf, sizeof(szLineBuf) )) > -1
            && !EQUAL(szLineBuf,"ENDSEC") )
     {
         // We are only interested in extracting blocks.
         if( nCode != 0 || !EQUAL(szLineBuf,"BLOCK") )
             continue;
 
-        // Process contents of BLOCK definition till we find the 
+        // Process contents of BLOCK definition till we find the
         // first entity.
         CPLString osBlockName;
 
@@ -66,7 +66,12 @@ void OGRDXFDataSource::ReadBlocksSection()
             if( nCode == 2 )
                 osBlockName = szLineBuf;
 
-            // anything else we want? 
+            // anything else we want?
+        }
+        if( nCode < 0 )
+        {
+            DXF_READER_ERROR();
+            return false;
         }
 
         if( EQUAL(szLineBuf,"ENDBLK") )
@@ -75,11 +80,17 @@ void OGRDXFDataSource::ReadBlocksSection()
         if (nCode >= 0)
             UnreadValue();
 
+        if( oBlockMap.find(osBlockName) != oBlockMap.end() )
+        {
+            DXF_READER_ERROR();
+            return false;
+        }
+
         // Now we will process entities till we run out at the ENDBLK code.
         // we aggregate the geometries of the features into a multi-geometry,
         // but throw away other stuff attached to the features.
 
-        OGRFeature *poFeature;
+        OGRFeature *poFeature = NULL;
         OGRGeometryCollection *poColl = new OGRGeometryCollection();
         std::vector<OGRFeature*> apoFeatures;
 
@@ -93,7 +104,9 @@ void OGRDXFDataSource::ReadBlocksSection()
             }
             else
             {
-                poColl->addGeometryDirectly( poFeature->StealGeometry() );
+                OGRGeometry* poSubGeom = poFeature->StealGeometry();
+                if( poSubGeom )
+                    poColl->addGeometryDirectly( poSubGeom );
                 delete poFeature;
             }
         }
@@ -103,19 +116,25 @@ void OGRDXFDataSource::ReadBlocksSection()
         else
             oBlockMap[osBlockName].poGeometry = SimplifyBlockGeometry(poColl);
 
-        if( apoFeatures.size() > 0 )
+        if( !apoFeatures.empty() )
             oBlockMap[osBlockName].apoFeatures = apoFeatures;
     }
+    if( nCode < 0 )
+    {
+        DXF_READER_ERROR();
+        return false;
+    }
 
-    CPLDebug( "DXF", "Read %d blocks with meaningful geometry.", 
+    CPLDebug( "DXF", "Read %d blocks with meaningful geometry.",
               (int) oBlockMap.size() );
+    return true;
 }
 
 /************************************************************************/
 /*                       SimplifyBlockGeometry()                        */
 /************************************************************************/
 
-OGRGeometry *OGRDXFDataSource::SimplifyBlockGeometry( 
+OGRGeometry *OGRDXFDataSource::SimplifyBlockGeometry(
     OGRGeometryCollection *poCollection )
 
 {
@@ -126,17 +145,59 @@ OGRGeometry *OGRDXFDataSource::SimplifyBlockGeometry(
     if( poCollection->getNumGeometries() == 1 )
     {
         OGRGeometry *poReturn = poCollection->getGeometryRef(0);
-        poCollection->removeGeometry(0,FALSE);
+        poCollection->removeGeometry(0, FALSE);
         delete poCollection;
         return poReturn;
     }
 
 /* -------------------------------------------------------------------- */
-/*      Eventually we likely ought to have logic to convert to          */
-/*      polygon, multipolygon, multilinestring or multipoint but        */
-/*      I'll put that off till it would be meaningful.                  */
+/*      Convert to polygon, multipolygon, multilinestring or multipoint */
 /* -------------------------------------------------------------------- */
-    
+
+    OGRwkbGeometryType eType =
+                wkbFlatten(poCollection->getGeometryRef(0)->getGeometryType());
+    int i;
+    for(i=1;i<poCollection->getNumGeometries();i++)
+    {
+        if (wkbFlatten(poCollection->getGeometryRef(i)->getGeometryType())
+            != eType)
+        {
+            eType = wkbUnknown;
+            break;
+        }
+    }
+    if (eType == wkbPoint || eType == wkbLineString)
+    {
+        OGRGeometryCollection* poNewColl;
+        if (eType == wkbPoint)
+            poNewColl = new OGRMultiPoint();
+        else
+            poNewColl = new OGRMultiLineString();
+        while(poCollection->getNumGeometries() > 0)
+        {
+            OGRGeometry *poGeom = poCollection->getGeometryRef(0);
+            poCollection->removeGeometry(0,FALSE);
+            poNewColl->addGeometryDirectly(poGeom);
+        }
+        delete poCollection;
+        return poNewColl;
+    }
+    else if (eType == wkbPolygon)
+    {
+        std::vector<OGRGeometry*> aosPolygons;
+        while(poCollection->getNumGeometries() > 0)
+        {
+            OGRGeometry *poGeom = poCollection->getGeometryRef(0);
+            poCollection->removeGeometry(0,FALSE);
+            aosPolygons.push_back(poGeom);
+        }
+        delete poCollection;
+        int bIsValidGeometry;
+        return OGRGeometryFactory::organizePolygons(
+            &aosPolygons[0], (int)aosPolygons.size(),
+            &bIsValidGeometry, NULL);
+    }
+
     return poCollection;
 }
 
@@ -152,12 +213,12 @@ OGRGeometry *OGRDXFDataSource::SimplifyBlockGeometry(
 DXFBlockDefinition *OGRDXFDataSource::LookupBlock( const char *pszName )
 
 {
-    CPLString osName = pszName;
+    CPLString l_osName = pszName;
 
-    if( oBlockMap.count( osName ) == 0 )
+    if( oBlockMap.count( l_osName ) == 0 )
         return NULL;
     else
-        return &(oBlockMap[osName]);
+        return &(oBlockMap[l_osName]);
 }
 
 /************************************************************************/

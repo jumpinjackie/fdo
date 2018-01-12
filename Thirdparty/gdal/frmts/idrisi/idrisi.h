@@ -1,12 +1,13 @@
 /*****************************************************************************
-* $Id: idrisi.h 23040 2011-09-04 14:42:12Z rouault $
+* $Id: idrisi.h 31777 2015-11-26 14:14:41Z rouault $
 *
 * Project:  Idrisi Raster Image File Driver
 * Purpose:  Read/write Idrisi Raster Image Format RST
-* Author:   Ivan Lucena, ivan.lucena@pmldnet.com
+* Author:   Ivan Lucena, [lucena_ivan at hotmail.com]
 *
 ******************************************************************************
 * Copyright( c ) 2006, Ivan Lucena
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files( the "Software" ),
@@ -27,8 +28,8 @@
 * DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef _IDRISI_H_INCLUDED
-#define _IDRISI_H_INCLUDED
+#ifndef IDRISI_H_INCLUDED
+#define IDRISI_H_INCLUDED
 
 #include "cpl_error.h"
 
@@ -37,4 +38,4 @@ CPLErr IdrisiGeoReference2Wkt( const char* pszFilename,
                                const char *pszRefUnits,
                                char **ppszProjString );
 
-#endif /*  _IDRISI_H_INCLUDED */
+#endif /*  IDRISI_H_INCLUDED */

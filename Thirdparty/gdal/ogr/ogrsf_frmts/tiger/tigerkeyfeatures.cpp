@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigerkeyfeatures.cpp 22961 2011-08-20 17:09:59Z rouault $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerKeyFeatures, providing access to .RT9 files.
@@ -30,9 +29,9 @@
 #include "ogr_tiger.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: tigerkeyfeatures.cpp 22961 2011-08-20 17:09:59Z rouault $");
+CPL_CVSID("$Id: tigerkeyfeatures.cpp 35629 2016-10-06 23:39:06Z goatbar $");
 
-#define FILE_CODE "9"
+static const char FILE_CODE[] = "9";
 
 static const TigerFieldInfo rt9_fields[] = {
   // fieldname    fmt  type  OFTType      beg  end  len  bDefine bSet bWrite
@@ -63,8 +62,8 @@ static const TigerRecordInfo rt9_info =
 /************************************************************************/
 
 TigerKeyFeatures::TigerKeyFeatures( OGRTigerDataSource * poDSIn,
-                                  const char * pszPrototypeModule ) : TigerFileBase(&rt9_info, FILE_CODE)
-
+                                    CPL_UNUSED const char * pszPrototypeModule ) :
+    TigerFileBase(&rt9_info, FILE_CODE)
 {
     poDS = poDSIn;
     poFeatureDefn = new OGRFeatureDefn( "KeyFeatures" );
@@ -76,5 +75,4 @@ TigerKeyFeatures::TigerKeyFeatures( OGRTigerDataSource * poDSIn,
     /* -------------------------------------------------------------------- */
 
     AddFieldDefns( psRTInfo, poFeatureDefn );
-
 }

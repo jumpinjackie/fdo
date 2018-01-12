@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: vfkreader.h 25721 2013-03-09 16:21:46Z martinl $
+ * $Id: vfkreader.h 37796 2017-03-19 19:18:10Z martinl $
  *
  * Project:  VFK Reader
  * Purpose:  Public Declarations for OGR free VFK Reader code.
  * Author:   Martin Landa, landa.martin gmail.com
  *
  ******************************************************************************
- * Copyright (c) 2009-2010, 2012-2013, Martin Landa <landa.martin gmail.com>
+ * Copyright (c) 2009-2014, Martin Landa <landa.martin gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -54,43 +54,52 @@ typedef std::vector<VFKFeatureSQLite *> VFKFeatureSQLiteList;
 #define FID_COLUMN   "ogr_fid"
 #define GEOM_COLUMN  "geometry"
 
+#define VFK_DB_HEADER_TABLE      "vfk_header"
+#define VFK_DB_TABLE             "vfk_tables"
+#define VFK_DB_GEOMETRY_TABLE    "geometry_columns"
+#define VFK_DB_SPATIAL_REF_TABLE "spatial_ref_sys"
+
+enum RecordType { RecordValid, RecordSkipped, RecordDuplicated };
+
 /************************************************************************/
 /*                              VFKProperty                             */
 /************************************************************************/
-class CPL_DLL VFKProperty
+class VFKProperty
 {
 private:
     bool                    m_bIsNull;
-    
-    int                     m_nValue;
+
+    GIntBig                 m_iValue;
     double                  m_dValue;
     CPLString               m_strValue;
 
 public:
     VFKProperty();
     explicit VFKProperty(int);
+    explicit VFKProperty(GIntBig);
     explicit VFKProperty(double);
     explicit VFKProperty(const char*);
     explicit VFKProperty(CPLString const&);
     virtual ~VFKProperty();
-    
+
     VFKProperty(VFKProperty const& other);
     VFKProperty& operator=(VFKProperty const& other);
 
-    bool                    IsNull()    const { return m_bIsNull; }
-    int                     GetValueI() const { return m_nValue; }
-    double                  GetValueD() const { return m_dValue; }
-    const char             *GetValueS() const { return m_strValue.c_str(); }
+    bool                    IsNull()      const { return m_bIsNull; }
+    int                     GetValueI()   const { return static_cast<int> (m_iValue); }
+    GIntBig                 GetValueI64() const { return m_iValue; }
+    double                  GetValueD()   const { return m_dValue; }
+    const char             *GetValueS( bool = false ) const;
 };
 
 /************************************************************************/
 /*                              IVFKFeature                              */
 /************************************************************************/
-class CPL_DLL IVFKFeature
+class IVFKFeature
 {
 protected:
     IVFKDataBlock            *m_poDataBlock;
-    long                      m_nFID;
+    GIntBig                   m_nFID;
     OGRwkbGeometryType        m_nGeometryType;
     bool                      m_bGeometry;
     bool                      m_bValid;
@@ -102,18 +111,18 @@ protected:
     virtual bool         LoadGeometryPolygon() = 0;
 
 public:
-    IVFKFeature(IVFKDataBlock *);
+    explicit IVFKFeature(IVFKDataBlock *);
     virtual ~IVFKFeature();
 
-    long                 GetFID() const { return m_nFID; }
-    void                 SetFID(long);
+    GIntBig              GetFID() const { return m_nFID; }
+    void                 SetFID(GIntBig);
     void                 SetGeometryType(OGRwkbGeometryType);
 
     bool                 IsValid() const { return m_bValid; }
-    
+
     IVFKDataBlock       *GetDataBlock() const { return m_poDataBlock; }
     OGRwkbGeometryType   GetGeometryType() const { return m_nGeometryType; }
-    bool                 SetGeometry(OGRGeometry *);
+    bool                 SetGeometry(OGRGeometry *, const char * = NULL);
     OGRGeometry         *GetGeometry();
 
     bool                 LoadGeometry();
@@ -123,30 +132,30 @@ public:
 /************************************************************************/
 /*                              VFKFeature                              */
 /************************************************************************/
-class CPL_DLL VFKFeature : public IVFKFeature
+class VFKFeature : public IVFKFeature
 {
 private:
     typedef std::vector<VFKProperty> VFKPropertyList;
-    
+
     VFKPropertyList      m_propertyList;
 
     bool                 SetProperty(int, const char *);
 
     friend class         VFKFeatureSQLite;
 
-    bool                 LoadGeometryPoint();
-    bool                 LoadGeometryLineStringSBP();
-    bool                 LoadGeometryLineStringHP();
-    bool                 LoadGeometryPolygon();
+    bool                 LoadGeometryPoint() override;
+    bool                 LoadGeometryLineStringSBP() override;
+    bool                 LoadGeometryLineStringHP() override;
+    bool                 LoadGeometryPolygon() override;
 
 public:
-    VFKFeature(IVFKDataBlock *, long);
-    
+    VFKFeature(IVFKDataBlock *, GIntBig);
+
     bool                 SetProperties(const char *);
     const VFKProperty   *GetProperty(int) const;
     const VFKProperty   *GetProperty(const char *) const;
 
-    OGRErr               LoadProperties(OGRFeature *);
+    OGRErr               LoadProperties(OGRFeature *) override;
 
     bool                 AppendLineToRing(int, const OGRLineString *);
 };
@@ -154,33 +163,34 @@ public:
 /************************************************************************/
 /*                              VFKFeatureSQLite                        */
 /************************************************************************/
-class CPL_DLL VFKFeatureSQLite : public IVFKFeature
+class VFKFeatureSQLite : public IVFKFeature
 {
 private:
     int                  m_iRowId;           /* rowid in DB */
     sqlite3_stmt        *m_hStmt;
 
-    bool                 LoadGeometryPoint();
-    bool                 LoadGeometryLineStringSBP();
-    bool                 LoadGeometryLineStringHP();
-    bool                 LoadGeometryPolygon();
+    bool                 LoadGeometryPoint() override;
+    bool                 LoadGeometryLineStringSBP() override;
+    bool                 LoadGeometryLineStringHP() override;
+    bool                 LoadGeometryPolygon() override;
 
     OGRErr               SetFIDFromDB();
     OGRErr               ExecuteSQL(const char *);
     void                 FinalizeSQL();
 
 public:
-    VFKFeatureSQLite(IVFKDataBlock *);
-    VFKFeatureSQLite(IVFKDataBlock *, int, long);
-    VFKFeatureSQLite(const VFKFeature *);
+    explicit VFKFeatureSQLite(IVFKDataBlock *);
+    VFKFeatureSQLite(IVFKDataBlock *, int, GIntBig);
+    explicit VFKFeatureSQLite(const VFKFeature *);
 
-    OGRErr               LoadProperties(OGRFeature *);
+    OGRErr               LoadProperties(OGRFeature *) override;
+    void                 SetRowId(int);
 };
 
 /************************************************************************/
 /*                              VFKPropertyDefn                         */
 /************************************************************************/
-class CPL_DLL VFKPropertyDefn
+class VFKPropertyDefn
 {
 private:
     char             *m_pszName;
@@ -201,21 +211,20 @@ public:
     int               GetPrecision() const { return m_nPrecision;  }
     OGRFieldType      GetType() const  { return m_eFType;  }
     CPLString         GetTypeSQL() const;
-    GBool             IsIntBig() const { return m_pszType[0] == 'N'; }
     const char       *GetEncoding() const { return  m_pszEncoding; }
 };
 
 /************************************************************************/
 /*                              IVFKDataBlock                           */
 /************************************************************************/
-class CPL_DLL IVFKDataBlock
+class IVFKDataBlock
 {
 private:
     IVFKFeature      **m_papoFeature;
 
     int                m_nPropertyCount;
     VFKPropertyDefn  **m_papoProperty;
-    
+
     int                AddProperty(const char *, const char *);
 
 protected:
@@ -228,14 +237,19 @@ protected:
     OGRwkbGeometryType m_nGeometryType;
     bool               m_bGeometryPerBlock;
 
-    int                m_nFeatureCount;    
+    int                m_nFeatureCount;
     int                m_iNextFeature;
 
+    // TODO: Make m_poReader const.
     IVFKReader        *m_poReader;
 
-    bool               AppendLineToRing(PointListArray *, const OGRLineString *, bool, bool = FALSE);
+    GIntBig            m_nRecordCount[3];
+
+    bool               AppendLineToRing( PointListArray *,
+                                         const OGRLineString *,
+                                         bool, bool = false );
     int                LoadData();
-    
+
     virtual int        LoadGeometryPoint() = 0;
     virtual int        LoadGeometryLineStringSBP() = 0;
     virtual int        LoadGeometryLineStringHP() = 0;
@@ -252,10 +266,10 @@ public:
     void               SetProperties(const char *);
     int                GetPropertyIndex(const char *) const;
 
-    int                GetFeatureCount();
-    void               SetFeatureCount(int, bool = FALSE);
+    GIntBig            GetFeatureCount( bool = true);
+    void               SetFeatureCount( int, bool = false );
     IVFKFeature       *GetFeatureByIndex(int) const;
-    IVFKFeature       *GetFeature(long);
+    IVFKFeature       *GetFeature(GIntBig);
     void               AddFeature(IVFKFeature *);
 
     void               ResetReading(int iIdx = -1);
@@ -264,25 +278,27 @@ public:
     IVFKFeature       *GetFirstFeature();
     IVFKFeature       *GetLastFeature();
     int                SetNextFeature(const IVFKFeature *);
-    
+
     OGRwkbGeometryType SetGeometryType();
     OGRwkbGeometryType GetGeometryType() const;
 
     int                LoadGeometry();
 
     IVFKReader        *GetReader() const { return m_poReader; }
+    int                GetRecordCount(RecordType = RecordValid)  const;
+    void               SetIncRecordCount(RecordType);
 };
 
 /************************************************************************/
 /*                              VFKDataBlock                            */
 /************************************************************************/
-class CPL_DLL VFKDataBlock : public IVFKDataBlock
+class VFKDataBlock : public IVFKDataBlock
 {
 private:
-    int                LoadGeometryPoint();
-    int                LoadGeometryLineStringSBP();
-    int                LoadGeometryLineStringHP();
-    int                LoadGeometryPolygon();
+    int                LoadGeometryPoint() override;
+    int                LoadGeometryLineStringSBP() override;
+    int                LoadGeometryLineStringHP() override;
+    int                LoadGeometryPolygon() override;
 
 public:
     VFKDataBlock(const char *pszName, const IVFKReader *poReader) : IVFKDataBlock(pszName, poReader) {}
@@ -291,41 +307,49 @@ public:
     VFKFeatureList     GetFeatures(int, GUIntBig);
     VFKFeatureList     GetFeatures(int, int, GUIntBig);
 
-    int                GetFeatureCount(const char *, const char *);
+    GIntBig            GetFeatureCount(const char *, const char *);
 };
 
 /************************************************************************/
 /*                              VFKDataBlockSQLite                      */
 /************************************************************************/
-class CPL_DLL VFKDataBlockSQLite : public IVFKDataBlock
+class VFKDataBlockSQLite : public IVFKDataBlock
 {
 private:
-    int                  LoadGeometryPoint();
-    int                  LoadGeometryLineStringSBP();
-    int                  LoadGeometryLineStringHP();
-    int                  LoadGeometryPolygon();
+    bool                 SetGeometryLineString(VFKFeatureSQLite *, OGRLineString *,
+                                               bool&, const char *,
+                                               std::vector<int>&, int&);
+
+    int                  LoadGeometryPoint() override;
+    int                  LoadGeometryLineStringSBP() override;
+    int                  LoadGeometryLineStringHP() override;
+    int                  LoadGeometryPolygon() override;
 
     bool                 LoadGeometryFromDB();
     OGRErr               SaveGeometryToDB(const OGRGeometry *, int);
 
-    bool                 IsRingClosed(const OGRLinearRing *);
+    static bool                 IsRingClosed(const OGRLinearRing *);
     void                 UpdateVfkBlocks(int);
-    void                 UpdateFID(long int, std::vector<int>);
+    void                 UpdateFID(GIntBig, std::vector<int>);
 
 public:
     VFKDataBlockSQLite(const char *pszName, const IVFKReader *poReader) : IVFKDataBlock(pszName, poReader) {}
 
     const char          *GetKey() const;
-    IVFKFeature         *GetFeature(long);
-    VFKFeatureSQLite    *GetFeature(const char *, GUIntBig, bool = FALSE);
-    VFKFeatureSQLite    *GetFeature(const char **, GUIntBig *, int, bool = FALSE);
+    IVFKFeature         *GetFeature(GIntBig);
+    VFKFeatureSQLite    *GetFeature( const char *, GUIntBig, bool = false );
+    VFKFeatureSQLite    *GetFeature( const char **, GUIntBig *, int,
+                                     bool = false);
     VFKFeatureSQLiteList GetFeatures(const char **, GUIntBig *, int);
+
+    int                  GetGeometrySQLType() const;
+
 };
 
 /************************************************************************/
 /*                              IVFKReader                              */
 /************************************************************************/
-class CPL_DLL IVFKReader
+class IVFKReader
 {
 private:
     virtual void AddInfo(const char *) = 0;
@@ -337,11 +361,13 @@ protected:
 
 public:
     virtual ~IVFKReader();
-    
+
     virtual bool           IsLatin2() const = 0;
     virtual bool           IsSpatial() const = 0;
+    virtual bool           IsPreProcessed() const = 0;
+    virtual bool           IsValid() const = 0;
     virtual int            ReadDataBlocks() = 0;
-    virtual int            ReadDataRecords(IVFKDataBlock *) = 0;
+    virtual int            ReadDataRecords(IVFKDataBlock * = NULL) = 0;
     virtual int            LoadGeometry() = 0;
 
     virtual int            GetDataBlockCount() const = 0;

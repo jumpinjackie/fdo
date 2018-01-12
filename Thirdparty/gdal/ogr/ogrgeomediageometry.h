@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogrgeomediageometry.h 21557 2011-01-22 23:42:14Z rouault $
+ * $Id: ogrgeomediageometry.h 31777 2015-11-26 14:14:41Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements decoder of geomedia geometry blobs
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_GEOMEDIAGEOMETRY_H_INCLUDED
-#define _OGR_GEOMEDIAGEOMETRY_H_INCLUDED
+#ifndef OGR_GEOMEDIAGEOMETRY_H_INCLUDED
+#define OGR_GEOMEDIAGEOMETRY_H_INCLUDED
 
 #include "ogr_geometry.h"
 #include "ogr_spatialref.h"

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id $
  *
  * Project:  PDF driver
  * Purpose:  GDALDataset driver for PDF dataset.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,65 +26,82 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifdef HAVE_POPPLER
+#include "gdal_pdf.h"
 
-/* hack for PDF driver and poppler >= 0.15.0 that defines incompatible "typedef bool GBool" */
-/* in include/poppler/goo/gtypes.h with the one defined in cpl_port.h */
-#define CPL_GBOOL_DEFINED
+#ifdef HAVE_POPPLER
 
 #include "pdfio.h"
 
 #include "cpl_vsi.h"
 
-CPL_CVSID("$Id: pdfio.cpp 25573 2013-01-27 11:09:45Z rouault $");
+CPL_CVSID("$Id: pdfio.cpp 40036 2017-09-08 11:23:21Z rouault $");
+
+#ifdef POPPLER_BASE_STREAM_HAS_TWO_ARGS
+/* Poppler 0.31.0 is the first one that needs to know the file size */
+static vsi_l_offset VSIPDFFileStreamGetSize(VSILFILE* f)
+{
+    VSIFSeekL(f, 0, SEEK_END);
+    vsi_l_offset nSize = VSIFTellL(f);
+    VSIFSeekL(f, 0, SEEK_SET);
+    return nSize;
+}
+#endif
 
 /************************************************************************/
 /*                         VSIPDFFileStream()                           */
 /************************************************************************/
 
-VSIPDFFileStream::VSIPDFFileStream(VSILFILE* f, const char* pszFilename, Object *dictA):
-#ifdef POPPLER_BASE_STREAM_HAS_TWO_ARGS
-                                                        BaseStream(dictA, 0)
+VSIPDFFileStream::VSIPDFFileStream(
+    VSILFILE* fIn, const char* pszFilename,
+    makeSubStream_object_type dictA
+) :
+#ifdef POPPLER_0_58_OR_LATER
+    BaseStream(std::move(dictA), (Goffset)VSIPDFFileStreamGetSize(fIn)),
+#elif defined(POPPLER_BASE_STREAM_HAS_TWO_ARGS)
+    BaseStream(dictA, (setPos_offset_type)VSIPDFFileStreamGetSize(fIn)),
 #else
-                                                        BaseStream(dictA)
+    BaseStream(dictA),
 #endif
-{
-    poParent = NULL;
-    poFilename = new GooString(pszFilename);
-    this->f = f;
-    nStart = 0;
-    bLimited = gFalse;
-    nLength = 0;
-    nCurrentPos = -1;
-    bHasSavedPos = FALSE;
-    nSavedPos = 0;
-    nPosInBuffer = nBufferLength = -1;
-}
+    poParent(NULL),
+    poFilename(new GooString(pszFilename)),
+    f(fIn),
+    nStart(0),
+    bLimited(gFalse),
+    nLength(0),
+    nCurrentPos(VSI_L_OFFSET_MAX),
+    bHasSavedPos(FALSE),
+    nSavedPos(0),
+    nPosInBuffer(-1),
+    nBufferLength(-1)
+{}
 
 /************************************************************************/
 /*                         VSIPDFFileStream()                           */
 /************************************************************************/
 
-VSIPDFFileStream::VSIPDFFileStream(VSIPDFFileStream* poParent,
-                                   vsi_l_offset startA, GBool limitedA,
-                                   vsi_l_offset lengthA, Object *dictA):
-#ifdef POPPLER_BASE_STREAM_HAS_TWO_ARGS
-                                                        BaseStream(dictA, lengthA)
+VSIPDFFileStream::VSIPDFFileStream( VSIPDFFileStream* poParentIn,
+                                    vsi_l_offset startA, GBool limitedA,
+                                    vsi_l_offset lengthA,
+                                    makeSubStream_object_type dictA) :
+#ifdef POPPLER_0_58_OR_LATER
+    BaseStream(std::move(dictA), (Goffset)lengthA),
+#elif defined(POPPLER_BASE_STREAM_HAS_TWO_ARGS)
+    BaseStream(dictA, (makeSubStream_offset_type)lengthA),
 #else
-                                                        BaseStream(dictA)
+    BaseStream(dictA),
 #endif
-{
-    this->poParent = poParent;
-    poFilename = poParent->poFilename;
-    f = poParent->f;
-    nStart = startA;
-    bLimited = limitedA;
-    nLength = lengthA;
-    nCurrentPos = -1;
-    bHasSavedPos = FALSE;
-    nSavedPos = 0;
-    nPosInBuffer = nBufferLength = -1;
-}
+    poParent(poParentIn),
+    poFilename(poParentIn->poFilename),
+    f(poParentIn->f),
+    nStart(startA),
+    bLimited(limitedA),
+    nLength(lengthA),
+    nCurrentPos(VSI_L_OFFSET_MAX),
+    bHasSavedPos(FALSE),
+    nSavedPos(0),
+    nPosInBuffer(-1),
+    nBufferLength(-1)
+{}
 
 /************************************************************************/
 /*                        ~VSIPDFFileStream()                           */
@@ -106,7 +122,13 @@ VSIPDFFileStream::~VSIPDFFileStream()
 /*                                  copy()                              */
 /************************************************************************/
 
-#ifdef POPPLER_0_23_OR_LATER
+#ifdef POPPLER_0_58_OR_LATER
+BaseStream* VSIPDFFileStream::copy()
+{
+    return new VSIPDFFileStream(poParent, nStart, bLimited,
+                                nLength, dict.copy());
+}
+#elif defined(POPPLER_0_23_OR_LATER)
 BaseStream* VSIPDFFileStream::copy()
 {
     return new VSIPDFFileStream(poParent, nStart, bLimited,
@@ -117,13 +139,18 @@ BaseStream* VSIPDFFileStream::copy()
 /************************************************************************/
 /*                             makeSubStream()                          */
 /************************************************************************/
-
 Stream *VSIPDFFileStream::makeSubStream(makeSubStream_offset_type startA, GBool limitedA,
-                                        makeSubStream_offset_type lengthA, Object *dictA)
+                                        makeSubStream_offset_type lengthA, makeSubStream_object_type dictA)
 {
+#ifdef POPPLER_0_58_OR_LATER
+    return new VSIPDFFileStream(this,
+                                startA, limitedA,
+                                lengthA, std::move(dictA));
+#else
     return new VSIPDFFileStream(this,
                                 startA, limitedA,
                                 lengthA, dictA);
+#endif
 }
 
 /************************************************************************/
@@ -138,7 +165,6 @@ getPos_ret_type VSIPDFFileStream::getPos()
 /************************************************************************/
 /*                                getStart()                            */
 /************************************************************************/
-
 
 getStart_ret_type VSIPDFFileStream::getStart()
 {
@@ -188,6 +214,27 @@ int VSIPDFFileStream::FillBuffer()
     if (nBufferLength == 0)
         return FALSE;
 
+    // Since we now report a non-zero length (as BaseStream::length member),
+    // PDFDoc::getPage() can go to the linearized mode if the file is linearized,
+    // and thus create a pageCache. If so, in PDFDoc::~PDFDoc(),
+    // if pageCache is not null, it would try to access the stream (str) through
+    // getPageCount(), but we have just freed and nullify str before in PDFFreeDoc().
+    // So make as if the file is not linearized to avoid those issues...
+    // All this is due to our attempt of avoiding cross-heap issues with allocation
+    // and liberation of VSIPDFFileStream as PDFDoc::str member.
+    if( nCurrentPos == 0 || nCurrentPos == VSI_L_OFFSET_MAX )
+    {
+        for(int i=0;i<nToRead-(int)strlen("/Linearized ");i++)
+        {
+            if( memcmp(abyBuffer + i, "/Linearized ",
+                       strlen("/Linearized ")) == 0 )
+            {
+                memcpy(abyBuffer + i, "/XXXXXXXXXX ", strlen("/Linearized "));
+                break;
+            }
+        }
+    }
+
     return TRUE;
 }
 
@@ -195,7 +242,7 @@ int VSIPDFFileStream::FillBuffer()
 /*                                getChar()                             */
 /************************************************************************/
 
-/* The unoptimized version performs a bit well since we must go through */
+/* The unoptimized version performs a bit less since we must go through */
 /* the whole virtual I/O chain for each character reading. We save a few */
 /* percent with this extra internal caching */
 
@@ -262,7 +309,8 @@ void VSIPDFFileStream::reset()
     nSavedPos = VSIFTellL(f);
     bHasSavedPos = TRUE;
     VSIFSeekL(f, nCurrentPos = nStart, SEEK_SET);
-    nPosInBuffer = nBufferLength = -1;
+    nPosInBuffer = -1;
+    nBufferLength = -1;
 }
 
 /************************************************************************/
@@ -312,7 +360,8 @@ void VSIPDFFileStream::setPos(setPos_offset_type pos, int dir)
             newpos = size;
         VSIFSeekL(f, nCurrentPos = size - newpos, SEEK_SET);
     }
-    nPosInBuffer = nBufferLength = -1;
+    nPosInBuffer = -1;
+    nBufferLength = -1;
 }
 
 /************************************************************************/
@@ -323,7 +372,52 @@ void VSIPDFFileStream::moveStart(moveStart_delta_type delta)
 {
     nStart += delta;
     VSIFSeekL(f, nCurrentPos = nStart, SEEK_SET);
-    nPosInBuffer = nBufferLength = -1;
+    nPosInBuffer = -1;
+    nBufferLength = -1;
+}
+
+/************************************************************************/
+/*                          hasGetChars()                               */
+/************************************************************************/
+
+GBool VSIPDFFileStream::hasGetChars()
+{
+    return true;
+}
+
+/************************************************************************/
+/*                            getChars()                                */
+/************************************************************************/
+
+int VSIPDFFileStream::getChars(int nChars, Guchar *buffer)
+{
+    int nRead = 0;
+    while (nRead < nChars)
+    {
+        int nToRead = nChars - nRead;
+        if (nPosInBuffer == nBufferLength)
+        {
+            if (!bLimited && nToRead > BUFFER_SIZE)
+            {
+                int nJustRead = (int) VSIFReadL(buffer + nRead, 1, nToRead, f);
+                nPosInBuffer = -1;
+                nBufferLength = -1;
+                nCurrentPos += nJustRead;
+                nRead += nJustRead;
+                break;
+            }
+            else if (!FillBuffer() || nPosInBuffer >= nBufferLength)
+                break;
+        }
+        if( nToRead > nBufferLength - nPosInBuffer )
+            nToRead = nBufferLength - nPosInBuffer;
+
+        memcpy( buffer + nRead, abyBuffer + nPosInBuffer, nToRead );
+        nPosInBuffer += nToRead;
+        nCurrentPos += nToRead;
+        nRead += nToRead;
+    }
+    return nRead;
 }
 
 #endif

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ograeronavfaadriver.cpp 21372 2011-01-01 23:53:54Z rouault $
  *
  * Project:  AeronavFAA Translator
  * Purpose:  Implements OGRAeronavFAADriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,41 +29,29 @@
 #include "ogr_aeronavfaa.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ograeronavfaadriver.cpp 21372 2011-01-01 23:53:54Z rouault $");
+CPL_CVSID("$Id: ograeronavfaadriver.cpp 35903 2016-10-24 12:09:43Z goatbar $");
 
 // g++ ogr/ogrsf_frmts/aeronavfaa/*.cpp -Wall -g -fPIC -shared -o ogr_AeronavFAA.so -Iport -Igcore -Iogr -Iogr/ogrsf_frmts/aernovfaa -Iogr/ogrsf_frmts
 
 extern "C" void RegisterOGRAeronavFAA();
 
 /************************************************************************/
-/*                       ~OGRAeronavFAADriver()                         */
-/************************************************************************/
-
-OGRAeronavFAADriver::~OGRAeronavFAADriver()
-
-{
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRAeronavFAADriver::GetName()
-
-{
-    return "AeronavFAA";
-}
-
-/************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRAeronavFAADriver::Open( const char * pszFilename, int bUpdate )
+static GDALDataset *OGRAeronavFAADriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
+    if (poOpenInfo->eAccess == GA_Update ||
+        poOpenInfo->fpL == NULL ||
+        !EQUAL(CPLGetExtension(poOpenInfo->pszFilename), "dat") )
+    {
+        return NULL;
+    }
+
     OGRAeronavFAADataSource   *poDS = new OGRAeronavFAADataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+    if( !poDS->Open( poOpenInfo->pszFilename ) )
     {
         delete poDS;
         poDS = NULL;
@@ -74,22 +61,24 @@ OGRDataSource *OGRAeronavFAADriver::Open( const char * pszFilename, int bUpdate 
 }
 
 /************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRAeronavFAADriver::TestCapability( const char * pszCap )
-
-{
-    return FALSE;
-}
-
-/************************************************************************/
 /*                        RegisterOGRAeronavFAA()                       */
 /************************************************************************/
 
 void RegisterOGRAeronavFAA()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRAeronavFAADriver );
-}
+    if( GDALGetDriverByName( "AeronavFAA" ) != NULL )
+        return;
 
+    GDALDriver  *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "AeronavFAA" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Aeronav FAA" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_aeronavfaa.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+
+    poDriver->pfnOpen = OGRAeronavFAADriverOpen;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

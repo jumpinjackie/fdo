@@ -1,8 +1,7 @@
 /******************************************************************************
- * $Id: ogrdxfwriterlayer.cpp 20670 2010-09-22 00:21:17Z warmerdam $
  *
  * Project:  DXF Translator
- * Purpose:  Implements OGRDXFBlocksWriterLayer used for capturing block 
+ * Purpose:  Implements OGRDXFBlocksWriterLayer used for capturing block
  *           definitions for writing to a DXF file.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
@@ -33,18 +32,16 @@
 #include "cpl_string.h"
 #include "ogr_featurestyle.h"
 
-CPL_CVSID("$Id: ogrdxfwriterlayer.cpp 20670 2010-09-22 00:21:17Z warmerdam $");
+CPL_CVSID("$Id: ogrdxfblockswriterlayer.cpp 35645 2016-10-08 00:48:42Z goatbar $");
 
 /************************************************************************/
 /*                      OGRDXFBlocksWriterLayer()                       */
 /************************************************************************/
 
-OGRDXFBlocksWriterLayer::OGRDXFBlocksWriterLayer( OGRDXFWriterDS *poDS )
-
+OGRDXFBlocksWriterLayer::OGRDXFBlocksWriterLayer(
+    OGRDXFWriterDS * /* poDS */ ) :
+    poFeatureDefn(new OGRFeatureDefn( "blocks" ))
 {
-    (void) poDS;
-
-    poFeatureDefn = new OGRFeatureDefn( "blocks" );
     poFeatureDefn->Reference();
 
     OGRFieldDefn  oLayerField( "Layer", OFTString );
@@ -90,10 +87,7 @@ OGRDXFBlocksWriterLayer::~OGRDXFBlocksWriterLayer()
 int OGRDXFBlocksWriterLayer::TestCapability( const char * pszCap )
 
 {
-    if( EQUAL(pszCap,OLCSequentialWrite) )
-        return TRUE;
-    else 
-        return FALSE;
+    return EQUAL(pszCap,OLCSequentialWrite);
 }
 
 /************************************************************************/
@@ -118,13 +112,13 @@ OGRErr OGRDXFBlocksWriterLayer::CreateField( OGRFieldDefn *poField,
 }
 
 /************************************************************************/
-/*                           CreateFeature()                            */
+/*                           ICreateFeature()                            */
 /*                                                                      */
 /*      We just stash a copy of the features for later writing to       */
 /*      the blocks section of the header.                               */
 /************************************************************************/
 
-OGRErr OGRDXFBlocksWriterLayer::CreateFeature( OGRFeature *poFeature )
+OGRErr OGRDXFBlocksWriterLayer::ICreateFeature( OGRFeature *poFeature )
 
 {
     apoBlocks.push_back( poFeature->Clone() );
@@ -146,6 +140,6 @@ OGRFeature *OGRDXFBlocksWriterLayer::FindBlock( const char *pszBlockName )
         if( pszThisName != NULL && strcmp(pszBlockName,pszThisName) == 0 )
             return apoBlocks[i];
     }
-    
+
     return NULL;
 }

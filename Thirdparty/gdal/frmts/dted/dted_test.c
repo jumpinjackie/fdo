@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: dted_test.c 12247 2007-09-27 18:18:06Z rouault $
+ * $Id: dted_test.c 34521 2016-07-02 21:26:43Z goatbar $
  *
  * Project:  DTED Translator
  * Purpose:  Test mainline for DTED writer.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2001, Frank Warmerdam
+ * Copyright (c) 2007, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -78,7 +79,7 @@ int main( int argc, char ** argv )
                 Usage();
             pszFilename = argv[iArg];
         }
-    }		
+    }
 
     if( pszFilename == NULL )
         Usage();
@@ -115,7 +116,7 @@ int main( int argc, char ** argv )
 
     for( iY = 0; iY < nYSize; iY++ )
     {
-        GDALRasterIO( hSrcBand, GF_Read, 0, iY, nXSize, 1, 
+        GDALRasterIO( hSrcBand, GF_Read, 0, iY, nXSize, 1,
                       panData, nXSize, 1, GDT_Int16, 0, 0 );
 
         if (bHasNoData)
@@ -129,11 +130,11 @@ int main( int argc, char ** argv )
 
         for( iX = 0; iX < nXSize; iX++ )
         {
-            DTEDWritePt( pStream, 
-                         adfGeoTransform[0] 
+            DTEDWritePt( pStream,
+                         adfGeoTransform[0]
                          + adfGeoTransform[1] * (iX + 0.5)
                          + adfGeoTransform[2] * (iY + 0.5),
-                         adfGeoTransform[3] 
+                         adfGeoTransform[3]
                          + adfGeoTransform[4] * (iX + 0.5)
                          + adfGeoTransform[5] * (iY + 0.5),
                          panData[iX] );

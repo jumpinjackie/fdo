@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: pcrasterrasterband.h 13149 2007-11-29 15:08:00Z warmerdam $
+ * $Id: pcrasterrasterband.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  PCRaster Integration
  * Purpose:  PCRaster raster band declaration.
- * Author:   Kor de Jong, k.dejong at geog.uu.nl
+ * Author:   Kor de Jong, Oliver Schmitz
  *
  ******************************************************************************
- * Copyright (c) 2004, Kor de Jong
+ * Copyright (c) PCRaster owners
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,28 +30,14 @@
 #ifndef INCLUDED_PCRASTERRASTERBAND
 #define INCLUDED_PCRASTERRASTERBAND
 
-// Library headers.
-
-// PCRaster library headers.
-
-// Module headers.
-#ifndef INCLUDED_GDAL_PAM
 #include "gdal_pam.h"
-#define INCLUDED_GDAL_PAM
-#endif
-
-
 
 // namespace {
   // PCRasterRasterBand declarations.
 // }
 class PCRasterDataset;
 
-
-
 // namespace {
-
-
 
 //! This class specialises the GDALRasterBand class for PCRaster rasters.
 /*!
@@ -64,6 +50,16 @@ private:
   //! Dataset this band is part of. For use only.
   PCRasterDataset const* d_dataset;
 
+  double           d_noDataValue;
+  bool             d_defaultNoDataValueOverridden;
+  GDALDataType     d_create_in;
+
+  virtual CPLErr   IRasterIO           (GDALRWFlag, int, int, int, int,
+                                        void *, int, int, GDALDataType,
+                                        GSpacing nPixelSpace,
+                                        GSpacing nLineSpace,
+                                        GDALRasterIOExtraArg* psExtraArg) override;
+
   //! Assignment operator. NOT IMPLEMENTED.
   PCRasterRasterBand& operator=        (const PCRasterRasterBand&);
 
@@ -71,26 +67,23 @@ private:
                    PCRasterRasterBand  (const PCRasterRasterBand&);
 
 protected:
-
-  double           GetNoDataValue      (int* success);
-
-  double           GetMinimum          (int* success);
-
-  double           GetMaximum          (int* success);
+  double           GetNoDataValue      (int* success=NULL) override;
+  double           GetMinimum          (int* success) override;
+  double           GetMaximum          (int* success) override;
 
 public:
-
-  //----------------------------------------------------------------------------
-  // CREATORS
-  //----------------------------------------------------------------------------
-
-                   PCRasterRasterBand  (PCRasterDataset* dataset);
-
+  explicit          PCRasterRasterBand  (PCRasterDataset* dataset);
   /* virtual */    ~PCRasterRasterBand ();
 
   //----------------------------------------------------------------------------
   // MANIPULATORS
   //----------------------------------------------------------------------------
+
+  CPLErr           IWriteBlock         (CPL_UNUSED int nBlockXoff,
+                                        int nBlockYoff,
+                                        void* buffer) override;
+
+  CPLErr           SetNoDataValue      (double no_data) override;
 
   //----------------------------------------------------------------------------
   // ACCESSORS
@@ -98,30 +91,8 @@ public:
 
   CPLErr           IReadBlock          (int nBlockXoff,
                                         int nBlockYoff,
-                                        void* buffer);
-
+                                        void* buffer) override;
 };
-
-
-
-//------------------------------------------------------------------------------
-// INLINE FUNCTIONS
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-// FREE OPERATORS
-//------------------------------------------------------------------------------
-
-
-
-//------------------------------------------------------------------------------
-// FREE FUNCTIONS
-//------------------------------------------------------------------------------
-
-
-
 // } // namespace
 
 #endif

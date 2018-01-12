@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSKBUFFER_H
-#define __INCLUDE_PCIDSKBUFFER_H
+#ifndef INCLUDE_PCIDSKBUFFER_H
+#define INCLUDE_PCIDSKBUFFER_H
 
 #include "pcidsk_config.h"
 
@@ -48,7 +48,7 @@ namespace PCIDSK
         PCIDSKBuffer( const char *src, int size );
         ~PCIDSKBuffer();
 
-        char	*buffer;
+        char        *buffer;
         int         buffer_size;
 
         PCIDSKBuffer &operator=(const PCIDSKBuffer& src);
@@ -77,4 +77,4 @@ namespace PCIDSK
         mutable std::string work_field;
     };
 } // end namespace PCIDSK
-#endif // __INCLUDE_PCIDSKBUFFER_H 
+#endif // INCLUDE_PCIDSKBUFFER_H 

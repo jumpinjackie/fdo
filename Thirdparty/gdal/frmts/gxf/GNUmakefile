@@ -9,7 +9,7 @@ include ../../GDALmake.opt
 GXFOBJ	=	gxfopen.o gxf_proj4.o gxf_ogcwkt.o
 OBJ	=	gxfdataset.o $(GXFOBJ)
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(CPPFLAGS)
+
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 
@@ -22,7 +22,7 @@ gxftest$(EXE):	gxftest.$(OBJ_EXT)
 install-obj:	$(O_OBJ:.o=.$(OBJ_EXT))
 
 $(SHARED_LIB):	$(OBJ)
-	$(LD_SHARED) $(OBJ) $(GDAL_SLIB_LINK) $(LIBS) -o $(SHARED_LIB) 
+	$(LD_SHARED) $(OBJ) $(GDAL_SLIB_LINK) $(LIBS) -o $(SHARED_LIB)
 
 install-lib:	$(SHARED_LIB)
 	cp $(SHARED_LIB) ../../lib

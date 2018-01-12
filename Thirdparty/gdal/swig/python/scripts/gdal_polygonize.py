@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #******************************************************************************
-#  $Id: gdal_polygonize.py 25664 2013-02-22 15:43:33Z rouault $
-# 
+#  $Id: gdal_polygonize.py 36130 2016-11-06 15:51:48Z rouault $
+#
 #  Project:  GDAL Python Interface
 #  Purpose:  Application for converting raster data to a vector polygon layer.
 #  Author:   Frank Warmerdam, warmerdam@pobox.com
-# 
+#
 #******************************************************************************
 #  Copyright (c) 2008, Frank Warmerdam
-# 
+#  Copyright (c) 2009-2013, Even Rouault <even dot rouault at mines-paris dot org>
+#
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
 #  to deal in the Software without restriction, including without limitation
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included
 #  in all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 #  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -29,17 +30,16 @@
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
 
-try:
-    from osgeo import gdal, ogr, osr
-except ImportError:
-    import gdal, ogr, osr
-
 import sys
-import os.path
+
+from osgeo import gdal
+from osgeo import ogr
+from osgeo import osr
+
 
 def Usage():
     print("""
-gdal_polygonize [-8] [-nomask] [-mask filename] raster_file [-b band]
+gdal_polygonize [-8] [-nomask] [-mask filename] raster_file [-b band|mask]
                 [-q] [-f ogr_format] out_file [layer] [fieldname]
 """)
     sys.exit(1)
@@ -80,17 +80,20 @@ while i < len(argv):
 
     elif arg == '-8':
         options.append('8CONNECTED=8')
-        
+
     elif arg == '-nomask':
         mask = 'none'
-        
+
     elif arg == '-mask':
         i = i + 1
         mask = argv[i]
-        
+
     elif arg == '-b':
         i = i + 1
-        src_band_n = int(argv[i])
+        if argv[i].startswith('mask'):
+            src_band_n = argv[i]
+        else:
+            src_band_n = int(argv[i])
 
     elif src_filename is None:
         src_filename = argv[i]
@@ -114,7 +117,7 @@ if src_filename is None or dst_filename is None:
 
 if dst_layername is None:
     dst_layername = 'out'
-    
+
 # =============================================================================
 # 	Verify we have next gen bindings with the polygonize method.
 # =============================================================================
@@ -132,12 +135,21 @@ except:
 # =============================================================================
 
 src_ds = gdal.Open( src_filename )
-    
+
 if src_ds is None:
     print('Unable to open %s' % src_filename)
     sys.exit(1)
 
-srcband = src_ds.GetRasterBand(src_band_n)
+if src_band_n == 'mask':
+    srcband = src_ds.GetRasterBand(1).GetMaskBand()
+    # Workaround the fact that most source bands have no dataset attached
+    options.append('DATASET_FOR_GEOREF=' + src_filename)
+elif isinstance(src_band_n, str) and src_band_n.startswith('mask,'):
+    srcband = src_ds.GetRasterBand(int(src_band_n[len('mask,'):])).GetMaskBand()
+    # Workaround the fact that most source bands have no dataset attached
+    options.append('DATASET_FOR_GEOREF=' + src_filename)
+else:
+    srcband = src_ds.GetRasterBand(src_band_n)
 
 if mask is 'default':
     maskband = srcband.GetMaskBand()
@@ -181,12 +193,12 @@ if dst_layer is None:
     if src_ds.GetProjectionRef() != '':
         srs = osr.SpatialReference()
         srs.ImportFromWkt( src_ds.GetProjectionRef() )
-        
-    dst_layer = dst_ds.CreateLayer(dst_layername, srs = srs )
+
+    dst_layer = dst_ds.CreateLayer(dst_layername, geom_type=ogr.wkbPolygon, srs = srs )
 
     if dst_fieldname is None:
         dst_fieldname = 'DN'
-        
+
     fd = ogr.FieldDefn( dst_fieldname, ogr.OFTInteger )
     dst_layer.CreateField( fd )
     dst_field = 0
@@ -204,18 +216,11 @@ if quiet_flag:
     prog_func = None
 else:
     prog_func = gdal.TermProgress
-    
+
 result = gdal.Polygonize( srcband, maskband, dst_layer, dst_field, options,
                           callback = prog_func )
-    
+
 srcband = None
 src_ds = None
 dst_ds = None
 mask_ds = None
-
-
-
-
-
-
-

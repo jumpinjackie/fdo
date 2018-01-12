@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrgeojsonlayer.cpp 23866 2012-02-01 23:51:11Z warmerdam $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implementation of OGRGeoJSONLayer class (OGR GeoJSON Driver).
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Mateusz Loskot
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,21 +26,42 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#include <algorithm> // for_each, find_if
-#include <jsonc/json.h> // JSON-C
+
+#include <algorithm>
+
+#if !DEBUG_JSON
+#  ifdef __clang__
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wunknown-pragmas"
+#    pragma clang diagnostic ignored "-Wdocumentation"
+#  endif
+#endif  // !DEBUG_VERBOSE
+
+#include <json.h>
+
+#if !DEBUG_JSON
+#  ifdef __clang
+#    pragma clang diagnostic pop
+#  endif
+#endif  // !DEBUG_VERBOSE
+
 #include "ogr_geojson.h"
 
-/* Remove annoying warnings Microsoft Visual C++ */
+// Remove annoying warnings Microsoft Visual C++:
+//   'class': assignment operator could not be generated.
+//     The compiler cannot generate an assignment operator for the given
+//     class. No assignment operator was created.
 #if defined(_MSC_VER)
 #  pragma warning(disable:4512)
 #endif
+
+CPL_CVSID("$Id: ogrgeojsonlayer.cpp 35836 2016-10-20 13:57:15Z goatbar $");
 
 /************************************************************************/
 /*                       STATIC MEMBERS DEFINITION                      */
 /************************************************************************/
 
 const char* const OGRGeoJSONLayer::DefaultName = "OGRGeoJSON";
-const char* const OGRGeoJSONLayer::DefaultFIDColumn = "id";
 const OGRwkbGeometryType OGRGeoJSONLayer::DefaultGeometryType = wkbUnknown;
 
 /************************************************************************/
@@ -50,152 +71,29 @@ const OGRwkbGeometryType OGRGeoJSONLayer::DefaultGeometryType = wkbUnknown;
 OGRGeoJSONLayer::OGRGeoJSONLayer( const char* pszName,
                                   OGRSpatialReference* poSRSIn,
                                   OGRwkbGeometryType eGType,
-                                  OGRGeoJSONDataSource* poDS )
-    : iterCurrent_( seqFeatures_.end() ), poDS_( poDS ), poFeatureDefn_(new OGRFeatureDefn( pszName ) ), poSRS_( NULL )
+                                  OGRGeoJSONDataSource* poDS ) :
+    OGRMemLayer( pszName, poSRSIn, eGType),
+    poDS_(poDS),
+    bUpdated_(false),
+    bOriginalIdModified_(false)
 {
-    CPLAssert( NULL != poDS_ );
-    CPLAssert( NULL != poFeatureDefn_ );
-    
-    poFeatureDefn_->Reference();
-    poFeatureDefn_->SetGeomType( eGType );
-
-    if( NULL != poSRSIn )
-    {
-        SetSpatialRef( poSRSIn );
-    }
+    SetAdvertizeUTF8(true);
+    SetUpdatable( poDS->IsUpdatable() );
 }
 
 /************************************************************************/
 /*                          ~OGRGeoJSONLayer                            */
 /************************************************************************/
 
-OGRGeoJSONLayer::~OGRGeoJSONLayer()
-{
-    std::for_each(seqFeatures_.begin(), seqFeatures_.end(),
-                  OGRFeature::DestroyFeature);
-
-    if( NULL != poFeatureDefn_ )
-    {
-        poFeatureDefn_->Release();
-    }
-
-    if( NULL != poSRS_ )
-    {
-        poSRS_->Release();   
-    }
-}
-
-/************************************************************************/
-/*                           GetLayerDefn                               */
-/************************************************************************/
-
-OGRFeatureDefn* OGRGeoJSONLayer::GetLayerDefn()
-{
-    return poFeatureDefn_;
-}
-
-/************************************************************************/
-/*                           GetSpatialRef                              */
-/************************************************************************/
-
-OGRSpatialReference* OGRGeoJSONLayer::GetSpatialRef()
-{
-    return poSRS_;
-}
-
-/************************************************************************/
-/*                           SetSpatialRef                              */
-/************************************************************************/
-
-void OGRGeoJSONLayer::SetSpatialRef( OGRSpatialReference* poSRSIn )
-{
-    if( NULL == poSRSIn )
-    {
-        poSRS_ = NULL;
-        // poSRS_ = new OGRSpatialReference();
-        // if( OGRERR_NONE != poSRS_->importFromEPSG( 4326 ) )
-        // {
-        //     delete poSRS_;
-        //     poSRS_ = NULL;
-        // }
-    }
-    else
-    {
-        poSRS_ = poSRSIn->Clone(); 
-    }
-}
-
-/************************************************************************/
-/*                           GetFeatureCount                            */
-/************************************************************************/
-
-int OGRGeoJSONLayer::GetFeatureCount( int bForce )
-{
-    if (m_poFilterGeom == NULL && m_poAttrQuery == NULL)
-        return static_cast<int>( seqFeatures_.size() );
-    else
-        return OGRLayer::GetFeatureCount(bForce);
-}
-
-/************************************************************************/
-/*                           ResetReading                               */
-/************************************************************************/
-
-void OGRGeoJSONLayer::ResetReading()
-{
-    iterCurrent_ = seqFeatures_.begin();
-}
-
-/************************************************************************/
-/*                           GetNextFeature                             */
-/************************************************************************/
-
-OGRFeature* OGRGeoJSONLayer::GetNextFeature()
-{
-    while ( iterCurrent_ != seqFeatures_.end() )
-    {
-        OGRFeature* poFeature = (*iterCurrent_);
-        CPLAssert( NULL != poFeature );
-        ++iterCurrent_;
-        
-        if((m_poFilterGeom == NULL
-            || FilterGeometry( poFeature->GetGeometryRef() ) )
-        && (m_poAttrQuery == NULL
-            || m_poAttrQuery->Evaluate( poFeature )) )
-        {
-            OGRFeature* poFeatureCopy = poFeature->Clone();
-            CPLAssert( NULL != poFeatureCopy );
-
-            if (poFeatureCopy->GetGeometryRef() != NULL && poSRS_ != NULL)
-            {
-                poFeatureCopy->GetGeometryRef()->assignSpatialReference( poSRS_ );
-            }
-
-            return poFeatureCopy;
-        }
-    }
-
-    return NULL;
-}
-
-/************************************************************************/
-/*                           TestCapability                             */
-/************************************************************************/
-
-int OGRGeoJSONLayer::TestCapability( const char* pszCap )
-{
-    UNREFERENCED_PARAM(pszCap);
-
-    return FALSE;
-}
+OGRGeoJSONLayer::~OGRGeoJSONLayer() {}
 
 /************************************************************************/
 /*                           GetFIDColumn                               */
 /************************************************************************/
-	
+
 const char* OGRGeoJSONLayer::GetFIDColumn()
 {
-	return sFIDColumn_.c_str();
+    return sFIDColumn_.c_str();
 }
 
 /************************************************************************/
@@ -204,7 +102,29 @@ const char* OGRGeoJSONLayer::GetFIDColumn()
 
 void OGRGeoJSONLayer::SetFIDColumn( const char* pszFIDColumn )
 {
-	sFIDColumn_ = pszFIDColumn;
+    sFIDColumn_ = pszFIDColumn;
+}
+
+/************************************************************************/
+/*                           TestCapability()                           */
+/************************************************************************/
+
+int OGRGeoJSONLayer::TestCapability( const char * pszCap )
+
+{
+    if( EQUAL(pszCap, OLCCurveGeometries) )
+        return FALSE;
+    return OGRMemLayer::TestCapability(pszCap);
+}
+
+/************************************************************************/
+/*                           SyncToDisk()                               */
+/************************************************************************/
+
+OGRErr OGRGeoJSONLayer::SyncToDisk()
+{
+    poDS_->FlushCache();
+    return OGRERR_NONE;
 }
 
 /************************************************************************/
@@ -213,32 +133,53 @@ void OGRGeoJSONLayer::SetFIDColumn( const char* pszFIDColumn )
 
 void OGRGeoJSONLayer::AddFeature( OGRFeature* poFeature )
 {
-    CPLAssert( NULL != poFeature );
+    GIntBig nFID = poFeature->GetFID();
 
-    // NOTE - mloskot:
-    // Features may not be sorted according to FID values.
-
-    // TODO: Should we check if feature already exists?
-    // TODO: Think about sync operation, upload, etc.
-
-    OGRFeature* poNewFeature = NULL;
-    poNewFeature = poFeature->Clone();
-
-
-    if( -1 == poNewFeature->GetFID() )
+    // Detect potential FID duplicates and make sure they are eventually
+    // unique.
+    if( -1 == nFID )
     {
-        int nFID = static_cast<int>(seqFeatures_.size());
-        poNewFeature->SetFID( nFID );
-
-        // TODO - mlokot: We need to redesign creation of FID column
-        int nField = poNewFeature->GetFieldIndex( DefaultFIDColumn );
-        if( -1 != nField )
+        nFID = GetFeatureCount(FALSE);
+        OGRFeature* poTryFeature = NULL;
+        while( (poTryFeature = GetFeature(nFID) ) != NULL )
         {
-            poNewFeature->SetField( nField, nFID );
+            nFID++;
+            delete poTryFeature;
         }
     }
+    else
+    {
+        OGRFeature* poTryFeature = NULL;
+        if( (poTryFeature = GetFeature(nFID) ) != NULL )
+        {
+            if( !bOriginalIdModified_ )
+            {
+                CPLError(
+                    CE_Warning, CPLE_AppDefined,
+                    "Several features with id = " CPL_FRMT_GIB " have been "
+                    "found. Altering it to be unique. This warning will not "
+                    "be emitted for this layer",
+                    nFID );
+                bOriginalIdModified_ = true;
+            }
+            delete poTryFeature;
+            nFID = GetFeatureCount(FALSE);
+            while( (poTryFeature = GetFeature(nFID) ) != NULL )
+            {
+                nFID++;
+                delete poTryFeature;
+            }
+        }
+    }
+    poFeature->SetFID( nFID );
 
-    seqFeatures_.push_back( poNewFeature );
+    if( !CPL_INT64_FITS_ON_INT32(nFID) )
+        SetMetadataItem(OLMD_FID64, "YES");
+
+    SetUpdatable( true );  // Temporary toggle on updatable flag.
+    CPL_IGNORE_RET_VAL(OGRMemLayer::SetFeature(poFeature));
+    SetUpdatable( poDS_->IsUpdatable() );
+    SetUpdated( false );
 }
 
 /************************************************************************/
@@ -247,42 +188,36 @@ void OGRGeoJSONLayer::AddFeature( OGRFeature* poFeature )
 
 void OGRGeoJSONLayer::DetectGeometryType()
 {
-    if (poFeatureDefn_->GetGeomType() != wkbUnknown)
+    if( GetLayerDefn()->GetGeomType() != wkbUnknown )
         return;
 
-    OGRwkbGeometryType featType = wkbUnknown;
-    OGRGeometry* poGeometry = NULL;
-    FeaturesSeq::const_iterator it = seqFeatures_.begin();
-    FeaturesSeq::const_iterator end = seqFeatures_.end();
-    
-    if( it != end )
+    ResetReading();
+    bool bFirstGeometry = true;
+    OGRwkbGeometryType eLayerGeomType = wkbUnknown;
+    OGRFeature* poFeature = NULL;
+    while( (poFeature = GetNextFeature()) != NULL )
     {
-        poGeometry = (*it)->GetGeometryRef();
+        OGRGeometry* poGeometry = poFeature->GetGeometryRef();
         if( NULL != poGeometry )
         {
-            featType = poGeometry->getGeometryType();
-            if( featType != poFeatureDefn_->GetGeomType() )
+            OGRwkbGeometryType eGeomType = poGeometry->getGeometryType();
+            if( bFirstGeometry )
             {
-                poFeatureDefn_->SetGeomType( featType );
+                eLayerGeomType = eGeomType;
+                GetLayerDefn()->SetGeomType( eGeomType );
+                bFirstGeometry = false;
             }
-        }
-        ++it;
-    }
-
-    while( it != end )
-    {
-        poGeometry = (*it)->GetGeometryRef();
-        if( NULL != poGeometry )
-        {
-            featType = poGeometry->getGeometryType();
-            if( featType != poFeatureDefn_->GetGeomType() )
+            else if( eGeomType != eLayerGeomType )
             {
                 CPLDebug( "GeoJSON",
                     "Detected layer of mixed-geometry type features." );
-                poFeatureDefn_->SetGeomType( DefaultGeometryType );
+                GetLayerDefn()->SetGeomType( DefaultGeometryType );
+                delete poFeature;
                 break;
             }
         }
-        ++it;
+        delete poFeature;
     }
+
+    ResetReading();
 }

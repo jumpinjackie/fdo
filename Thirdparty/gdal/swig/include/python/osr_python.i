@@ -1,14 +1,15 @@
 /*
- * $Id: osr_python.i 18192 2009-12-06 19:41:32Z rouault $
+ * $Id: osr_python.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * python specific code for ogr bindings.
  */
 
-
 %feature("autodoc");
 
+#ifndef FROM_GDAL_I
 %include "python_exceptions.i"
 %include "python_strings.i"
+#endif
 
 %{
 static PyObject *
@@ -17,7 +18,7 @@ py_OPTGetProjectionMethods(PyObject *self, PyObject *args) {
     PyObject *py_MList;
     char     **papszMethods;
     int      iMethod;
-    
+
     self = self;
     args = args;
 
@@ -31,10 +32,13 @@ py_OPTGetProjectionMethods(PyObject *self, PyObject *args) {
 	PyObject *py_PList;
 	int       iParam;
 
-	papszParameters = OPTGetParameterList( papszMethods[iMethod], 
+	papszParameters = OPTGetParameterList( papszMethods[iMethod],
 					       &pszUserMethodName );
         if( papszParameters == NULL )
+        {
+            CSLDestroy( papszMethods );
             return NULL;
+        }
 
 	py_PList = PyList_New(CSLCount(papszParameters));
 	for( iParam = 0; papszParameters[iParam] != NULL; iParam++ )
@@ -43,25 +47,25 @@ py_OPTGetProjectionMethods(PyObject *self, PyObject *args) {
 	    char    *pszUserParamName;
             double  dfDefault;
 
-	    OPTGetParameterInfo( papszMethods[iMethod], 
-				 papszParameters[iParam], 
-				 &pszUserParamName, 
+	    OPTGetParameterInfo( papszMethods[iMethod],
+				 papszParameters[iParam],
+				 &pszUserParamName,
 				 &pszType, &dfDefault );
-	    PyList_SetItem(py_PList, iParam, 
-			   Py_BuildValue("(sssd)", 
-					 papszParameters[iParam], 
-					 pszUserParamName, 
+	    PyList_SetItem(py_PList, iParam,
+			   Py_BuildValue("(sssd)",
+					 papszParameters[iParam],
+					 pszUserParamName,
                                          pszType, dfDefault ));
 	}
-	
+
 	CSLDestroy( papszParameters );
 
-	PyList_SetItem(py_MList, iMethod, 
-		       Py_BuildValue("(ssO)", 
-		                     papszMethods[iMethod], 
-				     pszUserMethodName, 
+	PyList_SetItem(py_MList, iMethod,
+		       Py_BuildValue("(ssO)",
+		                     papszMethods[iMethod],
+				     pszUserMethodName,
 		                     py_PList));
-        
+
         Py_XDECREF( py_PList );
     }
 

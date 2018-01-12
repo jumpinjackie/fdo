@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrgrassdriver.cpp 12396 2007-10-13 10:02:17Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRGRASSDriver class.
@@ -31,7 +30,7 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrgrassdriver.cpp 12396 2007-10-13 10:02:17Z rouault $");
+CPL_CVSID("$Id: ogrgrassdriver.cpp 36368 2016-11-21 01:47:49Z rouault $");
 
 /************************************************************************/
 /*                          ~OGRGRASSDriver()                           */
@@ -45,7 +44,7 @@ OGRGRASSDriver::~OGRGRASSDriver()
 /************************************************************************/
 const char *OGRGRASSDriver::GetName()
 {
-    return "GRASS";
+    return "OGR_GRASS";
 }
 
 /************************************************************************/
@@ -54,9 +53,7 @@ const char *OGRGRASSDriver::GetName()
 OGRDataSource *OGRGRASSDriver::Open( const char * pszFilename,
                                      int bUpdate )
 {
-    OGRGRASSDataSource  *poDS;
-
-    poDS = new OGRGRASSDataSource();
+    OGRGRASSDataSource  *poDS = new OGRGRASSDataSource();
 
     if( !poDS->Open( pszFilename, bUpdate, TRUE ) )
     {
@@ -70,32 +67,9 @@ OGRDataSource *OGRGRASSDriver::Open( const char * pszFilename,
 }
 
 /************************************************************************/
-/*                          CreateDataSource()                          */
-/************************************************************************/
-OGRDataSource *OGRGRASSDriver::CreateDataSource( const char * pszName,
-                                                 char **papszOptions )
-{
-    CPLError( CE_Failure, CPLE_AppDefined, 
-	      "CreateDataSource is not supported by GRASS driver.\n" );
-            
-    return NULL;
-}
-
-/************************************************************************/
-/*                          DeleteDataSource()                          */
-/************************************************************************/
-OGRErr OGRGRASSDriver::DeleteDataSource( const char *pszDataSource )
-{
-    CPLError( CE_Failure, CPLE_AppDefined,
-	      "DeleteDataSource is not supported by GRASS driver" );
-
-    return OGRERR_FAILURE;
-}
-
-/************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
-int OGRGRASSDriver::TestCapability( const char * pszCap )
+int OGRGRASSDriver::TestCapability( const char * /*pszCap*/ )
 {
     return FALSE;
 }
@@ -107,6 +81,16 @@ void RegisterOGRGRASS()
 {
     if (! GDAL_CHECK_VERSION("OGR/GRASS driver"))
         return;
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRGRASSDriver );
-}
 
+    if( GDALGetDriverByName( "OGR_GRASS" ) != NULL )
+        return;
+
+    OGRGRASSDriver *poDriver = new OGRGRASSDriver();
+
+    poDriver->SetDescription( "GRASS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "GRASS Vectors (5.7+)" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_grass.html" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+}

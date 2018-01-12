@@ -1,4 +1,4 @@
-# $Id: GNUmakefile 16755 2009-04-09 20:38:33Z chaitanya $
+# $Id: GNUmakefile 35922 2016-10-25 05:46:08Z goatbar $
 #
 # Makefile to build libpng using GNU Make and GCC.
 #
@@ -31,11 +31,13 @@ else
 OBJ	=	pngdataset.o
 endif
 
-ifeq ($(LIBZ_SETTING),internal) 
+ifeq ($(LIBZ_SETTING),internal)
 XTRA_OPT	:=	$(XTRA_OPT) -I../zlib
 endif
 
-CPPFLAGS	:=	$(XTRA_OPT) $(GDAL_INCLUDE) $(CPPFLAGS)
+CPPFLAGS	:=	$(XTRA_OPT)  $(CPPFLAGS)
+# Enable this to compile with -Wextra -Werror and get around the jump complaint.
+# CPPFLAGS += -Wno-clobbered
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 
@@ -43,7 +45,7 @@ clean:
 	rm -f *.o libpng/*.o $(O_OBJ)
 
 ../o/%.$(OBJ_EXT):	libpng/%.c
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -c $(CPPFLAGS) $(CFLAGS_NOFTRAPV) $< -o $@
 
 all:	$(OBJ:.o=.$(OBJ_EXT))
 

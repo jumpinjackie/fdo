@@ -21,6 +21,8 @@
 #include "jinclude.h"
 #include "jpeglib.h"
 
+#include "cpl_port.h"
+
 #ifdef QUANT_2PASS_SUPPORTED
 
 
@@ -222,7 +224,7 @@ typedef my_cquantizer * my_cquantize_ptr;
 
 METHODDEF(void)
 prescan_quantize (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
-		  JSAMPARRAY output_buf, int num_rows)
+		  CPL_UNUSED JSAMPARRAY output_buf, int num_rows)
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   register JSAMPROW ptr;
@@ -529,9 +531,9 @@ compute_color (j_decompress_ptr cinfo, boxptr boxp, int icolor)
       }
     }
   
-  cinfo->colormap[0][icolor] = (JSAMPLE) ((c0total + (total>>1)) / total);
-  cinfo->colormap[1][icolor] = (JSAMPLE) ((c1total + (total>>1)) / total);
-  cinfo->colormap[2][icolor] = (JSAMPLE) ((c2total + (total>>1)) / total);
+  cinfo->colormap[0][icolor] = (JSAMPLE) ((total) ? ((c0total + (total>>1)) / total) : 0);
+  cinfo->colormap[1][icolor] = (JSAMPLE) ((total) ? ((c1total + (total>>1)) / total) : 0);
+  cinfo->colormap[2][icolor] = (JSAMPLE) ((total) ? ((c2total + (total>>1)) / total) : 0);
 }
 
 
@@ -1028,7 +1030,7 @@ pass2_fs_dither (j_decompress_ptr cinfo,
       /* If we have not seen this color before, find nearest colormap */
       /* entry and update the cache */
       if (*cachep == 0)
-	fill_inverse_cmap(cinfo, cur0>>C0_SHIFT,cur1>>C1_SHIFT,cur2>>C2_SHIFT);
+	fill_inverse_cmap(cinfo, (int)(cur0>>C0_SHIFT),(int)(cur1>>C1_SHIFT),(int)(cur2>>C2_SHIFT));
       /* Now emit the colormap index for this cell */
       { register int pixcode = *cachep - 1;
 	*outptr = (JSAMPLE) pixcode;
@@ -1153,7 +1155,7 @@ finish_pass1 (j_decompress_ptr cinfo)
 
 
 METHODDEF(void)
-finish_pass2 (j_decompress_ptr cinfo)
+finish_pass2 (CPL_UNUSED j_decompress_ptr cinfo)
 {
   /* no work */
 }

@@ -1,13 +1,14 @@
 /******************************************************************************
  * File :    PostGISRasterDriver.cpp
  * Project:  PostGIS Raster driver
- * Purpose:  Implements PostGIS Raster driver class methods 
+ * Purpose:  Implements PostGIS Raster driver class methods
  * Author:   Jorge Arevalo, jorge.arevalo@deimos-space.com
- * 
- * Last changes: $Id: $
+ *
+ * Last changes: $Id: postgisrasterdriver.cpp 35897 2016-10-24 11:54:24Z goatbar $
  *
  ******************************************************************************
  * Copyright (c) 2010, Jorge Arevalo, jorge.arevalo@deimos-space.com
+ * Copyright (c) 2013, Even Rouault
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,73 +29,70 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 #include "postgisraster.h"
-#include "cpl_string.h"
+#include "cpl_multiproc.h"
+
+CPL_CVSID("$Id: postgisrasterdriver.cpp 35897 2016-10-24 11:54:24Z goatbar $");
 
 /************************
  * \brief Constructor
  ************************/
-PostGISRasterDriver::PostGISRasterDriver() {
-    papoConnection = NULL;
-    nRefCount = 0;
-}
+PostGISRasterDriver::PostGISRasterDriver() :
+    hMutex(NULL)
+{}
 
 /************************
  * \brief Destructor
  ************************/
 PostGISRasterDriver::~PostGISRasterDriver() {
-    int i = 0;
 
-    for (i = 0; i < nRefCount; i++) {
-        /*
-         * Segmentation fault here. Tested CPLFree and delete. Same result
-         */
-        if (papoConnection[i]) {
-            PQfinish(papoConnection[i]);
-        }
-
-    }
-
-    if (papoConnection)
-        CPLFree(papoConnection);
+    if( hMutex != NULL )
+        CPLDestroyMutex(hMutex);
+    std::map<CPLString, PGconn*>::iterator oIter = oMapConnection.begin();
+    for(; oIter != oMapConnection.end(); ++oIter )
+        PQfinish(oIter->second);
 }
 
 /***************************************************************************
  * \brief Create a PQconn object and store it in a list
- * 
- * The PostGIS Raster driver keeps the connection with the PostgreSQL database
- * server for as long it leaves. Following PostGISRasterDataset instance 
- * can re-use the existing connection as long it used the same database, 
- * same user name, same password and same port.
  *
- * The PostGIS Raster driver will keep a list of all the successful 
+ * The PostGIS Raster driver keeps the connection with the PostgreSQL database
+ * server for as long it leaves. Following PostGISRasterDataset instance
+ * can re-use the existing connection as long it used the same database,
+ * same host, port and user name.
+ *
+ * The PostGIS Raster driver will keep a list of all the successful
  * connections so, when connection is requested and it does not exist
- * on the list a new one will be instantiated, added to the list and 
+ * on the list a new one will be instantiated, added to the list and
  * returned to the caller.
  *
  * All connection will be destroyed when the PostGISRasterDriver is destroyed.
  *
  ***************************************************************************/
 PGconn* PostGISRasterDriver::GetConnection(const char* pszConnectionString,
-        const char * pszHostIn, const char * pszPortIn, const char * pszUserIn,
-        const char * pszPasswordIn) {
-    int i = 0;
+        const char * pszDbnameIn, const char * pszHostIn, const char * pszPortIn, const char * pszUserIn)
+{
     PGconn * poConn = NULL;
 
-    /**
-     * Look for an existing connection in the list
-     **/
-    for (i = 0; i < nRefCount; i++) {
-        CPLDebug("PostGIS_Raster", "PostGISRasterDriver::GetConnection(): "
-            "User: %s\nPassword: %s\nHost: %s\nPort: %s", pszUserIn,
-            pszPasswordIn, pszHostIn, pszPortIn);
-        if (EQUAL(pszUserIn, PQuser(papoConnection[i])) &&
-                EQUAL(pszPasswordIn, PQpass(papoConnection[i])) &&
-                EQUAL(pszHostIn, PQhost(papoConnection[i])) &&
-                EQUAL(pszPortIn, PQport(papoConnection[i]))) {
-            return papoConnection[i];
-        }
+    if( pszHostIn == NULL ) pszHostIn = "(null)";
+    if( pszPortIn == NULL ) pszPortIn = "(null)";
+    if( pszUserIn == NULL ) pszUserIn = "(null)";
+    CPLString osKey = pszDbnameIn;
+    osKey += "-";
+    osKey += pszHostIn;
+    osKey += "-";
+    osKey += pszPortIn;
+    osKey += "-";
+    osKey += pszUserIn;
+    osKey += "-";
+    osKey += CPLSPrintf(CPL_FRMT_GIB, CPLGetPID());
 
-    }
+    /**
+     * Look for an existing connection in the map
+     **/
+    CPLMutexHolderD(&hMutex);
+    std::map<CPLString, PGconn*>::iterator oIter = oMapConnection.find(osKey);
+    if( oIter != oMapConnection.end() )
+        return oIter->second;
 
     /**
      * There's no existing connection. Create a new one.
@@ -102,30 +100,15 @@ PGconn* PostGISRasterDriver::GetConnection(const char* pszConnectionString,
     poConn = PQconnectdb(pszConnectionString);
     if (poConn == NULL ||
             PQstatus(poConn) == CONNECTION_BAD) {
-        CPLError(CE_Failure, CPLE_AppDefined, "PGconnectcb failed: %s\n",
+        CPLError(CE_Failure, CPLE_AppDefined, "PQconnectdb failed: %s\n",
                 PQerrorMessage(poConn));
         PQfinish(poConn);
         return NULL;
     }
 
     /**
-     * Save connection in connection list.
+     * Save connection in the connection map.
      **/
-    nRefCount++;
-    papoConnection = (PGconn**) CPLRealloc(papoConnection,
-            sizeof (PGconn*) * nRefCount);
-    if (NULL != papoConnection) {
-        papoConnection[nRefCount - 1] = poConn;
-        return poConn;
-    }
-    else {
-        CPLError(CE_Failure, CPLE_AppDefined, "Reallocation for new connection\
-                        failed.\n");
-        PQfinish(poConn);
-        return NULL;
-    }
-
+    oMapConnection[osKey] = poConn;
+    return poConn;
 }
-
-
-

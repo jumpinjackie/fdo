@@ -1,10 +1,8 @@
-
-
 include ../../../GDALmake.opt
 
 OBJ	=	ogrbnadriver.o ogrbnadatasource.o ogrbnalayer.o ogrbnaparser.o
 
-CPPFLAGS	:=	-I.. -I../.. $(GDAL_INCLUDE) $(CPPFLAGS)
+CPPFLAGS	:=	-I.. -I../..  $(CPPFLAGS)
 
 default:	$(O_OBJ:.o=.$(OBJ_EXT))
 

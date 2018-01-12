@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogrsqlite3ext.h 24824 2012-08-22 11:43:07Z rouault $
+ * $Id: ogrsqlite3ext.h 34524 2016-07-03 02:47:25Z goatbar $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Custom version of sqlite3ext.h to workaround issues with Spatialite amalgamation
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -223,6 +223,7 @@
 #undef sqlite3_vtab_config
 #undef sqlite3_vtab_on_conflict
 
+typedef struct sqlite3_backup ogr_sqlite3_backup;
 
 /*
 ** 2006 June 7
@@ -238,11 +239,11 @@
 ** This header file defines the SQLite interface for use by
 ** shared libraries that want to be imported as extensions into
 ** an SQLite instance.  Shared libraries that intend to be loaded
-** as extensions by SQLite should #include this file instead of 
+** as extensions by SQLite should #include this file instead of
 ** sqlite3.h.
 */
-#ifndef _SQLITE3EXT_H_
-#define _SQLITE3EXT_H_
+#ifndef SQLITE3EXT_H_
+#define SQLITE3EXT_H_
 
 // Commented out to avoid reimporting the #define sqlite3_xxx macros
 //#include "sqlite3.h"
@@ -436,11 +437,11 @@ struct sqlite3_api_routines {
   sqlite3_stmt *(*next_stmt)(sqlite3*,sqlite3_stmt*);
   const char *(*sql)(sqlite3_stmt*);
   int (*status)(int,int*,int*,int);
-  int (*backup_finish)(sqlite3_backup*);
-  sqlite3_backup *(*backup_init)(sqlite3*,const char*,sqlite3*,const char*);
-  int (*backup_pagecount)(sqlite3_backup*);
-  int (*backup_remaining)(sqlite3_backup*);
-  int (*backup_step)(sqlite3_backup*,int);
+  int (*backup_finish)(ogr_sqlite3_backup*);
+  ogr_sqlite3_backup *(*backup_init)(sqlite3*,const char*,sqlite3*,const char*);
+  int (*backup_pagecount)(ogr_sqlite3_backup*);
+  int (*backup_remaining)(ogr_sqlite3_backup*);
+  int (*backup_step)(ogr_sqlite3_backup*,int);
   const char *(*compileoption_get)(int);
   int (*compileoption_used)(const char*);
   int (*create_function_v2)(sqlite3*,const char*,int,int,void*,
@@ -468,7 +469,7 @@ struct sqlite3_api_routines {
 
 /*
 ** The following macros redefine the API routines so that they are
-** redirected throught the global sqlite3_api structure.
+** redirected through the global sqlite3_api structure.
 **
 ** This header file is also used by the loadext.c source file
 ** (part of the main SQLite library - not an extension) so that
@@ -669,7 +670,7 @@ struct sqlite3_api_routines {
 #define sqlite3_vtab_on_conflict       sqlite3_api->vtab_on_conflict
 #endif /* SQLITE_CORE */
 
-#define SQLITE_EXTENSION_INIT1     const sqlite3_api_routines *sqlite3_api = 0;
+#define SQLITE_EXTENSION_INIT1     const sqlite3_api_routines *sqlite3_api = NULL;
 #define SQLITE_EXTENSION_INIT2(v)  sqlite3_api = v;
 
-#endif /* _SQLITE3EXT_H_ */
+#endif /* SQLITE3EXT_H_ */

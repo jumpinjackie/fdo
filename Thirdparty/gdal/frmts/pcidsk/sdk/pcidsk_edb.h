@@ -25,8 +25,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_EDB_H
-#define __INCLUDE_PCIDSK_EDB_H
+#ifndef INCLUDE_PCIDSK_EDB_H
+#define INCLUDE_PCIDSK_EDB_H
 
 #include "pcidsk_config.h"
 
@@ -59,8 +59,8 @@ namespace PCIDSK
         virtual int WriteBlock( int channel, int block_index, void *buffer) = 0;
     };
 
-    EDBFile PCIDSK_DLL *DefaultOpenEDB(std::string filename, 
-                                       std::string access);    
+    EDBFile PCIDSK_DLL *DefaultOpenEDB(const std::string& filename, 
+                                       const std::string& access);    
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_PCIDSK_EDB_H
+#endif // INCLUDE_PCIDSK_EDB_H

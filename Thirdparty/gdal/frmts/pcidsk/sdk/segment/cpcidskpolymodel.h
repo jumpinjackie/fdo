@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H
-#define __INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H
+#ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H
+#define INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H
  
 #include "pcidsk_poly.h"
 #include "segment/cpcidsksegment.h"
@@ -40,28 +40,28 @@ namespace PCIDSK {
         CPCIDSKPolyModelSegment(PCIDSKFile *file, int segment,const char *segment_pointer);
         ~CPCIDSKPolyModelSegment();
         
-        std::vector<double> GetXForwardCoefficients() const;
-        std::vector<double> GetYForwardCoefficients() const;
-        std::vector<double> GetXBackwardCoefficients() const;
-        std::vector<double> GetYBackwardCoefficients() const;
+        std::vector<double> GetXForwardCoefficients() const override;
+        std::vector<double> GetYForwardCoefficients() const override;
+        std::vector<double> GetXBackwardCoefficients() const override;
+        std::vector<double> GetYBackwardCoefficients() const override;
 
         void SetCoefficients(const std::vector<double>& oXForward,
                              const std::vector<double>& oYForward,
                              const std::vector<double>& oXBackward,
-                             const std::vector<double>& oYBackward) ;
+                             const std::vector<double>& oYBackward) override ;
 
-        unsigned int GetLines() const;
-        unsigned int GetPixels() const;
-        void SetRasterSize(unsigned int nLines,unsigned int nPixels) ;
+        unsigned int GetLines() const override;
+        unsigned int GetPixels() const override;
+        void SetRasterSize(unsigned int nLines,unsigned int nPixels) override ;
 
-        std::string GetGeosysString() const;
-        void SetGeosysString(const std::string& oGeosys) ;
+        std::string GetGeosysString() const override;
+        void SetGeosysString(const std::string& oGeosys) override ;
 
-        std::vector<double> GetProjParmInfo() const;
-        void SetProjParmInfo(const std::vector<double>& oInfo) ;
+        std::vector<double> GetProjParmInfo() const override;
+        void SetProjParmInfo(const std::vector<double>& oInfo) override ;
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
         // Helper housekeeping functions
         void Load();
@@ -74,4 +74,4 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H
+#endif // INCLUDE_PCIDSK_SEGMENT_PCIDSKPOLYMODEL_H

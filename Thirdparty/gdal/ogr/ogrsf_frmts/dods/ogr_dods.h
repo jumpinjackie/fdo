@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_dods.h 20634 2010-09-16 22:02:29Z rouault $
+ * $Id: ogr_dods.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private definitions for OGR/DODS driver.
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_DODS_H_INCLUDED
-#define _OGR_DODS_H_INCLUDED
+#ifndef OGR_DODS_H_INCLUDED
+#define OGR_DODS_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include "cpl_error.h"
@@ -41,39 +41,7 @@
 #include <algorithm>
 #include <exception>
 
-#define DEFAULT_BASETYPE_FACTORY
-
-// #define DODS_DEBUG 1
-#include <debug.h>
-
-#include <BaseType.h>		// DODS
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Url.h>
-#include <Array.h>
-#include <Structure.h>
-#include <Sequence.h>
-#include <Grid.h>
-
-#ifdef LIBDAP_310
-/* AISConnect.h/AISConnect class was renamed to Connect.h/Connect in libdap 3.10 */
-#include <Connect.h>
-#define AISConnect Connect
-#else
-#include <AISConnect.h>
-#endif
-
-#include <DDS.h>
-#include <DAS.h>
-#include <BaseTypeFactory.h>
-#include <Error.h>
-#include <escaping.h>
+#include "libdap_headers.h"
 
 using namespace libdap;
 
@@ -84,21 +52,21 @@ class OGRDODSFieldDefn {
 public:
     OGRDODSFieldDefn();
     ~OGRDODSFieldDefn();
-    
-    int Initialize( AttrTable *, 
-                    BaseType *poTarget = NULL, BaseType *poSuperSeq = NULL );
-    int Initialize( const char *, const char * = "das",
-                    BaseType *poTarget = NULL, BaseType *poSuperSeq = NULL );
 
-    int  bValid;
+    bool Initialize( AttrTable *,
+                     BaseType *poTarget = NULL, BaseType *poSuperSeq = NULL );
+    bool Initialize( const char *, const char * = "das",
+                     BaseType *poTarget = NULL, BaseType *poSuperSeq = NULL );
+
+    bool bValid;
     char *pszFieldName;
     char *pszFieldScope;
     int  iFieldIndex;
     char *pszFieldValue;
     char *pszPathToSequence;
 
-    int  bRelativeToSuperSequence;
-    int  bRelativeToSequence;
+    bool bRelativeToSuperSequence;
+    bool bRelativeToSequence;
 };
 
 /************************************************************************/
@@ -106,7 +74,7 @@ public:
 /************************************************************************/
 
 class OGRDODSDataSource;
-    
+
 class OGRDODSLayer : public OGRLayer
 {
   protected:
@@ -126,36 +94,38 @@ class OGRDODSLayer : public OGRLayer
 
     OGRDODSFieldDefn  **papoFields;
 
-    virtual int         ProvideDataDDS();
-    int                 bDataLoaded;
+    virtual bool        ProvideDataDDS();
+    bool                bDataLoaded;
 
     AISConnect         *poConnection;
     DataDDS            *poDataDDS;
 
     BaseType           *poTargetVar;
-    
+
     AttrTable          *poOGRLayerInfo;
 
-    int                 bKnowExtent;
+    bool                bKnowExtent;
     OGREnvelope         sExtent;
 
   public:
-                        OGRDODSLayer( OGRDODSDataSource *poDS, 
+                        OGRDODSLayer( OGRDODSDataSource *poDS,
                                       const char *pszTarget,
                                       AttrTable *poAttrInfo );
     virtual             ~OGRDODSLayer();
 
-    virtual void        ResetReading();
+    virtual void        ResetReading() override;
 
-    virtual OGRFeature *GetNextFeature();
+    virtual OGRFeature *GetNextFeature() override;
 
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRSpatialReference *GetSpatialRef();
+    virtual OGRSpatialReference *GetSpatialRef() override;
 
-    virtual int         TestCapability( const char * );
+    virtual int         TestCapability( const char * ) override;
 
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE);
+    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
+                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
 };
 
 /************************************************************************/
@@ -176,32 +146,32 @@ private:
     int                 iLastSuperSeq;
 
     int                 nRecordCount; /* -1 if not yet known */
-    int                 nSuperSeqCount; 
+    int                 nSuperSeqCount;
     int                *panSubSeqSize;
 
     double              GetFieldValueAsDouble( OGRDODSFieldDefn *, int );
     BaseType           *GetFieldValue( OGRDODSFieldDefn *, int,
                                        Sequence * );
 
-    double              BaseTypeToDouble( BaseType * );
-    
-    int                 BuildFields( BaseType *, const char *, 
+    static double              BaseTypeToDouble( BaseType * );
+
+    bool                BuildFields( BaseType *, const char *,
                                      const char * );
 
     Sequence           *FindSuperSequence( BaseType * );
 
 protected:
-    virtual int         ProvideDataDDS();
+    virtual bool        ProvideDataDDS() override;
 
 public:
-                        OGRDODSSequenceLayer( OGRDODSDataSource *poDS, 
+                        OGRDODSSequenceLayer( OGRDODSDataSource *poDS,
                                               const char *pszTarget,
                                               AttrTable *poAttrInfo );
     virtual             ~OGRDODSSequenceLayer();
 
-    virtual OGRFeature *GetFeature( long nFeatureId );
-    
-    virtual int         GetFeatureCount( int );
+    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
+
+    virtual GIntBig     GetFeatureCount( int ) override;
 };
 
 /************************************************************************/
@@ -211,7 +181,7 @@ public:
 class OGRDODSDim
 {
 public:
-    OGRDODSDim() { 
+    OGRDODSDim() {
         pszDimName = NULL;
         nDimStart = 0;
         nDimEnd = 0;
@@ -239,7 +209,7 @@ public:
 class OGRDODSArrayRef
 {
 public:
-    OGRDODSArrayRef() { 
+    OGRDODSArrayRef() {
         pszName = NULL;
         iFieldIndex = -1;
         poArray = NULL;
@@ -272,25 +242,22 @@ class OGRDODSGridLayer : public OGRDODSLayer
     OGRDODSDim         *paoDimensions;
     int                 nMaxRawIndex;
 
-    void               *pRawData;
-
-    int                 ArrayEntryToField( Array *poArray, void *pRawData, 
+    static bool                ArrayEntryToField( Array *poArray, void *pRawData,
                                            int iArrayIndex,
-                                           OGRFeature *poFeature, int iField);
-								       
+                                           OGRFeature *poFeature, int iField );
+
 protected:
-    virtual int         ProvideDataDDS();
+    virtual bool        ProvideDataDDS() override;
 
 public:
-                        OGRDODSGridLayer( OGRDODSDataSource *poDS, 
+                        OGRDODSGridLayer( OGRDODSDataSource *poDS,
                                          const char *pszTarget,
                                          AttrTable *poAttrInfo );
     virtual             ~OGRDODSGridLayer();
 
-    virtual OGRFeature *GetFeature( long nFeatureId );
-    
-    virtual int         GetFeatureCount( int );
+    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
 
+    virtual GIntBig     GetFeatureCount( int ) override;
 };
 
 /************************************************************************/
@@ -301,7 +268,7 @@ class OGRDODSDataSource : public OGRDataSource
 {
     OGRDODSLayer        **papoLayers;
     int                 nLayers;
-    
+
     char               *pszName;
 
     void                AddLayer( OGRDODSLayer * );
@@ -324,11 +291,11 @@ class OGRDODSDataSource : public OGRDataSource
 
     int                 Open( const char * );
 
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -339,17 +306,15 @@ class OGRDODSDriver : public OGRSFDriver
 {
   public:
                 ~OGRDODSDriver();
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-    int                 TestCapability( const char * );
+    const char *GetName() override;
+    OGRDataSource *Open( const char *, int ) override;
+    int                 TestCapability( const char * ) override;
 };
 
 string OGRDODSGetVarPath( BaseType * );
 int  OGRDODSGetVarIndex( Sequence *poParent, string oVarName );
 
-int  OGRDODSIsFloatInvalid( const float * );
-int  OGRDODSIsDoubleInvalid( const double * );
+bool OGRDODSIsFloatInvalid( const float * );
+bool OGRDODSIsDoubleInvalid( const double * );
 
-#endif /* ndef _OGR_DODS_H_INCLUDED */
-
-
+#endif /* ndef OGR_DODS_H_INCLUDED */

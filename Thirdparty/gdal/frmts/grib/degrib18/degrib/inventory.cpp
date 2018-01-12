@@ -83,7 +83,7 @@ void GRIB2InventoryFree (inventoryType *inv)
  *
  * PURPOSE
  *   Prints to standard out, an inventory of the file, assuming one has an
- * array of invenories of single grib messages.
+ * array of inventories of single GRIB messages.
  *
  * ARGUMENTS
  *    Inv = Pointer to an Array of inventories to print. (Input)
@@ -121,13 +121,13 @@ void GRIB2InventoryPrint (inventoryType *Inv, uInt4 LenInv)
       delta = (Inv[i].validTime - Inv[i].refTime) / 3600.;
       delta = myRound (delta, 2);
       if (Inv[i].comment == NULL) {
-         printf ("%d.%d, %d, %d, %s, %s, %s, %s, %.2f\n",
+         printf ("%u.%u, %d, %d, %s, %s, %s, %s, %.2f\n",
                  Inv[i].msgNum, Inv[i].subgNum, Inv[i].start,
                  Inv[i].GribVersion, Inv[i].element, Inv[i].shortFstLevel,
                  refTime, validTime, delta);
          fflush (stdout);
       } else {
-         printf ("%d.%d, %d, %d, %s=\"%s\", %s, %s, %s, %.2f\n",
+         printf ("%u.%u, %d, %d, %s=\"%s\", %s, %s, %s, %.2f\n",
                  Inv[i].msgNum, Inv[i].subgNum, Inv[i].start,
                  Inv[i].GribVersion, Inv[i].element, Inv[i].comment,
                  Inv[i].shortFstLevel, refTime, validTime, delta);
@@ -242,7 +242,9 @@ static int InventoryParseTime (char *is, double *AnsTime)
  *   May want to put this in degrib2.c
  *****************************************************************************
  */
-static int GRIB2SectToBuffer (DataSource &fp, uInt4 gribLen, sChar *sect,
+static int GRIB2SectToBuffer (DataSource &fp,
+                              uInt4 gribLen,
+                              sChar *sect,
                               uInt4 *secLen, uInt4 *buffLen, char **buff)
 {
    char *buffer = *buff; /* Local ptr to buff to reduce ptr confusion. */
@@ -255,9 +257,20 @@ static int GRIB2SectToBuffer (DataSource &fp, uInt4 gribLen, sChar *sect,
       }
       return -1;
    }
+   if( *secLen < sizeof(sInt4) || *secLen > gribLen )
+   {
+       errSprintf ("ERROR: Wrong secLen in GRIB2SectToBuffer\n");
+       return -1;
+   }
    if (*buffLen < *secLen) {
+      char* buffnew = (char *) realloc ((void *) *buff, *secLen * sizeof (char));
+      if( buffnew == NULL )
+      {
+           errSprintf ("ERROR: Ran out of memory in GRIB2SectToBuffer\n");
+           return -1;
+      }
       *buffLen = *secLen;
-      *buff = (char *) realloc ((void *) *buff, *buffLen * sizeof (char));
+      *buff = buffnew;
       buffer = *buff;
    }
 
@@ -273,7 +286,7 @@ static int GRIB2SectToBuffer (DataSource &fp, uInt4 gribLen, sChar *sect,
    if (*sect == -1) {
       *sect = buffer[5 - 5];
    } else if (buffer[5 - 5] != *sect) {
-      errSprintf ("ERROR: Section %d misslabeled\n", *sect);
+      errSprintf ("ERROR: Section %d mislabeled\n", *sect);
       return -2;
    }
    return 0;
@@ -314,7 +327,8 @@ static int GRIB2SectToBuffer (DataSource &fp, uInt4 gribLen, sChar *sect,
  *   May want to put this in degrib2.c
  *****************************************************************************
  */
-static int GRIB2SectJump (DataSource &fp, sInt4 gribLen, sChar *sect, uInt4 *secLen)
+static int GRIB2SectJump (DataSource &fp,
+                          CPL_UNUSED sInt4 gribLen, sChar *sect, uInt4 *secLen)
 {
    char sectNum;        /* Validates that we are on the correct section. */
    int c;               /* Check that the fseek is still inside the file. */
@@ -338,17 +352,17 @@ static int GRIB2SectJump (DataSource &fp, sInt4 gribLen, sChar *sect, uInt4 *sec
    if (*sect == -1) {
       *sect = sectNum;
    } else if (sectNum != *sect) {
-      errSprintf ("ERROR: Section %d misslabeled\n", *sect);
-      return -2;
+       errSprintf ("ERROR: Section %d mislabeled\n", *sect);
+       return -2;
    }
-   /* Since fseek does not give an error if we jump outside the file, we test 
+   /* Since fseek does not give an error if we jump outside the file, we test
     * it by using fgetc / ungetc. */
    fp.DataSourceFseek (*secLen - 5, SEEK_CUR);
    if ((c = fp.DataSourceFgetc()) == EOF) {
-      errSprintf ("ERROR: Ran out of file in Section %d\n", *sect);
-      return -1;
+       errSprintf ("ERROR: Ran out of file in Section %d\n", *sect);
+       return -1;
    } else {
-		 fp.DataSourceUngetc(c);
+       fp.DataSourceUngetc(c);
    }
    return 0;
 }
@@ -413,16 +427,19 @@ static int GRIB2Inventory2to7 (sChar sectNum, DataSource &fp, sInt4 gribLen,
    uChar cat;           /* General category of Meteo Product. */
    unsigned short int templat; /* The section 4 template number. */
    uChar subcat;        /* Specific subcategory of Product. */
+   uChar genProcess;    /* What type of generate process (Analysis,
+                           Forecast, Probability Forecast, etc). */
    uChar fstSurfType;   /* Type of the first fixed surface. */
    double fstSurfValue; /* Value of first fixed surface. */
    sInt4 value;         /* The scaled value from GRIB2 file. */
    sChar factor;        /* The scaled factor from GRIB2 file */
-   sChar scale;         /* Surface scale as opposed to probility factor. */
+   sChar scale;         /* Surface scale as opposed to probability factor. */
    uChar sndSurfType;   /* Type of the second fixed surface. */
    double sndSurfValue; /* Value of second fixed surface. */
    sChar f_sndValue;    /* flag if SndValue is valid. */
+   sChar f_fstValue;    /* flag if FstValue is valid. */
    uChar timeRangeUnit;
-   sInt4 lenTime;       /* Used by parseTime to tell difference betweeen 8hr
+   sInt4 lenTime;       /* Used by parseTime to tell difference between 8hr
                          * average and 1hr average ozone. */
    uChar genID;         /* The Generating process ID (used for GFS MOS) */
    uChar probType;      /* The probability type */
@@ -441,7 +458,7 @@ static int GRIB2Inventory2to7 (sChar sectNum, DataSource &fp, sInt4 gribLen,
          return -6;
       }
       if ((sectNum != 2) && (sectNum != 3)) {
-         errSprintf ("ERROR: Section 2 or 3 misslabeled\n");
+         errSprintf ("ERROR: Section 2 or 3 mislabeled\n");
          return -5;
       } else if (sectNum == 2) {
          /* Jump past section 3. */
@@ -472,14 +489,16 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
        && (templat != GS4_PROBABIL_PNT) && (templat != GS4_STATISTIC)
        && (templat != GS4_PROBABIL_TIME) && (templat != GS4_PERCENTILE)
        && (templat != GS4_ENSEMBLE_STAT)
+       && (templat != GS4_STATISTIC_SPATIAL_AREA)
        && (templat != GS4_RADAR) && (templat != GS4_SATELLITE)
        && (templat != GS4_DERIVED_INTERVAL)) {
       errSprintf ("This was only designed for templates 0, 1, 2, 5, 8, 9, "
-                  "10, 11, 12, 20, 30\n");
+                  "10, 11, 12, 15, 20, 30. Template found = %d\n", templat);
       return -8;
    }
    cat = (*buffer)[10 - 5];
    subcat = (*buffer)[11 - 5];
+   genProcess = (*buffer)[12 - 5];
    genID = 0;
    probType = 0;
    lowerProb = 0;
@@ -496,7 +515,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       /* Compute forecast time. */
       foreTimeUnit = (*buffer)[18 - 5];
       MEMCPY_BIG (&foreTime, *buffer + 19 - 5, sizeof (sInt4));
-      if (ParseSect4Time2sec (foreTime, foreTimeUnit, &(inv->foreSec)) != 0) {
+      if (ParseSect4Time2sec (/*inv->refTime, */foreTime, foreTimeUnit, &(inv->foreSec)) != 0) {
          errSprintf ("unable to convert TimeUnit: %d \n", foreTimeUnit);
          return -8;
       }
@@ -644,69 +663,32 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       timeRangeUnit = 1;
    } else {
       printf ("Can't handle this timeRangeUnit\n");
-      myAssert (timeRangeUnit == 1);
+      //myAssert (timeRangeUnit == 1);
+      return -8;
    }
    if (lenTime == GRIB2MISSING_s4) {
       lenTime = 0;
    }
-   /* Find out what the name of this variable is. */
-   ParseElemName (center, subcenter, prodType, templat, cat, subcat,
-                  lenTime, timeIncrType, genID, probType, lowerProb,
-                  upperProb, &(inv->element), &(inv->comment),
-                  &(inv->unitName), &convert, percentile);
-/*
-   if (strcmp (element, "") == 0) {
-      mallocSprintf (&(inv->element), "unknown");
-      mallocSprintf (&(inv->unitName), "[%s]", unitName);
-      if (strcmp (comment, "unknown") == 0) {
-         mallocSprintf (&(inv->comment), "(prodType %d, cat %d, subcat %d)"
-                        " [%s]", prodType, cat, subcat, unitName);
-      } else {
-         mallocSprintf (&(inv->comment), "%s [%s]", comment, unitName);
-      }
-   } else {
-      if (IsData_MOS (center, subcenter)) {
-         * See : http://www.nco.ncep.noaa.gov/pmb/docs/on388/tablea.html *
-         if (genID == 96) {
-            inv->element = (char *) malloc ((1 + 7 + strlen (element))
-                                            * sizeof (char));
-            sprintf (inv->element, "MOSGFS-%s", element);
-         } else {
-            inv->element = (char *) malloc ((1 + 4 + strlen (element))
-                                            * sizeof (char));
-            sprintf (inv->element, "MOS-%s", element);
-         }
-      } else {
-         inv->element = (char *) malloc ((1 + strlen (element))
-                                         * sizeof (char));
-         strcpy (inv->element, element);
-      }
-      mallocSprintf (&(inv->unitName), "[%s]", unitName);
-      mallocSprintf (&(inv->comment), "%s [%s]", comment, unitName);
-*
-      inv->unitName = (char *) malloc ((1 + 2 + strlen (unitName))
-                                       * sizeof (char));
-      sprintf (inv->unitName, "[%s]", unitName);
-      inv->comment = (char *) malloc ((1 + 3 + strlen (unitName) + strlen (comment))
-                                      * sizeof (char));
-      sprintf (inv->comment, "%s [%s]", comment, unitName);
-*
-   }
-*/
 
    if ((templat == GS4_RADAR) || (templat == GS4_SATELLITE)
        || (templat == 254) || (templat == 1000) || (templat == 1001)
        || (templat == 1002)) {
-      reallocSprintf (&(inv->shortFstLevel), "0 undefined");
-      reallocSprintf (&(inv->longFstLevel), "0.000[-] undefined ()");
+      fstSurfValue = 0;
+      f_fstValue = 0;
+      fstSurfType = 0;
+      sndSurfValue = 0;
+      f_sndValue = 0;
    } else {
       fstSurfType = (*buffer)[23 - 5];
       scale = (*buffer)[24 - 5];
       MEMCPY_BIG (&value, *buffer + 25 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1)) {
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (fstSurfType == GRIB2MISSING_u1)) {
          fstSurfValue = 0;
+         f_fstValue = 1;
       } else {
          fstSurfValue = value * pow (10.0, (int) (-1 * scale));
+         f_fstValue = 1;
       }
       sndSurfType = (*buffer)[29 - 5];
       scale = (*buffer)[30 - 5];
@@ -719,7 +701,19 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
          sndSurfValue = value * pow (10.0, -1 * scale);
          f_sndValue = 1;
       }
+   }
 
+   /* Find out what the name of this variable is. */
+   ParseElemName (center, subcenter, prodType, templat, cat, subcat,
+                  lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
+                  upperProb, &(inv->element), &(inv->comment),
+                  &(inv->unitName), &convert, percentile, genProcess,
+                  f_fstValue, fstSurfValue, f_sndValue, sndSurfValue);
+
+   if (! f_fstValue) {
+      reallocSprintf (&(inv->shortFstLevel), "0 undefined");
+      reallocSprintf (&(inv->longFstLevel), "0.000[-] undefined ()");
+   } else {
       ParseLevelName (center, subcenter, fstSurfType, fstSurfValue,
                       f_sndValue, sndSurfValue, &(inv->shortFstLevel),
                       &(inv->longFstLevel));
@@ -786,7 +780,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
  *   9/2002 Arthur Taylor (MDL/RSIS): Created.
  *  11/2002 AAT: Revised.
  *  12/2002 (TK,AC,TB,&MS): Code Review.
- *   3/2003 AAT: Corrected some satelite type mistakes.
+ *   3/2003 AAT: Corrected some satellite type mistakes.
  *   3/2003 AAT: Implemented multiple grid inventories in the same GRIB2
  *          message.
  *   4/2003 AAT: Started adding GRIB1 support
@@ -798,7 +792,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
  *          after we know we have a GRIB file, we don't want "trailing" bytes
  *          to break the program.
  *   8/2003 AAT: switched fileLen to only be computed for an error message.
- *   8/2003 AAT: curTot no longer serves a purpse.
+ *   8/2003 AAT: curTot no longer serves a purpose.
  *   5/2004 AAT: Added a check for section number 2..8 for the repeated
  *          section (otherwise error)
  *  10/2004 AAT: Added ability to inventory TDLP records.
@@ -828,9 +822,9 @@ int GRIB2Inventory (DataSource &fp, inventoryType **Inv, uInt4 *LenInv,
    char *msg;           /* Used to pop messages off the error Stack. */
    int version;         /* Which version of GRIB is in this message. */
    uChar prodType;      /* Which GRIB2 type of product, 0 is meteo, 1 is
-                         * hydro, 2 is land, 3 is space, 10 is oceanographic. 
+                         * hydro, 2 is land, 3 is space, 10 is oceanographic.
                          */
-   int grib_limit;      /* How many bytes to look for before the first "GRIB" 
+   int grib_limit;      /* How many bytes to look for before the first "GRIB"
                          * in the file.  If not found, is not a GRIB file. */
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 fileLen;       /* Length of the GRIB2 file. */
@@ -898,7 +892,7 @@ int GRIB2Inventory (DataSource &fp, inventoryType **Inv, uInt4 *LenInv,
             free (msg);
             /* find out how big the file is. */
             fp.DataSourceFseek (0L, SEEK_END);
-            fileLen = fp.DataSourceFtell();
+            fileLen = static_cast<int>(fp.DataSourceFtell());
             /* fseek (fp, 0L, SEEK_SET); */
             printf ("There were %d trailing bytes in the file.\n",
                     fileLen - offset);
@@ -1068,14 +1062,14 @@ int GRIB2RefTime (char *filename, double *refTime)
    sInt4 sect0[SECT0LEN_WORD]; /* Holds the current Section 0. */
    char *buffer = NULL; /* Holds a given section. */
    uInt4 bufferLen = 0; /* Size of buffer. */
-   wordType word;       /* Used to parse the prodType out of Sect 0. */
+   /* wordType word; */       /* Used to parse the prodType out of Sect 0. */
    int ans;             /* The return error code of ReadSect0. */
    char *msg;           /* Used to pop messages off the error Stack. */
    int version;         /* Which version of GRIB is in this message. */
-   uChar prodType;      /* Which GRIB2 type of product, 0 is meteo, 1 is
-                         * hydro, 2 is land, 3 is space, 10 is oceanographic. 
+   /* uChar prodType; */      /* Which GRIB2 type of product, 0 is meteo, 1 is
+                         * hydro, 2 is land, 3 is space, 10 is oceanographic.
                          */
-   int grib_limit;      /* How many bytes to look for before the first "GRIB" 
+   int grib_limit;      /* How many bytes to look for before the first "GRIB"
                          * in the file.  If not found, is not a GRIB file. */
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 fileLen;       /* Length of the GRIB2 file. */
@@ -1130,7 +1124,7 @@ int GRIB2RefTime (char *filename, double *refTime)
             free (msg);
             /* find out how big the file is. */
             fp.DataSourceFseek (0L, SEEK_END);
-            fileLen = fp.DataSourceFtell();
+            fileLen = static_cast<int>(fp.DataSourceFtell());
             /* fseek (fp, 0L, SEEK_SET); */
             printf ("There were %d trailing bytes in the file.\n",
                     fileLen - offset);
@@ -1158,8 +1152,8 @@ int GRIB2RefTime (char *filename, double *refTime)
             return -13;
          }
       } else {
-         word.li = sect0[1];
-         prodType = word.buffer[2];
+          /* word.li = sect0[1]; */
+         /* prodType = word.buffer[2]; */
 
          /* Read section 1 into buffer. */
          sectNum = 1;

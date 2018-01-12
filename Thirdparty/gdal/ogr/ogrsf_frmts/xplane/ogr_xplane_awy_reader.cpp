@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogr_xplane_awy_reader.cpp
  *
  * Project:  X-Plane awy.dat file reader
  * Purpose:  Implements OGRXPlaneAwyReader class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,7 +28,7 @@
 
 #include "ogr_xplane_awy_reader.h"
 
-CPL_CVSID("$Id: ogr_xplane_awy_reader.cpp 21634 2011-02-06 14:45:00Z rouault $");
+CPL_CVSID("$Id: ogr_xplane_awy_reader.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                   OGRXPlaneCreateAwyFileReader                       */
@@ -41,25 +40,22 @@ OGRXPlaneReader* OGRXPlaneCreateAwyFileReader( OGRXPlaneDataSource* poDataSource
     return poReader;
 }
 
-
 /************************************************************************/
 /*                         OGRXPlaneAwyReader()                         */
 /************************************************************************/
-OGRXPlaneAwyReader::OGRXPlaneAwyReader()
-{
-    poAirwaySegmentLayer = NULL;
-    poAirwayIntersectionLayer = NULL;
-}
+OGRXPlaneAwyReader::OGRXPlaneAwyReader() :
+    poAirwaySegmentLayer(NULL),
+    poAirwayIntersectionLayer(NULL)
+{}
 
 /************************************************************************/
 /*                          OGRXPlaneAwyReader()                        */
 /************************************************************************/
 
-OGRXPlaneAwyReader::OGRXPlaneAwyReader( OGRXPlaneDataSource* poDataSource )
+OGRXPlaneAwyReader::OGRXPlaneAwyReader( OGRXPlaneDataSource* poDataSource ) :
+    poAirwaySegmentLayer(new OGRXPlaneAirwaySegmentLayer()),
+    poAirwayIntersectionLayer(new OGRXPlaneAirwayIntersectionLayer())
 {
-    poAirwaySegmentLayer = new OGRXPlaneAirwaySegmentLayer();
-    poAirwayIntersectionLayer = new OGRXPlaneAirwayIntersectionLayer();
-
     poDataSource->RegisterLayer(poAirwaySegmentLayer);
     poDataSource->RegisterLayer(poAirwayIntersectionLayer);
 }
@@ -86,16 +82,14 @@ OGRXPlaneReader* OGRXPlaneAwyReader::CloneForLayer(OGRXPlaneLayer* poLayer)
     return poReader;
 }
 
-
 /************************************************************************/
 /*                       IsRecognizedVersion()                          */
 /************************************************************************/
 
 int OGRXPlaneAwyReader::IsRecognizedVersion( const char* pszVersionString)
 {
-    return EQUALN(pszVersionString, "640 Version", 11);
+    return STARTS_WITH_CI(pszVersionString, "640 Version");
 }
-
 
 /************************************************************************/
 /*                                Read()                                */
@@ -103,7 +97,7 @@ int OGRXPlaneAwyReader::IsRecognizedVersion( const char* pszVersionString)
 
 void OGRXPlaneAwyReader::Read()
 {
-    const char* pszLine;
+    const char* pszLine = NULL;
     while((pszLine = CPLReadLineL(fp)) != NULL)
     {
         papszTokens = CSLTokenizeString(pszLine);
@@ -115,10 +109,10 @@ void OGRXPlaneAwyReader::Read()
         {
             CSLDestroy(papszTokens);
             papszTokens = NULL;
-            bEOF = TRUE;
+            bEOF = true;
             return;
         }
-        else if (nTokens == 0 || assertMinCol(10) == FALSE)
+        else if( nTokens == 0 || !assertMinCol(10) )
         {
             CSLDestroy(papszTokens);
             papszTokens = NULL;
@@ -130,41 +124,40 @@ void OGRXPlaneAwyReader::Read()
         CSLDestroy(papszTokens);
         papszTokens = NULL;
 
-        if (poInterestLayer && poInterestLayer->IsEmpty() == FALSE)
+        if( poInterestLayer && !poInterestLayer->IsEmpty() )
             return;
     }
 
     papszTokens = NULL;
-    bEOF = TRUE;
+    bEOF = true;
 }
 
 /************************************************************************/
 /*                            ParseRecord()                             */
 /************************************************************************/
 
-void    OGRXPlaneAwyReader::ParseRecord()
+void OGRXPlaneAwyReader::ParseRecord()
 {
-    const char* pszFirstPointName;
-    const char* pszSecondPointName;
-    const char* pszAirwaySegmentName;
-    double dfLat1, dfLon1;
-    double dfLat2, dfLon2;
-    int bIsHigh;
-    int nBaseFL, nTopFL;
+    double dfLat1 = 0.0;
+    double dfLon1 = 0.0;
+    double dfLat2 = 0.0;
+    double dfLon2 = 0.0;
 
-    pszFirstPointName = papszTokens[0];
+    const char* pszFirstPointName = papszTokens[0];
     RET_IF_FAIL(readLatLon(&dfLat1, &dfLon1, 1));
-    pszSecondPointName = papszTokens[3];
+    const char* pszSecondPointName = papszTokens[3];
     RET_IF_FAIL(readLatLon(&dfLat2, &dfLon2, 4));
-    bIsHigh = atoi(papszTokens[6]) == 2;
-    nBaseFL = atoi(papszTokens[7]);
-    nTopFL = atoi(papszTokens[8]);
-    pszAirwaySegmentName = papszTokens[9];
+    const bool bIsHigh = atoi(papszTokens[6]) == 2;
+    const int nBaseFL = atoi(papszTokens[7]);
+    const int nTopFL = atoi(papszTokens[8]);
+    const char* pszAirwaySegmentName = papszTokens[9];
 
     if (poAirwayIntersectionLayer)
     {
-        poAirwayIntersectionLayer->AddFeature(pszFirstPointName, dfLat1, dfLon1);
-        poAirwayIntersectionLayer->AddFeature(pszSecondPointName, dfLat2, dfLon2);
+        poAirwayIntersectionLayer->AddFeature(pszFirstPointName,
+                                              dfLat1, dfLon1);
+        poAirwayIntersectionLayer->AddFeature(pszSecondPointName,
+                                              dfLat2, dfLon2);
     }
 
     if (poAirwaySegmentLayer)
@@ -178,7 +171,9 @@ void    OGRXPlaneAwyReader::ParseRecord()
 */
         if (strchr(pszAirwaySegmentName, '-'))
         {
-            char** papszSegmentNames = CSLTokenizeString2( pszAirwaySegmentName, "-", CSLT_HONOURSTRINGS );
+            char** papszSegmentNames
+                = CSLTokenizeString2( pszAirwaySegmentName, "-",
+                                      CSLT_HONOURSTRINGS );
             int i = 0;
             while(papszSegmentNames[i])
             {
@@ -202,12 +197,12 @@ void    OGRXPlaneAwyReader::ParseRecord()
     }
 }
 
-
 /************************************************************************/
 /*                       OGRXPlaneAirwaySegmentLayer()                  */
 /************************************************************************/
 
-OGRXPlaneAirwaySegmentLayer::OGRXPlaneAirwaySegmentLayer() : OGRXPlaneLayer("AirwaySegment")
+OGRXPlaneAirwaySegmentLayer::OGRXPlaneAirwaySegmentLayer() :
+    OGRXPlaneLayer("AirwaySegment")
 {
     poFeatureDefn->SetGeomType( wkbLineString );
 
@@ -249,7 +244,6 @@ OGRFeature*
                                              int    nBaseFL,
                                              int    nTopFL)
 {
-    int nCount = 0;
     OGRFeature* poFeature = new OGRFeature(poFeatureDefn);
     if (fabs(dfLon1 - dfLon2) < 270)
     {
@@ -264,17 +258,20 @@ OGRFeature*
         OGRMultiLineString* multiLineString = new OGRMultiLineString();
         OGRLineString* lineString1 = new OGRLineString();
         OGRLineString* lineString2 = new OGRLineString();
-        double dfLatInt;
         lineString1->addPoint(dfLon1, dfLat1);
         if (dfLon1 < dfLon2)
         {
-            dfLatInt = dfLat1 + (dfLat2 - dfLat1) * (-180 - dfLon1) / ((dfLon2 - 360) - dfLon1);
+            const double dfLatInt =
+                dfLat1 +
+                (dfLat2 - dfLat1) * (-180 - dfLon1) / ((dfLon2 - 360) - dfLon1);
             lineString1->addPoint(-180, dfLatInt);
             lineString2->addPoint(180, dfLatInt);
         }
         else
         {
-            dfLatInt = dfLat1 + (dfLat2 - dfLat1) * (180 - dfLon1) / ((dfLon2 + 360) - dfLon1);
+            const double dfLatInt =
+                dfLat1 +
+                (dfLat2 - dfLat1) * (180 - dfLon1) / ((dfLon2 + 360) - dfLon1);
             lineString1->addPoint(180, dfLatInt);
             lineString2->addPoint(-180, dfLatInt);
         }
@@ -283,6 +280,8 @@ OGRFeature*
         multiLineString->addGeometryDirectly( lineString2 );
         poFeature->SetGeometryDirectly( multiLineString );
     }
+
+    int nCount = 0;
     poFeature->SetField( nCount++, pszAirwaySegmentName );
     poFeature->SetField( nCount++, pszFirstPointName );
     poFeature->SetField( nCount++, pszSecondPointName );
@@ -299,19 +298,22 @@ OGRFeature*
 /*                 EqualAirwayIntersectionFeature                       */
 /************************************************************************/
 
-static int EqualAirwayIntersectionFeatureFunc(const void* _feature1, const void* _feature2)
+static int EqualAirwayIntersectionFeatureFunc(
+    const void* _feature1, const void* _feature2 )
 {
     OGRFeature* feature1 = (OGRFeature*)_feature1;
     OGRFeature* feature2 = (OGRFeature*)_feature2;
-    if (strcmp(feature1->GetFieldAsString(0), feature2->GetFieldAsString(0)) == 0)
+    if (strcmp(feature1->GetFieldAsString(0),
+               feature2->GetFieldAsString(0)) == 0)
     {
         OGRPoint* point1 = (OGRPoint*) feature1->GetGeometryRef();
         OGRPoint* point2 = (OGRPoint*) feature2->GetGeometryRef();
-        return (point1->getX() == point2->getX() && point1->getY() == point2->getY());
+        return
+            point1->getX() == point2->getX() &&
+            point1->getY() == point2->getY();
     }
-    return FALSE;
+    return false;
 }
-
 
 /************************************************************************/
 /*                      OGRXPlaneAirwayHashDouble()                     */
@@ -334,9 +336,12 @@ static unsigned long OGRXPlaneAirwayHashDouble(const double& dfVal)
 
 static unsigned long HashAirwayIntersectionFeatureFunc(const void* _feature)
 {
-    OGRFeature* feature = (OGRFeature*)_feature;
-    OGRPoint* point = (OGRPoint*) feature->GetGeometryRef();
-    unsigned long hash = CPLHashSetHashStr((unsigned char*)feature->GetFieldAsString(0));
+    OGRFeature* feature = reinterpret_cast<OGRFeature *>(
+        const_cast<void *>(_feature));
+    OGRPoint* point = reinterpret_cast<OGRPoint *>( feature->GetGeometryRef() );
+    unsigned long hash = CPLHashSetHashStr(
+        reinterpret_cast<unsigned char*>(const_cast<char *>(
+            feature->GetFieldAsString(0))));
     const double x = point->getX();
     const double y = point->getY();
     return hash ^ OGRXPlaneAirwayHashDouble(x) ^ OGRXPlaneAirwayHashDouble(y);
@@ -348,23 +353,23 @@ static unsigned long HashAirwayIntersectionFeatureFunc(const void* _feature)
 
 static void FreeAirwayIntersectionFeatureFunc(void* _feature)
 {
-    delete (OGRFeature*)_feature;
+    delete reinterpret_cast<OGRFeature*>(_feature);
 }
 
 /************************************************************************/
 /*                 OGRXPlaneAirwayIntersectionLayer()                   */
 /************************************************************************/
 
-OGRXPlaneAirwayIntersectionLayer::OGRXPlaneAirwayIntersectionLayer() : OGRXPlaneLayer("AirwayIntersection")
+OGRXPlaneAirwayIntersectionLayer::OGRXPlaneAirwayIntersectionLayer() :
+    OGRXPlaneLayer("AirwayIntersection"),
+    poSet(CPLHashSetNew(HashAirwayIntersectionFeatureFunc,
+                        EqualAirwayIntersectionFeatureFunc,
+                        FreeAirwayIntersectionFeatureFunc))
 {
     poFeatureDefn->SetGeomType( wkbPoint );
 
     OGRFieldDefn oFieldName("name", OFTString );
     poFeatureDefn->AddFieldDefn( &oFieldName );
-
-    poSet = CPLHashSetNew(HashAirwayIntersectionFeatureFunc,
-                          EqualAirwayIntersectionFeatureFunc,
-                          FreeAirwayIntersectionFeatureFunc);
 }
 
 /************************************************************************/

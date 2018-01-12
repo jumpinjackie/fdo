@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalconst.i 25897 2013-04-10 22:30:30Z rouault $
+ * $Id: gdalconst.i 40765 2017-11-20 10:03:14Z rouault $
  *
  * Name:     gdalconst.i
  * Project:  GDAL Python Interface
@@ -28,12 +28,16 @@
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
 
+#ifdef SWIGPYTHON
+%nothread;
+#endif
+
 #ifdef PERL_CPAN_NAMESPACE
 %module "Geo::GDAL::Const"
 #elif defined(SWIGCSHARP)
 %module GdalConst
 #else
-%module gdalconst 
+%module gdalconst
 #endif
 
 #if defined(SWIGJAVA)
@@ -70,6 +74,16 @@
 %constant GF_Read  = GF_Read;
 %constant GF_Write = GF_Write;
 
+// GDALRIOResampleAlg
+%constant GRIORA_NearestNeighbour = GRIORA_NearestNeighbour;
+%constant GRIORA_Bilinear = GRIORA_Bilinear;
+%constant GRIORA_Cubic = GRIORA_Cubic;
+%constant GRIORA_CubicSpline = GRIORA_CubicSpline;
+%constant GRIORA_Lanczos = GRIORA_Lanczos;
+%constant GRIORA_Average = GRIORA_Average;
+%constant GRIORA_Mode = GRIORA_Mode;
+%constant GRIORA_Gauss = GRIORA_Gauss;
+
 // GDALColorInterp
 %constant GCI_Undefined     = GCI_Undefined;
 %constant GCI_GrayIndex     = GCI_GrayIndex;
@@ -98,6 +112,11 @@
 %constant GRA_Lanczos          = GRA_Lanczos;
 %constant GRA_Average          = GRA_Average;
 %constant GRA_Mode             = GRA_Mode;
+%constant GRA_Max              = GRA_Max;
+%constant GRA_Min              = GRA_Min;
+%constant GRA_Med              = GRA_Med;
+%constant GRA_Q1               = GRA_Q1;
+%constant GRA_Q3               = GRA_Q3;
 
 // GDALPaletteInterp
 %constant GPI_Gray  = GPI_Gray;
@@ -132,19 +151,38 @@
 %constant CPLE_NoWriteAccess              = CPLE_NoWriteAccess;
 %constant CPLE_UserInterrupt              = CPLE_UserInterrupt;
 
+// Open flags
+%constant OF_ALL     = GDAL_OF_ALL;
+%constant OF_RASTER = GDAL_OF_RASTER;
+%constant OF_VECTOR = GDAL_OF_VECTOR;
+%constant OF_GNM = GDAL_OF_GNM;
+%constant OF_READONLY = GDAL_OF_READONLY;
+%constant OF_UPDATE = GDAL_OF_UPDATE;
+%constant OF_SHARED = GDAL_OF_SHARED;
+%constant OF_VERBOSE_ERROR = GDAL_OF_VERBOSE_ERROR;
+
 #if !defined(SWIGCSHARP) && !defined(SWIGJAVA)
 
 %constant char *DMD_LONGNAME           = GDAL_DMD_LONGNAME;
 %constant char *DMD_HELPTOPIC          = GDAL_DMD_HELPTOPIC;
 %constant char *DMD_MIMETYPE           = GDAL_DMD_MIMETYPE;
 %constant char *DMD_EXTENSION          = GDAL_DMD_EXTENSION;
+%constant char *DMD_EXTENSIONS         = GDAL_DMD_EXTENSIONS;
+%constant char *DMD_CONNECTION_PREFIX  = GDAL_DMD_CONNECTION_PREFIX;
 %constant char *DMD_CREATIONOPTIONLIST = GDAL_DMD_CREATIONOPTIONLIST;
 %constant char *DMD_CREATIONDATATYPES  = GDAL_DMD_CREATIONDATATYPES;
+%constant char *DMD_CREATIONFIELDDATATYPES  = GDAL_DMD_CREATIONFIELDDATATYPES;
 %constant char *DMD_SUBDATASETS        = GDAL_DMD_SUBDATASETS;
 
+%constant char *DCAP_OPEN       = GDAL_DCAP_OPEN;
 %constant char *DCAP_CREATE     = GDAL_DCAP_CREATE;
 %constant char *DCAP_CREATECOPY = GDAL_DCAP_CREATECOPY;
-%constant char *DCAP_VIRTUALIO = GDAL_DCAP_VIRTUALIO;
+%constant char *DCAP_VIRTUALIO  = GDAL_DCAP_VIRTUALIO;
+%constant char *DCAP_RASTER     = GDAL_DCAP_RASTER;
+%constant char *DCAP_VECTOR     = GDAL_DCAP_VECTOR;
+%constant char *DCAP_NOTNULL_FIELDS      = GDAL_DCAP_NOTNULL_FIELDS;
+%constant char *DCAP_DEFAULT_FIELDS      = GDAL_DCAP_DEFAULT_FIELDS;
+%constant char *DCAP_NOTNULL_GEOMFIELDS  = GDAL_DCAP_NOTNULL_GEOMFIELDS;
 
 #else
 
@@ -152,13 +190,22 @@
 #define GDAL_DMD_HELPTOPIC "DMD_HELPTOPIC"
 #define GDAL_DMD_MIMETYPE "DMD_MIMETYPE"
 #define GDAL_DMD_EXTENSION "DMD_EXTENSION"
+#define GDAL_DMD_EXTENSIONS "DMD_EXTENSIONS"
+#define DMD_CONNECTION_PREFIX  "DMD_CONNECTION_PREFIX"
 #define GDAL_DMD_CREATIONOPTIONLIST "DMD_CREATIONOPTIONLIST"
 #define GDAL_DMD_CREATIONDATATYPES "DMD_CREATIONDATATYPES"
+#define GDAL_DMD_CREATIONFIELDDATATYPES "DMD_CREATIONFIELDDATATYPES"
 #define GDAL_DMD_SUBDATASETS "DMD_SUBDATASETS"
 
+#define GDAL_DCAP_OPEN       "DCAP_OPEN"
 #define GDAL_DCAP_CREATE     "DCAP_CREATE"
 #define GDAL_DCAP_CREATECOPY "DCAP_CREATECOPY"
 #define GDAL_DCAP_VIRTUALIO  "DCAP_VIRTUALIO"
+#define DCAP_RASTER          "GDAL_DCAP_RASTER"
+#define DCAP_VECTOR          "GDAL_DCAP_VECTOR"
+#define DCAP_NOTNULL_FIELDS  "GDAL_DCAP_NOTNULL_FIELDS"
+#define DCAP_DEFAULT_FIELDS  "GDAL_DCAP_DEFAULT_FIELDS"
+#define DCAP_NOTNULL_GEOMFIELDS  "GDAL_DCAP_NOTNULL_GEOMFIELDS"
 
 #endif
 
@@ -170,8 +217,8 @@
 
 // GDALRATFieldType
 %constant GFT_Integer             = GFT_Integer;
-%constant GFT_Real                = GFT_Real;   
-%constant GFT_String              = GFT_String;  
+%constant GFT_Real                = GFT_Real;
+%constant GFT_String              = GFT_String;
 
 // GDALRATFieldUsage
 %constant GFU_Generic             = GFU_Generic;
@@ -199,8 +246,22 @@
 %constant GMF_ALPHA               = 0x04;
 %constant GMF_NODATA              = 0x08;
 
+%constant GDAL_DATA_COVERAGE_STATUS_UNIMPLEMENTED  = 0x01;
+%constant GDAL_DATA_COVERAGE_STATUS_DATA           = 0x02;
+%constant GDAL_DATA_COVERAGE_STATUS_EMPTY          = 0x04;
+
 // GDALAsyncStatusType
 %constant GARIO_PENDING = GARIO_PENDING;
 %constant GARIO_UPDATE = GARIO_UPDATE;
 %constant GARIO_ERROR = GARIO_ERROR;
 %constant GARIO_COMPLETE = GARIO_COMPLETE;
+
+// GDALTileOrganization
+%constant GTO_TIP  = GTO_TIP;
+%constant GTO_BIT = GTO_BIT;
+%constant GTO_BSQ = GTO_BSQ;
+
+
+#ifdef SWIGPYTHON
+%thread;
+#endif

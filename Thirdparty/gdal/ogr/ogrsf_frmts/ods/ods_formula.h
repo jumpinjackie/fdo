@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ods_formula.h 23831 2012-01-30 23:12:23Z rouault $
+ * $Id: ods_formula.h 36411 2016-11-21 22:03:48Z rouault $
  *
  * Component: ODS formula Engine
  * Purpose: Implementation of the ods_formula_node class used to represent a
@@ -8,7 +8,7 @@
  *
  ******************************************************************************
  * Copyright (C) 2010 Frank Warmerdam <warmerdam@pobox.com>
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,18 +29,16 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _ODS_FORMULA_H_INCLUDED_
-#define _ODS_FORMULA_H_INCLUDED_
+#ifndef ODS_FORMULA_H_INCLUDED_
+#define ODS_FORMULA_H_INCLUDED_
 
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
 #include <vector>
 
-#if defined(_WIN32) && !defined(_WIN32_WCE)
+#if defined(_WIN32)
 #  define strcasecmp stricmp
-#elif defined(_WIN32_WCE)
-#  define strcasecmp _stricmp
 #endif
 
 typedef enum {
@@ -95,6 +93,8 @@ typedef enum {
 
     ODS_CELL,
     ODS_CELL_RANGE,
+
+    ODS_INVALID
 } ods_formula_op;
 
 typedef enum {
@@ -112,43 +112,49 @@ typedef enum {
 class IODSCellEvaluator;
 
 class ods_formula_node {
-private:
+  private:
     void           FreeSubExpr();
     std::string    TransformToString() const;
 
-    int            EvaluateOR(IODSCellEvaluator* poEvaluator);
-    int            EvaluateAND(IODSCellEvaluator* poEvaluator);
-    int            EvaluateNOT(IODSCellEvaluator* poEvaluator);
-    int            EvaluateIF(IODSCellEvaluator* poEvaluator);
+    // TODO: It appears that all the Evaluate methods should return bool.
+    bool           EvaluateOR( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateAND( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateNOT( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateIF( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateLEN(IODSCellEvaluator* poEvaluator);
-    int            EvaluateLEFT(IODSCellEvaluator* poEvaluator);
-    int            EvaluateRIGHT(IODSCellEvaluator* poEvaluator);
-    int            EvaluateMID(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateLEN( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateLEFT( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateRIGHT( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateMID( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateListArgOp(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateListArgOp( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateSingleArgOp(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateSingleArgOp( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateEQ(IODSCellEvaluator* poEvaluator);
-    int            EvaluateNE(IODSCellEvaluator* poEvaluator);
-    int            EvaluateLE(IODSCellEvaluator* poEvaluator);
-    int            EvaluateGE(IODSCellEvaluator* poEvaluator);
-    int            EvaluateLT(IODSCellEvaluator* poEvaluator);
-    int            EvaluateGT(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateEQ( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateNE( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateLE( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateGE( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateLT( IODSCellEvaluator* poEvaluator );
+    bool           EvaluateGT( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateBinaryArithmetic(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateBinaryArithmetic( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateCONCAT(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateCONCAT( IODSCellEvaluator* poEvaluator );
 
-    int            EvaluateCELL(IODSCellEvaluator* poEvaluator);
+    bool           EvaluateCELL( IODSCellEvaluator* poEvaluator );
 
-public:
+ public:
     ods_formula_node();
 
-    ods_formula_node( const char *, ods_formula_field_type field_type_in = ODS_FIELD_TYPE_STRING );
+    ods_formula_node(
+        const char *,
+        ods_formula_field_type field_type_in = ODS_FIELD_TYPE_STRING );
+    // cppcheck-suppress noExplicitConstructor
     ods_formula_node( int );
+    // cppcheck-suppress noExplicitConstructor
     ods_formula_node( double );
+    // cppcheck-suppress noExplicitConstructor
     ods_formula_node( ods_formula_op );
 
     ods_formula_node( const ods_formula_node& other );
@@ -158,7 +164,7 @@ public:
     void           Initialize();
     void           Dump( FILE *fp, int depth );
 
-    int            Evaluate(IODSCellEvaluator* poEvaluator);
+    bool           Evaluate( IODSCellEvaluator* poEvaluator );
 
     ods_formula_node_type eNodeType;
     ods_formula_field_type field_type;
@@ -178,7 +184,11 @@ public:
 
 class ods_formula_parse_context {
 public:
-    ods_formula_parse_context() : nStartToken(0), poRoot(NULL) {}
+    ods_formula_parse_context() :
+        nStartToken(0),
+        pszInput(NULL),
+        pszNext(NULL),
+        poRoot(NULL) {}
 
     int        nStartToken;
     const char *pszInput;
@@ -192,10 +202,9 @@ class IODSCellEvaluator
 public:
     virtual int EvaluateRange(int nRow1, int nCol1, int nRow2, int nCol2,
                               std::vector<ods_formula_node>& aoOutValues) = 0;
+    virtual ~IODSCellEvaluator() {}
 };
 
-int ods_formulaparse( ods_formula_parse_context *context );
-int ods_formulalex( ods_formula_node **ppNode, ods_formula_parse_context *context );
 ods_formula_node* ods_formula_compile( const char *expr );
 
 typedef struct
@@ -208,4 +217,4 @@ typedef struct
 const SingleOpStruct* ODSGetSingleOpEntry(const char* pszName);
 const SingleOpStruct* ODSGetSingleOpEntry(ods_formula_op eOp);
 
-#endif /* def _ODS_FORMULA_H_INCLUDED_ */
+#endif /* def ODS_FORMULA_H_INCLUDED_ */

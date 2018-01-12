@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: gdal2ogr.c $
  *
  * Project:  GDAL Utilities
  * Purpose:  Create an OGR datasource from the values of a GDAL dataset
@@ -7,7 +6,7 @@
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,6 +31,8 @@
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 #include "cpl_string.h"
+
+CPL_CVSID("$Id: gdal2ogr.c 34783 2016-07-26 15:05:37Z goatbar $");
 
 /************************************************************************/
 /*                               Usage()                                */

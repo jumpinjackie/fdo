@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogropenairlayer.cpp 20996 2010-10-28 18:38:15Z rouault $
  *
  * Project:  OpenAir Translator
  * Purpose:  Implements OGROpenAirLayer class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,40 +26,39 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_openair.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
 #include "ogr_p.h"
-#include "ogr_xplane_geo_utils.h"
+#include "ogr_openair.h"
 #include "ogr_srs_api.h"
+#include "ogr_xplane_geo_utils.h"
 
-CPL_CVSID("$Id: ogropenairlayer.cpp 20996 2010-10-28 18:38:15Z rouault $");
+CPL_CVSID("$Id: ogropenairlayer.cpp 36682 2016-12-04 20:34:45Z rouault $");
 
 /************************************************************************/
 /*                         OGROpenAirLayer()                            */
 /************************************************************************/
 
-OGROpenAirLayer::OGROpenAirLayer( VSILFILE* fp )
-
+OGROpenAirLayer::OGROpenAirLayer( VSILFILE* fp ) :
+    poFeatureDefn(new OGRFeatureDefn( "airspaces" )),
+    poSRS(new OGRSpatialReference(SRS_WKT_WGS84)),
+    fpOpenAir(fp),
+    bEOF(false),
+    bHasLastLine(false),
+    nNextFID(0)
 {
-    fpOpenAir = fp;
-    nNextFID = 0;
-    bEOF = FALSE;
-    bHasLastLine = FALSE;
-
-    poSRS = new OGRSpatialReference(SRS_WKT_WGS84);
-
-    poFeatureDefn = new OGRFeatureDefn( "airspaces" );
+    SetDescription( poFeatureDefn->GetName() );
     poFeatureDefn->Reference();
     poFeatureDefn->SetGeomType( wkbPolygon );
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
 
-    OGRFieldDefn    oField1( "CLASS", OFTString);
+    OGRFieldDefn oField1( "CLASS", OFTString);
     poFeatureDefn->AddFieldDefn( &oField1 );
-    OGRFieldDefn    oField2( "NAME", OFTString);
+    OGRFieldDefn oField2( "NAME", OFTString);
     poFeatureDefn->AddFieldDefn( &oField2 );
-    OGRFieldDefn    oField3( "FLOOR", OFTString);
+    OGRFieldDefn oField3( "FLOOR", OFTString);
     poFeatureDefn->AddFieldDefn( &oField3 );
-    OGRFieldDefn    oField4( "CEILING", OFTString);
+    OGRFieldDefn oField4( "CEILING", OFTString);
     poFeatureDefn->AddFieldDefn( &oField4 );
 }
 
@@ -86,7 +84,6 @@ OGROpenAirLayer::~OGROpenAirLayer()
     VSIFCloseL( fpOpenAir );
 }
 
-
 /************************************************************************/
 /*                            ResetReading()                            */
 /************************************************************************/
@@ -95,11 +92,10 @@ void OGROpenAirLayer::ResetReading()
 
 {
     nNextFID = 0;
-    bEOF = FALSE;
-    bHasLastLine = FALSE;
+    bEOF = false;
+    bHasLastLine = false;
     VSIFSeekL( fpOpenAir, 0, SEEK_SET );
 }
-
 
 /************************************************************************/
 /*                           GetNextFeature()                           */
@@ -107,11 +103,9 @@ void OGROpenAirLayer::ResetReading()
 
 OGRFeature *OGROpenAirLayer::GetNextFeature()
 {
-    OGRFeature  *poFeature;
-
-    while(TRUE)
+    while( true )
     {
-        poFeature = GetNextRawFeature();
+        OGRFeature *poFeature = GetNextRawFeature();
         if (poFeature == NULL)
             return NULL;
 
@@ -122,8 +116,8 @@ OGRFeature *OGROpenAirLayer::GetNextFeature()
         {
             return poFeature;
         }
-        else
-            delete poFeature;
+
+        delete poFeature;
     }
 }
 
@@ -133,40 +127,45 @@ OGRFeature *OGROpenAirLayer::GetNextFeature()
 
 OGRFeature *OGROpenAirLayer::GetNextRawFeature()
 {
-    const char* pszLine;
-    CPLString osCLASS, osNAME, osFLOOR, osCEILING;
+    if( bEOF )
+        return NULL;
+
+    CPLString osCLASS;
+    CPLString osNAME;
+    CPLString osFLOOR;
+    CPLString osCEILING;
     OGRLinearRing oLR;
-    double dfLastLat = 0, dfLastLon = 0;
-    int bFirst = TRUE;
-    int bClockWise = TRUE;
-    double dfCenterLat = 0, dfCenterLon = 0;
-    int bHasCenter = FALSE;
+    // double dfLastLat = 0.0;
+    // double dfLastLon = 0.0;
+    bool bFirst = true;
+    bool bClockWise = true;
+    double dfCenterLat = 0.0;
+    double dfCenterLon = 0.0;
+    bool bHasCenter = false;
     OpenAirStyle sStyle;
     sStyle.penStyle = -1;
     sStyle.penWidth = -1;
     sStyle.penR = sStyle.penG = sStyle.penB = -1;
     sStyle.fillR = sStyle.fillG = sStyle.fillB = -1;
 
-    if (bEOF)
-        return NULL;
-
-    while(TRUE)
+    while( true )
     {
-        if (bFirst && bHasLastLine)
+        const char* pszLine = NULL;
+        if( bFirst && bHasLastLine )
         {
             pszLine = osLastLine.c_str();
-            bFirst = FALSE;
+            bFirst = false;
         }
         else
         {
             pszLine = CPLReadLine2L(fpOpenAir, 1024, NULL);
             if (pszLine == NULL)
             {
-                bEOF = TRUE;
+                bEOF = true;
                 if (oLR.getNumPoints() == 0)
                     return NULL;
 
-                if (osCLASS.size() != 0 &&
+                if (!osCLASS.empty() &&
                     oStyleMap.find(osCLASS) != oStyleMap.end())
                 {
                     memcpy(&sStyle, oStyleMap[osCLASS], sizeof(sStyle));
@@ -174,21 +173,21 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
                 break;
             }
             osLastLine = pszLine;
-            bHasLastLine = TRUE;
+            bHasLastLine = true;
         }
 
         if (pszLine[0] == '*' || pszLine[0] == '\0')
             continue;
 
-        if (EQUALN(pszLine, "AC ", 3) || EQUALN(pszLine, "AC,", 3))
+        if (STARTS_WITH_CI(pszLine, "AC ") || STARTS_WITH_CI(pszLine, "AC,"))
         {
-            if (osCLASS.size() != 0)
+            if (!osCLASS.empty())
             {
                 if (sStyle.penStyle != -1 || sStyle.fillR != -1)
                 {
                     if (oLR.getNumPoints() == 0)
                     {
-                        OpenAirStyle* psStyle;
+                        OpenAirStyle* psStyle = NULL;
                         if (oStyleMap.find(osCLASS) == oStyleMap.end())
                         {
                             psStyle = (OpenAirStyle*)CPLMalloc(
@@ -215,26 +214,26 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
             sStyle.penR = sStyle.penG = sStyle.penB = -1;
             sStyle.fillR = sStyle.fillG = sStyle.fillB = -1;
             osCLASS = pszLine + 3;
-            bClockWise = TRUE;
-            bHasCenter = FALSE;
+            bClockWise = true;
+            bHasCenter = false;
         }
-        else if (EQUALN(pszLine, "AN ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AN "))
         {
-            if (osNAME.size() != 0)
+            if (!osNAME.empty())
                 break;
             osNAME = pszLine + 3;
         }
-        else if (EQUALN(pszLine, "AH ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AH "))
             osCEILING = pszLine + 3;
-        else if (EQUALN(pszLine, "AL ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AL "))
             osFLOOR = pszLine + 3;
-        else if (EQUALN(pszLine, "AT ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AT "))
         {
             /* Ignored for that layer*/
         }
-        else if (EQUALN(pszLine, "SP ", 3))
+        else if (STARTS_WITH_CI(pszLine, "SP "))
         {
-            if (osCLASS.size() != 0)
+            if (!osCLASS.empty())
             {
                 char** papszTokens = CSLTokenizeString2(pszLine+3, ", ", 0);
                 if (CSLCount(papszTokens) == 5)
@@ -248,9 +247,9 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
                 CSLDestroy(papszTokens);
             }
         }
-        else if (EQUALN(pszLine, "SB ", 3))
+        else if (STARTS_WITH_CI(pszLine, "SB "))
         {
-            if (osCLASS.size() != 0)
+            if (!osCLASS.empty())
             {
                 char** papszTokens = CSLTokenizeString2(pszLine+3, ", ", 0);
                 if (CSLCount(papszTokens) == 3)
@@ -262,80 +261,86 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
                 CSLDestroy(papszTokens);
             }
         }
-        else if (EQUALN(pszLine, "DP ", 3))
+        else if (STARTS_WITH_CI(pszLine, "DP "))
         {
             pszLine += 3;
 
-            double dfLat, dfLon;
+            double dfLat = 0.0;
+            double dfLon = 0.0;
             if (!OGROpenAirGetLatLon(pszLine, dfLat, dfLon))
                 continue;
 
             oLR.addPoint(dfLon, dfLat);
-            dfLastLat = dfLat;
-            dfLastLon = dfLon;
+            /* dfLastLat = dfLat; */
+            /* dfLastLon = dfLon; */
         }
-        else if (EQUALN(pszLine, "DA ", 3))
+        else if (STARTS_WITH_CI(pszLine, "DA "))
         {
             pszLine += 3;
 
-            char* pszStar = strchr((char*)pszLine, '*');
+            // TODO: Explain why writing a zero over the star.
+            char* pszStar = strchr(const_cast<char *>(pszLine), '*');
             if (pszStar) *pszStar = 0;
             char** papszTokens = CSLTokenizeString2(pszLine, ",", 0);
             if (bHasCenter && CSLCount(papszTokens) == 3)
             {
-                double dfRadius = atof(papszTokens[0]) * 1852;
-                double dfStartAngle = atof(papszTokens[1]);
-                double dfEndAngle = atof(papszTokens[2]);
+                // TODO: Explain the 1852.
+                const double dfRadius = CPLAtof(papszTokens[0]) * 1852;
+                const double dfStartAngle = CPLAtof(papszTokens[1]);
+                double dfEndAngle = CPLAtof(papszTokens[2]);
 
                 if (bClockWise && dfEndAngle < dfStartAngle)
                     dfEndAngle += 360;
                 else if (!bClockWise && dfStartAngle < dfEndAngle)
                     dfEndAngle -= 360;
 
-                double dfStartDistance = dfRadius;
-                double dfEndDistance = dfRadius;
-                int nSign = (bClockWise) ? 1 : -1;
-                double dfAngle;
-                double dfLat, dfLon;
-                for(dfAngle = dfStartAngle;
+                const double dfStartDistance = dfRadius;
+                const double dfEndDistance = dfRadius;
+                const int nSign = (bClockWise) ? 1 : -1;
+                double dfLat = 0.0;
+                double dfLon = 0.0;
+                for(double dfAngle = dfStartAngle;
                     (dfAngle - dfEndAngle) * nSign < 0;
                     dfAngle += nSign)
                 {
-                    double pct = (dfAngle - dfStartAngle) /
-                                    (dfEndAngle - dfStartAngle);
-                    double dfDist = dfStartDistance * (1-pct) +
-                                                        dfEndDistance * pct;
+                    const double pct = (dfAngle - dfStartAngle) /
+                        (dfEndAngle - dfStartAngle);
+                    const double dfDist = dfStartDistance * (1-pct) +
+                        dfEndDistance * pct;
                     OGRXPlane_ExtendPosition(dfCenterLat, dfCenterLon,
                                              dfDist, dfAngle, &dfLat, &dfLon);
                     oLR.addPoint(dfLon, dfLat);
                 }
-                OGRXPlane_ExtendPosition(dfCenterLat, dfCenterLon,
-                                         dfEndDistance, dfEndAngle, &dfLat, &dfLon);
+                OGRXPlane_ExtendPosition(
+                    dfCenterLat, dfCenterLon,
+                    dfEndDistance, dfEndAngle, &dfLat, &dfLon );
                 oLR.addPoint(dfLon, dfLat);
 
-                dfLastLat = oLR.getY(oLR.getNumPoints() - 1);
-                dfLastLon = oLR.getX(oLR.getNumPoints() - 1);
+                /* dfLastLat = oLR.getY(oLR.getNumPoints() - 1); */
+                /* dfLastLon = oLR.getX(oLR.getNumPoints() - 1); */
             }
             CSLDestroy(papszTokens);
         }
-        else if (EQUALN(pszLine, "DB ", 3))
+        else if (STARTS_WITH_CI(pszLine, "DB "))
         {
             pszLine += 3;
 
-            char* pszStar = strchr((char*)pszLine, '*');
+            char* pszStar = strchr(const_cast<char *>(pszLine), '*');
             if (pszStar) *pszStar = 0;
             char** papszTokens = CSLTokenizeString2(pszLine, ",", 0);
-            double dfFirstLat, dfFirstLon;
-            double dfSecondLat, dfSecondLon;
+            double dfFirstLat = 0.0;
+            double dfFirstLon = 0.0;
+            double dfSecondLat = 0.0;
+            double dfSecondLon = 0.0;
             if (bHasCenter && CSLCount(papszTokens) == 2 &&
                 OGROpenAirGetLatLon(papszTokens[0], dfFirstLat, dfFirstLon) &&
                 OGROpenAirGetLatLon(papszTokens[1], dfSecondLat, dfSecondLon))
             {
-                double dfStartDistance =OGRXPlane_Distance(dfCenterLat,
+                const double dfStartDistance = OGRXPlane_Distance(dfCenterLat,
                         dfCenterLon, dfFirstLat, dfFirstLon);
-                double dfEndDistance = OGRXPlane_Distance(dfCenterLat,
+                const double dfEndDistance = OGRXPlane_Distance(dfCenterLat,
                         dfCenterLon, dfSecondLat, dfSecondLon);
-                double dfStartAngle = OGRXPlane_Track(dfCenterLat,
+                const double dfStartAngle = OGRXPlane_Track(dfCenterLat,
                         dfCenterLon, dfFirstLat, dfFirstLon);
                 double dfEndAngle = OGRXPlane_Track(dfCenterLat,
                         dfCenterLon, dfSecondLat, dfSecondLon);
@@ -345,45 +350,47 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
                 else if (!bClockWise && dfStartAngle < dfEndAngle)
                     dfEndAngle -= 360;
 
-                int nSign = (bClockWise) ? 1 : -1;
-                double dfAngle;
-                for(dfAngle = dfStartAngle;
+                const int nSign = (bClockWise) ? 1 : -1;
+                for(double dfAngle = dfStartAngle;
                     (dfAngle - dfEndAngle) * nSign < 0;
                     dfAngle += nSign)
                 {
-                    double dfLat, dfLon;
-                    double pct = (dfAngle - dfStartAngle) /
-                                    (dfEndAngle - dfStartAngle);
-                    double dfDist = dfStartDistance * (1-pct) +
-                                                    dfEndDistance * pct;
+                    double dfLat = 0.0;
+                    double dfLon = 0.0;
+                    const double pct = (dfAngle - dfStartAngle) /
+                        (dfEndAngle - dfStartAngle);
+                    const double dfDist = dfStartDistance * (1-pct) +
+                        dfEndDistance * pct;
                     OGRXPlane_ExtendPosition(dfCenterLat, dfCenterLon,
                                              dfDist, dfAngle, &dfLat, &dfLon);
                     oLR.addPoint(dfLon, dfLat);
                 }
                 oLR.addPoint(dfSecondLon, dfSecondLat);
 
-                dfLastLat = oLR.getY(oLR.getNumPoints() - 1);
-                dfLastLon = oLR.getX(oLR.getNumPoints() - 1);
+                /* dfLastLat = oLR.getY(oLR.getNumPoints() - 1); */
+                /* dfLastLon = oLR.getX(oLR.getNumPoints() - 1); */
             }
             CSLDestroy(papszTokens);
         }
-        else if ((EQUALN(pszLine, "DC ", 3) || EQUALN(pszLine, "DC=", 3)) &&
+        else if ((STARTS_WITH_CI(pszLine, "DC ") ||
+                  STARTS_WITH_CI(pszLine, "DC=")) &&
                  (bHasCenter || strstr(pszLine, "V X=") != NULL))
         {
             if (!bHasCenter)
             {
                 const char* pszVX = strstr(pszLine, "V X=");
-                bHasCenter = OGROpenAirGetLatLon(pszVX, dfCenterLat, dfCenterLon);
+                if( pszVX != NULL )
+                    bHasCenter =
+                        OGROpenAirGetLatLon(pszVX, dfCenterLat, dfCenterLon);
             }
             if (bHasCenter)
             {
                 pszLine += 3;
 
-                double dfRADIUS = atof(pszLine) * 1852;
-
-                double dfAngle;
-                double dfLat, dfLon;
-                for(dfAngle = 0; dfAngle < 360; dfAngle += 1)
+                const double dfRADIUS = CPLAtof(pszLine) * 1852;
+                double dfLat = 0.0;
+                double dfLon = 0.0;
+                for( double dfAngle = 0; dfAngle < 360; dfAngle += 1.0 )
                 {
                     OGRXPlane_ExtendPosition(dfCenterLat, dfCenterLon,
                                              dfRADIUS, dfAngle, &dfLat, &dfLon);
@@ -393,22 +400,22 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
                                          dfRADIUS, 0, &dfLat, &dfLon);
                 oLR.addPoint(dfLon, dfLat);
 
-                dfLastLat = oLR.getY(oLR.getNumPoints() - 1);
-                dfLastLon = oLR.getX(oLR.getNumPoints() - 1);
+                /* dfLastLat = oLR.getY(oLR.getNumPoints() - 1); */
+                /* dfLastLon = oLR.getX(oLR.getNumPoints() - 1); */
             }
         }
-        else if (EQUALN(pszLine, "V X=", 4))
+        else if (STARTS_WITH_CI(pszLine, "V X="))
         {
             bHasCenter =
                     OGROpenAirGetLatLon(pszLine + 4, dfCenterLat, dfCenterLon);
         }
-        else if (EQUALN(pszLine, "V D=-", 5))
+        else if (STARTS_WITH_CI(pszLine, "V D=-"))
         {
-            bClockWise = FALSE;
+            bClockWise = false;
         }
-        else if (EQUALN(pszLine, "V D=+", 5))
+        else if (STARTS_WITH_CI(pszLine, "V D=+"))
         {
-            bClockWise = TRUE;
+            bClockWise = true;
         }
         else
         {
@@ -436,18 +443,18 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
         }
         if (sStyle.fillR != -1)
         {
-            if (osStyle.size() != 0)
+            if (!osStyle.empty())
                 osStyle += ";";
             osStyle += CPLString().Printf("BRUSH(fc:#%02X%02X%02X)",
                                  sStyle.fillR, sStyle.fillG, sStyle.fillB);
         }
         else
         {
-            if (osStyle.size() != 0)
+            if (!osStyle.empty())
                 osStyle += ";";
             osStyle += "BRUSH(fc:#00000000,id:\"ogr-brush-1\")";
         }
-        if (osStyle.size() != 0)
+        if (!osStyle.empty())
             poFeature->SetStyleString(osStyle);
     }
 
@@ -464,9 +471,7 @@ OGRFeature *OGROpenAirLayer::GetNextRawFeature()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGROpenAirLayer::TestCapability( const char * pszCap )
-
+int OGROpenAirLayer::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
-

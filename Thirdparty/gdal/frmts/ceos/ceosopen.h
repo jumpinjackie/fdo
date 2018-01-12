@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ceosopen.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: ceosopen.h 35885 2016-10-24 06:23:09Z goatbar $
  *
  * Project:  CEOS Translator
  * Purpose:  Public (C callable) interface for CEOS and related formats such
@@ -28,8 +28,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CEOSOPEN_H_INCLUDED
-#define _CEOSOPEN_H_INCLUDED
+#ifndef CEOSOPEN_H_INCLUDED
+#define CEOSOPEN_H_INCLUDED
 
 /* -------------------------------------------------------------------- */
 /*      Include standard portability stuff.                             */
@@ -44,17 +44,16 @@
 CPL_C_START
 
 typedef struct {
-    int		nRecordNum;
-    GUInt32	nRecordType;
-    int		nLength;
+    int         nRecordNum;
+    GUInt32     nRecordType;
+    int         nLength;
 
-    char	*pachData;
+    char        *pachData;
 }CEOSRecord;
 
 /* well known record types */
-#define CRT_IMAGE_FDR	0x3FC01212
-#define CRT_IMAGE_DATA	0xEDED1212
-
+#define CRT_IMAGE_FDR   0x3FC01212
+#define CRT_IMAGE_DATA  0xEDED1212
 
 /* -------------------------------------------------------------------- */
 /*      Main CEOS info structure.                                       */
@@ -63,25 +62,25 @@ typedef struct {
 typedef struct {
 
     /* public information */
-    int		nPixels;
-    int		nLines;
-    int		nBands;
+    int         nPixels;
+    int         nLines;
+    int         nBands;
 
-    int		nBitsPerPixel;
+    int         nBitsPerPixel;
 
     /* private information */
-    VSILFILE	*fpImage;
+    VSILFILE    *fpImage;
 
     int         bLittleEndian;
 
-    int		nImageRecCount;
-    int		nImageRecLength;
+    int         nImageRecCount;
+    int         nImageRecLength;
 
-    int		nPrefixBytes;
-    int		nSuffixBytes;
+    int         nPrefixBytes;
+    int         nSuffixBytes;
 
-    int		*panDataStart;
-    int		nLineOffset;
+    int         *panDataStart;
+    int         nLineOffset;
 
 } CEOSImage;
 
@@ -90,7 +89,7 @@ typedef struct {
 /* -------------------------------------------------------------------- */
 
 CEOSImage CPL_ODLL *CEOSOpen( const char *, const char * );
-void CPL_ODLL 	    CEOSClose( CEOSImage * );
+void CPL_ODLL       CEOSClose( CEOSImage * );
 CPLErr CPL_ODLL     CEOSReadScanline( CEOSImage *psImage, int nBand,
                                       int nScanline, void * pData );
 
@@ -98,11 +97,9 @@ CPLErr CPL_ODLL     CEOSReadScanline( CEOSImage *psImage, int nBand,
 /*      Internal prototypes.                                            */
 /* -------------------------------------------------------------------- */
 CEOSRecord CPL_ODLL *CEOSReadRecord( CEOSImage * );
-void CPL_ODLL	     CEOSDestroyRecord( CEOSRecord * );
+void CPL_ODLL        CEOSDestroyRecord( CEOSRecord * );
 
 CPL_C_END
 
-#endif /* ndef _CEOSOPEN_H_INCLUDED */
-
-
+#endif /* ndef CEOSOPEN_H_INCLUDED */
 

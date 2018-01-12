@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrpgeotablelayer.cpp 22155 2011-04-13 19:52:57Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRPGeoTableLayer class, access to an existing table.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam
+ * Copyright (c) 2008-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,18 +31,16 @@
 #include "ogr_pgeo.h"
 #include "ogrpgeogeometry.h"
 
-CPL_CVSID("$Id: ogrpgeotablelayer.cpp 22155 2011-04-13 19:52:57Z rouault $");
+CPL_CVSID("$Id: ogrpgeotablelayer.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                          OGRPGeoTableLayer()                         */
 /************************************************************************/
 
-OGRPGeoTableLayer::OGRPGeoTableLayer( OGRPGeoDataSource *poDSIn )
-
+OGRPGeoTableLayer::OGRPGeoTableLayer( OGRPGeoDataSource *poDSIn ) :
+    pszQuery(NULL)
 {
     poDS = poDSIn;
-    pszQuery = NULL;
-    bUpdateAccess = TRUE;
     iNextShapeId = 0;
     nSRSId = -1;
     poFeatureDefn = NULL;
@@ -64,9 +62,9 @@ OGRPGeoTableLayer::~OGRPGeoTableLayer()
 /*                             Initialize()                             */
 /************************************************************************/
 
-CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName, 
+CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
                                       const char *pszGeomCol,
-                                      int nShapeType, 
+                                      int nShapeType,
                                       double dfExtentLeft,
                                       double dfExtentRight,
                                       double dfExtentBottom,
@@ -74,9 +72,10 @@ CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
                                       int nSRID,
                                       int bHasZ )
 
-
 {
     CPLODBCSession *poSession = poDS->GetSession();
+
+    SetDescription( pszTableName );
 
     CPLFree( pszGeomColumn );
     if( pszGeomCol == NULL )
@@ -129,18 +128,19 @@ CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
     }
 
     if( eOGRType != wkbUnknown && eOGRType != wkbNone && bHasZ )
-        eOGRType = (OGRwkbGeometryType)(((int) eOGRType) | wkb25DBit);
+        eOGRType = wkbSetZ(eOGRType);
+    CPL_IGNORE_RET_VAL(eOGRType);
 
 /* -------------------------------------------------------------------- */
 /*      Do we have a simple primary key?                                */
 /* -------------------------------------------------------------------- */
     CPLODBCStatement oGetKey( poSession );
-    
+
     if( oGetKey.GetPrimaryKeys( pszTableName ) && oGetKey.Fetch() )
     {
         pszFIDColumn = CPLStrdup(oGetKey.GetColData( 3 ));
-        
-        if( oGetKey.Fetch() ) // more than one field in key! 
+
+        if( oGetKey.Fetch() ) // more than one field in key!
         {
             CPLFree( pszFIDColumn );
             pszFIDColumn = NULL;
@@ -148,7 +148,7 @@ CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
                       pszTableName );
         }
         else
-            CPLDebug( "PGeo", 
+            CPLDebug( "PGeo",
                       "%s: Got primary key %s.",
                       pszTableName, pszFIDColumn );
     }
@@ -163,7 +163,7 @@ CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
 
     if( !oGetCol.GetColumns( pszTableName ) )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "GetColumns() failed on %s.\n%s",
                   pszTableName, poSession->GetLastError() );
         return CE_Failure;
@@ -175,8 +175,8 @@ CPLErr OGRPGeoTableLayer::Initialize( const char *pszTableName,
 
     if( poFeatureDefn->GetFieldCount() == 0 )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "No column definitions found for table '%s', layer not usable.", 
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "No column definitions found for table '%s', layer not usable.",
                   pszTableName );
         return CE_Failure;
     }
@@ -267,7 +267,7 @@ void OGRPGeoTableLayer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRPGeoTableLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRPGeoTableLayer::GetFeature( GIntBig nFeatureId )
 
 {
     if( pszFIDColumn == NULL )
@@ -280,7 +280,7 @@ OGRFeature *OGRPGeoTableLayer::GetFeature( long nFeatureId )
     poStmt = new CPLODBCStatement( poDS->GetSession() );
     poStmt->Append( "SELECT * FROM " );
     poStmt->Append( poFeatureDefn->GetName() );
-    poStmt->Appendf( " WHERE %s = %ld", pszFIDColumn, nFeatureId );
+    poStmt->Appendf( " WHERE %s = " CPL_FRMT_GIB, pszFIDColumn, nFeatureId );
 
     if( !poStmt->ExecuteSQL() )
     {
@@ -296,22 +296,24 @@ OGRFeature *OGRPGeoTableLayer::GetFeature( long nFeatureId )
 /*                         SetAttributeFilter()                         */
 /************************************************************************/
 
-OGRErr OGRPGeoTableLayer::SetAttributeFilter( const char *pszQuery )
+OGRErr OGRPGeoTableLayer::SetAttributeFilter( const char *pszQueryIn )
 
 {
-    if( (pszQuery == NULL && this->pszQuery == NULL)
-        || (pszQuery != NULL && this->pszQuery != NULL 
-            && EQUAL(pszQuery,this->pszQuery)) )
+    CPLFree(m_pszAttrQueryString);
+    m_pszAttrQueryString = (pszQueryIn) ? CPLStrdup(pszQueryIn) : NULL;
+
+    if( (pszQueryIn == NULL && pszQuery == NULL)
+        || (pszQueryIn != NULL && pszQuery != NULL
+            && EQUAL(pszQueryIn, pszQuery)) )
         return OGRERR_NONE;
 
-    CPLFree( this->pszQuery );
-    this->pszQuery = pszQuery ? CPLStrdup( pszQuery ) : NULL; 
+    CPLFree( pszQuery );
+    pszQuery = pszQueryIn ? CPLStrdup( pszQueryIn ) : NULL;
 
     ClearStatement();
 
     return OGRERR_NONE;
 }
-
 
 /************************************************************************/
 /*                           TestCapability()                           */
@@ -329,7 +331,7 @@ int OGRPGeoTableLayer::TestCapability( const char * pszCap )
     else if( EQUAL(pszCap,OLCFastSpatialFilter) )
         return FALSE;
 
-    else 
+    else
         return OGRPGeoLayer::TestCapability( pszCap );
 }
 
@@ -342,7 +344,7 @@ int OGRPGeoTableLayer::TestCapability( const char * pszCap )
 /*      way of counting features matching a spatial query.              */
 /************************************************************************/
 
-int OGRPGeoTableLayer::GetFeatureCount( int bForce )
+GIntBig OGRPGeoTableLayer::GetFeatureCount( int bForce )
 
 {
     if( m_poFilterGeom != NULL )
@@ -357,21 +359,20 @@ int OGRPGeoTableLayer::GetFeatureCount( int bForce )
 
     if( !oStmt.ExecuteSQL() || !oStmt.Fetch() )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "GetFeatureCount() failed on query %s.\n%s",
                   oStmt.GetCommand(), poDS->GetSession()->GetLastError() );
         return OGRPGeoLayer::GetFeatureCount(bForce);
     }
 
-    return atoi(oStmt.GetColData(0));
+    return CPLAtoGIntBig(oStmt.GetColData(0));
 }
 
 /************************************************************************/
 /*                             GetExtent()                              */
 /************************************************************************/
 
-OGRErr OGRPGeoTableLayer::GetExtent( OGREnvelope *psExtent, int bForce )
-
+OGRErr OGRPGeoTableLayer::GetExtent( OGREnvelope *psExtent, CPL_UNUSED int bForce )
 {
     *psExtent = sExtent;
     return OGRERR_NONE;

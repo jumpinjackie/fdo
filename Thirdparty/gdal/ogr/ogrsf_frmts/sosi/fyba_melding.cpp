@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: fyba_melding.cpp 20487 2010-08-29 21:42:53Z rouault $
  *
  * Project:  FYBA Callbacks
  * Purpose:  Needed by FYBA - however we do not want to display most messages
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2010, Thomas Hirsch
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,41 +34,30 @@ static short sProsent;
 
 void LC_Error(short feil_nr, const char *logtx, const char *vartx)
 {
-   char szErrMsg[260];
-   short strategi;
-   char *pszFeilmelding;
+    char szErrMsg[260] = {};
+    char *pszFeilmelding = NULL;
 
-
-   // Egen enkel implementasjon av feilhandtering
-   /* Hent feilmeldingstekst og strategi */
-   strategi = LC_StrError(feil_nr,&pszFeilmelding);
-   switch(strategi) {
-      case 2:  sprintf(szErrMsg,"%s","Observer følgende! \n\n");break;
-      case 3:  sprintf(szErrMsg,"%s","Det er oppstått en feil! \n\n");break;
+    // Translate all to English.
+    // Egen enkel implementasjon av feilhandtering
+    /* Hent feilmeldingstekst og strategi */
+    const short strategi = LC_StrError(feil_nr,&pszFeilmelding);
+    switch(strategi) {
+      case 2:  sprintf(szErrMsg,"%s","Observer fÃ¸lgende! \n\n");break;
+      case 3:  sprintf(szErrMsg,"%s","Det er oppstÃ¥tt en feil! \n\n");break;
       case 4:  sprintf(szErrMsg,"%s","Alvorlig feil avslutt programmet! \n\n");break;
-      default: szErrMsg[0]='\0';
-   }
-
-   if (strategi > 2) {
-      Beep(100,500);
+      default: /*szErrMsg[0]='\0';*/ break;
    }
 }
 
+void LC_StartMessage(const char *pszFilnavn) {}
 
-void LC_StartMessage(const char *pszFilnavn)
-{
-}
+void LC_ShowMessage(double prosent) // TODO: prosent?
+{}
 
-void LC_ShowMessage(double prosent)
-{
-}
-
-void LC_EndMessage(void)
-{
-}
+void LC_EndMessage(void) {}
 
 short LC_Cancel(void)
 {
-      /* Not supported */
+      // Not supported.
       return FALSE;
 }

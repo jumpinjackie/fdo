@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: gdalfilter.py 18195 2009-12-06 20:24:39Z rouault $
+# $Id: gdalfilter.py 33791 2016-03-26 12:51:23Z goatbar $
 #
 # Project:  OGR Python samples
-# Purpose:  Filter an input file, producing an output file. 
+# Purpose:  Filter an input file, producing an output file.
 # Author:   Frank Warmerdam, warmerdam@pobox.com
 #
 ###############################################################################
 # Copyright (c) 2003, Frank Warmerdam <warmerdam@pobox.com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -28,11 +28,8 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import gdal
-    gdal.TermProgress = gdal.TermProgress_nocb
-except ImportError:
-    import gdal
+from osgeo import gdal
+gdal.TermProgress = gdal.TermProgress_nocb
 
 import sys
 import string
@@ -157,13 +154,13 @@ filt_template = \
 
 for iBand in range(vrt_ds.RasterCount):
     band = vrt_ds.GetRasterBand(iBand+1)
-    
+
     src_xml = filt_template % (iBand+1)
 
     band.SetMetadata( { 'source_0' : src_xml }, 'vrt_sources' )
 
 # =============================================================================
-#	copy the results to a new file. 
+#	copy the results to a new file.
 # =============================================================================
 
 if out_format == 'VRT':

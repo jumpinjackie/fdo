@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gtm.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: gtm.h 35933 2016-10-25 16:46:26Z goatbar $
  *
  * Project:  GTM Driver
  * Purpose:  Class for reading, parsing and handling a gtm file.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2009, Leonardo de Paula Rosa Piga
+ * Copyright (c) 2009-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -39,7 +40,6 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-
 #ifndef FILE_OFFSETS
 #define FILE_OFFSETS
 #define NWPTSTYLES_OFFSET 27
@@ -63,9 +63,8 @@
 
 /* GTM_EPOCH is defined as the unix time for the 31 dec 1989 00:00:00 */
 #define GTM_EPOCH 631065600
-    
-#endif
 
+#endif
 
 void appendDouble(void* pBuffer, double val);
 void appendFloat(void* pBuffer, float val);
@@ -79,7 +78,6 @@ void writeInt(VSILFILE* fp, int val);
 void writeUChar(VSILFILE* fp, unsigned char val);
 void writeUShort(VSILFILE* fp, unsigned short);
 
-
 class Waypoint
 {
 public:
@@ -89,16 +87,15 @@ public:
              const char* name,
              const char* comment,
              int icon,
-             GIntBig wptdate
-             );
+             GIntBig wptdate );
     ~Waypoint();
-    double getLatitude();
-    double getLongitude();
-    double getAltitude();
-    const char* getName();
-    const char* getComment();
-    int getIcon();
-    GIntBig getDate(); /* 0 if invalid */
+    double getLatitude() const;
+    double getLongitude() const;
+    double getAltitude() const;
+    const char* getName() const;
+    const char* getComment() const;
+    int getIcon() const;
+    GIntBig getDate() const; /* 0 if invalid */
 private:
     double latitude;
     double longitude;
@@ -124,24 +121,22 @@ public:
           unsigned char type,
           int color);
     ~Track();
-  
-    const char* getName();
-    unsigned char getType();
-    int getColor();
 
-    void addPoint(double x, double y, GIntBig datetime, double altitude);  
-    int getNumPoints();
-    const TrackPoint* getPoint(int pointNum);
+    const char* getName() const;
+    unsigned char getType() const;
+    int getColor() const;
 
-private: 
+    void addPoint(double x, double y, GIntBig datetime, double altitude);
+    int getNumPoints() const;
+    const TrackPoint* getPoint(int pointNum) const;
+
+private:
     char* pszName;
     unsigned char type;
     int color;
     int nPoints;
     TrackPoint* pasTrackPoints;
-
 };
-
 
 class GTM
 {
@@ -150,19 +145,18 @@ public:
     ~GTM();
     bool Open(const char* pszFilename);
 
-
-    // Check wheater it is a valid GTM file or not
+    // Check whether it is a valid GTM file or not.
     bool isValid();
     bool readHeaderNumbers();
 
     // Waypoint control functions
     Waypoint* fetchNextWaypoint();
-    int getNWpts();
-    bool hasNextWaypoint();
+    int getNWpts() const;
+    bool hasNextWaypoint() const;
     void rewindWaypoint();
 
-    int getNTracks();
-    bool hasNextTrack();
+    int getNTracks() const;
+    bool hasNextTrack() const;
     void rewindTrack();
     Track* fetchNextTrack();
 
@@ -201,7 +195,6 @@ private:
     bool readTrackPoints(double& latitude, double& longitude, GIntBig& datetime,
                          unsigned char& start, float& altitude);
     bool readFile(void* pBuffer, size_t nSize, size_t nCount);
-
 };
 
 #endif // OGR_GTM_GTM

@@ -3,11 +3,15 @@ GDAL_ROOT	=	..\..
 
 !INCLUDE $(GDAL_ROOT)\nmake.opt
 
-OBJ		=	netcdfdataset.obj gmtdataset.obj
+OBJ		=	netcdfdataset.obj netcdflayer.obj netcdfwriterconfig.obj gmtdataset.obj
 
 PLUGIN_DLL 	=	gdal_netCDF.dll
 
 EXTRAFLAGS 	= 	/I$(NETCDF_INC_DIR)
+
+!IF "$(NETCDF_PLUGIN)" == "YES"
+EXTRAFLAGS = $(EXTRAFLAGS) -DNETCDF_PLUGIN
+!ENDIF
 
 !IFDEF NETCDF_HAS_NC4
 EXTRAFLAGS = $(EXTRAFLAGS) -DNETCDF_HAS_NC4

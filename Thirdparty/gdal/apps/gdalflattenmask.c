@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: gdalflattenmask.c $
  *
  * Project:  GDAL Utilities
  * Purpose:  GDAL mask flattening utility
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,6 +29,8 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+
+CPL_CVSID("$Id: gdalflattenmask.c 36535 2016-11-27 23:49:35Z goatbar $");
 
 /************************************************************************/
 /*                               Usage()                                */
@@ -95,7 +96,7 @@ int main(int argc, char* argv[])
         else if( EQUAL(argv[i],"-a_nodata") && i < argc - 1 )
         {
             bSetNoData = TRUE;
-            dfDstNoData = atof(argv[++i]);
+            dfDstNoData = CPLAtof(argv[++i]);
         }
         else if( EQUAL(argv[i], "-set_alpha"))
         {
@@ -181,7 +182,7 @@ int main(int argc, char* argv[])
 /* -------------------------------------------------------------------- */
 /*      Write geotransform, projection, color interpretations, no data  */
 /*      values, color tables, metadata, etc. before the file is         */
-/*       crystalized                                                    */
+/*      crystallized.                                                   */
 /* -------------------------------------------------------------------- */
     if( GDALGetGeoTransform( hSrcDS, adfGeoTransform ) == CE_None )
     {
@@ -284,7 +285,7 @@ int main(int argc, char* argv[])
                     }
 
                     default:
-                        CPLAssert(0);
+                        CPLAssert(false);
                         break;
                 }
             }
@@ -306,7 +307,8 @@ int main(int argc, char* argv[])
         GDALRasterBandH hMaskBand = GDALGetMaskBand(hSrcBand);
         int nMaskFlag = GDALGetMaskFlags(hSrcBand);
 
-        int iCol, iLine;
+        int iCol;
+        int iLine;
         for(iLine = 0; iLine < nYSize; iLine++)
         {
             GDALRasterIO( hMaskBand, GF_Read, 0, iLine, nXSize, 1,

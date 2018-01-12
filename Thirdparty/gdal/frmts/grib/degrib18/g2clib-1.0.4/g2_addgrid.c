@@ -6,10 +6,10 @@
 g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflist,g2int idefnum)
 //$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    g2_addgrid 
+// SUBPROGRAM:    g2_addgrid
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2002-11-01
 //
-// ABSTRACT: This routine packs up a Grid Definition Section (Section 3) 
+// ABSTRACT: This routine packs up a Grid Definition Section (Section 3)
 //   and adds it to a GRIB2 message.  It is used with routines "g2_create",
 //   "g2_addlocal", "g2_addfield",
 //   and "g2_gribend" to create a complete GRIB2 message.
@@ -27,26 +27,26 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
 //                Must be dimensioned >= 5.
 //                igds[0]=Source of grid definition (see Code Table 3.0)
 //                igds[1]=Number of grid points in the defined grid.
-//                igds[2]=Number of octets needed for each 
-//                            additional grid points definition.  
+//                igds[2]=Number of octets needed for each
+//                            additional grid points definition.
 //                            Used to define number of
 //                            points in each row ( or column ) for
-//                            non-regular grids.  
+//                            non-regular grids.
 //                            = 0, if using regular grid.
-//                igds[3]=Interpretation of list for optional points 
+//                igds[3]=Interpretation of list for optional points
 //                            definition.  (Code Table 3.11)
 //                igds[4]=Grid Definition Template Number (Code Table 3.1)
 //     igdstmpl - Contains the data values for the specified Grid Definition
-//                Template ( NN=igds[4] ).  Each element of this integer 
+//                Template ( NN=igds[4] ).  Each element of this integer
 //                array contains an entry (in the order specified) of Grid
-//                Defintion Template 3.NN
+//                Definition Template 3.NN
 //     ideflist - (Used if igds[2] != 0)  This array contains the
 //                number of grid points contained in each row ( or column )
 //      idefnum - (Used if igds[2] != 0)  The number of entries
 //                in array ideflist.  i.e. number of rows ( or columns )
 //                for which optional grid points are defined.
 //
-//   OUTPUT ARGUMENTS:      
+//   OUTPUT ARGUMENTS:
 //     cgrib    - Char array to contain the updated GRIB2 message.
 //                Must be allocated large enough to store the entire
 //                GRIB2 message.
@@ -66,52 +66,48 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
 //
 // ATTRIBUTES:
 //   LANGUAGE: C
-//   MACHINE:  
+//   MACHINE:
 //
 //$$$
 {
 
-      g2int ierr;
-      static unsigned char G=0x47;       // 'G'
-      static unsigned char R=0x52;       // 'R'
-      static unsigned char I=0x49;       // 'I'
-      static unsigned char B=0x42;       // 'B'
-      static unsigned char seven=0x37;   // '7'
+      const unsigned char G=0x47;       // 'G'
+      const unsigned char R=0x52;       // 'R'
+      const unsigned char I=0x49;       // 'I'
+      const unsigned char B=0x42;       // 'B'
+      const unsigned char seven=0x37;   // '7'
 
-      static g2int one=1,three=3,miss=65535;
+      const g2int one=1,three=3,miss=65535;
       g2int   lensec3,iofst,ibeg,lencurr,len;
       g2int   i,j,temp,ilen,isecnum,nbits;
       xxtemplate *mapgrid=0;
- 
-      ierr=0;
+
 //
 //  Check to see if beginning of GRIB message exists
 //
       if ( cgrib[0]!=G || cgrib[1]!=R || cgrib[2]!=I || cgrib[3]!=B ) {
         printf("g2_addgrid: GRIB not found in given message.\n");
-        printf("g2_addgrid: Call to routine gribcreate required to initialize GRIB messge.\n");
-        ierr=-1;
-        return(ierr);
+        printf("g2_addgrid: Call to routine gribcreate required to initialize GRIB message.\n");
+        return(-1);
       }
 //
 //  Get current length of GRIB message
-//  
+//
       gbit(cgrib,&lencurr,96,32);
 //
 //  Check to see if GRIB message is already complete
-//  
+//
       if ( cgrib[lencurr-4]==seven && cgrib[lencurr-3]==seven &&
            cgrib[lencurr-2]==seven && cgrib[lencurr-1]==seven ) {
         printf("g2_addgrid: GRIB message already complete.  Cannot add new section.\n");
-        ierr=-2;
-        return(ierr);
+        return(-2);
       }
 //
 //  Loop through all current sections of the GRIB message to
 //  find the last section number.
 //
       len=16;    // length of Section 0
-      for (;;) { 
+      for (;;) {
       //    Get section number and length of next section
         iofst=len*8;
         gbit(cgrib,&ilen,iofst,32);
@@ -126,8 +122,7 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
           printf("g2_addgrid: Section byte counts don''t add to total.\n");
           printf("g2_addgrid: Sum of section byte counts = %d\n",len);
           printf("g2_addgrid: Total byte count in Section 0 = %d\n",lencurr);
-          ierr=-3;
-          return(ierr);
+          return(-3);
         }
       }
 //
@@ -136,8 +131,7 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
       if ( (isecnum!=1) && (isecnum!=2) && (isecnum!=7) ) {
         printf("g2_addgrid: Section 3 can only be added after Section 1, 2 or 7.\n");
         printf("g2_addgrid: Section ',isecnum,' was the last found in given GRIB message.\n");
-        ierr=-4;
-        return(ierr);
+        return(-4);
       }
 //
 //  Add Section 3  - Grid Definition Section
@@ -167,8 +161,7 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
       if (igds[0] == 0) {
         mapgrid=getgridtemplate(igds[4]);
         if (mapgrid == 0) {       // undefined template
-          ierr=-5;
-          return(ierr);
+          return(-5);
         }
         //
         //   Extend the Grid Definition Template, if necessary.
@@ -181,6 +174,12 @@ g2int g2_addgrid(unsigned char *cgrib,g2int *igds,g2int *igdstmpl,g2int *ideflis
           mapgrid=extgridtemplate(igds[4],igdstmpl);
         }
       }
+
+      /* Added by GDAL to avoid 'potential null pointer dereference [-Wnull-dereference]' on below mapgrid->maplen */
+      if (mapgrid == 0) {       // undefined template
+        return(-5);
+      }
+
       //
       //   Pack up each input value in array igdstmpl into the
       //   the appropriate number of octets, which are specified in

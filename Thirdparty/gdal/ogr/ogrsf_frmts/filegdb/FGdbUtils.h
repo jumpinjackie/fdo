@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: FGdbUtils.h 23796 2012-01-24 19:10:16Z rouault $
+ * $Id: FGdbUtils.h 36415 2016-11-21 22:40:20Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Various FileGDB OGR Datasource utility functions
@@ -27,9 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-
-#ifndef _FGDB_UTILS_H_INCLUDED
-#define _FGDB_UTILS_H_INCLUDED
+#ifndef FGDB_UTILS_H_INCLUDED
+#define FGDB_UTILS_H_INCLUDED
 
 #include "ogr_fgdb.h"
 #include <iostream>
@@ -44,24 +43,23 @@ std::string WStringToString(const std::wstring& s);
 //
 
 // Type mapping
-bool GDBToOGRGeometry(std::string geoType, bool hasZ, OGRwkbGeometryType* pOut);
-bool OGRGeometryToGDB(OGRwkbGeometryType ogrType, std::string *gdbType, bool *hasZ);
-
+bool GDBToOGRGeometry(std::string geoType, bool hasZ, bool hasM, OGRwkbGeometryType* pOut);
+bool OGRGeometryToGDB(OGRwkbGeometryType ogrType, std::string *gdbType, bool *hasZ, bool *hasM);
 
 bool GDBToOGRSpatialReference(const std::string & wkt, OGRSpatialReference** ppSR);
 
-// Feature mapping 
-bool GDBGeometryToOGRGeometry(bool forceMulti, FileGDBAPI::ShapeBuffer* pGdbGeometry, 
+// Feature mapping
+bool GDBGeometryToOGRGeometry(bool forceMulti, FileGDBAPI::ShapeBuffer* pGdbGeometry,
                               OGRSpatialReference* pOGRSR, OGRGeometry** ppOutGeometry);
 
 //temporary version - until we can parse the full binary format
-bool GhettoGDBGeometryToOGRGeometry(bool forceMulti, FileGDBAPI::ShapeBuffer* pGdbGeometry, 
+bool GhettoGDBGeometryToOGRGeometry(bool forceMulti, FileGDBAPI::ShapeBuffer* pGdbGeometry,
                                     OGRSpatialReference* pOGRSR, OGRGeometry** ppOutGeometry);
 //
 // GDB API to OGR Field Mapping
 //
-bool GDBToOGRFieldType(std::string gdbType, OGRFieldType* ogrType);
-bool OGRToGDBFieldType(OGRFieldType ogrType, std::string* gdbType);
+bool GDBToOGRFieldType(const std::string& gdbType, OGRFieldType* ogrType, OGRFieldSubType* pSubType);
+bool OGRToGDBFieldType(OGRFieldType ogrType, OGRFieldSubType eSubType, std::string* gdbType);
 
 //
 // GDB Field Width defaults
@@ -71,7 +69,7 @@ bool GDBFieldTypeToWidthPrecision(std::string &gdbType, int *width, int *precisi
 //
 // GDBAPI error to OGR
 //
-bool GDBErr(long hr, std::string desc);
+bool GDBErr(long hr, std::string desc, CPLErr errType = CE_Failure, const char* pszAddMsg = "");
 bool GDBDebug(long hr, std::string desc);
 
 //
@@ -82,8 +80,8 @@ void FGDB_CPLAddXMLAttribute(CPLXMLNode* node, const char* attrname, const char*
 //
 // Utility for escaping reserved words and cleaning field names
 //
-std::string FGDBLaunderName(const std::string name);
-std::string FGDBEscapeUnsupportedPrefixes(const std::string className);
-std::string FGDBEscapeReservedKeywords(const std::string name);
+std::string FGDBLaunderName(const std::string& name);
+std::string FGDBEscapeUnsupportedPrefixes(const std::string& className);
+std::string FGDBEscapeReservedKeywords(const std::string& name);
 
 #endif

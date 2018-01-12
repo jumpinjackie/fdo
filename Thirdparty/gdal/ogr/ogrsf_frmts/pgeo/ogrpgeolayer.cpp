@@ -1,13 +1,13 @@
 /******************************************************************************
- * $Id: ogrpgeolayer.cpp 21540 2011-01-22 00:06:04Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
- * Purpose:  Implements OGRPGeoLayer class, code shared between 
+ * Purpose:  Implements OGRPGeoLayer class, code shared between
  *           the direct table access, and the generic SQL results.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2008-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,27 +33,25 @@
 #include "cpl_string.h"
 #include "ogrpgeogeometry.h"
 
-CPL_CVSID("$Id: ogrpgeolayer.cpp 21540 2011-01-22 00:06:04Z rouault $");
+#include <algorithm>
+
+CPL_CVSID("$Id: ogrpgeolayer.cpp 37371 2017-02-13 11:41:59Z rouault $");
 
 /************************************************************************/
 /*                            OGRPGeoLayer()                            */
 /************************************************************************/
 
-OGRPGeoLayer::OGRPGeoLayer()
-
-{
-    poDS = NULL;
-
-    pszGeomColumn = NULL;
-    pszFIDColumn = NULL;
-
-    poStmt = NULL;
-
-    iNextShapeId = 0;
-
-    poSRS = NULL;
-    nSRSId = -2; // we haven't even queried the database for it yet. 
-}
+OGRPGeoLayer::OGRPGeoLayer() :
+    poFeatureDefn(NULL),
+    poStmt(NULL),
+    poSRS(NULL),
+    nSRSId(-2), // we haven't even queried the database for it yet.
+    iNextShapeId(0),
+    poDS(NULL),
+    pszGeomColumn(NULL),
+    pszFIDColumn(NULL),
+    panFieldOrdinals(NULL)
+{}
 
 /************************************************************************/
 /*                            ~OGRPGeoLayer()                             */
@@ -65,7 +63,7 @@ OGRPGeoLayer::~OGRPGeoLayer()
     if( m_nFeaturesRead > 0 && poFeatureDefn != NULL )
     {
         CPLDebug( "PGeo", "%d features read on layer '%s'.",
-                  (int) m_nFeaturesRead, 
+                  static_cast<int>(m_nFeaturesRead),
                   poFeatureDefn->GetName() );
     }
 
@@ -82,7 +80,7 @@ OGRPGeoLayer::~OGRPGeoLayer()
     }
 
     CPLFree( pszGeomColumn );
-    CPLFree( panFieldOrdinals ); 
+    CPLFree( panFieldOrdinals );
     CPLFree( pszFIDColumn );
 
     if( poSRS != NULL )
@@ -99,41 +97,44 @@ OGRPGeoLayer::~OGRPGeoLayer()
 /*      set on a statement.  Sift out geometry and FID fields.          */
 /************************************************************************/
 
-CPLErr OGRPGeoLayer::BuildFeatureDefn( const char *pszLayerName, 
-                                       CPLODBCStatement *poStmt )
+CPLErr OGRPGeoLayer::BuildFeatureDefn( const char *pszLayerName,
+                                       CPLODBCStatement *poStmtIn )
 
 {
     poFeatureDefn = new OGRFeatureDefn( pszLayerName );
-    int    nRawColumns = poStmt->GetColCount();
+    SetDescription( poFeatureDefn->GetName() );
+    int    nRawColumns = poStmtIn->GetColCount();
 
     poFeatureDefn->Reference();
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
 
     panFieldOrdinals = (int *) CPLMalloc( sizeof(int) * nRawColumns );
 
     for( int iCol = 0; iCol < nRawColumns; iCol++ )
     {
-        OGRFieldDefn    oField( poStmt->GetColName(iCol), OFTString );
+        OGRFieldDefn    oField( poStmtIn->GetColName(iCol), OFTString );
 
-        oField.SetWidth( MAX(0,poStmt->GetColSize( iCol )) );
+        oField.SetWidth(
+            std::max(static_cast<short>(0), poStmtIn->GetColSize( iCol )));
 
-        if( pszGeomColumn != NULL 
-            && EQUAL(poStmt->GetColName(iCol),pszGeomColumn) )
+        if( pszGeomColumn != NULL
+            && EQUAL(poStmtIn->GetColName(iCol),pszGeomColumn) )
             continue;
 
-        if( pszFIDColumn == NULL 
-            && EQUAL(poStmt->GetColName(iCol),"OBJECTID") )
+        if( pszFIDColumn == NULL
+            && EQUAL(poStmtIn->GetColName(iCol),"OBJECTID") )
         {
-            pszFIDColumn = CPLStrdup(poStmt->GetColName(iCol));
+            pszFIDColumn = CPLStrdup(poStmtIn->GetColName(iCol));
         }
 
-        if( pszGeomColumn == NULL 
-            && EQUAL(poStmt->GetColName(iCol),"Shape") )
+        if( pszGeomColumn == NULL
+            && EQUAL(poStmtIn->GetColName(iCol),"Shape") )
         {
-            pszGeomColumn = CPLStrdup(poStmt->GetColName(iCol));
+            pszGeomColumn = CPLStrdup(poStmtIn->GetColName(iCol));
             continue;
         }
-        
-        switch( poStmt->GetColType(iCol) )
+
+        switch( poStmtIn->GetColType(iCol) )
         {
           case SQL_INTEGER:
           case SQL_SMALLINT:
@@ -148,7 +149,7 @@ CPLErr OGRPGeoLayer::BuildFeatureDefn( const char *pszLayerName,
 
           case SQL_DECIMAL:
             oField.SetType( OFTReal );
-            oField.SetPrecision( poStmt->GetColPrecision(iCol) );
+            oField.SetPrecision( poStmtIn->GetColPrecision(iCol) );
             break;
 
           case SQL_FLOAT:
@@ -174,13 +175,15 @@ CPLErr OGRPGeoLayer::BuildFeatureDefn( const char *pszLayerName,
             /* leave it as OFTString */;
         }
 
+        if( pszGeomColumn != NULL )
+            poFeatureDefn->GetGeomFieldDefn(0)->SetName(pszGeomColumn);
+
         poFeatureDefn->AddFieldDefn( &oField );
         panFieldOrdinals[poFeatureDefn->GetFieldCount() - 1] = iCol+1;
     }
 
     return CE_None;
 }
-
 
 /************************************************************************/
 /*                            ResetReading()                            */
@@ -199,11 +202,9 @@ void OGRPGeoLayer::ResetReading()
 OGRFeature *OGRPGeoLayer::GetNextFeature()
 
 {
-    for( ; TRUE; )
+    while( true )
     {
-        OGRFeature      *poFeature;
-
-        poFeature = GetNextRawFeature();
+        OGRFeature *poFeature = GetNextRawFeature();
         if( poFeature == NULL )
             return NULL;
 
@@ -242,11 +243,10 @@ OGRFeature *OGRPGeoLayer::GetNextRawFeature()
 /* -------------------------------------------------------------------- */
 /*      Create a feature from the current result.                       */
 /* -------------------------------------------------------------------- */
-    int         iField;
     OGRFeature *poFeature = new OGRFeature( poFeatureDefn );
 
     if( pszFIDColumn != NULL && poStmt->GetColId(pszFIDColumn) > -1 )
-        poFeature->SetFID( 
+        poFeature->SetFID(
             atoi(poStmt->GetColData(poStmt->GetColId(pszFIDColumn))) );
     else
         poFeature->SetFID( iNextShapeId );
@@ -257,15 +257,15 @@ OGRFeature *OGRPGeoLayer::GetNextRawFeature()
 /* -------------------------------------------------------------------- */
 /*      Set the fields.                                                 */
 /* -------------------------------------------------------------------- */
-    for( iField = 0; iField < poFeatureDefn->GetFieldCount(); iField++ )
+    for( int iField = 0; iField < poFeatureDefn->GetFieldCount(); iField++ )
     {
         int iSrcField = panFieldOrdinals[iField]-1;
         const char *pszValue = poStmt->GetColData( iSrcField );
 
         if( pszValue == NULL )
-            /* no value */;
+            poFeature->SetFieldNull( iField );
         else if( poFeature->GetFieldDefnRef(iField)->GetType() == OFTBinary )
-            poFeature->SetField( iField, 
+            poFeature->SetField( iField,
                                  poStmt->GetColDataLength(iSrcField),
                                  (GByte *) pszValue );
         else
@@ -307,7 +307,7 @@ OGRFeature *OGRPGeoLayer::GetNextRawFeature()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRPGeoLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRPGeoLayer::GetFeature( GIntBig nFeatureId )
 
 {
     /* This should be implemented directly! */
@@ -319,20 +319,9 @@ OGRFeature *OGRPGeoLayer::GetFeature( long nFeatureId )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRPGeoLayer::TestCapability( const char * pszCap )
-
+int OGRPGeoLayer::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
-}
-
-/************************************************************************/
-/*                           GetSpatialRef()                            */
-/************************************************************************/
-
-OGRSpatialReference *OGRPGeoLayer::GetSpatialRef()
-
-{
-    return poSRS;
 }
 
 /************************************************************************/
@@ -346,14 +335,14 @@ void OGRPGeoLayer::LookupSRID( int nSRID )
 /*      Fetch the corresponding WKT from the SpatialRef table.          */
 /* -------------------------------------------------------------------- */
     CPLODBCStatement oStmt( poDS->GetSession() );
-        
+
     oStmt.Appendf( "SELECT srtext FROM GDB_SpatialRefs WHERE srid = %d",
                   nSRID );
 
     if( !oStmt.ExecuteSQL() )
     {
         CPLError( CE_Failure, CPLE_AppDefined,
-                  "'%s' failed.\n%s", 
+                  "'%s' failed.\n%s",
                   oStmt.GetCommand(),
                   poDS->GetSession()->GetLastError() );
         return;
@@ -362,7 +351,7 @@ void OGRPGeoLayer::LookupSRID( int nSRID )
     if( !oStmt.Fetch() )
     {
         CPLError( CE_Warning, CPLE_AppDefined,
-                  "SRID %d lookup failed.\n%s", 
+                  "SRID %d lookup failed.\n%s",
                   nSRID, poDS->GetSession()->GetLastError() );
         return;
     }
@@ -383,10 +372,10 @@ void OGRPGeoLayer::LookupSRID( int nSRID )
 /*      Turn it into an OGRSpatialReference.                            */
 /* -------------------------------------------------------------------- */
     poSRS = new OGRSpatialReference();
-    
+
     if( poSRS->importFromWkt( &pszSRText ) != OGRERR_NONE )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "importFromWKT() failed on SRS '%s'.",
                   pszSRText);
         delete poSRS;
@@ -394,7 +383,7 @@ void OGRPGeoLayer::LookupSRID( int nSRID )
     }
     else if( poSRS->morphFromESRI() != OGRERR_NONE )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "morphFromESRI() failed on SRS." );
         delete poSRS;
         poSRS = NULL;
@@ -407,7 +396,7 @@ void OGRPGeoLayer::LookupSRID( int nSRID )
 /*                            GetFIDColumn()                            */
 /************************************************************************/
 
-const char *OGRPGeoLayer::GetFIDColumn() 
+const char *OGRPGeoLayer::GetFIDColumn()
 
 {
     if( pszFIDColumn != NULL )
@@ -420,7 +409,7 @@ const char *OGRPGeoLayer::GetFIDColumn()
 /*                         GetGeometryColumn()                          */
 /************************************************************************/
 
-const char *OGRPGeoLayer::GetGeometryColumn() 
+const char *OGRPGeoLayer::GetGeometryColumn()
 
 {
     if( pszGeomColumn != NULL )

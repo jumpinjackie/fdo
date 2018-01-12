@@ -1,41 +1,41 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-#/******************************************************************************
-# * $Id$
-# *
-# * Project:  GDAL
-# * Purpose:  GDAL API_PROXY server written in Python
-# * Author:   Even Rouault, <even dot rouault at mines-paris dot org>
-# *
-# ******************************************************************************
-# * Copyright (c) 2013, Even Rouault, <even dot rouault at mines-paris dot org>
-# *
-# * Permission is hereby granted, free of charge, to any person obtaining a
-# * copy of this software and associated documentation files (the "Software"),
-# * to deal in the Software without restriction, including without limitation
-# * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# * and/or sell copies of the Software, and to permit persons to whom the
-# * Software is furnished to do so, subject to the following conditions:
-# *
-# * The above copyright notice and this permission notice shall be included
-# * in all copies or substantial portions of the Software.
-# *
-# * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-# * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-# * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# * DEALINGS IN THE SOFTWARE.
-# ****************************************************************************/
+#*****************************************************************************
+# $Id$
+#
+# Project:  GDAL
+# Purpose:  GDAL API_PROXY server written in Python
+# Author:   Even Rouault, <even dot rouault at mines-paris dot org>
+#
+#*****************************************************************************
+# Copyright (c) 2013, Even Rouault <even dot rouault at mines-paris dot org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#***************************************************************************/
 
 # WARNING: only Python 2 compatible for now
 
-import sys
 import os
-from struct import *
+import struct
+import sys
 
-from osgeo import gdalconst, gdal
+from osgeo import gdal
 
 class GDALPythonServerRasterBand:
 
@@ -124,8 +124,13 @@ class GDALPythonServerRasterBand:
 
 class GDALPythonServerDataset:
 
-    def __init__(self, filename, access = gdal.GA_ReadOnly):
-        self.gdal_ds = gdal.Open(filename, access)
+    def __init__(self, filename, access = gdal.GA_ReadOnly, open_options = None):
+        nFlags = 0
+        if access == gdal.GA_Update:
+            nFlags |= gdal.OF_UPDATE
+        if open_options is None:
+            open_options = []
+        self.gdal_ds = gdal.OpenEx(filename, nFlags, open_options = open_options)
         if self.gdal_ds is None:
             raise Exception(gdal.GetLastErrorMsg())
         self.RasterXSize = self.gdal_ds.RasterXSize
@@ -254,8 +259,9 @@ INSTR_Band_GetUnitType = 72
 INSTR_Band_GetDefaultRAT = 75
 #INSTR_Band_SetDefaultRAT = 76
 #INSTR_Band_AdviseRead = 77
-INSTR_Band_End = 78
-#INSTR_END = 79
+#INSTR_Band_DeleteNoDataValue=78
+INSTR_Band_End = 79
+#INSTR_END = 80
 
 caps_list = [
     INSTR_GetGDALVersion,
@@ -336,7 +342,7 @@ caps_list = [
     #INSTR_Band_SetDefaultRAT,
     #INSTR_Band_AdviseRead ,
     #INSTR_Band_End,
-    #INSTR_END = 79
+    #INSTR_END = 80
 ]
 
 CE_None = 0
@@ -346,15 +352,21 @@ VERBOSE = 0
 
 def read_int():
     if sys.version_info >= (3,0,0):
-        return unpack('i', sys.stdin.read(4).encode('latin1'))[0]
+        return struct.unpack('i', sys.stdin.read(4).encode('latin1'))[0]
     else:
-        return unpack('i', sys.stdin.read(4))[0]
+        return struct.unpack('i', sys.stdin.read(4))[0]
+
+def read_bigint():
+    if sys.version_info >= (3,0,0):
+        return struct.unpack('q', sys.stdin.read(8).encode('latin1'))[0]
+    else:
+        return struct.unpack('q', sys.stdin.read(8))[0]
 
 def read_double():
     if sys.version_info >= (3,0,0):
-        return unpack('d', sys.stdin.read(8).encode('latin1'))[0]
+        return struct.unpack('d', sys.stdin.read(8).encode('latin1'))[0]
     else:
-        return unpack('d', sys.stdin.read(8))[0]
+        return struct.unpack('d', sys.stdin.read(8))[0]
 
 def read_str():
     length = read_int()
@@ -374,11 +386,18 @@ def read_strlist():
 
 def write_int(i):
     if i is True:
-        v = pack('i', 1)
+        v = struct.pack('i', 1)
     elif i is False or i is None:
-        v = pack('i', 0)
+        v = struct.pack('i', 0)
     else:
-        v = pack('i', i)
+        v = struct.pack('i', i)
+    if sys.version_info >= (3,0,0):
+        sys.stdout.write(v.decode('latin1'))
+    else:
+        sys.stdout.write(v)
+
+def write_uint64(i):
+    v = struct.pack('Q', i)
     if sys.version_info >= (3,0,0):
         sys.stdout.write(v.decode('latin1'))
     else:
@@ -386,9 +405,9 @@ def write_int(i):
 
 def write_double(d):
     if sys.version_info >= (3,0,0):
-        sys.stdout.write(pack('d', d).decode('latin1'))
+        sys.stdout.write(struct.pack('d', d).decode('latin1'))
     else:
-        sys.stdout.write(pack('d', d))
+        sys.stdout.write(struct.pack('d', d))
 
 def write_str(s):
     if s is None:
@@ -453,9 +472,9 @@ def main_loop():
 
         if instr == INSTR_GetGDALVersion:
             if sys.version_info >= (3,0,0):
-                lsb = unpack('B', sys.stdin.read(1).encode('latin1'))[0]
+                lsb = struct.unpack('B', sys.stdin.read(1).encode('latin1'))[0]
             else:
-                lsb = unpack('B', sys.stdin.read(1))[0]
+                lsb = struct.unpack('B', sys.stdin.read(1))[0]
             ver = read_str()
             vmajor = read_int()
             vminor = read_int()
@@ -471,10 +490,10 @@ def main_loop():
                 sys.stderr.write('protovminor=%d\n' % protovminor)
                 sys.stderr.write('extra_bytes=%d\n' % extra_bytes)
 
-            write_str('1.10')
-            write_int(1) # vmajor
-            write_int(10) # vminor
-            write_int(1) # protovmajor
+            write_str('2.1dev')
+            write_int(2) # vmajor
+            write_int(1) # vminor
+            write_int(3) # protovmajor
             write_int(0) # protovminor
             write_int(0) # extra bytes
             continue
@@ -509,15 +528,17 @@ def main_loop():
             access = read_int()
             filename = read_str()
             cwd = read_str()
+            open_options = read_strlist()
             if cwd is not None:
                 os.chdir(cwd)
             if VERBOSE:
                 sys.stderr.write('access=%d\n' % access)
                 sys.stderr.write('filename=%s\n' % filename)
                 sys.stderr.write('cwd=%s\n' % cwd)
+                sys.stderr.write('open_options=%s\n' % str(open_options))
             #sys.stderr.write('Open(%s)\n' % filename)
             try:
-                server_ds = GDALPythonServerDataset(filename, access)
+                server_ds = GDALPythonServerDataset(filename, access, open_options)
             except:
                 server_ds = None
 
@@ -531,7 +552,7 @@ def main_loop():
                 for cap in caps_list:
                     caps[int(cap / 8)] = caps[int(cap / 8)] | (1 << (cap % 8))
                 for i in range(16):
-                    sys.stdout.write(pack('B', caps[i])) # caps
+                    sys.stdout.write(struct.pack('B', caps[i])) # caps
                 write_str(server_ds.GetDescription())
                 drv = server_ds.GetDriver()
                 if drv is not None:
@@ -560,20 +581,20 @@ def main_loop():
         elif instr == INSTR_Create:
             filename = read_str()
             cwd = read_str()
-            xsize = read_int()
-            ysize = read_int()
-            bands = read_int()
-            datatype = read_int()
-            options = read_strlist()
+            read_int() # xsize =
+            read_int() # ysize =
+            read_int() # bands =
+            read_int() # datatype =
+            read_strlist() #options =
             write_marker()
             # FIXME
             write_int(0)
         elif instr == INSTR_CreateCopy:
             filename = read_str()
-            src_description = read_str()
+            read_str() # src_description =
             cwd = read_str()
-            strict = read_int()
-            options = read_strlist()
+            read_int() # strict =
+            read_strlist() # options =
             # FIXME
             write_int(0)
         elif instr == INSTR_QuietDelete:
@@ -591,13 +612,6 @@ def main_loop():
                     write_double(gt[i])
             else:
                 write_int(CE_Failure)
-                write_int(6 * 8)
-                write_double(0)
-                write_double(1)
-                write_double(0)
-                write_double(0)
-                write_double(0)
-                write_double(1)
         elif instr == INSTR_GetProjectionRef:
             write_marker()
             write_str(server_ds.GetProjectionRef())
@@ -633,12 +647,12 @@ def main_loop():
             nBufType = read_int()
             nBandCount = read_int()
             panBandMap = []
-            size = read_int()
+            read_int() # size =
             for i in range(nBandCount):
                 panBandMap.append(read_int())
-            nPixelSpace = read_int()
-            nLineSpace = read_int()
-            nBandSpace = read_int()
+            nPixelSpace = read_bigint()
+            nLineSpace = read_bigint()
+            nBandSpace = read_bigint()
             val = server_ds.IRasterIO_Read(nXOff, nYOff, nXSize, nYSize, nBufXSize, nBufYSize, nBufType, panBandMap, nPixelSpace, nLineSpace, nBandSpace)
             write_marker()
             if val is None:
@@ -788,9 +802,9 @@ def main_loop():
                 write_int(CE_Failure)
             else:
                 write_int(CE_None)
-                write_int(len(val) * 4)
+                write_int(len(val) * 8)
                 for i in range(len(val)):
-                    write_int(val[i])
+                    write_uint64(val[i])
         #elif instr == INSTR_Band_GetDefaultHistogram:
         #    bForce = read_int()
         #    write_marker()

@@ -1,5 +1,3 @@
-
-
 include ../../GDALmake.opt
 
 OBJ	=	rawdataset.o ehdrdataset.o pauxdataset.o doq1dataset.o \
@@ -8,9 +6,8 @@ OBJ	=	rawdataset.o ehdrdataset.o pauxdataset.o doq1dataset.o \
 		atlsci_spheroid.o btdataset.o landataset.o cpgdataset.o \
 		idadataset.o ndfdataset.o dipxdataset.o genbindataset.o \
 		lcpdataset.o eirdataset.o gtxdataset.o loslasdataset.o \
-		ntv2dataset.o ace2dataset.o snodasdataset.o ctable2dataset.o
-
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(CPPFLAGS)
+		ntv2dataset.o ace2dataset.o snodasdataset.o ctable2dataset.o \
+		krodataset.o roipacdataset.o iscedataset.o rrasterdataset.o
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: pcrastermisc.cpp 13149 2007-11-29 15:08:00Z warmerdam $
  *
  * Project:  PCRaster Integration
  * Purpose:  PCRaster driver support functions.
- * Author:   Kor de Jong, k.dejong at geog.uu.nl
+ * Author:   Kor de Jong, Oliver Schmitz
  *
  ******************************************************************************
- * Copyright (c) 2004, Kor de Jong
+ * Copyright (c) PCRaster owners
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,53 +26,33 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-// Library headers.
-#ifndef INCLUDED_IOSTREAM
-#include <iostream>
-#define INCLUDED_IOSTREAM
-#endif
-
-#ifndef INCLUDED_STRING
-#include <string>
-#define INCLUDED_STRING
-#endif
-
-// PCRaster library headers.
-
-// Module headers.
+#include "gdal_frmts.h"
 #include "gdal_pam.h"
-
-#ifndef INCLUDED_PCRASTERDATASET
 #include "pcrasterdataset.h"
-#define INCLUDED_PCRASTERDATASET
-#endif
 
-
-
-CPL_C_START
-void GDALRegister_PCRaster(void);
-CPL_C_END
-
-
+CPL_CVSID("$Id: pcrastermisc.cpp 34811 2016-07-28 15:15:05Z goatbar $");
 
 void GDALRegister_PCRaster()
 {
-    if (! GDAL_CHECK_VERSION("PCRaster driver"))
+    if( !GDAL_CHECK_VERSION( "PCRaster driver" ) )
         return;
 
-if(!GDALGetDriverByName("PCRaster")) {
+    if( GDALGetDriverByName( "PCRaster" ) != NULL )
+        return;
 
-    GDALDriver* driver = new GDALDriver();
+    GDALDriver *poDriver = new GDALDriver();
 
-    driver->SetDescription("PCRaster");
-    driver->SetMetadataItem(GDAL_DMD_LONGNAME, "PCRaster Raster File");
-    driver->SetMetadataItem(GDAL_DMD_CREATIONDATATYPES, "Byte Int32 Float32");
-    driver->SetMetadataItem(GDAL_DMD_HELPTOPIC, "frmt_various.html#PCRaster");
-    driver->SetMetadataItem( GDAL_DMD_EXTENSION, "map" );
+    poDriver->SetDescription("PCRaster");
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
 
-    driver->pfnOpen = PCRasterDataset::open;
-    driver->pfnCreateCopy = PCRasterDataset::createCopy;
+    poDriver->SetMetadataItem(GDAL_DMD_LONGNAME, "PCRaster Raster File");
+    poDriver->SetMetadataItem(GDAL_DMD_CREATIONDATATYPES, "Byte Int32 Float32");
+    poDriver->SetMetadataItem(GDAL_DMD_HELPTOPIC, "frmt_various.html#PCRaster");
+    poDriver->SetMetadataItem(GDAL_DMD_EXTENSION, "map" );
 
-    GetGDALDriverManager()->RegisterDriver(driver);
-}
+    poDriver->pfnOpen = PCRasterDataset::open;
+    poDriver->pfnCreate = PCRasterDataset::create;
+    poDriver->pfnCreateCopy = PCRasterDataset::createCopy;
+
+    GetGDALDriverManager()->RegisterDriver(poDriver);
 }

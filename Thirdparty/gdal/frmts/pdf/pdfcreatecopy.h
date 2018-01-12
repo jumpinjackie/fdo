@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: pdfcreatecopy.h 25613 2013-02-07 19:33:31Z rouault $
+ * $Id: pdfcreatecopy.h 36347 2016-11-20 20:43:39Z rouault $
  *
  * Project:  PDF driver
  * Purpose:  GDALDataset driver for PDF dataset.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault
+ * Copyright (c) 2012-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,9 +35,7 @@
 #include <vector>
 #include <map>
 
-#ifdef OGR_ENABLED
 #include "ogr_api.h"
-#endif
 
 typedef enum
 {
@@ -118,6 +116,21 @@ class GDALPDFPageContext
         std::vector<GDALPDFRasterDesc> asRasterDesc;
         int          nAnnotsId;
         std::vector<int> anAnnotationsId;
+
+        GDALPDFPageContext() :
+            poClippingDS( NULL ),
+            eStreamCompressMethod( COMPRESS_NONE ),
+            dfDPI( 0.0 ),
+            nPageId( 0 ),
+            nContentId( 0 ),
+            nResourcesId( 0 ),
+            nAnnotsId( 0 )
+        {
+            sMargins.nLeft = 0;
+            sMargins.nRight = 0;
+            sMargins.nTop = 0;
+            sMargins.nBottom = 0;
+        }
 };
 
 class GDALPDFOCGDesc
@@ -156,8 +169,6 @@ class GDALPDFWriter
     CPLString    osOffLayers;
     CPLString    osExclusiveLayers;
 
-    void    Init();
-
     void    StartObj(int nObjectId, int nGen = 0);
     void    EndObj();
     void    WriteXRefTableAndTrailer();
@@ -181,7 +192,7 @@ class GDALPDFWriter
     int     AllocNewObject();
 
     public:
-        GDALPDFWriter(VSILFILE* fpIn, int bAppend = FALSE);
+        GDALPDFWriter( VSILFILE* fpIn, int bAppend = FALSE );
        ~GDALPDFWriter();
 
        void Close();
@@ -210,6 +221,7 @@ class GDALPDFWriter
 
        int  StartPage(GDALDataset* poSrcDS,
                       double dfDPI,
+                      bool bWriteUserUnit,
                       const char* pszGEO_ENCODING,
                       const char* pszNEATLINE,
                       PDFMargins* psMargins,
@@ -235,7 +247,6 @@ class GDALPDFWriter
                                int nBlockXSize, int nBlockYSize,
                                GDALProgressFunc pfnProgress,
                                void * pProgressData);
-#ifdef OGR_ENABLED
        int WriteOGRDataSource(const char* pszOGRDataSource,
                               const char* pszOGRDisplayField,
                               const char* pszOGRDisplayLayerNames,
@@ -262,7 +273,6 @@ class GDALPDFWriter
                            int bWriteOGRAttributes,
                            int& iObj,
                            int& iObjLayer);
-#endif
 
        int  WriteJavascript(const char* pszJavascript);
        int  WriteJavascriptFile(const char* pszJavascriptFile);

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrfmedriver.cpp 12396 2007-10-13 10:02:17Z rouault $
  *
  * Project:  FMEObjects Translator
  * Purpose:  Implementations of the OGRFMEDriver class.
@@ -14,23 +13,23 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
 #include "fme2ogr.h"
 #include "cpl_error.h"
 
-CPL_CVSID("$Id: ogrfmedriver.cpp 12396 2007-10-13 10:02:17Z rouault $");
+CPL_CVSID("$Id: ogrfmedriver.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /* ==================================================================== */
@@ -90,7 +89,7 @@ OGRDataSource *OGRFMEDriver::Open( const char * pszFilename, int bUpdate )
                   "FMEObjects Driver doesn't support update." );
         return NULL;
     }
-    
+
     return poDS;
 }
 

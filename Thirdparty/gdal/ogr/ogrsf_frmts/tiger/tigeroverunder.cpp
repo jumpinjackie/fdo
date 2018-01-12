@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigeroverunder.cpp 22961 2011-08-20 17:09:59Z rouault $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerOverUnder, providing access to .RTU files.
@@ -30,9 +29,9 @@
 #include "ogr_tiger.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: tigeroverunder.cpp 22961 2011-08-20 17:09:59Z rouault $");
+CPL_CVSID("$Id: tigeroverunder.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
-#define FILE_CODE       "U"
+static const char FILE_CODE[] = "U";
 
 static const TigerFieldInfo rtU_fields[] = {
   // fieldname    fmt  type OFTType      beg  end  len  bDefine bSet bWrite
@@ -54,13 +53,13 @@ static const TigerRecordInfo rtU_info =
     80
   };
 
-
 /************************************************************************/
 /*                           TigerOverUnder()                           */
 /************************************************************************/
 
 TigerOverUnder::TigerOverUnder( OGRTigerDataSource * poDSIn,
-                              const char * pszPrototypeModule ) : TigerPoint(TRUE, &rtU_info, FILE_CODE)
+                                CPL_UNUSED const char * pszPrototypeModule ) :
+    TigerPoint(TRUE, &rtU_info, FILE_CODE)
 {
     poDS = poDSIn;
     poFeatureDefn = new OGRFeatureDefn( "OverUnder" );
@@ -68,7 +67,6 @@ TigerOverUnder::TigerOverUnder( OGRTigerDataSource * poDSIn,
     poFeatureDefn->SetGeomType( wkbNone );
 
     AddFieldDefns( psRTInfo, poFeatureDefn );
-
 }
 
 OGRFeature *TigerOverUnder::GetFeature( int nRecordId )
@@ -80,6 +78,6 @@ OGRFeature *TigerOverUnder::GetFeature( int nRecordId )
 
 OGRErr TigerOverUnder::CreateFeature( OGRFeature *poFeature )
 {
-  return TigerPoint::CreateFeature( poFeature, 
+  return TigerPoint::CreateFeature( poFeature,
                                     62 );
 }

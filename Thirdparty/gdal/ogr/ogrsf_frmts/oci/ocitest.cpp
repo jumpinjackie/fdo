@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ocitest.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  Oracle Spatial Driver
  * Purpose:  Test mainline for Oracle Spatial Driver low level functions.
@@ -30,7 +29,7 @@
 #include "ogr_oci.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ocitest.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ocitest.cpp 36447 2016-11-22 22:25:08Z rouault $");
 
 /************************************************************************/
 /*                                main()                                */
@@ -41,7 +40,6 @@ int main( int nArgc, char ** papszArgv )
 {
     OGROCISession *poSession = NULL;
     const char *pszStatement = "SELECT * FROM NEPSITE";
-    int  nColCount;
     char **papszResult;
 
     if( nArgc > 1 )
@@ -65,13 +63,9 @@ int main( int nArgc, char ** papszArgv )
         printf( "\n" );
         for( i = 0; i < nColCount; i++ )
         {
-            printf( "  %s = %s\n", 
+            printf( "  %s = %s\n",
                     poDefn->GetFieldDefn(i)->GetNameRef(),
                     papszResult[i] );
         }
     }
 }
-
-
-
-

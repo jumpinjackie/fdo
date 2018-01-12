@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: gdal_contour.cpp 25643 2013-02-12 13:50:42Z bishop $
  *
  * Project:  Contour Generator
  * Purpose:  Contour Generator mainline.
  * Author:   Frank Warmerdam <warmerdam@pobox.com>
  *
  ******************************************************************************
- * Copyright (c) 2003, Applied Coherent Technology (www.actgate.com). 
+ * Copyright (c) 2003, Applied Coherent Technology (www.actgate.com).
+ * Copyright (c) 2008-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,7 +34,7 @@
 #include "ogr_api.h"
 #include "ogr_srs_api.h"
 
-CPL_CVSID("$Id: gdal_contour.cpp 25643 2013-02-12 13:50:42Z bishop $");
+CPL_CVSID("$Id: gdal_contour.cpp 40710 2017-11-14 21:47:33Z rouault $");
 
 /************************************************************************/
 /*                            ArgIsNumeric()                            */
@@ -53,11 +53,11 @@ static int ArgIsNumeric( const char *pszArg )
 static void Usage(const char* pszErrorMsg = NULL)
 
 {
-    printf( 
+    printf(
         "Usage: gdal_contour [-b <band>] [-a <attribute_name>] [-3d] [-inodata]\n"
         "                    [-snodata n] [-f <formatname>] [-i <interval>]\n"
-        "                    [-f <formatname>] [[-dsco NAME=VALUE] ...] [[-lco NAME=VALUE] ...]\n"   
-        "                    [-off <offset>] [-fl <level> <level>...]\n" 
+        "                    [-f <formatname>] [[-dsco NAME=VALUE] ...] [[-lco NAME=VALUE] ...]\n"
+        "                    [-off <offset>] [-fl <level> <level>...]\n"
         "                    [-nln <outlayername>] [-q]\n"
         "                    <src_filename> <dst_filename>\n" );
 
@@ -73,32 +73,41 @@ static void Usage(const char* pszErrorMsg = NULL)
 
 #define CHECK_HAS_ENOUGH_ADDITIONAL_ARGS(nExtraArg) \
     do { if (i + nExtraArg >= argc) \
-        Usage(CPLSPrintf("%s option requires %d argument(s)", argv[i], nExtraArg)); } while(0)
+        Usage(CPLSPrintf("%s option requires %d argument(s)", \
+                         argv[i], nExtraArg)); } while( false )
 
 int main( int argc, char ** argv )
 
 {
-    GDALDatasetH	hSrcDS;
-    int i, b3D = FALSE, bNoDataSet = FALSE, bIgnoreNoData = FALSE;
+    GDALDatasetH hSrcDS;
+    int i;
+    int b3D = FALSE;
+    int bNoDataSet = FALSE;
+    int bIgnoreNoData = FALSE;
     int nBandIn = 1;
-    double dfInterval = 0.0, dfNoData = 0.0, dfOffset = 0.0;
+    double dfInterval = 0.0;
+    double dfNoData = 0.0;
+    double dfOffset = 0.0;
     const char *pszSrcFilename = NULL;
     const char *pszDstFilename = NULL;
     const char *pszElevAttrib = NULL;
     const char *pszFormat = "ESRI Shapefile";
-    char        **papszDSCO = NULL, **papszLCO = NULL;
+    char **papszDSCO = NULL;
+    char **papszLCO = NULL;
     double adfFixedLevels[1000];
-    int    nFixedLevelCount = 0;
+    int nFixedLevelCount = 0;
     const char *pszNewLayerName = "contour";
     int bQuiet = FALSE;
     GDALProgressFunc pfnProgress = NULL;
 
-    /* Check that we are running against at least GDAL 1.4 */
-    /* Note to developers : if we use newer API, please change the requirement */
+    // Check that we are running against at least GDAL 1.4.
+    // Note to developers: if we use newer API, please change the requirement.
     if (atoi(GDALVersionInfo("VERSION_NUM")) < 1400)
     {
-        fprintf(stderr, "At least, GDAL >= 1.4.0 is required for this version of %s, "
-                "which was compiled against GDAL %s\n", argv[0], GDAL_RELEASE_NAME);
+        fprintf(stderr,
+                "At least, GDAL >= 1.4.0 is required for this version of %s, "
+                "which was compiled against GDAL %s\n",
+                argv[0], GDAL_RELEASE_NAME);
         exit(1);
     }
 
@@ -114,8 +123,10 @@ int main( int argc, char ** argv )
     {
         if( EQUAL(argv[i], "--utility_version") )
         {
-            printf("%s was compiled against GDAL %s and is running against GDAL %s\n",
+            printf("%s was compiled against GDAL %s and "
+                   "is running against GDAL %s\n",
                    argv[0], GDAL_RELEASE_NAME, GDALVersionInfo("RELEASE_NAME"));
+            CSLDestroy( argv );
             return 0;
         }
         else if( EQUAL(argv[i], "--help") )
@@ -128,22 +139,23 @@ int main( int argc, char ** argv )
         else if( EQUAL(argv[i],"-off") )
         {
             CHECK_HAS_ENOUGH_ADDITIONAL_ARGS(1);
-            dfOffset = atof(argv[++i]);
+            dfOffset = CPLAtof(argv[++i]);
         }
         else if( EQUAL(argv[i],"-i") )
         {
             CHECK_HAS_ENOUGH_ADDITIONAL_ARGS(1);
-            dfInterval = atof(argv[++i]);
+            dfInterval = CPLAtof(argv[++i]);
         }
         else if( EQUAL(argv[i],"-fl") )
         {
             if( i >= argc-1 )
-                Usage(CPLSPrintf("%s option requires at least 1 argument", argv[i]));
-            while( i < argc-1 
-                   && nFixedLevelCount 
+                Usage(CPLSPrintf("%s option requires at least 1 argument",
+                                 argv[i]));
+            while( i < argc-1
+                   && nFixedLevelCount
                              < (int)(sizeof(adfFixedLevels)/sizeof(double))
                    && ArgIsNumeric(argv[i+1]) )
-                adfFixedLevels[nFixedLevelCount++] = atof(argv[++i]);
+                adfFixedLevels[nFixedLevelCount++] = CPLAtof(argv[++i]);
         }
         else if( EQUAL(argv[i],"-b") )
         {
@@ -173,7 +185,7 @@ int main( int argc, char ** argv )
         {
             CHECK_HAS_ENOUGH_ADDITIONAL_ARGS(1);
             bNoDataSet = TRUE;
-            dfNoData = atof(argv[++i]);
+            dfNoData = CPLAtof(argv[++i]);
         }
         else if( EQUAL(argv[i],"-nln") )
         {
@@ -214,7 +226,7 @@ int main( int argc, char ** argv )
     {
         Usage("Missing destination filename.");
     }
-    
+
     if (!bQuiet)
         pfnProgress = GDALTermProgress;
 
@@ -230,8 +242,8 @@ int main( int argc, char ** argv )
     hBand = GDALGetRasterBand( hSrcDS, nBandIn );
     if( hBand == NULL )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Band %d does not exist on dataset.", 
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "Band %d does not exist on dataset.",
                   nBandIn );
         exit(2);
     }
@@ -250,7 +262,7 @@ int main( int argc, char ** argv )
         hSRS = OSRNewSpatialReference( pszWKT );
 
 /* -------------------------------------------------------------------- */
-/*      Create the outputfile.                                          */
+/*      Create the output file.                                          */
 /* -------------------------------------------------------------------- */
     OGRDataSourceH hDS;
     OGRSFDriverH hDriver = OGRGetDriverByName( pszFormat );
@@ -259,7 +271,7 @@ int main( int argc, char ** argv )
 
     if( hDriver == NULL )
     {
-        fprintf( stderr, "Unable to find format driver named %s.\n", 
+        fprintf( stderr, "Unable to find format driver named %s.\n",
                  pszFormat );
         exit( 10 );
     }
@@ -268,7 +280,7 @@ int main( int argc, char ** argv )
     if( hDS == NULL )
         exit( 1 );
 
-    hLayer = OGR_DS_CreateLayer( hDS, pszNewLayerName, hSRS, 
+    hLayer = OGR_DS_CreateLayer( hDS, pszNewLayerName, hSRS,
                                  b3D ? wkbLineString25D : wkbLineString,
                                  papszLCO );
     if( hLayer == NULL )
@@ -284,23 +296,25 @@ int main( int argc, char ** argv )
         hFld = OGR_Fld_Create( pszElevAttrib, OFTReal );
         OGR_Fld_SetWidth( hFld, 12 );
         OGR_Fld_SetPrecision( hFld, 3 );
-        OGR_L_CreateField( hLayer, hFld, FALSE );
+        OGRErr eErr = OGR_L_CreateField( hLayer, hFld, FALSE );
         OGR_Fld_Destroy( hFld );
+        if( eErr == OGRERR_FAILURE )
+        {
+            exit( 1 );
+        }
     }
 
 /* -------------------------------------------------------------------- */
 /*      Invoke.                                                         */
 /* -------------------------------------------------------------------- */
-    CPLErr eErr;
-    
-    eErr = GDALContourGenerate( hBand, dfInterval, dfOffset, 
+    CPLErr eErr = GDALContourGenerate( hBand, dfInterval, dfOffset,
                          nFixedLevelCount, adfFixedLevels,
-                         bNoDataSet, dfNoData, hLayer, 
-                         OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), 
-                                               "ID" ), 
+                         bNoDataSet, dfNoData, hLayer,
+                         OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ),
+                                               "ID" ),
                          (pszElevAttrib == NULL) ? -1 :
-                                 OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), 
-                                                       pszElevAttrib ), 
+                         OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ),
+                                               pszElevAttrib ),
                          pfnProgress, NULL );
 
     OGR_DS_Destroy( hDS );
@@ -315,5 +329,5 @@ int main( int argc, char ** argv )
     GDALDestroyDriverManager();
     OGRCleanupAll();
 
-    return 0;
+    return (eErr == CE_None) ? 0 : 1;
 }

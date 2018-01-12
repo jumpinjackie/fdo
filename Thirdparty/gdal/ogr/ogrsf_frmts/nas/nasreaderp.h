@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: nasreaderp.h 25120 2012-10-13 22:38:57Z rouault $
+ * $Id: nasreaderp.h 39272 2017-06-24 10:49:55Z rouault $
  *
  * Project:  NAS Reader
  * Purpose:  Private Declarations for OGR NAS Reader code.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2008, Frank Warmerdam
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -14,26 +15,32 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CPL_NASREADERP_H_INCLUDED
-#define _CPL_NASREADERP_H_INCLUDED
+#ifndef CPL_NASREADERP_H_INCLUDED
+#define CPL_NASREADERP_H_INCLUDED
+
+// Must be first for DEBUG_BOOL case
+#include "xercesc_headers.h"
+#include "ogr_xerces.h"
 
 #include "gmlreader.h"
 #include "gmlreaderp.h"
 #include "ogr_api.h"
+#include "ogr_geometry.h"
 #include "cpl_string.h"
+#include <list>
 
 IGMLReader *CreateNASReader();
 
@@ -47,7 +54,7 @@ CPL_C_END
 /************************************************************************/
 /*                              NASHandler                              */
 /************************************************************************/
-class NASHandler : public DefaultHandler 
+class NASHandler : public DefaultHandler
 {
     NASReader  *m_poReader;
 
@@ -58,42 +65,57 @@ class NASHandler : public DefaultHandler
     int        m_nGeomLen;
 
     int        m_nGeometryDepth;
-    int        IsGeometryElement( const char * );
+    bool       IsGeometryElement( const char * );
 
     int        m_nDepth;
     int        m_nDepthFeature;
-    int        m_bIgnoreFeature;
+    bool       m_bIgnoreFeature;
+    bool       m_bInUpdate;
+    bool       m_bInUpdateProperty;
     int        m_nDepthElement;
+    int        m_nUpdateOrDeleteDepth;
+    int        m_nUpdatePropertyDepth;
+    int        m_nNameOrValueDepth;
     CPLString  m_osIgnoredElement;
 
     CPLString  m_osLastTypeName;
     CPLString  m_osLastReplacingFID;
     CPLString  m_osLastSafeToIgnore;
+    CPLString  m_osLastPropertyName;
+    CPLString  m_osLastPropertyValue;
+    CPLString  m_osLastEnded;
+
+    std::list<CPLString> m_LastOccasions;
+
+    CPLString  m_osElementName;
+    CPLString  m_osAttrName;
+    CPLString  m_osAttrValue;
+    CPLString  m_osCharacters;
 
 public:
-    NASHandler( NASReader *poReader );
+    explicit NASHandler( NASReader *poReader );
     virtual ~NASHandler();
-    
+
     void startElement(
         const   XMLCh* const    uri,
         const   XMLCh* const    localname,
         const   XMLCh* const    qname,
         const   Attributes& attrs
-    );
+    ) override;
     void endElement(
         const   XMLCh* const    uri,
         const   XMLCh* const    localname,
         const   XMLCh* const    qname
-    );
+    ) override;
 #if XERCES_VERSION_MAJOR >= 3
     void characters( const XMLCh *const chars,
-                     const XMLSize_t length );
+                     const XMLSize_t length ) override;
 #else
     void characters( const XMLCh *const chars,
                      const unsigned int length );
 #endif
 
-    void fatalError(const SAXParseException&);
+    void fatalError(const SAXParseException&) override;
 
     CPLString GetAttributes( const Attributes* attr );
 };
@@ -103,7 +125,7 @@ public:
 /************************************************************************/
 
 // for now, use existing gmlreadstate.
-#ifdef notdef 
+#ifdef notdef
 class GMLReadState
 {
     void        RebuildPath();
@@ -133,10 +155,10 @@ public:
 /*                              NASReader                               */
 /************************************************************************/
 
-class NASReader : public IGMLReader 
+class NASReader : public IGMLReader
 {
 private:
-    int           m_bClassListLocked;
+    bool         m_bClassListLocked;
 
     int         m_nClassCount;
     GMLFeatureClass **m_papoClass;
@@ -145,14 +167,15 @@ private:
 
     NASHandler    *m_poNASHandler;
     SAX2XMLReader *m_poSAXReader;
-    int           m_bReadStarted;
+    bool          m_bReadStarted;
+    bool          m_bXercesInitialized;
     XMLPScanToken m_oToFill;
 
     GMLReadState *m_poState;
 
     GMLFeature   *m_poCompleteFeature;
 
-    int           SetupParser();
+    bool          SetupParser();
     void          CleanupParser();
 
     char         *m_pszFilteredClassName;
@@ -161,67 +184,72 @@ public:
                 NASReader();
     virtual     ~NASReader();
 
-    int              IsClassListLocked() const { return m_bClassListLocked; }
-    void             SetClassListLocked( int bFlag )
+    bool            IsClassListLocked() const override { return m_bClassListLocked; }
+    void             SetClassListLocked( bool bFlag ) override
         { m_bClassListLocked = bFlag; }
 
-    void             SetSourceFile( const char *pszFilename );
-    const char      *GetSourceFileName();
+    void             SetSourceFile( const char *pszFilename ) override;
+    const char      *GetSourceFileName() override;
 
-    int              GetClassCount() const { return m_nClassCount; }
-    GMLFeatureClass *GetClass( int i ) const;
-    GMLFeatureClass *GetClass( const char *pszName ) const;
+    int              GetClassCount() const override { return m_nClassCount; }
+    GMLFeatureClass *GetClass( int i ) const override;
+    GMLFeatureClass *GetClass( const char *pszName ) const override;
 
-    int              AddClass( GMLFeatureClass *poClass );
-    void             ClearClasses();
+    int              AddClass( GMLFeatureClass *poClass ) override;
+    void             ClearClasses() override;
 
-    GMLFeature       *NextFeature();
+    GMLFeature       *NextFeature() override;
 
-    int              LoadClasses( const char *pszFile = NULL );
-    int              SaveClasses( const char *pszFile = NULL );
+    bool             LoadClasses( const char *pszFile = NULL ) override;
+    bool             SaveClasses( const char *pszFile = NULL ) override;
 
-    int              PrescanForSchema(int bGetExtents = TRUE );
-    int              PrescanForTemplate( void );
-    void             ResetReading();
+    bool             PrescanForSchema(bool bGetExtents = true,
+                                      bool bAnalyzeSRSPerFeature = true,
+                                      bool bOnlyDetectSRS = false) override;
+    bool             PrescanForTemplate() override;
+    void             ResetReading() override;
 
-    int              ParseXSD( const char *pszFile ) { return FALSE; }
+    bool             ParseXSD( const char * /* pszFile */ ) { return false; }
 
-    int              ResolveXlinks( const char *pszFile,
-                                    int* pbOutIsTempFile,
+    bool             ResolveXlinks( const char *pszFile,
+                                    bool* pbOutIsTempFile,
                                     char **papszSkip = NULL,
-                                    const int bStrict = FALSE );
+                                    const bool bStrict = false ) override;
 
-    int              HugeFileResolver( const char *pszFile,
-                                       int bSqliteIsTempFile,
-                                       int iSqliteCacheMB );
+    bool             HugeFileResolver( const char *pszFile,
+                                       bool bSqliteIsTempFile,
+                                       int iSqliteCacheMB ) override;
 
-// --- 
+// ---
 
     GMLReadState     *GetState() const { return m_poState; }
     void             PopState();
     void             PushState( GMLReadState * );
 
-    int         IsFeatureElement( const char *pszElement );
-    int         IsAttributeElement( const char *pszElement );
+    bool        IsFeatureElement( const char *pszElement );
+    bool        IsAttributeElement( const char *pszElement );
 
-    void        PushFeature( const char *pszElement, 
+    void        PushFeature( const char *pszElement,
                              const Attributes &attrs );
 
     void        SetFeaturePropertyDirectly( const char *pszElement,
                                     char *pszValue );
 
-    int         HasStoppedParsing() { return FALSE; }
+    bool        HasStoppedParsing() override { return false; }
 
     void        CheckForFID( const Attributes &attrs, char **ppszCurField );
-    void        CheckForRelations( const char *pszElement, 
-                                   const Attributes &attrs );
+    void        CheckForRelations( const char *pszElement,
+                                   const Attributes &attrs,
+                                   char **ppszCurField );
 
-    virtual const char* GetGlobalSRSName() { return NULL; }
+    virtual const char* GetGlobalSRSName() override { return NULL; }
 
-    virtual int         CanUseGlobalSRSName() { return FALSE; }
+    virtual bool        CanUseGlobalSRSName() override { return false; }
 
-    int         SetFilteredClassName(const char* pszClassName);
-    const char* GetFilteredClassName() { return m_pszFilteredClassName; }
+    bool        SetFilteredClassName(const char* pszClassName) override;
+    const char* GetFilteredClassName() override { return m_pszFilteredClassName; }
+
+    static      OGRGeometry* ConvertGeometry(OGRGeometry*);
 };
 
-#endif /* _CPL_NASREADERP_H_INCLUDED */
+#endif /* CPL_NASREADERP_H_INCLUDED */

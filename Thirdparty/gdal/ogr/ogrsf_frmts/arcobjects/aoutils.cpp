@@ -28,6 +28,7 @@
 
 #include "aoutils.h"
 
+CPL_CVSID("$Id: aoutils.cpp 35933 2016-10-25 16:46:26Z goatbar $");
 
 bool AOErr(HRESULT hr, std::string desc)
 {
@@ -60,7 +61,7 @@ bool AOToOGRGeometry(IGeometryDef* pGeoDef, OGRwkbGeometryType* pOut)
 
   pGeoDef->get_GeometryType(&geo);
   pGeoDef->get_HasZ(&hasZ);
-  
+
   switch (geo)
   {
     case esriGeometry::esriGeometryPoint:      *pOut = hasZ == VARIANT_TRUE? wkbPoint25D      : wkbPoint;                break;
@@ -115,7 +116,7 @@ bool AOToOGRFields(IFields* pFields, OGRFeatureDefn* pOGRFeatureDef, std::vector
       CPLError( CE_Warning, CPLE_AppDefined, "Skipping field %s", CW2A(name) );
       continue;
     }
-      
+
     OGRFieldDefn fieldTemplate( CW2A(name), ogrType);
     pOGRFeatureDef->AddFieldDefn( &fieldTemplate );
 
@@ -127,8 +128,9 @@ bool AOToOGRFields(IFields* pFields, OGRFeatureDefn* pOGRFeatureDef, std::vector
   return true;
 }
 
-// We could make this function far more robust by doing automatic coertion of types,
-// and/or skipping fields we do not know. But our purposes this works fine
+// We could make this function far more robust by doing automatic coercion of
+// types, and/or skipping fields we do not know. But, for our purposes, this
+// works fine.
 
 bool AOToOGRFieldType(esriFieldType aoType, OGRFieldType* pOut)
 {
@@ -150,9 +152,9 @@ bool AOToOGRFieldType(esriFieldType aoType, OGRFieldType* pOut)
   */
 
   //OGR Types
-  
+
   //            Desc                                 Name                AO->OGR Mapped By Us?
-  /** Simple 32bit integer *///                   OFTInteger = 0,             YES 
+  /** Simple 32bit integer *///                   OFTInteger = 0,             YES
   /** List of 32bit integers *///                 OFTIntegerList = 1,         NO
   /** Double Precision floating point *///        OFTReal = 2,                YES
   /** List of doubles *///                        OFTRealList = 3,            NO
@@ -206,15 +208,13 @@ bool AOToOGRFieldType(esriFieldType aoType, OGRFieldType* pOut)
       */
       return false;
     }
-
   }
 }
-
 
 bool AOGeometryToOGRGeometry(bool forceMulti, esriGeometry::IGeometry* pInAOGeo, OGRSpatialReference* pOGRSR, unsigned char* & pInOutWorkingBuffer, long & inOutBufferSize, OGRGeometry** ppOutGeometry)
 {
   HRESULT hr;
-  
+
   esriGeometry::IWkbPtr ipWkb = pInAOGeo;
 
   long reqSize = 0;
@@ -232,7 +232,7 @@ bool AOGeometryToOGRGeometry(bool forceMulti, esriGeometry::IGeometry* pInAOGeo,
     pInOutWorkingBuffer = new unsigned char[reqSize];
     inOutBufferSize = reqSize;
   }
-  
+
   if (FAILED(hr = ipWkb->ExportToWkb(&reqSize, pInOutWorkingBuffer)))
   {
     AOErr(hr, "Error exporting to WKB buffer");
@@ -249,7 +249,6 @@ bool AOGeometryToOGRGeometry(bool forceMulti, esriGeometry::IGeometry* pInAOGeo,
 
   // force geometries to multi if requested
 
-
   // If it is a polygon, force to MultiPolygon since we always produce multipolygons
   if (wkbFlatten(pOGRGeometry->getGeometryType()) == wkbPolygon)
   {
@@ -264,12 +263,11 @@ bool AOGeometryToOGRGeometry(bool forceMulti, esriGeometry::IGeometry* pInAOGeo,
     else if (wkbFlatten(pOGRGeometry->getGeometryType()) == wkbPoint)
     {
       pOGRGeometry = OGRGeometryFactory::forceToMultiPoint(pOGRGeometry);
-    } 
+    }
   }
 
-
   *ppOutGeometry = pOGRGeometry;
-  
+
   return true;
 }
 
@@ -311,11 +309,11 @@ bool AOToOGRSpatialReference(esriGeometry::ISpatialReference* pSR, OGRSpatialRef
   if (strlen(strESRIWKT) <= 0)
   {
     CPLError( CE_Warning, CPLE_AppDefined, "ESRI Spatial Reference is NULL");
-    return false; 
+    return false;
   }
 
   *ppSR = new OGRSpatialReference(strESRIWKT);
-  
+
   OGRErr result = (*ppSR)->morphFromESRI();
 
   if (result == OGRERR_NONE)
@@ -327,8 +325,9 @@ bool AOToOGRSpatialReference(esriGeometry::ISpatialReference* pSR, OGRSpatialRef
     delete *ppSR;
     *ppSR = NULL;
 
-    CPLError( CE_Failure, CPLE_AppDefined, "Failed morhping from ESRI Geometry: %s", strESRIWKT);
-   
+    CPLError( CE_Failure, CPLE_AppDefined,
+              "Failed morphing from ESRI Geometry: %s", strESRIWKT);
+
     return false;
   }
 }
@@ -340,7 +339,7 @@ bool OGRGeometryToAOGeometry(OGRGeometry* pOGRGeom, esriGeometry::IGeometry** pp
   *ppGeometry = NULL;
 
   GByte* pWKB = NULL;
-  
+
   long wkbSize = pOGRGeom->WkbSize();
   pWKB = (GByte *) CPLMalloc(wkbSize);
 
@@ -348,7 +347,7 @@ bool OGRGeometryToAOGeometry(OGRGeometry* pOGRGeom, esriGeometry::IGeometry** pp
   {
     CPLFree (pWKB);
     CPLError( CE_Failure, CPLE_AppDefined, "Could not export OGR geometry to WKB");
-    return false; 
+    return false;
   }
 
   long bytesRead;
@@ -366,14 +365,14 @@ bool OGRGeometryToAOGeometry(OGRGeometry* pOGRGeom, esriGeometry::IGeometry** pp
 }
 
 // Attempt to checkout a license from the top down
-bool InitializeDriver(esriLicenseExtensionCode license) 
+bool InitializeDriver(esriLicenseExtensionCode license)
 {
   IAoInitializePtr ipInit(CLSID_AoInitialize);
 
   if (license == 0)
   {
-    // Try to init as engine, then engineGeoDB, then ArcView, 
-    //    then ArcEditor, then ArcInfo 
+    // Try to init as engine, then engineGeoDB, then ArcView,
+    //    then ArcEditor, then ArcInfo
     if (!InitAttemptWithoutExtension(esriLicenseProductCodeEngine))
       if (!InitAttemptWithoutExtension(esriLicenseProductCodeArcView))
         if (!InitAttemptWithoutExtension(esriLicenseProductCodeArcEditor))
@@ -388,8 +387,8 @@ bool InitializeDriver(esriLicenseExtensionCode license)
           return true;
   }
 
-  // Try to init as engine, then engineGeoDB, then ArcView, 
-  //    then ArcEditor, then ArcInfo 
+  // Try to init as engine, then engineGeoDB, then ArcView,
+  //    then ArcEditor, then ArcInfo
   if (!InitAttemptWithExtension(esriLicenseProductCodeEngine,license))
     if (!InitAttemptWithExtension(esriLicenseProductCodeArcView, license))
       if (!InitAttemptWithExtension(esriLicenseProductCodeArcEditor, license))
@@ -410,7 +409,7 @@ bool InitAttemptWithoutExtension(esriLicenseProductCode product)
 
   esriLicenseStatus status = esriLicenseFailure;
   ipInit->Initialize(product, &status);
-  return (status == esriLicenseCheckedOut);
+  return status == esriLicenseCheckedOut;
 }
 
 // Attempt to initialize with an extension
@@ -427,7 +426,7 @@ bool InitAttemptWithExtension(esriLicenseProductCode product,
     if (licenseStatus == esriLicenseCheckedOut)
       ipInit->CheckOutExtension(extension, &licenseStatus);
   }
-  return (licenseStatus == esriLicenseCheckedOut);
+  return licenseStatus == esriLicenseCheckedOut;
 }
 
 // Shutdown the driver and check-in the license if needed.

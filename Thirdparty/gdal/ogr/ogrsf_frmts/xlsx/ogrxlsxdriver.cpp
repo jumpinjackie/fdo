@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrxlsxdriver.cpp 23816 2012-01-28 17:37:33Z rouault $
  *
  * Project:  XLSX Translator
  * Purpose:  Implements OGRXLSXDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,9 +29,11 @@
 #include "ogr_xlsx.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrxlsxdriver.cpp 23816 2012-01-28 17:37:33Z rouault $");
+CPL_CVSID("$Id: ogrxlsxdriver.cpp 40632 2017-11-04 11:29:43Z rouault $");
 
 extern "C" void RegisterOGRXLSX();
+
+using namespace OGRXLSX;
 
 // g++ -DHAVE_EXPAT -g -Wall -fPIC ogr/ogrsf_frmts/xlsx/*.cpp -shared -o ogr_XLSX.so -Iport -Igcore -Iogr -Iogr/ogrsf_frmts -Iogr/ogrsf_frmts/mem -Iogr/ogrsf_frmts/xlsx -L. -lgdal
 
@@ -59,7 +60,8 @@ const char *OGRXLSXDriver::GetName()
 /*                                Open()                                */
 /************************************************************************/
 
-#define XLSX_MIMETYPE "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"
+static const char XLSX_MIMETYPE[] =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
 
 OGRDataSource *OGRXLSXDriver::Open( const char * pszFilename, int bUpdate )
 
@@ -71,20 +73,25 @@ OGRDataSource *OGRXLSXDriver::Open( const char * pszFilename, int bUpdate )
     if (fp == NULL)
         return NULL;
 
-    int bOK = FALSE;
+    bool bOK = false;
     char szBuffer[2048];
     if (VSIFReadL(szBuffer, sizeof(szBuffer), 1, fp) == 1 &&
         memcmp(szBuffer, "PK", 2) == 0)
     {
-        bOK = TRUE;
+        bOK = true;
     }
 
     VSIFCloseL(fp);
 
-    if (!bOK)
+    if( !bOK )
         return NULL;
 
-    VSILFILE* fpContent = VSIFOpenL(CPLSPrintf("/vsizip/%s/[Content_Types].xml", pszFilename), "rb");
+    CPLString osPrefixedFilename("/vsizip/");
+    osPrefixedFilename += pszFilename;
+
+    CPLString osTmpFilename;
+    osTmpFilename = CPLSPrintf("%s/[Content_Types].xml", osPrefixedFilename.c_str());
+    VSILFILE* fpContent = VSIFOpenL(osTmpFilename, "rb");
     if (fpContent == NULL)
         return NULL;
 
@@ -96,16 +103,27 @@ OGRDataSource *OGRXLSXDriver::Open( const char * pszFilename, int bUpdate )
     if (strstr(szBuffer, XLSX_MIMETYPE) == NULL)
         return NULL;
 
-    VSILFILE* fpWorkbook = VSIFOpenL(CPLSPrintf("/vsizip/%s/xl/workbook.xml", pszFilename), "rb");
+    osTmpFilename = CPLSPrintf("%s/xl/workbook.xml", osPrefixedFilename.c_str());
+    VSILFILE* fpWorkbook = VSIFOpenL(osTmpFilename, "rb");
     if (fpWorkbook == NULL)
         return NULL;
 
-    VSILFILE* fpSharedStrings = VSIFOpenL(CPLSPrintf("/vsizip/%s/xl/sharedStrings.xml", pszFilename), "rb");
-    VSILFILE* fpStyles = VSIFOpenL(CPLSPrintf("/vsizip/%s/xl/styles.xml", pszFilename), "rb");
+    osTmpFilename = CPLSPrintf("%s/xl/_rels/workbook.xml.rels", osPrefixedFilename.c_str());
+    VSILFILE* fpWorkbookRels = VSIFOpenL(osTmpFilename, "rb");
+    if (fpWorkbookRels == NULL)
+    {
+        VSIFCloseL(fpWorkbook);
+        return NULL;
+    }
+
+    osTmpFilename = CPLSPrintf("%s/xl/sharedStrings.xml", osPrefixedFilename.c_str());
+    VSILFILE* fpSharedStrings = VSIFOpenL(osTmpFilename, "rb");
+    osTmpFilename = CPLSPrintf("%s/xl/styles.xml", osPrefixedFilename.c_str());
+    VSILFILE* fpStyles = VSIFOpenL(osTmpFilename, "rb");
 
     OGRXLSXDataSource   *poDS = new OGRXLSXDataSource();
 
-    if( !poDS->Open( pszFilename, fpWorkbook, fpSharedStrings, fpStyles, bUpdate ) )
+    if( !poDS->Open( pszFilename, fpWorkbook, fpWorkbookRels, fpSharedStrings, fpStyles, bUpdate ) )
     {
         delete poDS;
         poDS = NULL;
@@ -145,9 +163,7 @@ OGRDataSource *OGRXLSXDriver::CreateDataSource( const char * pszName,
 /* -------------------------------------------------------------------- */
 /*      Try to create datasource.                                       */
 /* -------------------------------------------------------------------- */
-    OGRXLSXDataSource     *poDS;
-
-    poDS = new OGRXLSXDataSource();
+    OGRXLSXDataSource *poDS = new OGRXLSXDataSource();
 
     if( !poDS->Create( pszName, papszOptions ) )
     {
@@ -192,6 +208,16 @@ int OGRXLSXDriver::TestCapability( const char * pszCap )
 void RegisterOGRXLSX()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRXLSXDriver );
-}
+    OGRSFDriver* poDriver = new OGRXLSXDriver;
 
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "MS Office Open XML spreadsheet" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "xlsx" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_xlsx.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONFIELDDATATYPES,
+                               "Integer Integer64 Real String Date DateTime "
+                               "Time" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+}

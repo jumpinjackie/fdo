@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrnasdatasource.cpp 25553 2013-01-26 11:45:56Z rouault $
  *
  * Project:  OGR
  * Purpose:  Implements OGRNASDataSource class.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2002, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,13 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_nas.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogr_nas.h"
 
-CPL_CVSID("$Id: ogrnasdatasource.cpp 25553 2013-01-26 11:45:56Z rouault $");
+CPL_CVSID("$Id: ogrnasdatasource.cpp 35142 2016-08-18 11:30:22Z goatbar $");
 
-static const char *apszURNNames[] =
+static const char * const apszURNNames[] =
 {
     "DE_DHDN_3GK2_*", "EPSG:31466",
     "DE_DHDN_3GK3_*", "EPSG:31467",
@@ -46,15 +46,13 @@ static const char *apszURNNames[] =
 /*                         OGRNASDataSource()                           */
 /************************************************************************/
 
-OGRNASDataSource::OGRNASDataSource()
-
-{
-    pszName = NULL;
-    papoLayers = NULL;
-    nLayers = 0;
-
-    poReader = NULL;
-}
+OGRNASDataSource::OGRNASDataSource() :
+    papoLayers(NULL),
+    nLayers(0),
+    poRelationLayer(NULL),
+    pszName(NULL),
+    poReader(NULL)
+{}
 
 /************************************************************************/
 /*                        ~OGRNASDataSource()                         */
@@ -78,82 +76,15 @@ OGRNASDataSource::~OGRNASDataSource()
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRNASDataSource::Open( const char * pszNewName, int bTestOpen )
+int OGRNASDataSource::Open( const char * pszNewName )
 
 {
-    FILE        *fp;
-    char        szHeader[8192];
-
-/* -------------------------------------------------------------------- */
-/*      Open the source file.                                           */
-/* -------------------------------------------------------------------- */
-    fp = VSIFOpen( pszNewName, "r" );
-    if( fp == NULL )
-    {
-        if( !bTestOpen )
-            CPLError( CE_Failure, CPLE_OpenFailed,
-                      "Failed to open NAS file `%s'.",
-                      pszNewName );
-
-        return FALSE;
-    }
-
-/* -------------------------------------------------------------------- */
-/*      If we aren't sure it is NAS, load a header chunk and check      */
-/*      for signs it is NAS                                             */
-/* -------------------------------------------------------------------- */
-    if( bTestOpen )
-    {
-        size_t nRead = VSIFRead( szHeader, 1, sizeof(szHeader), fp );
-        if (nRead <= 0)
-        {
-            VSIFClose( fp );
-            return FALSE;
-        }
-        szHeader[MIN(nRead, sizeof(szHeader))-1] = '\0';
-
-/* -------------------------------------------------------------------- */
-/*      Check for a UTF-8 BOM and skip if found                         */
-/*                                                                      */
-/*      TODO: BOM is variable-length parameter and depends on encoding. */
-/*            Add BOM detection for other encodings.                    */
-/* -------------------------------------------------------------------- */
-
-        // Used to skip to actual beginning of XML data
-        char* szPtr = szHeader;
-
-        if( ( (unsigned char)szHeader[0] == 0xEF )
-            && ( (unsigned char)szHeader[1] == 0xBB )
-            && ( (unsigned char)szHeader[2] == 0xBF) )
-        {
-            szPtr += 3;
-        }
-
-/* -------------------------------------------------------------------- */
-/*      Here, we expect the opening chevrons of NAS tree root element   */
-/* -------------------------------------------------------------------- */
-        if( szPtr[0] != '<'
-            || strstr(szPtr,"opengis.net/gml") == NULL
-            || (strstr(szPtr,"NAS-Operationen.xsd") == NULL &&
-                strstr(szPtr,"AAA-Fachschema.xsd") == NULL ) )
-        {
-            VSIFClose( fp );
-            return FALSE;
-        }
-    }
-
-/* -------------------------------------------------------------------- */
-/*      We assume now that it is NAS.  Close and instantiate a          */
-/*      NASReader on it.                                                */
-/* -------------------------------------------------------------------- */
-    VSIFClose( fp );
-
     poReader = CreateNASReader();
     if( poReader == NULL )
     {
         CPLError( CE_Failure, CPLE_AppDefined,
-                  "File %s appears to be NAS but the NAS reader can't\n"
-                  "be instantiated, likely because Xerces support wasn't\n"
+                  "File %s appears to be NAS but the NAS reader cannot\n"
+                  "be instantiated, likely because Xerces support was not\n"
                   "configured in.",
                   pszNewName );
         return FALSE;
@@ -166,16 +97,15 @@ int OGRNASDataSource::Open( const char * pszNewName, int bTestOpen )
 /* -------------------------------------------------------------------- */
 /*      Can we find a NAS Feature Schema (.gfs) for the input file?     */
 /* -------------------------------------------------------------------- */
-    const char *pszGFSFilename;
-    VSIStatBuf sGFSStatBuf, sNASStatBuf;
-    int        bHaveSchema = FALSE;
+    bool bHaveSchema = false;
 
-    pszGFSFilename = CPLResetExtension( pszNewName, "gfs" );
+    const char *pszGFSFilename = CPLResetExtension( pszNewName, "gfs" );
+    VSIStatBuf sGFSStatBuf;
     if( CPLStat( pszGFSFilename, &sGFSStatBuf ) == 0 )
     {
-        CPLStat( pszNewName, &sNASStatBuf );
-
-        if( sNASStatBuf.st_mtime > sGFSStatBuf.st_mtime )
+        VSIStatBuf sNASStatBuf;
+        if( CPLStat( pszNewName, &sNASStatBuf ) == 0 &&
+            sNASStatBuf.st_mtime > sGFSStatBuf.st_mtime )
         {
             CPLDebug( "NAS",
                       "Found %s but ignoring because it appears\n"
@@ -198,17 +128,17 @@ int OGRNASDataSource::Open( const char * pszNewName, int bTestOpen )
         && !poReader->PrescanForSchema( TRUE )
         && CPLGetLastErrorType() == CE_Failure )
     {
-        // we assume an errors have been reported.
+        // Assume an error has been reported.
         return FALSE;
     }
 
 /* -------------------------------------------------------------------- */
-/*      Save the schema file if possible.  Don't make a fuss if we      */
-/*      can't ... could be read-only directory or something.            */
+/*      Save the schema file if possible.  Do not make a fuss if we     */
+/*      cannot.  It could be read-only directory or something.          */
 /* -------------------------------------------------------------------- */
     if( !bHaveSchema && poReader->GetClassCount() > 0 )
     {
-        FILE    *fp = NULL;
+        FILE *fp = NULL;
 
         pszGFSFilename = CPLResetExtension( pszNewName, "gfs" );
         if( CPLStat( pszGFSFilename, &sGFSStatBuf ) != 0
@@ -219,9 +149,9 @@ int OGRNASDataSource::Open( const char * pszNewName, int bTestOpen )
         }
         else
         {
-            CPLDebug("NAS",
-                     "Not saving %s files already exists or can't be created.",
-                     pszGFSFilename );
+            CPLDebug( "NAS",
+                      "Not saving %s files already exists or can't be created.",
+                      pszGFSFilename );
         }
     }
 
@@ -263,12 +193,16 @@ int OGRNASDataSource::Open( const char * pszNewName, int bTestOpen )
 OGRNASLayer *OGRNASDataSource::TranslateNASSchema( GMLFeatureClass *poClass )
 
 {
-    OGRNASLayer *poLayer;
-    OGRwkbGeometryType eGType
-        = (OGRwkbGeometryType) poClass->GetGeometryType();
+    OGRwkbGeometryType eGType = wkbNone;
 
-    if( poClass->GetFeatureCount() == 0 )
-        eGType = wkbUnknown;
+    if( poClass->GetGeometryPropertyCount() != 0 )
+    {
+        eGType = static_cast<OGRwkbGeometryType>(
+            poClass->GetGeometryProperty(0)->GetType() );
+
+        if( poClass->GetFeatureCount() == 0 )
+            eGType = wkbUnknown;
+    }
 
 /* -------------------------------------------------------------------- */
 /*      Translate SRS.                                                  */
@@ -277,45 +211,46 @@ OGRNASLayer *OGRNASDataSource::TranslateNASSchema( GMLFeatureClass *poClass )
     OGRSpatialReference* poSRS = NULL;
     if (pszSRSName)
     {
-        int i;
-
-        poSRS = new OGRSpatialReference();
-
         const char *pszHandle = strrchr( pszSRSName, ':' );
         if( pszHandle != NULL )
+        {
             pszHandle += 1;
 
-        for( i = 0; apszURNNames[i*2+0] != NULL; i++ )
-        {
-            const char *pszTarget = apszURNNames[i*2+0];
-            int nTLen = strlen(pszTarget);
+            poSRS = new OGRSpatialReference();
 
-            // Are we just looking for a prefix match?
-            if( pszTarget[nTLen-1] == '*' )
+            for( int i = 0; apszURNNames[i*2+0] != NULL; i++ )
             {
-                if( EQUALN(pszTarget,pszHandle,nTLen-1) )
-                    pszSRSName = apszURNNames[i*2+1];
-            }
-            else
-            {
-                if( EQUAL(pszTarget,pszHandle) )
-                    pszSRSName = apszURNNames[i*2+1];
-            }
-        }
+                const char *pszTarget = apszURNNames[i*2+0];
+                const int nTLen = static_cast<int>(strlen(pszTarget));
 
-        if (poSRS->SetFromUserInput(pszSRSName) != OGRERR_NONE)
-        {
-            CPLDebug( "NAS", "Failed to translate srsName='%s'",
-                      pszSRSName );
-            delete poSRS;
-            poSRS = NULL;
+                // Are we just looking for a prefix match?
+                if( pszTarget[nTLen-1] == '*' )
+                {
+                    if( EQUALN(pszTarget,pszHandle,nTLen-1) )
+                        pszSRSName = apszURNNames[i*2+1];
+                }
+                else
+                {
+                    if( EQUAL(pszTarget,pszHandle) )
+                        pszSRSName = apszURNNames[i*2+1];
+                }
+            }
+
+            if (poSRS->SetFromUserInput(pszSRSName) != OGRERR_NONE)
+            {
+                CPLDebug( "NAS", "Failed to translate srsName='%s'",
+                        pszSRSName );
+                delete poSRS;
+                poSRS = NULL;
+            }
         }
     }
 
 /* -------------------------------------------------------------------- */
 /*      Create an empty layer.                                          */
 /* -------------------------------------------------------------------- */
-    poLayer = new OGRNASLayer( poClass->GetName(), poSRS, eGType, this );
+    OGRNASLayer *poLayer =
+        new OGRNASLayer( poClass->GetName(), poSRS, eGType, this );
     delete poSRS;
 
 /* -------------------------------------------------------------------- */
@@ -344,7 +279,7 @@ OGRNASLayer *OGRNASDataSource::TranslateNASSchema( GMLFeatureClass *poClass )
             eFType = OFTString;
 
         OGRFieldDefn oField( poProperty->GetName(), eFType );
-        if ( EQUALN(oField.GetNameRef(), "ogr:", 4) )
+        if ( STARTS_WITH_CI(oField.GetNameRef(), "ogr:") )
           oField.SetName(poProperty->GetName()+4);
         if( poProperty->GetWidth() > 0 )
             oField.SetWidth( poProperty->GetWidth() );
@@ -364,16 +299,15 @@ OGRLayer *OGRNASDataSource::GetLayer( int iLayer )
 {
     if( iLayer < 0 || iLayer >= nLayers )
         return NULL;
-    else
-        return papoLayers[iLayer];
+
+    return papoLayers[iLayer];
 }
 
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRNASDataSource::TestCapability( const char * pszCap )
-
+int OGRNASDataSource::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
@@ -385,31 +319,33 @@ int OGRNASDataSource::TestCapability( const char * pszCap )
 void OGRNASDataSource::PopulateRelations()
 
 {
-    GMLFeature  *poFeature;
-
     poReader->ResetReading();
+
+    GMLFeature  *poFeature = NULL;
     while( (poFeature = poReader->NextFeature()) != NULL )
     {
         char **papszOBProperties = poFeature->GetOBProperties();
-        int i;
 
-        for( i = 0; papszOBProperties != NULL && papszOBProperties[i] != NULL;
+        for( int i = 0;
+             papszOBProperties != NULL && papszOBProperties[i] != NULL;
              i++ )
         {
-            int nGMLIdIndex = poFeature->GetClass()->GetPropertyIndex( "gml_id" );
-            const GMLProperty *psGMLId = (nGMLIdIndex >= 0) ? poFeature->GetProperty(nGMLIdIndex ) : NULL;
-            char *pszName = NULL;
+            const int nGMLIdIndex =
+                poFeature->GetClass()->GetPropertyIndex( "gml_id" );
+            const GMLProperty *psGMLId =
+              (nGMLIdIndex >= 0) ? poFeature->GetProperty(nGMLIdIndex ) : NULL;
+            char *l_pszName = NULL;
             const char *pszValue = CPLParseNameValue( papszOBProperties[i],
-                                                      &pszName );
+                                                      &l_pszName );
 
-            if( EQUALN(pszValue,"urn:adv:oid:",12)
+            if( STARTS_WITH_CI(pszValue, "urn:adv:oid:")
                 && psGMLId != NULL && psGMLId->nSubProperties == 1 )
             {
                 poRelationLayer->AddRelation( psGMLId->papszSubProperties[0],
-                                              pszName,
+                                              l_pszName,
                                               pszValue + 12 );
             }
-            CPLFree( pszName );
+            CPLFree( l_pszName );
         }
 
         delete poFeature;

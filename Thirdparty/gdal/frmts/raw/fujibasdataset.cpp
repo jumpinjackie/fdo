@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: fujibasdataset.cpp 17664 2009-09-21 21:16:45Z rouault $
  *
  * Project:  eCognition
  * Purpose:  Implementation of FUJI BAS Format
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2001, Frank Warmerdam
+ * Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,31 +27,28 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "rawdataset.h"
 #include "cpl_string.h"
+#include "gdal_frmts.h"
+#include "rawdataset.h"
 
-CPL_CVSID("$Id: fujibasdataset.cpp 17664 2009-09-21 21:16:45Z rouault $");
-
-CPL_C_START
-void	GDALRegister_FujiBAS(void);
-CPL_C_END
+CPL_CVSID("$Id: fujibasdataset.cpp 34643 2016-07-12 13:09:59Z goatbar $");
 
 /************************************************************************/
 /* ==================================================================== */
-/*				FujiBASDataset				*/
+/*                              FujiBASDataset                          */
 /* ==================================================================== */
 /************************************************************************/
 
 class FujiBASDataset : public RawDataset
 {
-    FILE	*fpImage;	// image data file.
-    
-    char	**papszHeader;
+    FILE        *fpImage;  // image data file.
+
+    char        **papszHeader;
 
   public:
-    		FujiBASDataset();
-    	        ~FujiBASDataset();
-    
+                FujiBASDataset();
+                ~FujiBASDataset();
+
     static GDALDataset *Open( GDALOpenInfo * );
 };
 
@@ -59,14 +56,13 @@ class FujiBASDataset : public RawDataset
 /*                            FujiBASDataset()                          */
 /************************************************************************/
 
-FujiBASDataset::FujiBASDataset()
-{
-    fpImage = NULL;
-    papszHeader = NULL;
-}
+FujiBASDataset::FujiBASDataset() :
+    fpImage(NULL),
+    papszHeader(NULL)
+{}
 
 /************************************************************************/
-/*                            ~FujiBASDataset()                            */
+/*                            ~FujiBASDataset()                         */
 /************************************************************************/
 
 FujiBASDataset::~FujiBASDataset()
@@ -89,21 +85,19 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 /*      We assume the user is pointing to the header (.pcb) file.       */
 /*      Does this appear to be a pcb file?                              */
 /* -------------------------------------------------------------------- */
-    if( poOpenInfo->nHeaderBytes < 80 || poOpenInfo->fp == NULL )
+    if( poOpenInfo->nHeaderBytes < 80 || poOpenInfo->fpL == NULL )
         return NULL;
 
-    if( !EQUALN((const char *)poOpenInfo->pabyHeader,"[Raw data]",10)
-        || strstr((const char *)poOpenInfo->pabyHeader, "Fuji BAS") == NULL )
+    if( !STARTS_WITH_CI( reinterpret_cast<char *>(poOpenInfo->pabyHeader),
+                         "[Raw data]")
+        || strstr(reinterpret_cast<char *>(poOpenInfo->pabyHeader), "Fuji BAS")
+        == NULL )
         return NULL;
 
 /* -------------------------------------------------------------------- */
-/*	Load the header file.						*/
+/*      Load the header file.                                           */
 /* -------------------------------------------------------------------- */
-    char	**papszHeader;
-    int		nXSize, nYSize;
-    const char  *pszOrgFile;
-
-    papszHeader = CSLLoad( poOpenInfo->pszFilename );
+    char **papszHeader = CSLLoad( poOpenInfo->pszFilename );
 
     if( papszHeader == NULL )
         return NULL;
@@ -111,11 +105,9 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Munge header information into form suitable for CSL functions.  */
 /* -------------------------------------------------------------------- */
-    int		i;
-
-    for( i = 0; papszHeader[i] != NULL; i++ )
+    for( int i = 0; papszHeader[i] != NULL; i++ )
     {
-        char	*pszSep = strstr(papszHeader[i]," = ");
+        char *pszSep = strstr(papszHeader[i]," = ");
 
         if( pszSep != NULL )
         {
@@ -135,10 +127,10 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
         return NULL;
     }
 
-    nYSize = atoi(CSLFetchNameValue(papszHeader,"width"));
-    nXSize = atoi(CSLFetchNameValue(papszHeader,"height"));
+    const int nYSize = atoi(CSLFetchNameValue(papszHeader,"width"));
+    const int nXSize = atoi(CSLFetchNameValue(papszHeader,"height"));
 
-    pszOrgFile = CSLFetchNameValue(papszHeader,"OrgFile");
+    const char *pszOrgFile = CSLFetchNameValue(papszHeader,"OrgFile");
 
     if( nXSize < 1 || nYSize < 1 )
     {
@@ -151,32 +143,30 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     if( poOpenInfo->eAccess == GA_Update )
     {
-        CPLError( CE_Failure, CPLE_NotSupported, 
-                  "The FUJIBAS driver does not support update access to existing"
-                  " datasets.\n" );
+        CPLError( CE_Failure, CPLE_NotSupported,
+                  "The FUJIBAS driver does not support update access to "
+                  " existing datasets." );
         return NULL;
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Try to open the original data file.                             */
 /* -------------------------------------------------------------------- */
-    const char *pszRawFile;
-    char       *pszPath = CPLStrdup(CPLGetPath(poOpenInfo->pszFilename));
-    FILE       *fpRaw;
-    
-    pszRawFile = CPLFormCIFilename( pszPath, pszOrgFile, "IMG" );
+    char *pszPath = CPLStrdup(CPLGetPath(poOpenInfo->pszFilename));
+    const char *pszRawFile = CPLFormCIFilename( pszPath, pszOrgFile, "IMG" );
     CPLFree( pszPath );
-    
-    fpRaw = VSIFOpen( pszRawFile, "rb" );
+
+    FILE *fpRaw = VSIFOpen( pszRawFile, "rb" );
     if( fpRaw == NULL )
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
+        CPLError( CE_Failure, CPLE_OpenFailed,
                   "Trying to open Fuji BAS image with the header file:\n"
                   "  Header=%s\n"
-                  "but expected raw image file doesn't appear to exist.  Trying to open:\n"
+                  "but expected raw image file doesn't appear to exist.  "
+                  "Trying to open:\n"
                   "  Raw File=%s\n"
                   "Perhaps the raw file needs to be renamed to match expected?",
-                  poOpenInfo->pszFilename, 
+                  poOpenInfo->pszFilename,
                   pszRawFile );
         CSLDestroy( papszHeader );
         return NULL;
@@ -185,9 +175,7 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create a corresponding GDALDataset.                             */
 /* -------------------------------------------------------------------- */
-    FujiBASDataset 	*poDS;
-
-    poDS = new FujiBASDataset();
+    FujiBASDataset *poDS = new FujiBASDataset();
 
 /* -------------------------------------------------------------------- */
 /*      Capture some information from the file that is of interest.     */
@@ -200,28 +188,30 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create band information object.                                 */
 /* -------------------------------------------------------------------- */
-    int bNativeOrder;
+    const bool bNativeOrder =
 #ifdef CPL_MSB
-    bNativeOrder = TRUE;
+    true
 #else
-    bNativeOrder = FALSE;
+    false
 #endif
-    poDS->SetBand( 1, 
-                   new RawRasterBand( poDS, 1, poDS->fpImage, 
-                                      0, 2, nXSize * 2, GDT_UInt16, bNativeOrder ));
+        ;
+    poDS->SetBand(
+        1,
+        new RawRasterBand( poDS, 1, poDS->fpImage,
+                           0, 2, nXSize * 2, GDT_UInt16, bNativeOrder ) );
 
 /* -------------------------------------------------------------------- */
 /*      Initialize any PAM information.                                 */
 /* -------------------------------------------------------------------- */
     poDS->SetDescription( poOpenInfo->pszFilename );
     poDS->TryLoadXML();
-    
+
 /* -------------------------------------------------------------------- */
 /*      Check for overviews.                                            */
 /* -------------------------------------------------------------------- */
     poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -231,21 +221,18 @@ GDALDataset *FujiBASDataset::Open( GDALOpenInfo * poOpenInfo )
 void GDALRegister_FujiBAS()
 
 {
-    GDALDriver	*poDriver;
+    if( GDALGetDriverByName( "FujiBAS" ) != NULL )
+        return;
 
-    if( GDALGetDriverByName( "FujiBAS" ) == NULL )
-    {
-        poDriver = new GDALDriver();
-        
-        poDriver->SetDescription( "FujiBAS" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
-                                   "Fuji BAS Scanner Image" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
-                                   "frmt_various.html#FujiBAS" );
-        
-        poDriver->pfnOpen = FujiBASDataset::Open;
+    GDALDriver *poDriver = new GDALDriver();
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->SetDescription( "FujiBAS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Fuji BAS Scanner Image" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
+                               "frmt_various.html#FujiBAS" );
+
+    poDriver->pfnOpen = FujiBASDataset::Open;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-

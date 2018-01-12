@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id: xmlreformat.cpp 24835 2012-08-23 20:11:13Z warmerdam $
  *
  * Project:  CPL - Common Portability Library
  * Purpose:  XML Reformatting - mostly for testing minixml implementation.
@@ -14,35 +13,38 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
 #include "cpl_minixml.h"
 #include "cpl_conv.h"
 
+CPL_CVSID("$Id: xmlreformat.cpp 36907 2016-12-16 17:16:35Z goatbar $");
+
 int main( int argc, char **argv )
 
 {
-    CPLXMLNode *poTree;
-    static char  szXML[20000000];
-    FILE       *fp;
-    int        nLen;
+    // TODO(schwehr): Switch to using std::string.
+    static char szXML[20000000] = {};
+    FILE *fp = NULL;
 
     if( argc == 1 )
+    {
         fp = stdin;
+    }
     else if( argv[1][0] == '-' )
     {
-        printf( "Usage: xmlreformat [filename]\n" );
+        printf( "Usage: xmlreformat [filename]\n" );/*ok*/
         exit( 0 );
     }
     else
@@ -50,16 +52,17 @@ int main( int argc, char **argv )
         fp = fopen( argv[1], "rt" );
         if( fp == NULL )
         {
-            printf( "Failed to open file %s.\n", argv[1] );
+            printf( "Failed to open file %s.\n", argv[1] );/*ok*/
             exit( 1 );
         }
     }
 
-    nLen = fread( szXML, 1, sizeof(szXML), fp );
-    if( nLen >= (int) sizeof(szXML)-2 ) {
-        fprintf( stderr, 
+    const int nLen = static_cast<int>(fread(szXML, 1, sizeof(szXML), fp));
+    if( nLen >= static_cast<int>(sizeof(szXML)) - 2 )
+    {
+        fprintf( stderr,
                  "xmlreformat fixed sized buffer (%d bytes) exceeded.\n",
-                 (int) sizeof(szXML) );
+                 static_cast<int>(sizeof(szXML)) );
         exit(1);
     }
 
@@ -68,11 +71,11 @@ int main( int argc, char **argv )
 
     szXML[nLen] = '\0';
 
-    poTree = CPLParseXMLString( szXML );
+    CPLXMLNode *poTree = CPLParseXMLString( szXML );
     if( poTree != NULL )
     {
         char *pszRawXML = CPLSerializeXMLTree( poTree );
-        printf( "%s", pszRawXML );
+        printf( "%s", pszRawXML );/*ok*/
         CPLFree( pszRawXML );
         CPLDestroyXMLNode( poTree );
     }

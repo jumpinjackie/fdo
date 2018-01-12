@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: val_at_coord.py 20674 2010-09-22 17:50:33Z rouault $
+# $Id: val_at_coord.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 # Project:  GDAL Python samples
 # Purpose:  Outputs the value of the raster bands at a given
@@ -8,8 +8,8 @@
 # Author:   Even Rouault
 #
 ###############################################################################
-# Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
-# 
+# Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -29,11 +29,8 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import gdal
-    from osgeo import osr
-except ImportError:
-    import gdal
+from osgeo import gdal
+from osgeo import osr
 
 import sys
 
@@ -43,7 +40,7 @@ def Usage():
     print('')
     print('By default, the 2 first arguments are supposed to be the location')
     print('in longitude, latitude order. If -coordtype=georef is specified before')
-    print('the next 2 values will be interpretated as the X and Y coordinates')
+    print('the next 2 values will be interpreted as the X and Y coordinates')
     print('in the dataset spatial reference system.')
     sys.exit( 1 )
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gt_citation.h 21929 2011-03-11 03:58:42Z warmerdam $
+ * $Id: gt_citation.h 34124 2016-04-26 22:00:13Z goatbar $
  *
  * Project:  GeoTIFF Driver
  * Purpose:  Implements special parsing of Imagine citation strings, and
@@ -8,6 +8,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2008, Xiuguang Zhou (ESRI)
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,11 +36,11 @@
 #include "geo_normalize.h"
 #include "ogr_spatialref.h"
 
-char* ImagineCitationTranslation(char* psCitation, geokey_t keyID);
-char** CitationStringParse(char* psCitation, geokey_t keyID);
+char* ImagineCitationTranslation( char* psCitation, geokey_t keyID );
+char** CitationStringParse( char* psCitation, geokey_t keyID );
 
 #define nCitationNameTypes 9
-typedef enum 
+typedef enum
 {
   CitCsName = 0,
   CitPcsName = 1,
@@ -52,21 +53,25 @@ typedef enum
   CitAUnitsName = 8
 } CitationNameType;
 
-OGRBoolean CheckCitationKeyForStatePlaneUTM(GTIF* hGTIF, GTIFDefn* psDefn, OGRSpatialReference* poSRS, OGRBoolean* pLinearUnitIsSet);
-//char* ImagineCitationTranslation(char* psCitation, geokey_t keyID);
-//char** CitationStringParse(char* psCitation, geokey_t keyID);
-void SetLinearUnitCitation(GTIF* psGTIF, char* pszLinearUOMName);
-void SetGeogCSCitation(GTIF * psGTIF, OGRSpatialReference *poSRS, char* angUnitName, int nDatum, short nSpheroid);
+OGRBoolean CheckCitationKeyForStatePlaneUTM( GTIF* hGTIF,
+                                             GTIFDefn* psDefn,
+                                             OGRSpatialReference* poSRS,
+                                             OGRBoolean* pLinearUnitIsSet );
+// char* ImagineCitationTranslation( char* psCitation, geokey_t keyID );
+// char** CitationStringParse( char* psCitation, geokey_t keyID );
+void SetLinearUnitCitation( GTIF* psGTIF, char* pszLinearUOMName );
+void SetGeogCSCitation( GTIF * psGTIF, OGRSpatialReference *poSRS,
+                        char* angUnitName, int nDatum, short nSpheroid );
 OGRBoolean SetCitationToSRS(GTIF* hGTIF, char* szCTString, int nCTStringLen,
-                            geokey_t geoKey, OGRSpatialReference* poSRS, OGRBoolean* linearUnitIsSet);
-void GetGeogCSFromCitation(char* szGCSName, int nGCSName,
-                           geokey_t geoKey, 
-                          char	**ppszGeogName,
-                          char	**ppszDatumName,
-                          char	**ppszPMName,
-                          char	**ppszSpheroidName,
-                          char	**ppszAngularUnits);
-void CheckUTM( GTIFDefn * psDefn, char * pszCtString );
-
+                            geokey_t geoKey, OGRSpatialReference* poSRS,
+                            OGRBoolean* linearUnitIsSet );
+void GetGeogCSFromCitation( char* szGCSName, int nGCSName,
+                            geokey_t geoKey,
+                            char **ppszGeogName,
+                            char **ppszDatumName,
+                            char **ppszPMName,
+                            char **ppszSpheroidName,
+                            char **ppszAngularUnits );
+void CheckUTM( GTIFDefn * psDefn, const char * pszCtString );
 
 #endif // GT_CITATION_H_INCLUDED

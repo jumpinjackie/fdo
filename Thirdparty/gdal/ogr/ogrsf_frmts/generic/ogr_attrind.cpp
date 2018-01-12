@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogr_attrind.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implementation of OGRLayerAttrIndex and OGRAttrIndex base classes.
@@ -30,7 +29,9 @@
 #include "ogr_attrind.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogr_attrind.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogr_attrind.cpp 35172 2016-08-21 20:33:08Z goatbar $");
+
+//! @cond Doxygen_Suppress
 
 /************************************************************************/
 /* ==================================================================== */
@@ -42,12 +43,10 @@ CPL_CVSID("$Id: ogr_attrind.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
 /*                         OGRLayerAttrIndex()                          */
 /************************************************************************/
 
-OGRLayerAttrIndex::OGRLayerAttrIndex()
-
-{
-    poLayer = NULL;
-    pszIndexPath = NULL;
-}
+OGRLayerAttrIndex::OGRLayerAttrIndex() :
+    poLayer(NULL),
+    pszIndexPath(NULL)
+{}
 
 /************************************************************************/
 /*                         ~OGRLayerAttrIndex()                         */
@@ -70,15 +69,12 @@ OGRLayerAttrIndex::~OGRLayerAttrIndex()
 /*                            OGRAttrIndex()                            */
 /************************************************************************/
 
-OGRAttrIndex::OGRAttrIndex() 
-
-{
-}
+OGRAttrIndex::OGRAttrIndex() {}
 
 /************************************************************************/
 /*                           ~OGRAttrIndex()                            */
 /************************************************************************/
 
-OGRAttrIndex::~OGRAttrIndex()
-{
-}
+OGRAttrIndex::~OGRAttrIndex() {}
+
+//! @endcond

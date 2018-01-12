@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: wmsmetadataset.cpp 22576 2011-06-24 13:14:21Z warmerdam $
  *
  * Project:  WMS Client Driver
  * Purpose:  Definition of GDALWMSMetaDataset class
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,15 +28,15 @@
 
 #include "wmsmetadataset.h"
 
+CPL_CVSID("$Id: wmsmetadataset.cpp 36682 2016-12-04 20:34:45Z rouault $");
+
 int VersionStringToInt(const char *version);
 
 /************************************************************************/
 /*                          GDALWMSMetaDataset()                        */
 /************************************************************************/
 
-GDALWMSMetaDataset::GDALWMSMetaDataset() : papszSubDatasets(NULL)
-{
-}
+GDALWMSMetaDataset::GDALWMSMetaDataset() : papszSubDatasets(NULL) {}
 
 /************************************************************************/
 /*                         ~GDALWMSMetaDataset()                        */
@@ -58,11 +57,11 @@ void GDALWMSMetaDataset::AddSubDataset(const char* pszName,
     char    szName[80];
     int     nCount = CSLCount(papszSubDatasets ) / 2;
 
-    sprintf( szName, "SUBDATASET_%d_NAME", nCount+1 );
+    snprintf( szName, sizeof(szName), "SUBDATASET_%d_NAME", nCount+1 );
     papszSubDatasets =
         CSLSetNameValue( papszSubDatasets, szName, pszName );
 
-    sprintf( szName, "SUBDATASET_%d_DESC", nCount+1 );
+    snprintf( szName, sizeof(szName), "SUBDATASET_%d_DESC", nCount+1 );
     papszSubDatasets =
         CSLSetNameValue( papszSubDatasets, szName, pszDesc);
 }
@@ -74,14 +73,17 @@ void GDALWMSMetaDataset::AddSubDataset(const char* pszName,
 GDALDataset *GDALWMSMetaDataset::DownloadGetCapabilities(GDALOpenInfo *poOpenInfo)
 {
     const char* pszURL = poOpenInfo->pszFilename;
-    if (EQUALN(pszURL, "WMS:", 4))
+    if (STARTS_WITH_CI(pszURL, "WMS:"))
         pszURL += 4;
 
     CPLString osFormat = CPLURLGetValue(pszURL, "FORMAT");
     CPLString osTransparent = CPLURLGetValue(pszURL, "TRANSPARENT");
     CPLString osVersion = CPLURLGetValue(pszURL, "VERSION");
+    CPLString osPreferredSRS = CPLURLGetValue(pszURL, "SRS");
+    if( osPreferredSRS.empty() )
+        osPreferredSRS = CPLURLGetValue(pszURL, "CRS");
 
-    if (osVersion.size() == 0)
+    if (osVersion.empty())
         osVersion = "1.1.1";
 
     CPLString osURL(pszURL);
@@ -130,14 +132,13 @@ GDALDataset *GDALWMSMetaDataset::DownloadGetCapabilities(GDALOpenInfo *poOpenInf
         return NULL;
     }
 
-    GDALDataset* poRet = AnalyzeGetCapabilities(psXML, osFormat, osTransparent);
+    GDALDataset* poRet = AnalyzeGetCapabilities(psXML, osFormat, osTransparent, osPreferredSRS);
 
     CPLHTTPDestroyResult(psResult);
     CPLDestroyXMLNode( psXML );
 
     return poRet;
 }
-
 
 /************************************************************************/
 /*                         DownloadGetTileService()                     */
@@ -146,7 +147,7 @@ GDALDataset *GDALWMSMetaDataset::DownloadGetCapabilities(GDALOpenInfo *poOpenInf
 GDALDataset *GDALWMSMetaDataset::DownloadGetTileService(GDALOpenInfo *poOpenInfo)
 {
     const char* pszURL = poOpenInfo->pszFilename;
-    if (EQUALN(pszURL, "WMS:", 4))
+    if (STARTS_WITH_CI(pszURL, "WMS:"))
         pszURL += 4;
 
     CPLString osURL(pszURL);
@@ -202,6 +203,18 @@ GDALDataset *GDALWMSMetaDataset::DownloadGetTileService(GDALOpenInfo *poOpenInfo
 
     return poRet;
 }
+
+/************************************************************************/
+/*                      GetMetadataDomainList()                         */
+/************************************************************************/
+
+char **GDALWMSMetaDataset::GetMetadataDomainList()
+{
+    return BuildMetadataDomainList(GDALPamDataset::GetMetadataDomainList(),
+                                   TRUE,
+                                   "SUBDATASETS", NULL);
+}
+
 /************************************************************************/
 /*                            GetMetadata()                             */
 /************************************************************************/
@@ -220,23 +233,24 @@ char **GDALWMSMetaDataset::GetMetadata( const char *pszDomain )
 /************************************************************************/
 
 void GDALWMSMetaDataset::AddSubDataset( const char* pszLayerName,
-                                          const char* pszTitle,
-                                          const char* pszAbstract,
-                                          const char* pszSRS,
-                                          const char* pszMinX,
-                                          const char* pszMinY,
-                                          const char* pszMaxX,
-                                          const char* pszMaxY,
-                                          CPLString osFormat,
-                                          CPLString osTransparent)
-
+                                        const char* pszTitle,
+                                        CPL_UNUSED const char* pszAbstract,
+                                        const char* pszSRS,
+                                        const char* pszMinX,
+                                        const char* pszMinY,
+                                        const char* pszMaxX,
+                                        const char* pszMaxY,
+                                        CPLString osFormat,
+                                        CPLString osTransparent)
 {
     CPLString osSubdatasetName = "WMS:";
     osSubdatasetName += osGetURL;
     osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "SERVICE", "WMS");
     osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "VERSION", osVersion);
     osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "REQUEST", "GetMap");
-    osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "LAYERS", pszLayerName);
+    char* pszEscapedLayerName = CPLEscapeString(pszLayerName, -1, CPLES_URL);
+    osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "LAYERS", pszEscapedLayerName);
+    CPLFree(pszEscapedLayerName);
     if(VersionStringToInt(osVersion.c_str())>= VersionStringToInt("1.3.0"))
     {
         osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "CRS", pszSRS);
@@ -248,16 +262,16 @@ void GDALWMSMetaDataset::AddSubDataset( const char* pszLayerName,
         osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "SRS", pszSRS);
     osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "BBOX",
              CPLSPrintf("%s,%s,%s,%s", pszMinX, pszMinY, pszMaxX, pszMaxY));
-    if (osFormat.size() != 0)
+    if (!osFormat.empty())
         osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "FORMAT",
                                         osFormat);
-    if (osTransparent.size() != 0)
+    if (!osTransparent.empty())
         osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "TRANSPARENT",
                                         osTransparent);
 
     if (pszTitle)
     {
-        if (osXMLEncoding.size() != 0 &&
+        if (!osXMLEncoding.empty() &&
             osXMLEncoding != "utf-8" &&
             osXMLEncoding != "UTF-8")
         {
@@ -279,7 +293,6 @@ void GDALWMSMetaDataset::AddSubDataset( const char* pszLayerName,
         AddSubDataset(osSubdatasetName, pszLayerName);
     }
 }
-
 
 /************************************************************************/
 /*                         AddWMSCSubDataset()                          */
@@ -306,7 +319,7 @@ void GDALWMSMetaDataset::AddWMSCSubDataset(WMSCTileSetDesc& oWMSCTileSetDesc,
                                        oWMSCTileSetDesc.osMaxY.c_str()));
 
     osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "FORMAT", oWMSCTileSetDesc.osFormat);
-    if (osTransparent.size() != 0)
+    if (!osTransparent.empty())
         osSubdatasetName = CPLURLAddKVP(osSubdatasetName, "TRANSPARENT",
                                         osTransparent);
     if (oWMSCTileSetDesc.nTileWidth != oWMSCTileSetDesc.nTileHeight)
@@ -322,7 +335,7 @@ void GDALWMSMetaDataset::AddWMSCSubDataset(WMSCTileSetDesc& oWMSCTileSetDesc,
 
     if (pszTitle)
     {
-        if (osXMLEncoding.size() != 0 &&
+        if (!osXMLEncoding.empty() &&
             osXMLEncoding != "utf-8" &&
             osXMLEncoding != "UTF-8")
         {
@@ -352,6 +365,7 @@ void GDALWMSMetaDataset::AddWMSCSubDataset(WMSCTileSetDesc& oWMSCTileSetDesc,
 void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
                                       CPLString osFormat,
                                       CPLString osTransparent,
+                                      CPLString osPreferredSRS,
                                       const char* pszSRS,
                                       const char* pszMinX,
                                       const char* pszMinY,
@@ -362,6 +376,7 @@ void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
     const char* pszTitle = CPLGetXMLValue(psXML, "Title", NULL);
     const char* pszAbstract = CPLGetXMLValue(psXML, "Abstract", NULL);
 
+    CPLXMLNode* psSRS = NULL;
     const char* pszSRSLocal = NULL;
     const char* pszMinXLocal = NULL;
     const char* pszMinYLocal = NULL;
@@ -374,7 +389,24 @@ void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
     /* Use local bounding box if available, otherwise use the one */
     /* that comes from an upper layer */
     /* such as in http://neowms.sci.gsfc.nasa.gov/wms/wms */
-    CPLXMLNode* psSRS = CPLGetXMLNode( psXML, "BoundingBox" );
+    CPLXMLNode* psIter = psXML->psChild;
+    while( psIter != NULL )
+    {
+        if( psIter->eType == CXT_Element &&
+            strcmp(psIter->pszValue, "BoundingBox") == 0 )
+        {
+            psSRS = psIter;
+            pszSRSLocal = CPLGetXMLValue(psSRS, pszSRSTagName, NULL);
+            if( osPreferredSRS.empty() || pszSRSLocal == NULL )
+                break;
+            if( EQUAL(osPreferredSRS, pszSRSLocal) )
+                break;
+            psSRS = NULL;
+            pszSRSLocal = NULL;
+        }
+        psIter = psIter->psNext;
+    }
+
     if (psSRS == NULL)
     {
         psSRS = CPLGetXMLNode( psXML, "LatLonBoundingBox" );
@@ -382,8 +414,6 @@ void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
         if (pszSRSLocal == NULL)
             pszSRSLocal = "EPSG:4326";
     }
-    else
-        pszSRSLocal = CPLGetXMLValue(psSRS, pszSRSTagName, NULL);
 
     if (pszSRSLocal != NULL && psSRS != NULL)
     {
@@ -405,7 +435,7 @@ void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
     if (pszName != NULL && pszSRS && pszMinX && pszMinY && pszMaxX && pszMaxY)
     {
         CPLString osLocalTransparent(osTransparent);
-        if (osLocalTransparent.size() == 0)
+        if (osLocalTransparent.empty())
         {
             const char* pszOpaque = CPLGetXMLValue(psXML, "opaque", "0");
             if (EQUAL(pszOpaque, "1"))
@@ -426,13 +456,13 @@ void GDALWMSMetaDataset::ExploreLayer(CPLXMLNode* psXML,
         }
     }
 
-    CPLXMLNode* psIter = psXML->psChild;
+    psIter = psXML->psChild;
     for(; psIter != NULL; psIter = psIter->psNext)
     {
         if (psIter->eType == CXT_Element)
         {
             if (EQUAL(psIter->pszValue, "Layer"))
-                ExploreLayer(psIter, osFormat, osTransparent,
+                ExploreLayer(psIter, osFormat, osTransparent, osPreferredSRS,
                              pszSRS, pszMinX, pszMinY, pszMaxX, pszMaxY);
         }
     }
@@ -547,7 +577,8 @@ void GDALWMSMetaDataset::ParseWMSCTileSets(CPLXMLNode* psXML)
 
 GDALDataset* GDALWMSMetaDataset::AnalyzeGetCapabilities(CPLXMLNode* psXML,
                                                           CPLString osFormat,
-                                                          CPLString osTransparent)
+                                                          CPLString osTransparent,
+                                                          CPLString osPreferredSRS)
 {
     const char* pszEncoding = NULL;
     if (psXML->eType == CXT_Element && strcmp(psXML->pszValue, "?xml") == 0)
@@ -588,7 +619,7 @@ GDALDataset* GDALWMSMetaDataset::AnalyzeGetCapabilities(CPLXMLNode* psXML,
     poDS->osXMLEncoding = pszEncoding ? pszEncoding : "";
     if (psVendorSpecificCapabilities)
         poDS->ParseWMSCTileSets(psVendorSpecificCapabilities);
-    poDS->ExploreLayer(psLayer, osFormat, osTransparent);
+    poDS->ExploreLayer(psLayer, osFormat, osTransparent, osPreferredSRS);
 
     return poDS;
 }
@@ -608,7 +639,7 @@ void GDALWMSMetaDataset::AddTiledSubDataset(const char* pszTiledGroupName,
 
     if (pszTitle)
     {
-        if (osXMLEncoding.size() != 0 &&
+        if (!osXMLEncoding.empty() &&
             osXMLEncoding != "utf-8" &&
             osXMLEncoding != "UTF-8")
         {
@@ -726,4 +757,3 @@ GDALDataset* GDALWMSMetaDataset::AnalyzeTileMapService(CPLXMLNode* psXML)
 
     return poDS;
 }
-

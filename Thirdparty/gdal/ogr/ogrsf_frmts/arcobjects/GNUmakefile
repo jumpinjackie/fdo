@@ -4,7 +4,7 @@ include ../../../GDALmake.opt
 
 OBJ	=	aodriver.o aoatasource.o aolayer.o
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(AO_INC) $(CPPFLAGS)
+CPPFLAGS	:=	 $(AO_INC) $(CPPFLAGS)
 
 default:	$(O_OBJ:.o=.$(OBJ_EXT))
 
@@ -13,4 +13,4 @@ clean:
 
 $(O_OBJ):	ogr_ao.h
 
-install-obj:    $(O_OBJ:.o=.$(OBJ_EXT)) 
+install-obj:    $(O_OBJ:.o=.$(OBJ_EXT))

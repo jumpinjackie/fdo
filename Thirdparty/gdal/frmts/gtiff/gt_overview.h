@@ -1,13 +1,14 @@
 /******************************************************************************
- * $Id: gt_overview.h 13297 2007-12-09 19:03:50Z rouault $
+ * $Id: gt_overview.h 37184 2017-01-19 12:26:29Z rouault $
  *
  * Project:  GeoTIFF Driver
- * Purpose:  Code to build overviews of external databases as a TIFF file. 
+ * Purpose:  Code to build overviews of external databases as a TIFF file.
  *           Only used by the GDALDefaultOverviews::BuildOverviews() method.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
  * Copyright (c) 2000, Frank Warmerdam
+ * Copyright (c) 2008-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,21 +35,25 @@
 #include "gdal_priv.h"
 #include "tiffio.h"
 
-toff_t GTIFFWriteDirectory(TIFF *hTIFF, int nSubfileType, int nXSize, int nYSize,
-                           int nBitsPerPixel, int nPlanarConfig, int nSamples, 
-                           int nBlockXSize, int nBlockYSize,
-                           int bTiled, int nCompressFlag, int nPhotometric,
-                           int nSampleFormat, 
-                           int nPredictor,
-                           unsigned short *panRed,
-                           unsigned short *panGreen,
-                           unsigned short *panBlue,
-                           int nExtraSamples,
-                           unsigned short *panExtraSampleValues,
-                           const char *pszMetadata );
+toff_t GTIFFWriteDirectory( TIFF *hTIFF, int nSubfileType,
+                            int nXSize, int nYSize,
+                            int nBitsPerPixel, int nPlanarConfig, int nSamples,
+                            int nBlockXSize, int nBlockYSize,
+                            int bTiled, int nCompressFlag, int nPhotometric,
+                            int nSampleFormat,
+                            int nPredictor,
+                            unsigned short *panRed,
+                            unsigned short *panGreen,
+                            unsigned short *panBlue,
+                            int nExtraSamples,
+                            unsigned short *panExtraSampleValues,
+                            const char *pszMetadata,
+                            const char* pszJPEGQuality,
+                            const char* pszJPEGTablesMode,
+                            const char* pszNoData );
 
 void GTIFFBuildOverviewMetadata( const char *pszResampling,
-                                 GDALDataset *poBaseDS, 
+                                 GDALDataset *poBaseDS,
                                  CPLString &osMetadata );
 
 #endif

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: vfkreader.cpp 25721 2013-03-09 16:21:46Z martinl $
  *
  * Project:  VFK Reader
  * Purpose:  Implements VFKReader class.
  * Author:   Martin Landa, landa.martin gmail.com
  *
  ******************************************************************************
- * Copyright (c) 2009-2010, 2012-2013, Martin Landa <landa.martin gmail.com>
+ * Copyright (c) 2009-2014, Martin Landa <landa.martin gmail.com>
+ * Copyright (c) 2012-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,6 +29,8 @@
  * SOFTWARE.
  ****************************************************************************/
 
+#include <sys/stat.h>
+
 #include "vfkreader.h"
 #include "vfkreaderp.h"
 
@@ -36,11 +38,9 @@
 #include "cpl_error.h"
 #include "cpl_string.h"
 
-#define SUPPORT_GEOMETRY
+#include "ogr_geometry.h"
 
-#ifdef SUPPORT_GEOMETRY
-#  include "ogr_geometry.h"
-#endif
+CPL_CVSID("$Id: vfkreader.cpp 38376 2017-05-15 11:16:16Z rouault $");
 
 static char *GetDataBlockName(const char *);
 
@@ -64,18 +64,28 @@ IVFKReader *CreateVFKReader(const char *pszFilename)
 /*!
   \brief VFKReader constructor
 */
-VFKReader::VFKReader(const char *pszFilename)
+VFKReader::VFKReader( const char *pszFilename ) :
+    m_bLatin2(true),  // Encoding ISO-8859-2 or WINDOWS-1250.
+    m_poFD(NULL),
+    m_pszFilename(CPLStrdup(pszFilename)),
+    m_poFStat((VSIStatBuf*) CPLMalloc(sizeof(VSIStatBuf))),
+    // VFK are provided in two forms - stative and amendment data.
+    m_bAmendment(false),
+    m_nDataBlockCount(0),
+    m_papoDataBlock(NULL)
 {
-    m_nDataBlockCount = 0;
-    m_papoDataBlock   = NULL;
-    m_bLatin2         = TRUE; /* encoding ISO-8859-2 or WINDOWS-1250 */
-
-    /* open VFK file for reading */
+    // Open VFK file for reading.
     CPLAssert(NULL != pszFilename);
-    m_pszFilename = CPLStrdup(pszFilename);
-    m_poFD = VSIFOpen(m_pszFilename, "rb");
+
+    if (CPLStat(pszFilename, m_poFStat) != 0 ||
+        !VSI_ISREG(m_poFStat->st_mode)) {
+      CPLError(CE_Failure, CPLE_OpenFailed,
+               "%s is not a regular file.", m_pszFilename);
+    }
+
+    m_poFD = VSIFOpenL(m_pszFilename, "rb");
     if (m_poFD == NULL) {
-        CPLError(CE_Failure, CPLE_OpenFailed, 
+        CPLError(CE_Failure, CPLE_OpenFailed,
                  "Failed to open file %s.", m_pszFilename);
     }
 }
@@ -88,8 +98,9 @@ VFKReader::~VFKReader()
     CPLFree(m_pszFilename);
 
     if (m_poFD)
-        VSIFClose(m_poFD);
-    
+        VSIFCloseL(m_poFD);
+    CPLFree(m_poFStat);
+
     /* clear data blocks */
     for (int i = 0; i < m_nDataBlockCount; i++)
         delete m_papoDataBlock[i];
@@ -98,17 +109,16 @@ VFKReader::~VFKReader()
 
 char *GetDataBlockName(const char *pszLine)
 {
-    int         n;
-    const char *pszLineChar;
-    char       *pszBlockName;
+    int n = 0; // Used after for.
+    const char *pszLineChar = pszLine + 2;
 
-    for (pszLineChar = pszLine + 2, n = 0; *pszLineChar != '\0' && *pszLineChar != ';'; pszLineChar++, n++)
+    for( ; *pszLineChar != '\0' && *pszLineChar != ';'; pszLineChar++, n++)
         ;
 
-    if (*pszLineChar == '\0')
+    if( *pszLineChar == '\0' )
         return NULL;
 
-    pszBlockName = (char *) CPLMalloc(n + 1);
+    char *pszBlockName = (char *) CPLMalloc(n + 1);
     strncpy(pszBlockName, pszLine + 2, n);
     pszBlockName[n] = '\0';
 
@@ -117,29 +127,26 @@ char *GetDataBlockName(const char *pszLine)
 
 /*!
   \brief Read a line from file
- 
+
   \param bRecode do recoding
 
   \return a NULL terminated string which should be freed with CPLFree().
 */
-char *VFKReader::ReadLine(bool bRecode)
+char *VFKReader::ReadLine( bool bRecode )
 {
-    const char *pszRawLine;
-    char *pszLine;
-    
-    pszRawLine = CPLReadLine(m_poFD);
+    const char *pszRawLine = CPLReadLine2L(m_poFD, 100 * 1024, NULL);
     if (pszRawLine == NULL)
         return NULL;
-    
-    if (bRecode)
-        pszLine = CPLRecode(pszRawLine,
-                            m_bLatin2 ? "ISO-8859-2" : "WINDOWS-1250",
-                            CPL_ENC_UTF8);
-    else {
-        pszLine = (char *) CPLMalloc(strlen(pszRawLine) + 1);
-        strcpy(pszLine, pszRawLine);
-    }
-    
+
+    if( bRecode )
+        return CPLRecode(pszRawLine,
+                         m_bLatin2 ? "ISO-8859-2" : "WINDOWS-1250",
+                         CPL_ENC_UTF8);
+
+    const size_t nLineLen = strlen(pszRawLine);
+    char *pszLine = (char *) CPLMalloc(nLineLen + 1);
+    memcpy(pszLine, pszRawLine, nLineLen + 1);
+
     return pszLine;
 }
 
@@ -152,34 +159,46 @@ char *VFKReader::ReadLine(bool bRecode)
 */
 int VFKReader::ReadDataBlocks()
 {
-    char       *pszLine, *pszBlockName;
-
-    IVFKDataBlock *poNewDataBlock;
-    
     CPLAssert(NULL != m_pszFilename);
 
-    VSIFSeek(m_poFD, 0, SEEK_SET);
+    VSIFSeekL(m_poFD, 0, SEEK_SET);
+    bool bInHeader = true;
+    char *pszLine = NULL;
     while ((pszLine = ReadLine()) != NULL) {
-        if (strlen(pszLine) < 2 || pszLine[0] != '&')
-        {
+        if (strlen(pszLine) < 2 || pszLine[0] != '&') {
             CPLFree(pszLine);
             continue;
         }
+
         if (pszLine[1] == 'B') {
-            pszBlockName = GetDataBlockName(pszLine);
-            if (pszBlockName == NULL) { 
-                CPLError(CE_Failure, CPLE_NotSupported, 
+            if( bInHeader )
+                bInHeader = false; /* 'B' record closes the header section */
+
+            char *pszBlockName = GetDataBlockName(pszLine);
+            if (pszBlockName == NULL) {
+                CPLError(CE_Failure, CPLE_NotSupported,
                          "Corrupted data - line\n%s\n", pszLine);
                 CPLFree(pszLine);
                 return -1;
             }
-            poNewDataBlock = (IVFKDataBlock *) CreateDataBlock(pszBlockName);
+
+            /* skip duplicated data blocks (when reading multiple files into single DB)  */
+            if( !GetDataBlock(pszBlockName) )
+            {
+                IVFKDataBlock *poNewDataBlock =
+                    (IVFKDataBlock *) CreateDataBlock(pszBlockName);
+                poNewDataBlock->SetGeometryType();
+                poNewDataBlock->SetProperties(pszLine); /* TODO: check consistency on property level */
+                AddDataBlock(poNewDataBlock, pszLine);
+            }
             CPLFree(pszBlockName);
-            poNewDataBlock->SetGeometryType();
-            poNewDataBlock->SetProperties(pszLine);
-            AddDataBlock(poNewDataBlock, pszLine);
         }
         else if (pszLine[1] == 'H') {
+            /* check for amendment file */
+            if (EQUAL(pszLine, "&HZMENY;1")) {
+                m_bAmendment = true;
+            }
+
             /* header - metadata */
             AddInfo(pszLine);
         }
@@ -188,95 +207,155 @@ int VFKReader::ReadDataBlocks()
             CPLFree(pszLine);
             break;
         }
+        else if( bInHeader && pszLine[1] == 'D' )
+        {
+            /* process 'D' records in the header section */
+            AddInfo(pszLine);
+        }
+
         CPLFree(pszLine);
     }
-    
+
     return m_nDataBlockCount;
 }
-
 
 /*!
   \brief Load data records (&D)
 
   Call VFKReader::OpenFile() before this function.
-  
+
+  \param poDataBlock limit to selected data block or NULL for all
+
   \return number of data records or -1 on error
 */
 int VFKReader::ReadDataRecords(IVFKDataBlock *poDataBlock)
 {
-    const char *pszName;
-    char       *pszBlockName, *pszLine;
-    long        iFID;
-    int         nLength, iLine, nSkipped, nDupl, nRecords;
-    
-    CPLString pszMultiLine;
+    const char *pszName = NULL;
+    IVFKDataBlock *poDataBlockCurrent = NULL;
 
-    VFKFeature *poNewFeature;
-    
-    poDataBlock->SetFeatureCount(0);
-    pszName = poDataBlock->GetName();
+    if (poDataBlock) {  /* read only given data block */
+        poDataBlockCurrent = poDataBlock;
+        if (poDataBlockCurrent->GetFeatureCount(FALSE) < 0)
+            poDataBlockCurrent->SetFeatureCount(0);
+        pszName = poDataBlockCurrent->GetName();
+    }
+    else {              /* read all data blocks */
+        for (int iDataBlock = 0; iDataBlock < GetDataBlockCount(); iDataBlock++) {
+            poDataBlockCurrent = GetDataBlock(iDataBlock);
+            if (poDataBlockCurrent->GetFeatureCount(FALSE) < 0)
+                poDataBlockCurrent->SetFeatureCount(0);
+        }
+        poDataBlockCurrent = NULL;
+    }
 
-    VSIFSeek(m_poFD, 0, SEEK_SET);
-    iFID = 1L;
-    iLine = nSkipped = nDupl = nRecords = 0;
+    VSIFSeekL(m_poFD, 0, SEEK_SET);
+
+    int iLine = 0;
+    int nSkipped = 0;
+    int nDupl = 0;
+    int nRecords = 0;
+    bool bInHeader = true;
+    CPLString osBlockNameLast;
+    char *pszLine = NULL;
+
     while ((pszLine = ReadLine()) != NULL) {
         iLine++;
-        nLength = strlen(pszLine);
-        if (nLength < 2)
+        size_t nLength = strlen(pszLine);
+        if (nLength < 2) {
+            CPLFree(pszLine);
             continue;
-        
+        }
+
+        if (bInHeader && pszLine[1] == 'B')
+            bInHeader = false; /* 'B' record closes the header section */
+
         if (pszLine[1] == 'D') {
-            pszBlockName = GetDataBlockName(pszLine);
-            if (pszBlockName && EQUAL(pszBlockName, pszName)) {
-                /* merge lines if needed */
-                if (pszLine[nLength - 2] == '\302' &&
-                    pszLine[nLength - 1] == '\244') {
-                    
-                    /* remove 0302 0244 (currency sign) from string */
-                    pszLine[nLength - 2] = '\0';
-                    
-                    pszMultiLine.clear();
-                    pszMultiLine = pszLine;
+            if (bInHeader) {
+                /* skip 'D' records from the header section, already
+                 * processed as metadata */
+                CPLFree(pszLine);
+                continue;
+            }
+
+            char *pszBlockName = GetDataBlockName(pszLine);
+
+            if (pszBlockName && (!pszName || EQUAL(pszBlockName, pszName))) {
+                /* merge lines if needed
+
+                   See http://en.wikipedia.org/wiki/ISO/IEC_8859
+                   - \244 - general currency sign
+                */
+                if (pszLine[nLength - 1] == '\244') {
+                    /* remove \244 (currency sign) from string */
+                    pszLine[nLength - 1] = '\0';
+
+                    CPLString osMultiLine(pszLine);
                     CPLFree(pszLine);
-                    
+
                     while ((pszLine = ReadLine()) != NULL &&
-                           pszLine[strlen(pszLine) - 2] == '\302' &&
+                           pszLine[0] != '\0' &&
                            pszLine[strlen(pszLine) - 1] == '\244') {
                         /* append line */
-                        pszMultiLine += pszLine;
-                        /* remove 0302 0244 (currency sign) from string */
-                        pszMultiLine[strlen(pszLine) - 2] = '\0';
+                        osMultiLine += pszLine;
+                        /* remove 0244 (currency sign) from string */
+                        osMultiLine.erase(osMultiLine.size() - 1);
 
                         CPLFree(pszLine);
-                    } 
-                    pszMultiLine += pszLine;
+                        if( osMultiLine.size() > 100U * 1024U * 1024U )
+                        {
+                            CPLFree(pszBlockName);
+                            return -1;
+                        }
+                    }
+                    if( pszLine )
+                        osMultiLine += pszLine;
                     CPLFree(pszLine);
-                    
-                    nLength = pszMultiLine.size();
+
+                    nLength = osMultiLine.size();
+                    if( nLength > 100U * 1024U * 1024U )
+                    {
+                        CPLFree(pszBlockName);
+                        return -1;
+                    }
                     pszLine = (char *) CPLMalloc(nLength + 1);
-                    strncpy(pszLine, pszMultiLine.c_str(), nLength);
+                    strncpy(pszLine, osMultiLine.c_str(), nLength);
                     pszLine[nLength] = '\0';
                 }
-                
-                poNewFeature = new VFKFeature(poDataBlock, iFID++);
+
+                if (!poDataBlock && pszBlockName) { /* read all data blocks */
+                    if (osBlockNameLast.empty() ||
+                        !EQUAL(pszBlockName, osBlockNameLast.c_str())) {
+                        poDataBlockCurrent = GetDataBlock(pszBlockName);
+                        osBlockNameLast = CPLString(pszBlockName);
+                    }
+                }
+                if (!poDataBlockCurrent) {
+                    CPLFree(pszBlockName);
+                    continue; // assert ?
+                }
+
+                VFKFeature *poNewFeature = new VFKFeature(poDataBlockCurrent,
+                                                          poDataBlockCurrent->GetFeatureCount() + 1);
                 if (poNewFeature->SetProperties(pszLine)) {
-                    if (AddFeature(poDataBlock, poNewFeature) != OGRERR_NONE) {
-                        CPLDebug("OGR-VFK", 
-                                 "%s: duplicated VFK data recored skipped (line %d).\n%s\n",
-                                 pszBlockName, iLine, pszLine);
-                        nDupl++;
-                        iFID--;
+                    if (AddFeature(poDataBlockCurrent, poNewFeature) != OGRERR_NONE) {
+                        CPLDebug( "OGR-VFK",
+                                  "%s: duplicated VFK data record skipped "
+                                  "(line %d).\n%s\n",
+                                  pszBlockName, iLine, pszLine);
+                        poDataBlockCurrent->SetIncRecordCount(RecordDuplicated);
                     }
                     else {
                         nRecords++;
+                        poDataBlockCurrent->SetIncRecordCount(RecordValid);
                     }
                     delete poNewFeature;
-		}
+                }
                 else {
-                    CPLDebug("OGR-VFK", 
+                    CPLDebug("OGR-VFK",
                              "Invalid VFK data record skipped (line %d).\n%s\n", iLine, pszLine);
-		    nSkipped++;
-		}
+                    poDataBlockCurrent->SetIncRecordCount(RecordSkipped);
+                    delete poNewFeature;
+                }
             }
             CPLFree(pszBlockName);
         }
@@ -285,20 +364,31 @@ int VFKReader::ReadDataRecords(IVFKDataBlock *poDataBlock)
             CPLFree(pszLine);
             break;
         }
+
         CPLFree(pszLine);
     }
-    
-    if (nSkipped > 0)
-	CPLError(CE_Warning, CPLE_AppDefined, 
-		 "%s: %d invalid VFK data records skipped",
-                 poDataBlock->GetName(), nSkipped);
-    if (nDupl > 0)
-	CPLError(CE_Warning, CPLE_AppDefined, 
-		 "%s: %d duplicated VFK data records skipped",
-                 poDataBlock->GetName(), nDupl);
 
-    CPLDebug("OGR_VFK", "VFKReader::ReadDataRecords(): name=%s n=%d",
-             poDataBlock->GetName(), nRecords);
+    for (int iDataBlock = 0; iDataBlock < GetDataBlockCount(); iDataBlock++) {
+        poDataBlockCurrent = GetDataBlock(iDataBlock);
+
+        if (poDataBlock && poDataBlock != poDataBlockCurrent)
+            continue;
+
+        nSkipped = poDataBlockCurrent->GetRecordCount(RecordSkipped);
+        nDupl    = poDataBlockCurrent->GetRecordCount(RecordDuplicated);
+        if (nSkipped > 0)
+            CPLError(CE_Warning, CPLE_AppDefined,
+                     "%s: %d invalid VFK data records skipped",
+                     poDataBlockCurrent->GetName(), nSkipped);
+        if (nDupl > 0)
+            CPLError(CE_Warning, CPLE_AppDefined,
+                     "%s: %d duplicated VFK data records skipped",
+                     poDataBlockCurrent->GetName(), nDupl);
+
+        CPLDebug("OGR-VFK", "VFKReader::ReadDataRecords(): name=%s n=%d",
+                 poDataBlockCurrent->GetName(),
+                 poDataBlockCurrent->GetRecordCount(RecordValid));
+    }
 
     return nRecords;
 }
@@ -314,10 +404,11 @@ IVFKDataBlock *VFKReader::CreateDataBlock(const char *pszBlockName)
   \param poNewDataBlock pointer to VFKDataBlock instance
   \param pszDefn unused (FIXME ?)
 */
-void VFKReader::AddDataBlock(IVFKDataBlock *poNewDataBlock, const char *pszDefn)
+void VFKReader::AddDataBlock(IVFKDataBlock *poNewDataBlock,
+                             CPL_UNUSED const char *pszDefn)
 {
     m_nDataBlockCount++;
-    
+
     m_papoDataBlock = (IVFKDataBlock **)
         CPLRealloc(m_papoDataBlock, sizeof (IVFKDataBlock *) * m_nDataBlockCount);
     m_papoDataBlock[m_nDataBlockCount-1] = poNewDataBlock;
@@ -346,7 +437,7 @@ IVFKDataBlock *VFKReader::GetDataBlock(int i) const
 {
     if (i < 0 || i >= m_nDataBlockCount)
         return NULL;
-    
+
     return m_papoDataBlock[i];
 }
 
@@ -374,16 +465,14 @@ IVFKDataBlock *VFKReader::GetDataBlock(const char *pszName) const
 */
 int VFKReader::LoadGeometry()
 {
-    long int nfeatures;
-
-    nfeatures = 0;
+    long int nfeatures = 0;
     for (int i = 0; i < m_nDataBlockCount; i++) {
         nfeatures += m_papoDataBlock[i]->LoadGeometry();
     }
-    
+
     CPLDebug("OGR_VFK", "VFKReader::LoadGeometry(): invalid=%ld", nfeatures);
-    
-    return nfeatures;
+
+    return static_cast<int>(nfeatures);
 }
 
 /*!
@@ -393,13 +482,11 @@ int VFKReader::LoadGeometry()
 */
 void VFKReader::AddInfo(const char *pszLine)
 {
-    int         iKeyLength, iValueLength;
-    char       *pszKey, *pszValue;
-    const char *poChar, *poKey, *poValue;
-    CPLString   key, value;
-    
-    poChar = poKey = pszLine + 2; /* &H */
-    iKeyLength = 0;
+    const int nOffset = pszLine[1] == 'H' ? 2 : 1;  // &DKATUZE
+
+    const char *poKey = pszLine + nOffset; /* &H */
+    const char *poChar = poKey;
+    int iKeyLength = 0;
     while (*poChar != '\0' && *poChar != ';') {
         iKeyLength++;
         poChar ++;
@@ -407,30 +494,70 @@ void VFKReader::AddInfo(const char *pszLine)
     if (*poChar == '\0')
         return;
 
-    pszKey = (char *) CPLMalloc(iKeyLength + 1);
+    char *pszKey = (char *) CPLMalloc(iKeyLength + 1);
     strncpy(pszKey, poKey, iKeyLength);
     pszKey[iKeyLength] = '\0';
 
-    poValue = ++poChar; /* skip ';' */
-    iValueLength = 0;
+    poChar++; /* skip ; */
+
+    int iValueLength = 0;
+    int nSkip = 3; /* &H + ; */
     while (*poChar != '\0') {
-        iValueLength++;
+        if (*poChar == '"' && iValueLength == 0) {
+            nSkip++;
+        }
+        else {
+            iValueLength++;
+        }
         poChar++;
     }
+    if (nSkip > 3 && iValueLength > 0 )
+        iValueLength--;
 
-    pszValue = (char *) CPLMalloc(iValueLength + 1);
-    strncpy(pszValue, poValue, iValueLength);
+    char *pszValue = (char *) CPLMalloc(iValueLength + 1);
+    for (int i = 0; i < iValueLength; i++) {
+        pszValue[i] = pszLine[iKeyLength+nSkip+i];
+        if (pszValue[i] == '"') {
+            pszValue[i] = '\''; /* " -> ' */
+        }
+    }
+
     pszValue[iValueLength] = '\0';
 
-    poInfo[pszKey] = pszValue;
-
+    /* recode values, assuming Latin2 */
     if (EQUAL(pszKey, "CODEPAGE")) {
-        if (!EQUAL(pszValue, "\"WE8ISO8859P2\""))
-            m_bLatin2 = FALSE;
+        if (!EQUAL(pszValue, "WE8ISO8859P2"))
+            m_bLatin2 = false;
+    }
+
+    char *pszValueEnc = CPLRecode(pszValue,
+                            m_bLatin2 ? "ISO-8859-2" : "WINDOWS-1250",
+                            CPL_ENC_UTF8);
+    if (poInfo.find(pszKey) == poInfo.end() ) {
+        poInfo[pszKey] = pszValueEnc;
+    }
+    else {
+        /* max. number of duplicated keys can be 101 */
+        const size_t nLen = strlen(pszKey) + 5;
+        char *pszKeyUniq = (char *) CPLMalloc(nLen);
+
+        int nCount = 1; /* assuming at least one match */
+        for(std::map<CPLString, CPLString>::iterator i = poInfo.begin();
+            i != poInfo.end(); ++i) {
+            size_t iFound = i->first.find("_");
+            if (iFound != std::string::npos &&
+                EQUALN(pszKey, i->first.c_str(), iFound))
+                nCount += 1;
+        }
+
+        snprintf(pszKeyUniq, nLen, "%s_%d", pszKey, nCount);
+        poInfo[pszKeyUniq] = pszValueEnc;
+        CPLFree(pszKeyUniq);
     }
 
     CPLFree(pszKey);
     CPLFree(pszValue);
+    CPLFree(pszValueEnc);
 }
 
 /*!

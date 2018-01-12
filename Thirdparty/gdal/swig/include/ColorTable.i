@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ColorTable.i 16504 2009-03-07 20:01:35Z rouault $
+ * $Id: ColorTable.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Name:     ColorTable.i
  * Project:  GDAL Python Interface
@@ -53,26 +53,26 @@ public:
     ~GDALColorTableShadow() {
         GDALDestroyColorTable(self);
     }
-  
+
     %newobject Clone();
     GDALColorTableShadow* Clone() {
         return (GDALColorTableShadow*) GDALCloneColorTable (self);
     }
-  
+
     GDALPaletteInterp GetPaletteInterpretation() {
         return GDALGetPaletteInterpretation(self);
     }
 
-#ifdef SWIGRUBY 
-%rename (get_count) GetColorEntryCount; 
-#else 
-%rename (GetCount) GetColorEntryCount; 
-#endif  
-  
+#ifdef SWIGRUBY
+%rename (get_count) GetColorEntryCount;
+#else
+%rename (GetCount) GetColorEntryCount;
+#endif
+
     int GetColorEntryCount() {
         return GDALGetColorEntryCount(self);
     }
-    
+
     GDALColorEntry* GetColorEntry (int entry) {
         return (GDALColorEntry*) GDALGetColorEntry(self, entry);
     }
@@ -86,7 +86,7 @@ public:
     void SetColorEntry( int entry, const GDALColorEntry* centry) {
         GDALSetColorEntry(self, entry, centry);
     }
-    
+
     void CreateColorRamp(   int nStartIndex, const GDALColorEntry* startcolor,
                             int nEndIndex, const GDALColorEntry* endcolor) {
         GDALCreateColorRamp(self, nStartIndex, startcolor, nEndIndex, endcolor);

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrdodslayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  OGR/DODS Interface
  * Purpose:  Implements OGRDODSLayer class.
@@ -30,34 +29,30 @@
 #include "ogr_dods.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrdodslayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogrdodslayer.cpp 35933 2016-10-25 16:46:26Z goatbar $");
 
 /************************************************************************/
 /*                            OGRDODSLayer()                            */
 /************************************************************************/
 
-OGRDODSLayer::OGRDODSLayer( OGRDODSDataSource *poDSIn, 
+OGRDODSLayer::OGRDODSLayer( OGRDODSDataSource *poDSIn,
                             const char *pszTargetIn,
-                            AttrTable *poOGRLayerInfoIn )
-
+                            AttrTable *poOGRLayerInfoIn ) :
+    poFeatureDefn(NULL),
+    poSRS(NULL),
+    iNextShapeId(0),
+    poDS(poDSIn),
+    pszQuery(NULL),
+    pszFIDColumn (NULL),
+    pszTarget(CPLStrdup( pszTargetIn )),
+    papoFields(NULL),
+    bDataLoaded(false),
+    poConnection(NULL),
+    poDataDDS(new DataDDS( poDSIn->poBTF )),
+    poTargetVar(NULL),
+    poOGRLayerInfo(poOGRLayerInfoIn),
+    bKnowExtent(false)
 {
-    poDS = poDSIn;
-    poFeatureDefn = NULL;
-    pszQuery = NULL;
-    pszFIDColumn = NULL;
-    poSRS = NULL;
-    iNextShapeId = 0;
-    pszTarget = CPLStrdup( pszTargetIn );
-    papoFields = NULL;
-
-    bDataLoaded = FALSE;
-    poConnection = NULL;
-    poTargetVar = NULL;
-    poOGRLayerInfo = poOGRLayerInfoIn;
-    bKnowExtent = FALSE;
-
-    poDataDDS = new DataDDS( poDSIn->poBTF );
-
 /* ==================================================================== */
 /*      Harvest some metadata if available.                             */
 /* ==================================================================== */
@@ -74,8 +69,8 @@ OGRDODSLayer::OGRDODSLayer( OGRDODSDataSource *poDSIn,
             poSRS = new OGRSpatialReference();
             if( poSRS->SetFromUserInput( oMValue.c_str() ) != OGRERR_NONE )
             {
-                CPLError( CE_Warning, CPLE_AppDefined, 
-                          "Ignoring unreconised SRS '%s'", 
+                CPLError( CE_Warning, CPLE_AppDefined,
+                          "Ignoring unrecognized SRS '%s'",
                           oMValue.c_str() );
                 delete poSRS;
                 poSRS = NULL;
@@ -88,13 +83,12 @@ OGRDODSLayer::OGRDODSLayer( OGRDODSDataSource *poDSIn,
         AttrTable *poLayerExt=poOGRLayerInfo->find_container("layer_extents");
         if( poLayerExt != NULL )
         {
-            bKnowExtent = TRUE;
-            sExtent.MinX = atof(poLayerExt->get_attr("x_min").c_str());
-            sExtent.MaxX = atof(poLayerExt->get_attr("x_max").c_str());
-            sExtent.MinY = atof(poLayerExt->get_attr("y_min").c_str());
-            sExtent.MaxY = atof(poLayerExt->get_attr("y_max").c_str());
+            bKnowExtent = true;
+            sExtent.MinX = CPLAtof(poLayerExt->get_attr("x_min").c_str());
+            sExtent.MaxX = CPLAtof(poLayerExt->get_attr("x_max").c_str());
+            sExtent.MinY = CPLAtof(poLayerExt->get_attr("y_min").c_str());
+            sExtent.MaxY = CPLAtof(poLayerExt->get_attr("y_max").c_str());
         }
-
     }
 
 /* ==================================================================== */
@@ -114,7 +108,7 @@ OGRDODSLayer::~OGRDODSLayer()
     if( m_nFeaturesRead > 0 && poFeatureDefn != NULL )
     {
         CPLDebug( "DODS", "%d features read on layer '%s'.",
-                  (int) m_nFeaturesRead, 
+                  (int) m_nFeaturesRead,
                   poFeatureDefn->GetName() );
     }
 
@@ -163,9 +157,7 @@ void OGRDODSLayer::ResetReading()
 OGRFeature *OGRDODSLayer::GetNextFeature()
 
 {
-    OGRFeature *poFeature;
-
-    for( poFeature = GetFeature( iNextShapeId++ ); 
+    for( OGRFeature *poFeature = GetFeature( iNextShapeId++ );
          poFeature != NULL;
          poFeature = GetFeature( iNextShapeId++ ) )
     {
@@ -184,7 +176,7 @@ OGRFeature *OGRDODSLayer::GetNextFeature()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRDODSLayer::TestCapability( const char * pszCap )
+int OGRDODSLayer::TestCapability( const char * /* pszCap */ )
 
 {
     return FALSE;
@@ -204,13 +196,13 @@ OGRSpatialReference *OGRDODSLayer::GetSpatialRef()
 /*                           ProvideDataDDS()                           */
 /************************************************************************/
 
-int OGRDODSLayer::ProvideDataDDS()
+bool OGRDODSLayer::ProvideDataDDS()
 
 {
     if( bDataLoaded )
         return poTargetVar != NULL;
 
-    bDataLoaded = TRUE;
+    bDataLoaded = true;
     try
     {
         poConnection = new AISConnect( poDS->oBaseURL );
@@ -218,16 +210,16 @@ int OGRDODSLayer::ProvideDataDDS()
                   poDS->oBaseURL.c_str(),
                   (poDS->oProjection + poDS->oConstraints).c_str() );
 
-        // We may need to use custom constraints here. 
-        poConnection->request_data( *poDataDDS, 
+        // We may need to use custom constraints here.
+        poConnection->request_data( *poDataDDS,
                                     poDS->oProjection + poDS->oConstraints );
     }
     catch (Error &e)
     {
         CPLError( CE_Failure, CPLE_AppDefined,
-                  "DataDDS request failed:\n%s", 
+                  "DataDDS request failed:\n%s",
                   e.get_error_message().c_str() );
-        return FALSE;
+        return false;
     }
 
     poTargetVar = poDataDDS->var( pszTarget );
@@ -242,21 +234,19 @@ int OGRDODSLayer::ProvideDataDDS()
 OGRErr OGRDODSLayer::GetExtent(OGREnvelope *psExtent, int bForce)
 
 {
-    OGRErr eErr;
-
     if( bKnowExtent )
     {
-        *psExtent = this->sExtent;
+        *psExtent = sExtent;
         return OGRERR_NONE;
     }
 
     if( !bForce )
         return OGRERR_FAILURE;
 
-    eErr = OGRLayer::GetExtent( &sExtent, bForce );
+    const OGRErr eErr = OGRLayer::GetExtent( &sExtent, bForce );
     if( eErr == OGRERR_NONE )
     {
-        bKnowExtent = TRUE;
+        bKnowExtent = true;
         *psExtent = sExtent;
     }
 

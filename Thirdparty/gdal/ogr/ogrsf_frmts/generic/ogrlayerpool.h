@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogrlayerpool.h 24642 2012-07-01 20:45:46Z rouault $
+ * $Id: ogrlayerpool.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Defines OGRLayerPool and OGRProxiedLayer class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGRLAYERPOOL_H_INCLUDED
-#define _OGRLAYERPOOL_H_INCLUDED
+#ifndef OGRLAYERPOOL_H_INCLUDED
+#define OGRLAYERPOOL_H_INCLUDED
+
+#ifndef DOXYGEN_SKIP
 
 #include "ogrsf_frmts.h"
 
@@ -54,7 +56,7 @@ class OGRAbstractProxiedLayer : public OGRLayer
         virtual void    CloseUnderlyingLayer() = 0;
 
     public:
-                        OGRAbstractProxiedLayer(OGRLayerPool* poPool);
+        explicit        OGRAbstractProxiedLayer(OGRLayerPool* poPool);
         virtual        ~OGRAbstractProxiedLayer();
 };
 
@@ -71,7 +73,7 @@ class OGRLayerPool
         int                     nMaxSimultaneouslyOpened;
 
     public:
-                                OGRLayerPool(int nMaxSimultaneouslyOpened = 100);
+        explicit                OGRLayerPool(int nMaxSimultaneouslyOpened = 100);
                                ~OGRLayerPool();
 
         void                    SetLastUsedLayer(OGRAbstractProxiedLayer* poProxiedLayer);
@@ -98,7 +100,7 @@ class OGRProxiedLayer : public OGRAbstractProxiedLayer
 
   protected:
 
-    virtual void        CloseUnderlyingLayer();
+    virtual void        CloseUnderlyingLayer() override;
 
   public:
 
@@ -108,54 +110,57 @@ class OGRProxiedLayer : public OGRAbstractProxiedLayer
                                         void* pUserData);
     virtual            ~OGRProxiedLayer();
 
-    virtual OGRGeometry *GetSpatialFilter();
-    virtual void        SetSpatialFilter( OGRGeometry * );
+    OGRLayer           *GetUnderlyingLayer();
 
-    virtual OGRErr      SetAttributeFilter( const char * );
+    virtual OGRGeometry *GetSpatialFilter() override;
+    virtual void        SetSpatialFilter( OGRGeometry * ) override;
+    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry * ) override;
 
-    virtual void        ResetReading();
-    virtual OGRFeature *GetNextFeature();
-    virtual OGRErr      SetNextByIndex( long nIndex );
-    virtual OGRFeature *GetFeature( long nFID );
-    virtual OGRErr      SetFeature( OGRFeature *poFeature );
-    virtual OGRErr      CreateFeature( OGRFeature *poFeature );
-    virtual OGRErr      DeleteFeature( long nFID );
+    virtual OGRErr      SetAttributeFilter( const char * ) override;
 
-    virtual const char *GetName();
-    virtual OGRwkbGeometryType GetGeomType();
-    virtual OGRFeatureDefn *GetLayerDefn();
+    virtual void        ResetReading() override;
+    virtual OGRFeature *GetNextFeature() override;
+    virtual OGRErr      SetNextByIndex( GIntBig nIndex ) override;
+    virtual OGRFeature *GetFeature( GIntBig nFID ) override;
+    virtual OGRErr      ISetFeature( OGRFeature *poFeature ) override;
+    virtual OGRErr      ICreateFeature( OGRFeature *poFeature ) override;
+    virtual OGRErr      DeleteFeature( GIntBig nFID ) override;
 
-    virtual OGRSpatialReference *GetSpatialRef();
+    virtual const char *GetName() override;
+    virtual OGRwkbGeometryType GetGeomType() override;
+    virtual OGRFeatureDefn *GetLayerDefn() override;
 
-    virtual int         GetFeatureCount( int bForce = TRUE );
-    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE);
+    virtual OGRSpatialReference *GetSpatialRef() override;
 
-    virtual int         TestCapability( const char * );
+    virtual GIntBig     GetFeatureCount( int bForce = TRUE ) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual OGRErr      GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
 
-    /* Deprecated (and un-implemented method) --> we won't decorate it ! */
-    /* virtual const char *GetInfo( const char * ); */
+    virtual int         TestCapability( const char * ) override;
 
     virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE );
-    virtual OGRErr      DeleteField( int iField );
-    virtual OGRErr      ReorderFields( int* panMap );
-    virtual OGRErr      AlterFieldDefn( int iField, OGRFieldDefn* poNewFieldDefn, int nFlags );
+                                     int bApproxOK = TRUE ) override;
+    virtual OGRErr      DeleteField( int iField ) override;
+    virtual OGRErr      ReorderFields( int* panMap ) override;
+    virtual OGRErr      AlterFieldDefn( int iField, OGRFieldDefn* poNewFieldDefn, int nFlags ) override;
 
-    virtual OGRErr      SyncToDisk();
+    virtual OGRErr      SyncToDisk() override;
 
-    virtual OGRStyleTable *GetStyleTable();
-    virtual void        SetStyleTableDirectly( OGRStyleTable *poStyleTable );
+    virtual OGRStyleTable *GetStyleTable() override;
+    virtual void        SetStyleTableDirectly( OGRStyleTable *poStyleTable ) override;
 
-    virtual void        SetStyleTable(OGRStyleTable *poStyleTable);
+    virtual void        SetStyleTable(OGRStyleTable *poStyleTable) override;
 
-    virtual OGRErr      StartTransaction();
-    virtual OGRErr      CommitTransaction();
-    virtual OGRErr      RollbackTransaction();
+    virtual OGRErr      StartTransaction() override;
+    virtual OGRErr      CommitTransaction() override;
+    virtual OGRErr      RollbackTransaction() override;
 
-    virtual const char *GetFIDColumn();
-    virtual const char *GetGeometryColumn();
+    virtual const char *GetFIDColumn() override;
+    virtual const char *GetGeometryColumn() override;
 
-    virtual OGRErr      SetIgnoredFields( const char **papszFields );
+    virtual OGRErr      SetIgnoredFields( const char **papszFields ) override;
 };
 
-#endif // _OGRLAYERPOOL_H_INCLUDED
+#endif /* #ifndef DOXYGEN_SKIP */
+
+#endif // OGRLAYERPOOL_H_INCLUDED

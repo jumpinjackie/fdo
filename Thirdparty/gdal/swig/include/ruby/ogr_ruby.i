@@ -1,5 +1,5 @@
 /*
- * $Id: ogr_ruby.i 9022 2006-01-17 04:42:16Z cfis $
+ * $Id: ogr_ruby.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * ruby specific code for ogr bindings.
  */
@@ -16,7 +16,7 @@
  * Added support for exceptions, removed some outdated code.
  *
  * Revision 1.1  2005/09/02 16:19:23  kruland
- * Major reorganization to accomodate multiple language bindings.
+ * Major reorganization to accommodate multiple language bindings.
  * Each language binding can define renames and supplemental code without
  * having to have a lot of conditionals in the main interface definition files.
  *
@@ -109,7 +109,7 @@
  		{
 			/* Convert the pointer to a Ruby object.  Note we set the flag
 		   to one manually to show this is a new object */
-			VALUE object = SWIG_NewPointerObj((void *) feature, $descriptor(OGRFeatureShadow *), SWIG_POINTER_OWN);			
+			VALUE object = SWIG_NewPointerObj((void *) feature, $descriptor(OGRFeatureShadow *), SWIG_POINTER_OWN);
 
 			/* Now invoke the block specified for this method. */
 			rb_yield(object);
@@ -134,9 +134,9 @@
 			default:
 				SWIG_exception(SWIG_TypeError, "Value must be a string or integer.");
 		}
-		
+
 		int count = OGR_F_GetFieldCount(self);
-		
+
 		if (index < 0 || index > count) {
 			SWIG_exception(SWIG_IndexError, "Illegal field requested.");
 		}
@@ -146,7 +146,7 @@
 	  	result = Qnil;
 	  	return result;
 	  }
-	  
+
 	  // get field type
     OGRFieldType field_type = (OGRFieldType) OGR_Fld_GetType(OGR_F_GetFieldDefnRef( self, index));
 
@@ -160,9 +160,9 @@
 			case OFTIntegerList: {
 				int len = 0;
 				const int* list = OGR_F_GetFieldAsIntegerList(self, index, &len);
-				
+
 				result = rb_ary_new2(len);
-				
+
 		    for ( int i = 0; i < len; ++i, ++list ) {
 					VALUE item = INT2NUM(*list);
 		      rb_ary_store(result, item, i);
@@ -179,9 +179,9 @@
 			case OFTRealList: {
 				int len = 0;
 				const double* list = OGR_F_GetFieldAsDoubleList(self, index, &len);
-				
+
 				result = rb_ary_new2(len);
-				
+
 		    for ( int i = 0; i < len; ++i, ++list ) {
 					VALUE item = rb_float_new(*list);
 		      rb_ary_store(result, item, i);
@@ -198,9 +198,9 @@
 			case OFTStringList:
 /*				int len3 = 0;
 				const char** string_list = OGR_F_GetFieldAsStringList(self, index, &len);
-				
+
 				result = rb_ary_new2(len3);
-				
+
 		    for ( int i = 0; i < len; ++i, ++string_list ) {
 					VALUE item = rb_str_new2(*string_list);
 		      rb_ary_store(result, item, i);
@@ -210,9 +210,9 @@
 			default:
 				SWIG_exception(SWIG_TypeError, "Unsupported field type.");
 		}
-	
-		return result;		
-	}        
+
+		return result;
+	}
 }
 
 

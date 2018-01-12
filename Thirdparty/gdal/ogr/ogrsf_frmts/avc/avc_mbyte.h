@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: avc_mbyte.h,v 1.4 2008/07/23 20:51:38 dmorissette Exp $
+ * $Id: avc_mbyte.h 35903 2016-10-24 12:09:43Z goatbar $
  *
  * Name:     avc.h
  * Project:  Arc/Info Vector coverage (AVC) BIN<->E00 conversion library
@@ -16,16 +16,16 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************
  *
@@ -45,8 +45,8 @@
  *
  **********************************************************************/
 
-#ifndef _AVC_MBYTE_H_INCLUDED_
-#define _AVC_MBYTE_H_INCLUDED_
+#ifndef AVC_MBYTE_H_INCLUDED_
+#define AVC_MBYTE_H_INCLUDED_
 
 CPL_C_START
 
@@ -64,7 +64,6 @@ CPL_C_START
 #define AVC_CODE_JAP_SHIFTJIS   1
 #define AVC_CODE_JAP_EUC        2
 
-
 /*---------------------------------------------------------------------
  * We use the following structure to keep track of DBCS info.
  *--------------------------------------------------------------------*/
@@ -80,9 +79,9 @@ typedef struct AVCDBCSInfo_t
  * Functions prototypes
  *--------------------------------------------------------------------*/
 
-AVCDBCSInfo *AVCAllocDBCSInfo();
+AVCDBCSInfo *AVCAllocDBCSInfo(void);
 void AVCFreeDBCSInfo(AVCDBCSInfo *psInfo);
-int AVCGetDBCSCodePage();
+int AVCGetDBCSCodePage(void);
 GBool AVCE00DetectEncoding(AVCDBCSInfo *psDBCSInfo, const GByte *pszLine);
 const GByte *AVCE00Convert2ArcDBCS(AVCDBCSInfo *psDBCSInfo,
                                    const GByte *pszLine,
@@ -93,6 +92,4 @@ const GByte *AVCE00ConvertFromArcDBCS(AVCDBCSInfo *psDBCSInfo,
 
 CPL_C_END
 
-#endif /* _AVC_MBYTE_H_INCLUDED_ */
-
-
+#endif /* AVC_MBYTE_H_INCLUDED_ */

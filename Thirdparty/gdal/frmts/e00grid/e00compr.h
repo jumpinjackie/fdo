@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: e00compr.h,v 1.10 2009-02-24 20:03:50 aboudreault Exp $
+ * $Id: e00compr.h 35885 2016-10-24 06:23:09Z goatbar $
  *
  * Name:     e00compr.h
  * Project:  Compressed E00 Read/Write library
@@ -54,12 +54,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
+ *
  **********************************************************************/
 
-#ifndef _E00COMPR_H_INCLUDED_
-#define _E00COMPR_H_INCLUDED_
-
+#ifndef E00COMPR_H_INCLUDED_
+#define E00COMPR_H_INCLUDED_
 
 #include <stdio.h>
 
@@ -101,7 +100,7 @@ extern "C" {
 /*---------------------------------------------------------------------
  *                          E00ReadPtr
  *
- * A E00ReadPtr handle is used to hold information about the compressed 
+ * A E00ReadPtr handle is used to hold information about the compressed
  * file currently being read.
  *--------------------------------------------------------------------*/
 struct _E00ReadInfo
@@ -129,7 +128,7 @@ typedef struct _E00ReadInfo *E00ReadPtr;
 /*---------------------------------------------------------------------
  *                          E00WritePtr
  *
- * A E00WritePtr handle is used to hold information about the 
+ * A E00WritePtr handle is used to hold information about the
  * file currently being written.
  *--------------------------------------------------------------------*/
 struct _E00WriteInfo
@@ -152,7 +151,6 @@ struct _E00WriteInfo
 
 typedef struct _E00WriteInfo *E00WritePtr;
 
-
 /*=====================================================================
                         Function prototypes
  =====================================================================*/
@@ -173,9 +171,8 @@ E00WritePtr E00WriteCallbackOpen(void *pRefData,
 void        E00WriteClose(E00WritePtr psInfo);
 int         E00WriteNextLine(E00WritePtr psInfo, const char *pszLine);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _E00COMPR_H_INCLUDED_ */
+#endif /* E00COMPR_H_INCLUDED_ */

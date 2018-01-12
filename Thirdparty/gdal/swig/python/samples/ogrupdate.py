@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
-# $Id: ogrupdate.py 25346 2012-12-25 22:38:21Z rouault $
+# $Id: ogrupdate.py 33791 2016-03-26 12:51:23Z goatbar $
 #
 # Project:  GDAL/OGR samples
 # Purpose:  Update an existing datasource with features from another one
 # Author:   Even Rouault <even dot rouault at mines dash paris dot org>
 #
 ###############################################################################
-# Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+# Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -29,8 +29,10 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-from osgeo import ogr, gdal
 import sys
+
+from osgeo import gdal
+from osgeo import ogr
 
 DEFAULT = 0
 UPDATE_ONLY = 1
@@ -79,13 +81,9 @@ def ogrupdate_analyse_args(argv, progress = None, progress_arg = None):
     matchfieldname = None
 
     # in case there's no existing matching feature in the target datasource
-    # should we try to create a new feature ? 
-    update_only = False
-
-    # in case there's no existing matching feature in the target datasource
     # should we preserve the FID of the source feature that will be inserted ?
     preserve_fid = False
-    
+
     # whether we should compare all fields from the features that are found to
     # be matching before actually updating
     compare_before_update = False
@@ -95,7 +93,7 @@ def ogrupdate_analyse_args(argv, progress = None, progress_arg = None):
     quiet = False
 
     skip_failures = False
-    
+
     papszSelFields = None
 
     dry_run = False
@@ -289,7 +287,7 @@ def ogrupdate_process(src_layer, dst_layer, matchfieldname = None, update_mode =
         dst_idx = dst_layer_defn.GetFieldIndex(matchfieldname)
         if dst_idx < 0:
             print('Cannot find field to match in destination layer')
-            return 1 
+            return 1
         dst_type = dst_layer_defn.GetFieldDefn(dst_idx).GetType()
 
     if papszSelFields is not None:
@@ -343,7 +341,7 @@ def ogrupdate_process(src_layer, dst_layer, matchfieldname = None, update_mode =
                 if ret == 0:
                     inserted_count = inserted_count + 1
                 else:
-                    insert_failed = insert_failed + 1
+                    inserted_failed = inserted_failed + 1
 
             elif update_mode == APPEND_ONLY:
                 continue
@@ -403,7 +401,7 @@ def ogrupdate_process(src_layer, dst_layer, matchfieldname = None, update_mode =
                 if ret == 0:
                     inserted_count = inserted_count + 1
                 else:
-                    insert_failed = insert_failed + 1
+                    inserted_failed = inserted_failed + 1
 
             elif update_mode == APPEND_ONLY:
                 continue
@@ -437,7 +435,8 @@ def ogrupdate_process(src_layer, dst_layer, matchfieldname = None, update_mode =
         if ret != 0:
             if not skip_failures:
                 if gdal.GetLastErrorMsg() == '':
-                    print('An error occured during feature insertion/update. Interrupting processing.')
+                    print('An error occurred during feature insertion/update. '
+                          'Interrupting processing.')
                 ret = 1
                 break
             else:

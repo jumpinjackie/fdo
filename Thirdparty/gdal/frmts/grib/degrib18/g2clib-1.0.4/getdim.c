@@ -2,16 +2,13 @@
 #include <stdlib.h>
 #include "grib2.h"
 
-g2int g2_unpack3(unsigned char *,g2int *,g2int **,g2int **,
-                         g2int *,g2int **,g2int *);
-
 g2int getdim(unsigned char *csec3,g2int *width,g2int *height,g2int *iscan)
 //$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    getdim 
+// SUBPROGRAM:    getdim
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2002-12-11
 //
-// ABSTRACT: This subroutine returns the dimensions and scanning mode of 
+// ABSTRACT: This subroutine returns the dimensions and scanning mode of
 //   a grid definition packed in GRIB2 Grid Definition Section 3 format.
 //
 // PROGRAM HISTORY LOG:
@@ -22,7 +19,7 @@ g2int getdim(unsigned char *csec3,g2int *width,g2int *height,g2int *iscan)
 //   INPUT ARGUMENT LIST:
 //     csec3    - Character array that contains the packed GRIB2 GDS
 //
-//   OUTPUT ARGUMENT LIST:      
+//   OUTPUT ARGUMENT LIST:
 //     width    - x (or i) dimension of the grid.
 //     height   - y (or j) dimension of the grid.
 //     iscan    - Scanning mode ( see Code Table 3.4 )
@@ -36,7 +33,7 @@ g2int getdim(unsigned char *csec3,g2int *width,g2int *height,g2int *iscan)
 //
 //$$$
 {
-    
+
       g2int  *igdstmpl,*list_opt;
       g2int  *igds;
       g2int  iofst,igdtlen,num_opt,jerr;

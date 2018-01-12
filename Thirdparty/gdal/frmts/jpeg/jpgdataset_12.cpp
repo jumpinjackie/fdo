@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: jpgdataset_12.cpp 25458 2013-01-05 20:32:43Z rouault $
+ * $Id: jpgdataset_12.cpp 33720 2016-03-15 00:39:53Z goatbar $
  *
  * Project:  JPEG JFIF Driver
  * Purpose:  Implement GDAL JPEG Support based on IJG libjpeg.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2009, Even Rouault
+ * Copyright (c) 2009-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,15 +28,27 @@
  ****************************************************************************/
 
 #if defined(JPEG_DUAL_MODE_8_12)
-#define LIBJPEG_12_PATH   "libjpeg12/jpeglib.h" 
+
+#undef ENABLE_LIBJPEG_NO_RETURN
+
+#define LIBJPEG_12_PATH   "libjpeg12/jpeglib.h"
 #define JPGDataset        JPGDataset12
+#define GDALJPEGErrorStruct     GDALJPEGErrorStruct12
+#define jpeg_vsiio_src    jpeg_vsiio_src_12
+#define jpeg_vsiio_dest   jpeg_vsiio_dest_12
+
 #include "jpgdataset.cpp"
 
-GDALDataset* JPEGDataset12Open(const char* pszFilename,
-                               char** papszSiblingFiles,
-                               int nScaleFactor)
+GDALDataset* JPEGDataset12Open(JPGDatasetOpenArgs* psArgs);
+GDALDataset* JPEGDataset12CreateCopy( const char * pszFilename,
+                                    GDALDataset *poSrcDS,
+                                    int bStrict, char ** papszOptions,
+                                    GDALProgressFunc pfnProgress,
+                                    void * pProgressData );
+
+GDALDataset* JPEGDataset12Open(JPGDatasetOpenArgs* psArgs)
 {
-    return JPGDataset12::Open(pszFilename, papszSiblingFiles, nScaleFactor);
+    return JPGDataset12::Open(psArgs);
 }
 
 GDALDataset* JPEGDataset12CreateCopy( const char * pszFilename,

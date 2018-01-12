@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: assemblepoly.py 22986 2011-08-27 14:20:16Z rouault $
+# $Id: assemblepoly.py 33791 2016-03-26 12:51:23Z goatbar $
 #
 # Project:  OGR Python samples
 # Purpose:  Assemble polygon geometries from arcs fulled from an arc layer.
@@ -10,7 +10,7 @@
 #
 ###############################################################################
 # Copyright (c) 2003, Frank Warmerdam <warmerdam@pobox.com>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -30,14 +30,7 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import osr
-    from osgeo import ogr
-except ImportError:
-    import osr
-    import ogr
-
-import string
+from osgeo import ogr
 
 #############################################################################-
 # Open the datasource to operate on.
@@ -81,7 +74,7 @@ print('Got %d lines.' % len(lines_hash))
 
 
 #############################################################################
-# Read all polygon features. 
+# Read all polygon features.
 
 feat = poly_layer.GetNextFeature()
 link_field = feat.GetFieldIndex( 'GEOM_ID_OF_LINK' )
@@ -112,7 +105,7 @@ while feat is not None:
         print(poly.ExportToWkt())
         feat.SetGeometryDirectly( poly )
     except:
-        print('BuildPolygonFromEdges failed.') 
+        print('BuildPolygonFromEdges failed.')
 
 # For now we don't actually write back the assembled polygons.
 #    poly_layer.SetFeature( feat )

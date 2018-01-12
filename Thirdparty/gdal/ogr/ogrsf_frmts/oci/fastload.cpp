@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: fastload.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  Oracle Spatial Driver
  * Purpose:  Test mainline for fast loading.
@@ -30,12 +29,14 @@
 #include <stdio.h>
 #include "ogr_oci.h"
 
+CPL_CVSID("$Id: fastload.cpp 36456 2016-11-22 23:34:00Z rouault $");
+
 int main()
 
 {
     OGROCISession oSession;
 
-    if( !oSession.EstablishSession( "warmerda", "LetoKing", 
+    if( !oSession.EstablishSession( "warmerda", "LetoKing",
                                     "gdal800.dreadfest.com" ) )
     {
         exit( 1 );
@@ -46,18 +47,19 @@ int main()
     OGROCIStatement oStatement( &oSession );
 
     oStatement.Execute( "DROP TABLE fasttest" );
-    oStatement.Execute( "CREATE TABLE fasttest (ifld INTEGER, cfld VARCHAR(4000), shape mdsys.sdo_geometry)" );
+    oStatement.Execute( "CREATE TABLE fasttest (ifld INTEGER, "
+                        "cfld VARCHAR(4000), shape mdsys.sdo_geometry)" );
 //    oStatement.Execute( "CREATE TABLE fasttest (ifld INTEGER, cfld VARCHAR(4000))" );
 
 /* -------------------------------------------------------------------- */
 /*      Prepare insert statement.                                       */
 /* -------------------------------------------------------------------- */
-    
+
     oStatement.Prepare( "INSERT INTO fasttest VALUES "
                         "(:field_1, :field_2, :field_3)" );
 //    oStatement.Prepare( "INSERT INTO fasttest VALUES "
 //                        "(:field_1, :field_2)" );
-    
+
 /* -------------------------------------------------------------------- */
 /*      Do a conventional bind.                                         */
 /* -------------------------------------------------------------------- */
@@ -71,21 +73,21 @@ int main()
     SDO_GEOMETRY_ind   aoGeometryIndicators[100];
     SDO_GEOMETRY_TYPE *apoGeomMap[100];
     SDO_GEOMETRY_ind  *apoGeomIndMap[100];
-    double adfX[100], adfY[100];
+    //double adfX[100], adfY[100];
 
     memset( aphElemInfos, 0, sizeof(OCIArray*) * 100 );
     memset( aphOrdinates, 0, sizeof(OCIArray*) * 100 );
     memset( aoGeometries, 0, sizeof(SDO_GEOMETRY) * 100 );
     memset( aoGeometryIndicators, 0, sizeof(SDO_GEOMETRY_ind) * 100 );
 
-    if( oStatement.BindScalar( ":field_1", anField1, 
+    if( oStatement.BindScalar( ":field_1", anField1,
                               sizeof(int), SQLT_INT ) != CE_None )
         exit( 1 );
-    
+
     if( oStatement.BindScalar( ":field_2", szField2, 4, SQLT_STR ) != CE_None )
         exit( 1 );
 
-    if( oStatement.BindObject( ":field_3", apoGeomMap, oSession.hGeometryTDO, 
+    if( oStatement.BindObject( ":field_3", apoGeomMap, oSession.hGeometryTDO,
                                (void**)apoGeomIndMap ) != CE_None )
         exit( 1 );
 
@@ -96,18 +98,18 @@ int main()
     for( iBindRow = 0; iBindRow < 100; iBindRow++ )
     {
         if( oSession.Failed(
-                OCIObjectNew( oSession.hEnv, oSession.hError, 
+                OCIObjectNew( oSession.hEnv, oSession.hError,
                               oSession.hSvcCtx, OCI_TYPECODE_VARRAY,
-                              oSession.hElemInfoTDO, (dvoid *)NULL, 
+                              oSession.hElemInfoTDO, (dvoid *)NULL,
                               OCI_DURATION_SESSION,
                               FALSE, (dvoid **) (aphElemInfos + iBindRow)),
                 "OCIObjectNew()") )
             exit( 1 );
 
         if( oSession.Failed(
-                OCIObjectNew( oSession.hEnv, oSession.hError, 
+                OCIObjectNew( oSession.hEnv, oSession.hError,
                               oSession.hSvcCtx, OCI_TYPECODE_VARRAY,
-                              oSession.hOrdinatesTDO, (dvoid *)NULL, 
+                              oSession.hOrdinatesTDO, (dvoid *)NULL,
                               OCI_DURATION_SESSION,
                               FALSE, (dvoid **) (aphOrdinates + iBindRow)),
                 "OCIObjectNew()") )
@@ -121,28 +123,29 @@ int main()
 
     for( iRow = 0; iRow < 100; iRow++ )
     {
-        anField1[iRow] = iRow;                                         
+        // cppcheck-suppress unreadVariable
+        anField1[iRow] = iRow;
         sprintf( szField2 + iRow*4, "%3d", iRow );
         anGType[iRow] = 3001;
         anSRID[iRow] = -1;
-        adfX[iRow] = 100.0 + iRow;
-        adfY[iRow] = 100.0 - iRow;
+        //adfX[iRow] = 100.0 + iRow;
+        //adfY[iRow] = 100.0 - iRow;
 
         //---------------------------------------------------------------
         int anElemInfo[3], nElemInfoCount;
-        OCINumber oci_number; 
+        OCINumber oci_number;
         int i;
-        
+
         nElemInfoCount = 3;
         anElemInfo[0] = 1;
         anElemInfo[1] = 1;
         anElemInfo[2] = 1;
 
-        // Prepare the VARRAY of ordinate values. 
+        // Prepare the VARRAY of ordinate values.
         for (i = 0; i < nElemInfoCount; i++)
         {
-            if( oSession.Failed( 
-                OCINumberFromInt( oSession.hError, 
+            if( oSession.Failed(
+                OCINumberFromInt( oSession.hError,
                                   (dvoid *) (anElemInfo + i),
                                   (uword)sizeof(int),
                                   OCI_NUMBER_SIGNED,
@@ -150,7 +153,7 @@ int main()
                 "OCINumberFromInt") )
                 exit( 1 );
 
-            if( oSession.Failed( 
+            if( oSession.Failed(
                 OCICollAppend( oSession.hEnv, oSession.hError,
                                (dvoid *) &oci_number,
                                (dvoid *)0, aphElemInfos[iRow]),
@@ -170,18 +173,18 @@ int main()
         adfOrdinates[4] = iRow - 100;
         adfOrdinates[5] = 0.0;
 
-        // Prepare the VARRAY of ordinate values. 
+        // Prepare the VARRAY of ordinate values.
         for (i = 0; i < nOrdCount; i++)
         {
-            if( oSession.Failed( 
-                OCINumberFromReal( oSession.hError, 
+            if( oSession.Failed(
+                OCINumberFromReal( oSession.hError,
                                   (dvoid *) (adfOrdinates + i),
                                   (uword)sizeof(double),
                                   &oci_number),
                 "OCINumberFromReal") )
                 exit( 1 );
 
-            if( oSession.Failed( 
+            if( oSession.Failed(
                 OCICollAppend( oSession.hEnv, oSession.hError,
                                (dvoid *) &oci_number,
                                (dvoid *)0, aphOrdinates[iRow]),
@@ -195,8 +198,8 @@ int main()
 
         poInd->sdo_point._atomic = OCI_IND_NULL;
 
-        if( oSession.Failed( 
-                OCINumberFromInt( oSession.hError, 
+        if( oSession.Failed(
+                OCINumberFromInt( oSession.hError,
                                   (dvoid *) (anGType + iRow),
                                   (uword)sizeof(int),
                                   OCI_NUMBER_SIGNED,
@@ -204,8 +207,8 @@ int main()
                 "OCINumberFromInt" ) )
             exit( 1 );
 
-        if( oSession.Failed( 
-                OCINumberFromInt( oSession.hError, 
+        if( oSession.Failed(
+                OCINumberFromInt( oSession.hError,
                                   (dvoid *) (anSRID + iRow),
                                   (uword)sizeof(int),
                                   OCI_NUMBER_SIGNED,
@@ -227,10 +230,10 @@ int main()
 
     for( iGroup = 0; iGroup < 2; iGroup++ )
     {
-        if( oSession.Failed( 
-                OCIStmtExecute( oSession.hSvcCtx, oStatement.GetStatement(), 
-                                oSession.hError, (ub4) 100, (ub4)0, 
-                                (OCISnapshot *)NULL, (OCISnapshot *)NULL, 
+        if( oSession.Failed(
+                OCIStmtExecute( oSession.hSvcCtx, oStatement.GetStatement(),
+                                oSession.hError, (ub4) 100, (ub4)0,
+                                (OCISnapshot *)NULL, (OCISnapshot *)NULL,
                                 (ub4) OCI_COMMIT_ON_SUCCESS ),
                 "OCIStmtExecute" ) )
             exit( 1 );

@@ -1,4 +1,4 @@
-/* $Id: tif_read.c,v 1.41 2012-07-06 19:22:58 bfriesen Exp $ */
+/* $Id: tif_read.c,v 1.53 2017-01-11 19:02:49 erouault Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -31,6 +31,9 @@
 #include "tiffiop.h"
 #include <stdio.h>
 
+#define TIFF_SIZE_T_MAX ((size_t) ~ ((size_t)0))
+#define TIFF_TMSIZE_T_MAX (tmsize_t)(TIFF_SIZE_T_MAX >> 1)
+
 int TIFFFillStrip(TIFF* tif, uint32 strip);
 int TIFFFillTile(TIFF* tif, uint32 tile);
 static int TIFFStartStrip(TIFF* tif, uint32 strip);
@@ -38,6 +41,8 @@ static int TIFFStartTile(TIFF* tif, uint32 tile);
 static int TIFFCheckRead(TIFF*, int);
 static tmsize_t
 TIFFReadRawStrip1(TIFF* tif, uint32 strip, void* buf, tmsize_t size,const char* module);
+static tmsize_t
+TIFFReadRawTile1(TIFF* tif, uint32 tile, void* buf, tmsize_t size, const char* module);
 
 #define NOSTRIP ((uint32)(-1))       /* undefined state */
 #define NOTILE ((uint32)(-1))         /* undefined state */
@@ -47,7 +52,7 @@ TIFFFillStripPartial( TIFF *tif, int strip, tmsize_t read_ahead, int restart )
 {
 	static const char module[] = "TIFFFillStripPartial";
 	register TIFFDirectory *td = &tif->tif_dir;
-        uint64 unused_data;
+        tmsize_t unused_data;
         uint64 read_offset;
         tmsize_t cc, to_read;
         /* tmsize_t bytecountm; */
@@ -117,7 +122,7 @@ TIFFFillStripPartial( TIFF *tif, int strip, tmsize_t read_ahead, int restart )
         if( (uint64) to_read > td->td_stripbytecount[strip] 
             - tif->tif_rawdataoff - tif->tif_rawdataloaded )
         {
-                to_read = td->td_stripbytecount[strip]
+                to_read = (tmsize_t) td->td_stripbytecount[strip]
                         - tif->tif_rawdataoff - tif->tif_rawdataloaded;
         }
 
@@ -341,15 +346,33 @@ TIFFReadEncodedStrip(TIFF* tif, uint32 strip, void* buf, tmsize_t size)
 	rowsperstrip=td->td_rowsperstrip;
 	if (rowsperstrip>td->td_imagelength)
 		rowsperstrip=td->td_imagelength;
-	stripsperplane=((td->td_imagelength+rowsperstrip-1)/rowsperstrip);
+	stripsperplane= TIFFhowmany_32_maxuint_compat(td->td_imagelength, rowsperstrip);
 	stripinplane=(strip%stripsperplane);
-	plane=(strip/stripsperplane);
+	plane=(uint16)(strip/stripsperplane);
 	rows=td->td_imagelength-stripinplane*rowsperstrip;
 	if (rows>rowsperstrip)
 		rows=rowsperstrip;
 	stripsize=TIFFVStripSize(tif,rows);
 	if (stripsize==0)
 		return((tmsize_t)(-1));
+
+    /* shortcut to avoid an extra memcpy() */
+    if( td->td_compression == COMPRESSION_NONE &&
+        size!=(tmsize_t)(-1) && size >= stripsize &&
+        !isMapped(tif) &&
+        ((tif->tif_flags&TIFF_NOREADRAW)==0) )
+    {
+        if (TIFFReadRawStrip1(tif, strip, buf, stripsize, module) != stripsize)
+            return ((tmsize_t)(-1));
+
+        if (!isFillOrder(tif, td->td_fillorder) &&
+            (tif->tif_flags & TIFF_NOBITREV) == 0)
+            TIFFReverseBits(buf,stripsize);
+
+        (*tif->tif_postdecode)(tif,buf,stripsize);
+        return (stripsize);
+    }
+
 	if ((size!=(tmsize_t)(-1))&&(size<stripsize))
 		stripsize=size;
 	if (!TIFFFillStrip(tif,strip))
@@ -397,16 +420,25 @@ TIFFReadRawStrip1(TIFF* tif, uint32 strip, void* buf, tmsize_t size,
 			return ((tmsize_t)(-1));
 		}
 	} else {
-		tmsize_t ma,mb;
+		tmsize_t ma = 0;
 		tmsize_t n;
-		ma=(tmsize_t)td->td_stripoffset[strip];
-		mb=ma+size;
-		if (((uint64)ma!=td->td_stripoffset[strip])||(ma>tif->tif_size))
-			n=0;
-		else if ((mb<ma)||(mb<size)||(mb>tif->tif_size))
-			n=tif->tif_size-ma;
-		else
-			n=size;
+		if ((td->td_stripoffset[strip] > (uint64)TIFF_TMSIZE_T_MAX)||
+                    ((ma=(tmsize_t)td->td_stripoffset[strip])>tif->tif_size))
+                {
+                    n=0;
+                }
+                else if( ma > TIFF_TMSIZE_T_MAX - size )
+                {
+                    n=0;
+                }
+                else
+                {
+                    tmsize_t mb=ma+size;
+                    if (mb>tif->tif_size)
+                            n=tif->tif_size-ma;
+                    else
+                            n=size;
+                }
 		if (n!=size) {
 #if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 			TIFFErrorExt(tif->tif_clientdata, module,
@@ -458,7 +490,7 @@ TIFFReadRawStrip(TIFF* tif, uint32 strip, void* buf, tmsize_t size)
 		return ((tmsize_t)(-1));
 	}
 	bytecount = td->td_stripbytecount[strip];
-	if (bytecount <= 0) {
+	if ((int64)bytecount <= 0) {
 #if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 		TIFFErrorExt(tif->tif_clientdata, module,
 			     "%I64u: Invalid strip byte count, strip %lu",
@@ -492,13 +524,13 @@ TIFFFillStrip(TIFF* tif, uint32 strip)
 	static const char module[] = "TIFFFillStrip";
 	TIFFDirectory *td = &tif->tif_dir;
 
-    if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
-        return 0;
-        
+        if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
+            return 0;
+
 	if ((tif->tif_flags&TIFF_NOREADRAW)==0)
 	{
 		uint64 bytecount = td->td_stripbytecount[strip];
-		if (bytecount <= 0) {
+		if ((int64)bytecount <= 0) {
 #if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 			TIFFErrorExt(tif->tif_clientdata, module,
 				"Invalid strip byte count %I64u, strip %lu",
@@ -661,6 +693,24 @@ TIFFReadEncodedTile(TIFF* tif, uint32 tile, void* buf, tmsize_t size)
 		    (unsigned long) tile, (unsigned long) td->td_nstrips);
 		return ((tmsize_t)(-1));
 	}
+
+    /* shortcut to avoid an extra memcpy() */
+    if( td->td_compression == COMPRESSION_NONE &&
+        size!=(tmsize_t)(-1) && size >= tilesize &&
+        !isMapped(tif) &&
+        ((tif->tif_flags&TIFF_NOREADRAW)==0) )
+    {
+        if (TIFFReadRawTile1(tif, tile, buf, tilesize, module) != tilesize)
+            return ((tmsize_t)(-1));
+
+        if (!isFillOrder(tif, td->td_fillorder) &&
+            (tif->tif_flags & TIFF_NOBITREV) == 0)
+            TIFFReverseBits(buf,tilesize);
+
+        (*tif->tif_postdecode)(tif,buf,tilesize);
+        return (tilesize);
+    }
+
 	if (size == (tmsize_t)(-1))
 		size = tilesize;
 	else if (size > tilesize)
@@ -717,7 +767,7 @@ TIFFReadRawTile1(TIFF* tif, uint32 tile, void* buf, tmsize_t size, const char* m
 		tmsize_t n;
 		ma=(tmsize_t)td->td_stripoffset[tile];
 		mb=ma+size;
-		if (((uint64)ma!=td->td_stripoffset[tile])||(ma>tif->tif_size))
+		if ((td->td_stripoffset[tile] > (uint64)TIFF_TMSIZE_T_MAX)||(ma>tif->tif_size))
 			n=0;
 		else if ((mb<ma)||(mb<size)||(mb>tif->tif_size))
 			n=tif->tif_size-ma;
@@ -795,13 +845,13 @@ TIFFFillTile(TIFF* tif, uint32 tile)
 	static const char module[] = "TIFFFillTile";
 	TIFFDirectory *td = &tif->tif_dir;
 
-    if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
-        return 0;
-        
+        if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
+            return 0;
+
 	if ((tif->tif_flags&TIFF_NOREADRAW)==0)
 	{
 		uint64 bytecount = td->td_stripbytecount[tile];
-		if (bytecount <= 0) {
+		if ((int64)bytecount <= 0) {
 #if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 			TIFFErrorExt(tif->tif_clientdata, module,
 				"%I64u: Invalid tile byte count, tile %lu",
@@ -930,9 +980,14 @@ TIFFReadBufferSetup(TIFF* tif, void* bp, tmsize_t size)
 		tif->tif_flags &= ~TIFF_MYBUFFER;
 	} else {
 		tif->tif_rawdatasize = (tmsize_t)TIFFroundup_64((uint64)size, 1024);
-		if (tif->tif_rawdatasize==0)
-			tif->tif_rawdatasize=(tmsize_t)(-1);
-		tif->tif_rawdata = (uint8*) _TIFFmalloc(tif->tif_rawdatasize);
+		if (tif->tif_rawdatasize==0) {
+		    TIFFErrorExt(tif->tif_clientdata, module,
+				 "Invalid buffer size");
+		    return (0);
+		}
+		/* Initialize to zero to avoid uninitialized buffers in case of */
+                /* short reads (http://bugzilla.maptools.org/show_bug.cgi?id=2651) */
+		tif->tif_rawdata = (uint8*) _TIFFcalloc(1, tif->tif_rawdatasize);
 		tif->tif_flags |= TIFF_MYBUFFER;
 	}
 	if (tif->tif_rawdata == NULL) {
@@ -954,8 +1009,8 @@ TIFFStartStrip(TIFF* tif, uint32 strip)
 {
 	TIFFDirectory *td = &tif->tif_dir;
 
-    if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
-        return 0;
+        if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
+            return 0;
 
 	if ((tif->tif_flags & TIFF_CODERSETUP) == 0) {
 		if (!(*tif->tif_setupdecode)(tif))
@@ -987,10 +1042,12 @@ TIFFStartStrip(TIFF* tif, uint32 strip)
 static int
 TIFFStartTile(TIFF* tif, uint32 tile)
 {
+        static const char module[] = "TIFFStartTile";
 	TIFFDirectory *td = &tif->tif_dir;
+        uint32 howmany32;
 
-    if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
-        return 0;
+        if (!_TIFFFillStriles( tif ) || !tif->tif_dir.td_stripbytecount)
+                return 0;
 
 	if ((tif->tif_flags & TIFF_CODERSETUP) == 0) {
 		if (!(*tif->tif_setupdecode)(tif))
@@ -998,12 +1055,18 @@ TIFFStartTile(TIFF* tif, uint32 tile)
 		tif->tif_flags |= TIFF_CODERSETUP;
 	}
 	tif->tif_curtile = tile;
-	tif->tif_row =
-	    (tile % TIFFhowmany_32(td->td_imagewidth, td->td_tilewidth)) *
-		td->td_tilelength;
-	tif->tif_col =
-	    (tile % TIFFhowmany_32(td->td_imagelength, td->td_tilelength)) *
-		td->td_tilewidth;
+        howmany32=TIFFhowmany_32(td->td_imagewidth, td->td_tilewidth);
+        if (howmany32 == 0) {
+                 TIFFErrorExt(tif->tif_clientdata,module,"Zero tiles");
+                return 0;
+        }
+	tif->tif_row = (tile % howmany32) * td->td_tilelength;
+        howmany32=TIFFhowmany_32(td->td_imagelength, td->td_tilelength);
+        if (howmany32 == 0) {
+                TIFFErrorExt(tif->tif_clientdata,module,"Zero tiles");
+                return 0;
+        }
+	tif->tif_col = (tile % howmany32) * td->td_tilewidth;
         tif->tif_flags &= ~TIFF_BUF4WRITE;
 	if (tif->tif_flags&TIFF_NOREADRAW)
 	{

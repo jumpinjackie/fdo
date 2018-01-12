@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
-#define __INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
+#ifndef INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
+#define INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
 
 #include "pcidsk_gcp.h"
 #include "pcidsk_gcpsegment.h"
@@ -40,17 +40,17 @@ namespace PCIDSK {
         ~CPCIDSKGCP2Segment();
 
         // Return all GCPs in the segment
-        std::vector<PCIDSK::GCP> const& GetGCPs(void) const;
+        std::vector<PCIDSK::GCP> const& GetGCPs(void) const override;
         
         // Write the given GCPs to the segment. If the segment already
         // exists, it will be replaced with this one.
-        void SetGCPs(std::vector<PCIDSK::GCP> const& gcps);
+        void SetGCPs(std::vector<PCIDSK::GCP> const& gcps) override;
         
         // Return the count of GCPs in the segment
-        unsigned int GetGCPCount(void) const;
+        unsigned int GetGCPCount(void) const override;
         
         // Clear a GCP Segment
-        void ClearGCPs(void);
+        void ClearGCPs(void) override;
     private:
         void Load();
         void RebuildSegmentData(void);
@@ -60,5 +60,5 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
+#endif // INCLUDE_SEGMENT_CPCIDSKGCP2SEGMENT_H
 

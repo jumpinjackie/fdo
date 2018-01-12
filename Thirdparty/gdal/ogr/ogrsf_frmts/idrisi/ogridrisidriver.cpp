@@ -6,7 +6,7 @@
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,23 +27,19 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_idrisi.h"
 #include "cpl_conv.h"
+#include "ogr_idrisi.h"
+#include "ogrsf_frmts.h"
 
-CPL_CVSID("$Id: ogridrisidriver.cpp 23040 2011-09-04 14:42:12Z rouault $");
+CPL_CVSID("$Id: ogridrisidriver.cpp 34996 2016-08-09 02:25:28Z goatbar $");
 
 // g++ ogr/ogrsf_frmts/idrisi/*.cpp -Wall -g -fPIC -shared -o ogr_Idrisi.so -Iport -Igcore -Iogr -Iogr/ogrsf_frmts/idrisi -Iogr/ogrsf_frmts -Ifrmts/idrisi
-
-extern "C" void RegisterOGRIdrisi();
 
 /************************************************************************/
 /*                       ~OGRIdrisiDriver()                         */
 /************************************************************************/
 
-OGRIdrisiDriver::~OGRIdrisiDriver()
-
-{
-}
+OGRIdrisiDriver::~OGRIdrisiDriver() {}
 
 /************************************************************************/
 /*                              GetName()                               */
@@ -62,9 +58,20 @@ const char *OGRIdrisiDriver::GetName()
 OGRDataSource *OGRIdrisiDriver::Open( const char * pszFilename, int bUpdate )
 
 {
-    OGRIdrisiDataSource   *poDS = new OGRIdrisiDataSource();
+    if (bUpdate)
+    {
+        return NULL;
+    }
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+// --------------------------------------------------------------------
+//      Does this appear to be a .vct file?
+// --------------------------------------------------------------------
+    if ( !EQUAL(CPLGetExtension(pszFilename), "vct") )
+        return NULL;
+
+    OGRIdrisiDataSource *poDS = new OGRIdrisiDataSource();
+
+    if( !poDS->Open( pszFilename ) )
     {
         delete poDS;
         poDS = NULL;
@@ -77,8 +84,7 @@ OGRDataSource *OGRIdrisiDriver::Open( const char * pszFilename, int bUpdate )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRIdrisiDriver::TestCapability( const char * pszCap )
-
+int OGRIdrisiDriver::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
@@ -90,6 +96,12 @@ int OGRIdrisiDriver::TestCapability( const char * pszCap )
 void RegisterOGRIdrisi()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRIdrisiDriver );
-}
+    if( GDALGetDriverByName( "Idrisi" ) != NULL )
+        return;
 
+    OGRSFDriver* poDriver = new OGRIdrisiDriver;
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Idrisi Vector (.vct)" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "vct" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver(poDriver);
+}

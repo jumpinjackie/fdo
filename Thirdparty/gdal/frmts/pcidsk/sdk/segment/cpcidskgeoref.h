@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_SEGMENT_PCIDSKGEOREF_H
-#define __INCLUDE_SEGMENT_PCIDSKGEOREF_H
+#ifndef INCLUDE_SEGMENT_PCIDSKGEOREF_H
+#define INCLUDE_SEGMENT_PCIDSKGEOREF_H
 
 #include "pcidsk_config.h"
 #include "pcidsk_types.h"
@@ -53,20 +53,20 @@ namespace PCIDSK
 
         // PCIDSKSegment 
 
-        void        Initialize();
+        void        Initialize() override;
 
         // PCIDSKGeoref
 
         void        GetTransform( double &a1, double &a2, double &xrot, 
-                                  double &b1, double &yrot, double &b3 );
-        std::string GetGeosys();
+                                  double &b1, double &yrot, double &b3 ) override;
+        std::string GetGeosys() override;
 
-        std::vector<double> GetParameters();
+        std::vector<double> GetParameters() override;
 
         void        WriteSimple( std::string const& geosys, 
                                  double a1, double a2, double xrot, 
-                                 double b1, double yrot, double b3 );
-        void        WriteParameters( std::vector<double> const& parameters );
+                                 double b1, double yrot, double b3 ) override;
+        void        WriteParameters( std::vector<double> const& parameters ) override;
 
         // special interface just for testing.
         std::vector<double> GetUSGSParameters();
@@ -85,4 +85,4 @@ namespace PCIDSK
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_SEGMENT_PCIDSKGEOREF_H
+#endif // INCLUDE_SEGMENT_PCIDSKGEOREF_H

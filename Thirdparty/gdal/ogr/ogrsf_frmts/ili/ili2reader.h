@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ili2reader.h 13906 2008-03-01 13:08:28Z rouault $
+ * $Id: ili2reader.h 35911 2016-10-24 15:03:26Z goatbar $
  *
  * Project:  Interlis 2 Reader
  * Purpose:  Public Declarations for Reader code.
@@ -14,21 +14,21 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _CPL_ILI2READER_H_INCLUDED
-#define _CPL_ILI2READER_H_INCLUDED
+#ifndef CPL_ILI2READER_H_INCLUDED
+#define CPL_ILI2READER_H_INCLUDED
 
 // This works around problems with math.h on some platforms #defining INFINITY
 #ifdef INFINITY
@@ -36,8 +36,8 @@
 #define INFINITY INFINITY_XERCES
 #endif
 
+#include "imdreader.h"
 #include <list>
-
 
 class CPL_DLL IILI2Reader
 {
@@ -45,12 +45,12 @@ public:
     virtual     ~IILI2Reader();
 
     virtual void SetSourceFile( const char *pszFilename ) = 0;
-    virtual int  ReadModel( char **modelFilenames ) = 0;
+
+    virtual int  ReadModel( ImdReader *poImdReader, const char *modelFilename ) = 0;
     virtual int  SaveClasses( const char *pszFilename ) = 0;
-    
+
     virtual std::list<OGRLayer *> GetLayers() = 0;
     virtual int GetLayerCount() = 0;
-    virtual void SetArcDegrees(double newArcDegrees) = 0;
 };
 
 IILI2Reader *CreateILI2Reader();

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: histrep.py 18195 2009-12-06 20:24:39Z rouault $
+# $Id: histrep.py 33791 2016-03-26 12:51:23Z goatbar $
 #
 # Project:  GDAL Python Samples
 # Purpose:  Report histogram from file.
@@ -8,7 +8,8 @@
 #
 ###############################################################################
 # Copyright (c) 2005, Frank Warmerdam, warmerdam@pobox.com
-# 
+# Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -28,12 +29,9 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
-
 import sys
+
+from osgeo import gdal
 
 # =============================================================================
 def Usage():
@@ -79,7 +77,7 @@ if __name__ == '__main__':
 
         else:
             Usage()
-            
+
         i = i + 1
 
     if file is None:
@@ -94,12 +92,12 @@ if __name__ == '__main__':
         if hist is None:
             print('No default histogram.')
         else:
-            print('Default Histogram:') 
+            print('Default Histogram:')
             print('Min: ', hist[0])
             print('Max: ', hist[1])
             print('Buckets: ', hist[2])
             print('Histogram: ', hist[3])
-        
+
     else:
         hist = ds.GetRasterBand(1).GetHistogram( req[0], req[1], req[2],
                                                 ioor, approxok )

@@ -37,19 +37,19 @@ void GTIFDirectoryInfo(GTIF *gtif, int version[3], int *keycount)
 
 int GTIFKeyInfo(GTIF *gtif, geokey_t key, int *size, tagtype_t* type)
 {
-        int index = gtif->gt_keyindex[ key ];
+        int nIndex = gtif->gt_keyindex[ key ];
         GeoKey *keyptr;
 
-        if (!index) return 0;
+        if (!nIndex) return 0;
 
-        keyptr = gtif->gt_keys + index;
+        keyptr = gtif->gt_keys + nIndex;
         if (size) *size = (int) keyptr->gk_size;
         if (type) *type = keyptr->gk_type;
 
-        return keyptr->gk_count;
+        return (int)keyptr->gk_count;
 }
 
-/** 
+/**
 
 This function reads the value of a single GeoKey from a GeoTIFF file.
 
@@ -68,12 +68,12 @@ that pointer's to <i>int</i> should never be passed to GTIFKeyGet() for
 integer values as they will be shorts, and the int's may not be properly
 initialized (and will be grossly wrong on MSB systems).
 
-@param index Indicates how far into the list of values
+@param nIndex Indicates how far into the list of values
 for this geokey to offset. Should normally be zero.
 
 @param count Indicates how many values
 to read.  At this time all keys except for strings have only one value,
-so <b>index</b> should be zero, and <b>count</b> should be one.
+so <b>nIndex</b> should be zero, and <b>count</b> should be one.
 
 @return The GTIFKeyGet() function returns the number of values read.  Normally
 this would be one if successful or zero if the key doesn't exist for this
@@ -138,8 +138,8 @@ ValuePair(  ProjScaleAtCenterGeoKey,	3093)     -- ratio   --
 ValuePair(  ProjAzimuthAngleGeoKey,	3094)     -- GeogAzimuthUnit --
 ValuePair(  ProjStraightVertPoleLongGeoKey,	3095)     -- GeogAngularUnit --
 
- 6.2.4 Vertical CS Keys 
-   
+ 6.2.4 Vertical CS Keys
+
 ValuePair(  VerticalCSTypeGeoKey,	4096)  -- Section 6.3.4.1 codes   --
 ValuePair(  VerticalCitationGeoKey,	4097)  -- documentation --
 ValuePair(  VerticalDatumGeoKey,	4098)  -- Section 6.3.4.2 codes   --
@@ -147,7 +147,7 @@ ValuePair(  VerticalUnitsGeoKey,	4099)  -- Section 6.3.1 (.x) codes   --
 </pre>
 */
 
-int GTIFKeyGet(GTIF *gtif, geokey_t thekey, void *val, int index, int count)
+int GTIFKeyGet(GTIF *gtif, geokey_t thekey, void *val, int nIndex, int count)
 {
         int kindex = gtif->gt_keyindex[ thekey ];
         GeoKey *key;
@@ -158,16 +158,16 @@ int GTIFKeyGet(GTIF *gtif, geokey_t thekey, void *val, int index, int count)
         if (!kindex) return 0;
 
         key = gtif->gt_keys+kindex;
-        if (!count) count = key->gk_count - index;
+        if (!count) count = (int) (key->gk_count - nIndex);
         if (count <=0) return 0;
-        if (count > key->gk_count) count = key->gk_count;
+        if (count > key->gk_count) count = (int) key->gk_count;
         size = key->gk_size;
         type = key->gk_type;
 
         if (count==1 && type==TYPE_SHORT) data = (char *)&key->gk_data;
         else data = key->gk_data;
 
-        _GTIFmemcpy( val, data + index*size, count*size );
+        _GTIFmemcpy( val, data + nIndex*size, count*size );
 
         if (type==TYPE_ASCII)
            ((char *)val)[count-1] = '\0'; /* replace last char with NULL */

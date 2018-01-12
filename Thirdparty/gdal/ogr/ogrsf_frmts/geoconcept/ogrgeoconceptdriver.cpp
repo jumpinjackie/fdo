@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrgeoconceptdriver.cpp 
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRGeoconceptDriver class.
@@ -28,21 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogrgeoconceptdatasource.h"
-#include "ogrgeoconceptdriver.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogrgeoconceptdatasource.h"
+#include "ogrgeoconceptdriver.h"
 
-CPL_CVSID("$Id: ogrgeoconceptdriver.cpp 00000 2007-11-03 10:42:48Z drichard $");
+CPL_CVSID("$Id: ogrgeoconceptdriver.cpp 35910 2016-10-24 14:08:24Z goatbar $");
 
 /************************************************************************/
 /*                          ~OGRGeoconceptDriver()                      */
 /************************************************************************/
 
-OGRGeoconceptDriver::~OGRGeoconceptDriver()
-
-{
-}
+OGRGeoconceptDriver::~OGRGeoconceptDriver() {}
 
 /************************************************************************/
 /*                              GetName()                               */
@@ -62,11 +58,18 @@ OGRDataSource *OGRGeoconceptDriver::Open( const char* pszFilename,
                                           int bUpdate )
 
 {
-    OGRGeoconceptDataSource  *poDS;
+/* -------------------------------------------------------------------- */
+/*      We will only consider .gxt and .txt files.                      */
+/* -------------------------------------------------------------------- */
+    const char* pszExtension = CPLGetExtension(pszFilename);
+    if( !EQUAL(pszExtension,"gxt") && !EQUAL(pszExtension,"txt") )
+    {
+        return NULL;
+    }
 
-    poDS = new OGRGeoconceptDataSource();
+    OGRGeoconceptDataSource  *poDS = new OGRGeoconceptDataSource();
 
-    if( !poDS->Open( pszFilename, TRUE, bUpdate ) )
+    if( !poDS->Open( pszFilename, true, CPL_TO_BOOL(bUpdate) ) )
     {
         delete poDS;
         return NULL;
@@ -86,7 +89,7 @@ OGRDataSource *OGRGeoconceptDriver::CreateDataSource( const char* pszName,
 
 {
     VSIStatBuf  stat;
-    int         bSingleNewFile = FALSE;
+    /* int bSingleNewFile = FALSE; */
 
     if( pszName==NULL || strlen(pszName)==0 )
     {
@@ -118,7 +121,7 @@ OGRDataSource *OGRGeoconceptDriver::CreateDataSource( const char* pszName,
              EQUAL(CPLGetExtension(pszName),"txt")
            )
     {
-        bSingleNewFile = TRUE;
+        /* bSingleNewFile = TRUE; */
     }
 
 /* -------------------------------------------------------------------- */
@@ -141,9 +144,7 @@ OGRDataSource *OGRGeoconceptDriver::CreateDataSource( const char* pszName,
 /* -------------------------------------------------------------------- */
 /*      Return a new OGRDataSource()                                    */
 /* -------------------------------------------------------------------- */
-    OGRGeoconceptDataSource  *poDS = NULL;
-
-    poDS = new OGRGeoconceptDataSource();
+    OGRGeoconceptDataSource  *poDS = new OGRGeoconceptDataSource();
     if( !poDS->Create( pszName, papszOptions ) )
     {
         delete poDS;
@@ -159,9 +160,8 @@ OGRDataSource *OGRGeoconceptDriver::CreateDataSource( const char* pszName,
 OGRErr OGRGeoconceptDriver::DeleteDataSource( const char *pszDataSource )
 
 {
-    int iExt;
     VSIStatBuf sStatBuf;
-    static const char *apszExtensions[] = 
+    static const char * const apszExtensions[] =
         { "gxt", "txt", "gct", "gcm", "gcr", NULL };
 
     if( VSIStat( pszDataSource, &sStatBuf ) != 0 )
@@ -173,13 +173,13 @@ OGRErr OGRGeoconceptDriver::DeleteDataSource( const char *pszDataSource )
         return OGRERR_FAILURE;
     }
 
-    if( VSI_ISREG(sStatBuf.st_mode) 
+    if( VSI_ISREG(sStatBuf.st_mode)
         && (
             EQUAL(CPLGetExtension(pszDataSource),"gxt") ||
             EQUAL(CPLGetExtension(pszDataSource),"txt")
            ) )
     {
-        for( iExt=0; apszExtensions[iExt] != NULL; iExt++ )
+        for( int iExt=0; apszExtensions[iExt] != NULL; iExt++ )
         {
             const char *pszFile = CPLResetExtension(pszDataSource,
                                                     apszExtensions[iExt] );
@@ -189,18 +189,17 @@ OGRErr OGRGeoconceptDriver::DeleteDataSource( const char *pszDataSource )
     }
     else if( VSI_ISDIR(sStatBuf.st_mode) )
     {
-        char **papszDirEntries = CPLReadDir( pszDataSource );
-        int  iFile;
+        char **papszDirEntries = VSIReadDir( pszDataSource );
 
-        for( iFile = 0; 
+        for( int iFile = 0;
              papszDirEntries != NULL && papszDirEntries[iFile] != NULL;
              iFile++ )
         {
-            if( CSLFindString( (char **) apszExtensions, 
+            if( CSLFindString( const_cast<char **>( apszExtensions ),
                                CPLGetExtension(papszDirEntries[iFile])) != -1)
             {
-                VSIUnlink( CPLFormFilename( pszDataSource, 
-                                            papszDirEntries[iFile], 
+                VSIUnlink( CPLFormFilename( pszDataSource,
+                                            papszDirEntries[iFile],
                                             NULL ) );
             }
         }
@@ -213,7 +212,6 @@ OGRErr OGRGeoconceptDriver::DeleteDataSource( const char *pszDataSource )
     return OGRERR_NONE;
 }
 
-
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
@@ -223,10 +221,11 @@ int OGRGeoconceptDriver::TestCapability( const char * pszCap )
 {
     if( EQUAL(pszCap,ODrCCreateDataSource) )
         return TRUE;
-    else if( EQUAL(pszCap,ODrCDeleteDataSource) )
+
+    if( EQUAL(pszCap,ODrCDeleteDataSource) )
         return TRUE;
-    else
-        return FALSE;
+
+    return FALSE;
 }
 
 /************************************************************************/
@@ -236,5 +235,29 @@ int OGRGeoconceptDriver::TestCapability( const char * pszCap )
 void RegisterOGRGeoconcept()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRGeoconceptDriver );
+    OGRSFDriver* poDriver = new OGRGeoconceptDriver;
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSIONS, "gxt txt" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+"<CreationOptionList>"
+"  <Option name='EXTENSION' type='string-select' description='indicates the "
+"GeoConcept export file extension. TXT was used by earlier releases of "
+"GeoConcept. GXT is currently used.' default='GXT'>"
+"    <Value>GXT</Value>"
+"    <Value>TXT</Value>"
+"  </Option>"
+"  <Option name='CONFIG' type='string' description='path to the GCT file that "
+"describes the GeoConcept types definitions.'/>"
+"</CreationOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+"<LayerCreationOptionList>"
+"  <Option name='FEATURETYPE' type='string' description='TYPE.SUBTYPE : "
+"defines the feature to be created. The TYPE corresponds to one of the Name "
+"found in the GCT file for a type section. The SUBTYPE corresponds to one of "
+"the Name found in the GCT file for a sub-type section within the previous "
+"type section'/>"
+"</LayerCreationOptionList>" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
 }

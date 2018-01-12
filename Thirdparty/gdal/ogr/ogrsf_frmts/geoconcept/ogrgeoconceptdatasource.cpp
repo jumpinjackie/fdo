@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrgeoconceptdatasource.cpp
  *
  * Name:     ogrgeoconceptdatasource.h
  * Project:  OpenGIS Simple Features Reference Implementation
@@ -8,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Geoconcept and IGN
+ * Copyright (c) 2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,33 +28,29 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogrgeoconceptlayer.h"
-#include "ogrgeoconceptdatasource.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogrgeoconceptdatasource.h"
+#include "ogrgeoconceptlayer.h"
 
-CPL_CVSID("$Id: ogrgeoconceptdatasource.cpp 00000 2007-11-03 11:49:22Z drichard $");
+CPL_CVSID("$Id: ogrgeoconceptdatasource.cpp 35008 2016-08-09 11:20:52Z goatbar $");
 
 /************************************************************************/
 /*                         OGRGeoconceptDataSource()                    */
 /************************************************************************/
 
-OGRGeoconceptDataSource::OGRGeoconceptDataSource()
-
-{
-    _papoLayers = NULL;
-    _nLayers = 0;
-
-    _pszGCT = NULL;
-    _pszName = NULL;
-    _pszDirectory = NULL;
-    _pszExt = NULL;
-    _papszOptions = NULL;
-
-    _bSingleNewFile = FALSE;
-    _bUpdate = FALSE;
-    _hGXT = NULL;
-}
+OGRGeoconceptDataSource::OGRGeoconceptDataSource() :
+    _papoLayers(NULL),
+    _nLayers(0),
+    _pszGCT(NULL),
+    _pszName(NULL),
+    _pszDirectory(NULL),
+    _pszExt(NULL),
+    _papszOptions(NULL),
+    _bSingleNewFile(false),
+    _bUpdate(false),
+    _hGXT(NULL)
+{}
 
 /************************************************************************/
 /*                        ~OGRGeoconceptDataSource()                    */
@@ -63,41 +59,20 @@ OGRGeoconceptDataSource::OGRGeoconceptDataSource()
 OGRGeoconceptDataSource::~OGRGeoconceptDataSource()
 
 {
-    if ( _pszGCT )
+    for( int i = 0; i < _nLayers; i++ )
     {
-      CPLFree( _pszGCT );
-    }
-    if ( _pszName )
-    {
-      CPLFree( _pszName );
-    }
-    if ( _pszDirectory )
-    {
-      CPLFree( _pszDirectory );
-    }
-    if ( _pszExt )
-    {
-      CPLFree( _pszExt );
-    }
-
-    if ( _papoLayers )
-    {
-      for( int i = 0; i < _nLayers; i++ )
-      {
         delete _papoLayers[i];
-      }
-
-      CPLFree( _papoLayers );
     }
+    CPLFree( _papoLayers );
+    CPLFree( _pszGCT );
+    CPLFree( _pszName );
+    CPLFree( _pszDirectory );
+    CPLFree( _pszExt );
+    CSLDestroy( _papszOptions );
 
     if( _hGXT )
     {
       Close_GCIO(&_hGXT);
-    }
-
-    if ( _papszOptions )
-    {
-      CSLDestroy( _papszOptions );
     }
 }
 
@@ -107,18 +82,10 @@ OGRGeoconceptDataSource::~OGRGeoconceptDataSource()
 /*      Open an existing file.                                          */
 /************************************************************************/
 
-int OGRGeoconceptDataSource::Open( const char* pszName, int bTestOpen, int bUpdate )
+int OGRGeoconceptDataSource::Open( const char* pszName, bool bTestOpen,
+                                   bool bUpdate )
 
 {
-/* -------------------------------------------------------------------- */
-/*      We will only consider .gxt and .txt files.                      */
-/* -------------------------------------------------------------------- */
-    const char* pszExtension = CPLGetExtension(pszName);
-    if( !EQUAL(pszExtension,"gxt") && !EQUAL(pszExtension,"txt") )
-    {
-        return FALSE;
-    }
-
 /* -------------------------------------------------------------------- */
 /*      Is the given path a directory or a regular file?                */
 /* -------------------------------------------------------------------- */
@@ -130,8 +97,9 @@ int OGRGeoconceptDataSource::Open( const char* pszName, int bTestOpen, int bUpda
         if( !bTestOpen )
         {
             CPLError( CE_Failure, CPLE_AppDefined,
-                    "%s is neither a file or directory, Geoconcept access failed.",
-                    pszName );
+                      "%s is neither a file or directory, "
+                      "Geoconcept access failed.",
+                      pszName );
         }
 
         return FALSE;
@@ -148,10 +116,10 @@ int OGRGeoconceptDataSource::Open( const char* pszName, int bTestOpen, int bUpda
 
     if( VSI_ISREG(stat.st_mode) )
     {
-        _bSingleNewFile= FALSE;
-        _bUpdate= bUpdate;
-        _pszName= CPLStrdup( pszName );
-        if( !LoadFile( _bUpdate? "a+t":"rt" ) )
+        _bSingleNewFile = false;
+        _bUpdate = bUpdate;
+        _pszName = CPLStrdup( pszName );
+        if( !LoadFile( _bUpdate ? "a+t":"rt" ) )
         {
             CPLDebug( "GEOCONCEPT",
                       "Failed to open Geoconcept %s."
@@ -174,8 +142,6 @@ int OGRGeoconceptDataSource::Open( const char* pszName, int bTestOpen, int bUpda
 int OGRGeoconceptDataSource::LoadFile( const char *pszMode )
 
 {
-    OGRGeoconceptLayer *poFile;
-
     if( _pszExt == NULL)
     {
       const char* pszExtension = CPLGetExtension(_pszName);
@@ -195,24 +161,24 @@ int OGRGeoconceptDataSource::LoadFile( const char *pszMode )
     GCExportFileMetadata* Meta= GetGCMeta_GCIO(_hGXT);
     if( Meta )
     {
-      int nC, iC, nS, iS;
+      const int nC = CountMetaTypes_GCIO(Meta);
 
-      if( (nC= CountMetaTypes_GCIO(Meta))>0 )
+      if( nC > 0 )
       {
-        GCType* aClass;
-        GCSubType* aSubclass;
-
-        for( iC= 0; iC<nC; iC++ )
+        for( int iC= 0; iC<nC; iC++ )
         {
-          if( (aClass= GetMetaType_GCIO(Meta,iC)) )
+          GCType* aClass = GetMetaType_GCIO(Meta,iC);
+          if( aClass )
           {
-            if( (nS= CountTypeSubtypes_GCIO(aClass)) )
+            const int nS = CountTypeSubtypes_GCIO(aClass);
+            if( nS )
             {
-              for( iS= 0; iS<nS; iS++ )
+              for( int iS = 0; iS<nS; iS++ )
               {
-                if( (aSubclass= GetTypeSubtype_GCIO(aClass,iS)) )
+                GCSubType *aSubclass = GetTypeSubtype_GCIO(aClass,iS);
+                if( aSubclass )
                 {
-                  poFile = new OGRGeoconceptLayer;
+                  OGRGeoconceptLayer *poFile = new OGRGeoconceptLayer;
                   if( poFile->Open(aSubclass) != OGRERR_NONE )
                   {
                     delete poFile;
@@ -220,13 +186,15 @@ int OGRGeoconceptDataSource::LoadFile( const char *pszMode )
                   }
 
                   /* Add layer to data source layers list */
-                  _papoLayers = (OGRGeoconceptLayer **)
-                      CPLRealloc( _papoLayers,  sizeof(OGRGeoconceptLayer *) * (_nLayers+1) );
+                  _papoLayers = static_cast<OGRGeoconceptLayer **>(
+                      CPLRealloc( _papoLayers,
+                                  sizeof(OGRGeoconceptLayer *)
+                                  * (_nLayers+1) ) );
                   _papoLayers[_nLayers++] = poFile;
 
-                  CPLDebug("GEOCONCEPT",
-                           "nLayers=%d - last=[%s]",
-                           _nLayers, poFile->GetLayerDefn()->GetName());
+                  CPLDebug( "GEOCONCEPT",
+                            "nLayers=%d - last=[%s]",
+                            _nLayers, poFile->GetLayerDefn()->GetName());
                 }
               }
             }
@@ -251,20 +219,17 @@ int OGRGeoconceptDataSource::LoadFile( const char *pszMode )
 int OGRGeoconceptDataSource::Create( const char *pszName, char** papszOptions )
 
 {
-    const char *pszConf;
-    const char *pszExtension;
-
-    if( _pszName ) CPLFree(_pszName);
+    CPLFree( _pszName );
     _papszOptions = CSLDuplicate( papszOptions );
 
-    pszConf= CSLFetchNameValue(papszOptions,"CONFIG");
+    const char *pszConf = CSLFetchNameValue(papszOptions,"CONFIG");
     if( pszConf != NULL )
     {
       _pszGCT = CPLStrdup(pszConf);
     }
 
     _pszExt = (char *)CSLFetchNameValue(papszOptions,"EXTENSION");
-    pszExtension = CSLFetchNameValue(papszOptions,"EXTENSION");
+    const char *pszExtension = CSLFetchNameValue( papszOptions, "EXTENSION" );
     if( pszExtension == NULL )
     {
         _pszExt = CPLStrdup(CPLGetExtension(pszName));
@@ -308,9 +273,9 @@ int OGRGeoconceptDataSource::Create( const char *pszName, char** papszOptions )
 
 /* -------------------------------------------------------------------- */
 /*      Create a new single file.                                       */
-/*      OGRGeoconceptDriver::CreateLayer() will do the job.             */
+/*      OGRGeoconceptDriver::ICreateLayer() will do the job.             */
 /* -------------------------------------------------------------------- */
-    _bSingleNewFile = TRUE;
+    _bSingleNewFile = true;
 
     if( !LoadFile( "wt" ) )
     {
@@ -325,26 +290,18 @@ int OGRGeoconceptDataSource::Create( const char *pszName, char** papszOptions )
 }
 
 /************************************************************************/
-/*                            CreateLayer()                             */
+/*                           ICreateLayer()                             */
 /*                                                                      */
 /* Options (-lco) :                                                     */
 /*   FEATURETYPE : TYPE.SUBTYPE                                         */
 /************************************************************************/
 
-OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
+OGRLayer *OGRGeoconceptDataSource::ICreateLayer( const char * pszLayerName,
                                                 OGRSpatialReference *poSRS /* = NULL */,
                                                 OGRwkbGeometryType eType /* = wkbUnknown */,
                                                 char ** papszOptions /* = NULL */ )
 
 {
-    GCTypeKind gcioFeaType;
-    GCDim gcioDim;
-    OGRGeoconceptLayer *poFile= NULL;
-    const char *pszFeatureType; 
-    char **ft;
-    int iLayer;
-    char pszln[512];
-
     if( _hGXT == NULL )
     {
         CPLError( CE_Failure, CPLE_NotSupported,
@@ -364,6 +321,9 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
     /*
      * pszLayerName Class.Subclass if -nln option used, otherwise file name
      */
+    const char *pszFeatureType = NULL;
+    char pszln[512];
+
     if( !(pszFeatureType = CSLFetchNameValue(papszOptions,"FEATURETYPE")) )
     {
       if( !pszLayerName || !strchr(pszLayerName,'.') )
@@ -377,7 +337,8 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
         pszFeatureType= pszLayerName;
     }
 
-    if( !(ft= CSLTokenizeString2(pszFeatureType,".",0)) ||
+    char **ft = CSLTokenizeString2(pszFeatureType,".",0);
+    if( !ft ||
         CSLCount(ft)!=2 )
     {
       CSLDestroy(ft);
@@ -391,7 +352,9 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
 /* -------------------------------------------------------------------- */
 /*      Figure out what type of layer we need.                          */
 /* -------------------------------------------------------------------- */
-    gcioDim= v2D_GCIO;
+    GCTypeKind gcioFeaType;
+    GCDim gcioDim = v2D_GCIO;
+
     if( eType == wkbUnknown )
         gcioFeaType = vUnknownItemType_GCIO;
     else if( eType == wkbPoint )
@@ -450,11 +413,13 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
      * layer name to exist in the CONFIG as "Class.Subclass".
      * Removing the CONFIG, implies on-the-fly-creation of layers...
      */
+    OGRGeoconceptLayer *poFile= NULL;
+
     if( _nLayers > 0 )
-      for( iLayer= 0; iLayer<_nLayers; iLayer++)
+      for( int iLayer= 0; iLayer<_nLayers; iLayer++)
       {
-        poFile= (OGRGeoconceptLayer*)GetLayer(iLayer);
-        if( EQUAL(poFile->GetLayerDefn()->GetName(),pszFeatureType) )
+        poFile= reinterpret_cast<OGRGeoconceptLayer *>( GetLayer(iLayer) );
+        if( poFile != NULL && EQUAL(poFile->GetLayerDefn()->GetName(),pszFeatureType) )
         {
           break;
         }
@@ -462,10 +427,10 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
       }
     if( !poFile )
     {
-      GCSubType* aSubclass= NULL;
-      GCExportFileMetadata* m;
+      GCSubType* aSubclass = NULL;
+      GCExportFileMetadata* m = GetGCMeta_GCIO(_hGXT);
 
-      if( !(m= GetGCMeta_GCIO(_hGXT)) )
+      if( !m )
       {
         if( !(m= CreateHeader_GCIO()) )
         {
@@ -532,8 +497,9 @@ OGRLayer *OGRGeoconceptDataSource::CreateLayer( const char * pszLayerName,
         return NULL;
       }
 
-      _papoLayers = (OGRGeoconceptLayer **)
-                      CPLRealloc( _papoLayers,  sizeof(OGRGeoconceptLayer *) * (_nLayers+1) );
+      _papoLayers = static_cast<OGRGeoconceptLayer **>(
+          CPLRealloc( _papoLayers,
+                      sizeof(OGRGeoconceptLayer *) * (_nLayers+1) ) );
       _papoLayers[_nLayers++] = poFile;
 
       CPLDebug("GEOCONCEPT",
@@ -560,8 +526,8 @@ int OGRGeoconceptDataSource::TestCapability( const char * pszCap )
 {
     if( EQUAL(pszCap,ODsCCreateLayer) )
         return TRUE;
-    else
-        return FALSE;
+
+    return FALSE;
 }
 
 /************************************************************************/
@@ -571,10 +537,9 @@ int OGRGeoconceptDataSource::TestCapability( const char * pszCap )
 OGRLayer *OGRGeoconceptDataSource::GetLayer( int iLayer )
 
 {
-    OGRLayer *poFile;
     if( iLayer < 0 || iLayer >= GetLayerCount() )
-        poFile= NULL;
-    else
-        poFile= _papoLayers[iLayer];
+      return NULL;
+
+    OGRLayer *poFile = _papoLayers[iLayer];
     return poFile;
 }

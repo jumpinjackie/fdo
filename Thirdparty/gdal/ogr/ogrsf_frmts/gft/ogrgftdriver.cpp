@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrgftdriver.cpp 22070 2011-03-29 21:56:51Z rouault $
  *
  * Project:  GFT Translator
  * Purpose:  Implements OGRGFTDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,7 +32,7 @@
 
 /* http://code.google.com/intl/fr/apis/fusiontables/docs/developers_reference.html */
 
-CPL_CVSID("$Id: ogrgftdriver.cpp 22070 2011-03-29 21:56:51Z rouault $");
+CPL_CVSID("$Id: ogrgftdriver.cpp 35910 2016-10-24 14:08:24Z goatbar $");
 
 extern "C" void RegisterOGRGFT();
 
@@ -63,6 +62,9 @@ const char *OGRGFTDriver::GetName()
 OGRDataSource *OGRGFTDriver::Open( const char * pszFilename, int bUpdate )
 
 {
+    if (!STARTS_WITH_CI(pszFilename, "GFT:"))
+        return NULL;
+
     OGRGFTDataSource   *poDS = new OGRGFTDataSource();
 
     if( !poDS->Open( pszFilename, bUpdate ) )
@@ -74,14 +76,12 @@ OGRDataSource *OGRGFTDriver::Open( const char * pszFilename, int bUpdate )
     return poDS;
 }
 
-
 /************************************************************************/
 /*                          CreateDataSource()                          */
 /************************************************************************/
 
 OGRDataSource *OGRGFTDriver::CreateDataSource( const char * pszName,
-                                               char **papszOptions )
-
+                                               CPL_UNUSED char **papszOptions )
 {
     OGRGFTDataSource   *poDS = new OGRGFTDataSource();
 
@@ -114,6 +114,8 @@ int OGRGFTDriver::TestCapability( const char * pszCap )
 void RegisterOGRGFT()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRGFTDriver );
+    OGRSFDriver* poDriver = new OGRGFTDriver;
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Google Fusion Tables" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_gft.html" );
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver(poDriver);
 }
-

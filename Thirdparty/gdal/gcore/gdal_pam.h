@@ -1,8 +1,8 @@
 /******************************************************************************
- * $Id: gdal_pam.h 22920 2011-08-10 21:08:07Z rouault $
+ * $Id: gdal_pam.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  GDAL Core
- * Purpose:  Declaration for Peristable Auxilary Metadata classes.
+ * Purpose:  Declaration for Peristable Auxiliary Metadata classes.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
@@ -29,6 +29,8 @@
 
 #ifndef GDAL_PAM_H_INCLUDED
 #define GDAL_PAM_H_INCLUDED
+
+//! @cond Doxygen_Suppress
 
 #include "gdal_priv.h"
 
@@ -64,20 +66,20 @@ class GDALPamRasterBand;
                                  GCIF_COLORINTERP | GCIF_BAND_METADATA |   \
                                  GCIF_RAT | GCIF_MASK |                    \
                                  GCIF_ONLY_IF_MISSING | GCIF_PROCESS_BANDS|\
-                                 GCIF_BAND_DESCRIPTION) 
+                                 GCIF_BAND_DESCRIPTION)
 
 /* GDAL PAM Flags */
 /* ERO 2011/04/13 : GPF_AUXMODE seems to be unimplemented */
-#define GPF_DIRTY		0x01  // .pam file needs to be written on close
+#define GPF_DIRTY               0x01  // .pam file needs to be written on close
 #define GPF_TRIED_READ_FAILED   0x02  // no need to keep trying to read .pam.
-#define GPF_DISABLED            0x04  // do not try any PAM stuff. 
+#define GPF_DISABLED            0x04  // do not try any PAM stuff.
 #define GPF_AUXMODE             0x08  // store info in .aux (HFA) file.
 #define GPF_NOSAVE              0x10  // do not try to save pam info.
 
 /* ==================================================================== */
 /*      GDALDatasetPamInfo                                              */
 /*                                                                      */
-/*      We make these things a seperate structure of information        */
+/*      We make these things a separate structure of information        */
 /*      primarily so we can modify it without altering the size of      */
 /*      the GDALPamDataset.  It is an effort to reduce ABI churn for    */
 /*      driver plugins.                                                 */
@@ -87,7 +89,7 @@ class GDALDatasetPamInfo
 public:
     char        *pszPamFilename;
 
-    char	*pszProjection;
+    char        *pszProjection;
 
     int         bHaveGeoTransform;
     double      adfGeoTransform[6];
@@ -99,12 +101,16 @@ public:
     CPLString   osPhysicalFilename;
     CPLString   osSubdatasetName;
     CPLString   osAuxFilename;
+
+    int         bHasMetadata;
 };
+//! @endcond
 
 /* ******************************************************************** */
 /*                           GDALPamDataset                             */
 /* ******************************************************************** */
 
+/** PAM dataset */
 class CPL_DLL GDALPamDataset : public GDALDataset
 {
     friend class GDALPamRasterBand;
@@ -113,14 +119,15 @@ class CPL_DLL GDALPamDataset : public GDALDataset
     int IsPamFilenameAPotentialSiblingFile();
 
   protected:
-                GDALPamDataset(void);
 
+                GDALPamDataset(void);
+//! @cond Doxygen_Suppress
     int         nPamFlags;
     GDALDatasetPamInfo *psPam;
 
     virtual CPLXMLNode *SerializeToXML( const char *);
     virtual CPLErr      XMLInit( CPLXMLNode *, const char * );
-    
+
     virtual CPLErr TryLoadXML(char **papszSiblingFiles = NULL);
     virtual CPLErr TrySaveXML();
 
@@ -136,55 +143,61 @@ class CPL_DLL GDALPamDataset : public GDALDataset
     const char *GetPhysicalFilename();
     void   SetSubdatasetName( const char *);
     const char *GetSubdatasetName();
+//! @endcond
 
   public:
     virtual     ~GDALPamDataset();
 
-    virtual void FlushCache(void);
+    virtual void FlushCache(void) CPL_OVERRIDE;
 
-    virtual const char *GetProjectionRef(void);
-    virtual CPLErr SetProjection( const char * );
+    virtual const char *GetProjectionRef(void) CPL_OVERRIDE;
+    virtual CPLErr SetProjection( const char * ) CPL_OVERRIDE;
 
-    virtual CPLErr GetGeoTransform( double * );
-    virtual CPLErr SetGeoTransform( double * );
+    virtual CPLErr GetGeoTransform( double * ) CPL_OVERRIDE;
+    virtual CPLErr SetGeoTransform( double * ) CPL_OVERRIDE;
 
-    virtual int    GetGCPCount();
-    virtual const char *GetGCPProjection();
-    virtual const GDAL_GCP *GetGCPs();
+    virtual int    GetGCPCount() CPL_OVERRIDE;
+    virtual const char *GetGCPProjection() CPL_OVERRIDE;
+    virtual const GDAL_GCP *GetGCPs() CPL_OVERRIDE;
     virtual CPLErr SetGCPs( int nGCPCount, const GDAL_GCP *pasGCPList,
-                            const char *pszGCPProjection );
+                            const char *pszGCPProjection ) CPL_OVERRIDE;
 
     virtual CPLErr      SetMetadata( char ** papszMetadata,
-                                     const char * pszDomain = "" );
+                                     const char * pszDomain = "" ) CPL_OVERRIDE;
     virtual CPLErr      SetMetadataItem( const char * pszName,
                                          const char * pszValue,
-                                         const char * pszDomain = "" );
-    virtual char      **GetMetadata( const char * pszDomain = "" );
+                                         const char * pszDomain = "" ) CPL_OVERRIDE;
+    virtual char      **GetMetadata( const char * pszDomain = "" ) CPL_OVERRIDE;
     virtual const char *GetMetadataItem( const char * pszName,
-                                         const char * pszDomain = "" );
+                                         const char * pszDomain = "" ) CPL_OVERRIDE;
 
-    virtual char      **GetFileList(void);
+    virtual char      **GetFileList(void) CPL_OVERRIDE;
 
+//! @cond Doxygen_Suppress
     virtual CPLErr CloneInfo( GDALDataset *poSrcDS, int nCloneInfoFlags );
 
-    virtual CPLErr IBuildOverviews( const char *pszResampling, 
-                                    int nOverviews, int *panOverviewList, 
+    virtual CPLErr IBuildOverviews( const char *pszResampling,
+                                    int nOverviews, int *panOverviewList,
                                     int nListBands, int *panBandList,
-                                    GDALProgressFunc pfnProgress, 
-                                    void * pProgressData );
-
+                                    GDALProgressFunc pfnProgress,
+                                    void * pProgressData ) CPL_OVERRIDE;
 
     // "semi private" methods.
     void   MarkPamDirty() { nPamFlags |= GPF_DIRTY; }
     GDALDatasetPamInfo *GetPamInfo() { return psPam; }
     int    GetPamFlags() { return nPamFlags; }
     void   SetPamFlags(int nValue ) { nPamFlags = nValue; }
+//! @endcond
+
+  private:
+    CPL_DISALLOW_COPY_ASSIGN(GDALPamDataset)
 };
 
+//! @cond Doxygen_Suppress
 /* ==================================================================== */
 /*      GDALRasterBandPamInfo                                           */
 /*                                                                      */
-/*      We make these things a seperate structure of information        */
+/*      We make these things a separate structure of information        */
 /*      primarily so we can modify it without altering the size of      */
 /*      the GDALPamDataset.  It is an effort to reduce ABI churn for    */
 /*      driver plugins.                                                 */
@@ -201,7 +214,7 @@ typedef struct {
 
     char           *pszUnitType;
     char           **papszCategoryNames;
-    
+
     double         dfOffset;
     double         dfScale;
 
@@ -218,91 +231,103 @@ typedef struct {
     GDALRasterAttributeTable *poDefaultRAT;
 
 } GDALRasterBandPamInfo;
-
+//! @endcond
 /* ******************************************************************** */
 /*                          GDALPamRasterBand                           */
 /* ******************************************************************** */
+
+/** PAM raster band */
 class CPL_DLL GDALPamRasterBand : public GDALRasterBand
 {
     friend class GDALPamDataset;
 
   protected:
-
+//! @cond Doxygen_Suppress
     virtual CPLXMLNode *SerializeToXML( const char *pszVRTPath );
     virtual CPLErr      XMLInit( CPLXMLNode *, const char * );
-    
+
     void   PamInitialize();
     void   PamClear();
 
     GDALRasterBandPamInfo *psPam;
+//! @endcond
 
   public:
                 GDALPamRasterBand();
+//! @cond Doxygen_Suppress
+    explicit    GDALPamRasterBand(int bForceCachedIO);
+//! @endcond
     virtual     ~GDALPamRasterBand();
 
-    virtual void        SetDescription( const char * );
+    virtual void        SetDescription( const char * ) CPL_OVERRIDE;
 
-    virtual CPLErr SetNoDataValue( double );
-    virtual double GetNoDataValue( int *pbSuccess = NULL );
+    virtual CPLErr SetNoDataValue( double ) CPL_OVERRIDE;
+    virtual double GetNoDataValue( int *pbSuccess = NULL ) CPL_OVERRIDE;
+    virtual CPLErr DeleteNoDataValue() CPL_OVERRIDE;
 
-    virtual CPLErr SetColorTable( GDALColorTable * ); 
-    virtual GDALColorTable *GetColorTable();
+    virtual CPLErr SetColorTable( GDALColorTable * ) CPL_OVERRIDE;
+    virtual GDALColorTable *GetColorTable() CPL_OVERRIDE;
 
-    virtual CPLErr SetColorInterpretation( GDALColorInterp );
-    virtual GDALColorInterp GetColorInterpretation();
+    virtual CPLErr SetColorInterpretation( GDALColorInterp ) CPL_OVERRIDE;
+    virtual GDALColorInterp GetColorInterpretation() CPL_OVERRIDE;
 
-    virtual const char *GetUnitType();
-    CPLErr SetUnitType( const char * ); 
+    virtual const char *GetUnitType() CPL_OVERRIDE;
+    CPLErr SetUnitType( const char * ) CPL_OVERRIDE;
 
-    virtual char **GetCategoryNames();
-    virtual CPLErr SetCategoryNames( char ** );
+    virtual char **GetCategoryNames() CPL_OVERRIDE;
+    virtual CPLErr SetCategoryNames( char ** ) CPL_OVERRIDE;
 
-    virtual double GetOffset( int *pbSuccess = NULL );
-    CPLErr SetOffset( double );
-    virtual double GetScale( int *pbSuccess = NULL );
-    CPLErr SetScale( double );
+    virtual double GetOffset( int *pbSuccess = NULL ) CPL_OVERRIDE;
+    CPLErr SetOffset( double ) CPL_OVERRIDE;
+    virtual double GetScale( int *pbSuccess = NULL ) CPL_OVERRIDE;
+    CPLErr SetScale( double ) CPL_OVERRIDE;
 
     virtual CPLErr  GetHistogram( double dfMin, double dfMax,
-                          int nBuckets, int * panHistogram,
+                          int nBuckets, GUIntBig * panHistogram,
                           int bIncludeOutOfRange, int bApproxOK,
-                          GDALProgressFunc, void *pProgressData );
+                          GDALProgressFunc, void *pProgressData ) CPL_OVERRIDE;
 
     virtual CPLErr GetDefaultHistogram( double *pdfMin, double *pdfMax,
-                                        int *pnBuckets, int ** ppanHistogram,
+                                        int *pnBuckets, GUIntBig ** ppanHistogram,
                                         int bForce,
-                                        GDALProgressFunc, void *pProgressData);
+                                        GDALProgressFunc, void *pProgressData) CPL_OVERRIDE;
 
     virtual CPLErr SetDefaultHistogram( double dfMin, double dfMax,
-                                        int nBuckets, int *panHistogram );
+                                        int nBuckets, GUIntBig *panHistogram ) CPL_OVERRIDE;
 
     virtual CPLErr      SetMetadata( char ** papszMetadata,
-                                     const char * pszDomain = "" );
+                                     const char * pszDomain = "" ) CPL_OVERRIDE;
     virtual CPLErr      SetMetadataItem( const char * pszName,
                                          const char * pszValue,
-                                         const char * pszDomain = "" );
+                                         const char * pszDomain = "" ) CPL_OVERRIDE;
 
-    virtual const GDALRasterAttributeTable *GetDefaultRAT();
-    virtual CPLErr SetDefaultRAT( const GDALRasterAttributeTable * );
+    virtual GDALRasterAttributeTable *GetDefaultRAT() CPL_OVERRIDE;
+    virtual CPLErr SetDefaultRAT( const GDALRasterAttributeTable * ) CPL_OVERRIDE;
 
-    // new in GDALPamRasterBand. 
+//! @cond Doxygen_Suppress
+    // new in GDALPamRasterBand.
     virtual CPLErr CloneInfo( GDALRasterBand *poSrcBand, int nCloneInfoFlags );
 
     // "semi private" methods.
     GDALRasterBandPamInfo *GetPamInfo() { return psPam; }
+//! @endcond
+  private:
+    CPL_DISALLOW_COPY_ASSIGN(GDALPamRasterBand)
 };
 
+//! @cond Doxygen_Suppress
 // These are mainly helper functions for internal use.
-int CPL_DLL PamParseHistogram( CPLXMLNode *psHistItem, 
-                               double *pdfMin, double *pdfMax, 
-                               int *pnBuckets, int **ppanHistogram, 
+int CPL_DLL PamParseHistogram( CPLXMLNode *psHistItem,
+                               double *pdfMin, double *pdfMax,
+                               int *pnBuckets, GUIntBig **ppanHistogram,
                                int *pbIncludeOutOfRange, int *pbApproxOK );
 CPLXMLNode CPL_DLL *
 PamFindMatchingHistogram( CPLXMLNode *psSavedHistograms,
-                          double dfMin, double dfMax, int nBuckets, 
+                          double dfMin, double dfMax, int nBuckets,
                           int bIncludeOutOfRange, int bApproxOK );
 CPLXMLNode CPL_DLL *
 PamHistogramToXMLTree( double dfMin, double dfMax,
-                       int nBuckets, int * panHistogram,
+                       int nBuckets, GUIntBig * panHistogram,
                        int bIncludeOutOfRange, int bApprox );
 
 // For managing the proxy file database.
@@ -310,5 +335,7 @@ const char CPL_DLL * PamGetProxy( const char * );
 const char CPL_DLL * PamAllocateProxy( const char * );
 const char CPL_DLL * PamDeallocateProxy( const char * );
 void CPL_DLL PamCleanProxyDB( void );
+
+//! @endcond
 
 #endif /* ndef GDAL_PAM_H_INCLUDED */

@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_TEX_H
-#define __INCLUDE_PCIDSK_TEX_H
+#ifndef INCLUDE_PCIDSK_TEX_H
+#define INCLUDE_PCIDSK_TEX_H
 
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ namespace PCIDSK
     class PCIDSK_DLL PCIDSK_TEX
     {
     public:
-        virtual	~PCIDSK_TEX() {}
+        virtual ~PCIDSK_TEX() {}
 
 /**
 \brief Read a text segment (SEG_TEX).
@@ -68,4 +68,4 @@ file.
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_PCIDSK_TEX_H
+#endif // INCLUDE_PCIDSK_TEX_H

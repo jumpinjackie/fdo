@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 #******************************************************************************
-#  $Id: rgb2pct.py 18952 2010-02-28 11:59:53Z rouault $
-# 
+#  $Id: rgb2pct.py 33790 2016-03-26 12:42:12Z goatbar $
+#
 #  Name:     rgb2pct
 #  Project:  GDAL Python Interface
 #  Purpose:  Application for converting an RGB image to a pseudocolored image.
 #  Author:   Frank Warmerdam, warmerdam@pobox.com
-# 
+#
 #******************************************************************************
 #  Copyright (c) 2001, Frank Warmerdam
-# 
+#
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
 #  to deal in the Software without restriction, including without limitation
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included
 #  in all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 #  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -29,13 +29,10 @@
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
 
-try:
-    from osgeo import gdal
-except ImportError:
-    import gdal
-
-import sys
 import os.path
+import sys
+
+from osgeo import gdal
 
 def Usage():
     print('Usage: rgb2pct.py [-n colors | -pct palette_file] [-of format] source_file dest_file')
@@ -86,7 +83,7 @@ while i < len(argv):
 
 if dst_filename is None:
     Usage()
-    
+
 # Open source file
 
 src_ds = gdal.Open( src_filename )
@@ -126,7 +123,8 @@ else:
 if format == 'GTiff':
     tif_filename = dst_filename
 else:
-    tif_filename = 'temp.tif'
+    import tempfile
+    tif_filedesc,tif_filename = tempfile.mkstemp(suffix='.tif')
 
 gtiff_driver = gdal.GetDriverByName( 'GTiff' )
 
@@ -161,5 +159,5 @@ if tif_filename != dst_filename:
     dst_driver.CreateCopy( dst_filename, tif_ds )
     tif_ds = None
 
+    os.close(tif_filedesc)
     gtiff_driver.Delete( tif_filename )
-

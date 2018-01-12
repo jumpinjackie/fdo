@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrdxfdriver.cpp 22527 2011-06-13 03:58:34Z warmerdam $
  *
  * Project:  DXF Translator
  * Purpose:  Implements OGRDXFDriver.
@@ -30,37 +29,65 @@
 #include "ogr_dxf.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrdxfdriver.cpp 22527 2011-06-13 03:58:34Z warmerdam $");
+CPL_CVSID("$Id: ogrdxfdriver.cpp 35645 2016-10-08 00:48:42Z goatbar $");
 
 /************************************************************************/
-/*                          ~OGRDXFDriver()                          */
+/*                       OGRDXFDriverIdentify()                         */
 /************************************************************************/
 
-OGRDXFDriver::~OGRDXFDriver()
+static int OGRDXFDriverIdentify( GDALOpenInfo* poOpenInfo )
 
 {
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRDXFDriver::GetName()
-
-{
-    return "DXF";
+    if( poOpenInfo->fpL == NULL || poOpenInfo->nHeaderBytes == 0 )
+        return FALSE;
+    if( EQUAL(CPLGetExtension(poOpenInfo->pszFilename),"dxf") )
+        return TRUE;
+    const char* pszIter = (const char*)poOpenInfo->pabyHeader;
+    bool bFoundZero = false;
+    int i = 0;  // Used after for.
+    for( ; pszIter[i]; i++ )
+    {
+        if( pszIter[i] == '0' )
+        {
+            int j = i-1;  // Used after for.
+            for( ; j >= 0; j-- )
+            {
+                if( pszIter[j] != ' ' )
+                    break;
+            }
+            if( j < 0 || pszIter[j] == '\n'|| pszIter[j] == '\r' )
+            {
+                bFoundZero = true;
+                break;
+            }
+        }
+    }
+    if( !bFoundZero )
+        return FALSE;
+    i++;
+    while( pszIter[i] == ' ' )
+        i++;
+    while( pszIter[i] == '\n' || pszIter[i] == '\r' )
+        i++;
+    if( !STARTS_WITH_CI(pszIter + i, "SECTION") )
+        return FALSE;
+    i += static_cast<int>(strlen("SECTION"));
+    return pszIter[i] == '\n' || pszIter[i] == '\r';
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRDXFDriver::Open( const char * pszFilename, int bUpdate )
+static GDALDataset *OGRDXFDriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
-    OGRDXFDataSource   *poDS = new OGRDXFDataSource();
+    if( !OGRDXFDriverIdentify(poOpenInfo) )
+        return NULL;
 
-    if( !poDS->Open( pszFilename ) )
+    OGRDXFDataSource *poDS = new OGRDXFDataSource();
+
+    if( !poDS->Open( poOpenInfo->pszFilename ) )
     {
         delete poDS;
         poDS = NULL;
@@ -70,12 +97,15 @@ OGRDataSource *OGRDXFDriver::Open( const char * pszFilename, int bUpdate )
 }
 
 /************************************************************************/
-/*                          CreateDataSource()                          */
+/*                              Create()                                */
 /************************************************************************/
 
-OGRDataSource *OGRDXFDriver::CreateDataSource( const char * pszName,
-                                               char **papszOptions )
-
+static GDALDataset *OGRDXFDriverCreate( const char * pszName,
+                                        CPL_UNUSED int nBands,
+                                        CPL_UNUSED int nXSize,
+                                        CPL_UNUSED int nYSize,
+                                        CPL_UNUSED GDALDataType eDT,
+                                        char **papszOptions )
 {
     OGRDXFWriterDS *poDS = new OGRDXFWriterDS();
 
@@ -89,25 +119,38 @@ OGRDataSource *OGRDXFDriver::CreateDataSource( const char * pszName,
 }
 
 /************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRDXFDriver::TestCapability( const char * pszCap )
-
-{
-    if( EQUAL(pszCap,ODrCCreateDataSource) )
-        return TRUE;
-    else
-        return FALSE;
-}
-
-/************************************************************************/
 /*                           RegisterOGRDXF()                           */
 /************************************************************************/
 
 void RegisterOGRDXF()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRDXFDriver );
-}
+    if( GDALGetDriverByName( "DXF" ) != NULL )
+        return;
 
+    GDALDriver  *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "DXF" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "AutoCAD DXF" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "dxf" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_dxf.html" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+"<CreationOptionList>"
+"  <Option name='HEADER' type='string' description='Template header file' default='header.dxf'/>"
+"  <Option name='TRAILER' type='string' description='Template trailer file' default='trailer.dxf'/>"
+"  <Option name='FIRST_ENTITY' type='int' description='Identifier of first entity'/>"
+"</CreationOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+                               "<LayerCreationOptionList/>" );
+
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+
+    poDriver->pfnOpen = OGRDXFDriverOpen;
+    poDriver->pfnIdentify = OGRDXFDriverIdentify;
+    poDriver->pfnCreate = OGRDXFDriverCreate;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

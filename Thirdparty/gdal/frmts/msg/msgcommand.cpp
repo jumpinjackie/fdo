@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: msgcommand.cpp 15085 2008-07-31 13:41:31Z mloskot $
  *
  * Purpose:  Implementation of MSGCommand class. Parse the src_dataset
  *           string that is meant for the MSG driver.
@@ -27,8 +26,14 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
+ #include "cpl_port.h"  // Must be first.
+
 #include "msgcommand.h"
 #include <cstdlib>
+#include <cstdio>
+
+CPL_CVSID("$Id: msgcommand.cpp 35929 2016-10-25 16:09:00Z goatbar $");
+
 using namespace std;
 
 #ifdef _WIN32
@@ -55,10 +60,7 @@ MSGCommand::MSGCommand() :
     channel[i] = 0;
 }
 
-MSGCommand::~MSGCommand()
-{
-
-}
+MSGCommand::~MSGCommand() {}
 
 std::string MSGCommand::sTrimSpaces(std::string const& str)
 {
@@ -78,9 +80,10 @@ std::string MSGCommand::sTrimSpaces(std::string const& str)
 std::string MSGCommand::sNextTerm(std::string const& str, int & iPos)
 {
   std::string::size_type iOldPos = iPos;
-  iPos = str.find(',', iOldPos);
-  iPos = min(iPos, str.find(')', iOldPos));
-  if (iPos > iOldPos)
+  iPos = static_cast<int>(str.find(',', iOldPos));
+  // FIXME: the int vs size_t is messy !
+  iPos = static_cast<int>(min(static_cast<size_t>(iPos), str.find(')', iOldPos)));
+  if (static_cast<size_t>(iPos) > iOldPos)
   {
     std::string sRet = str.substr(iOldPos, iPos - iOldPos);
     if (str[iPos] != ')')
@@ -91,6 +94,7 @@ std::string MSGCommand::sNextTerm(std::string const& str, int & iPos)
     return "";
 }
 
+static
 bool fTimeStampCorrect(std::string const& sTimeStamp)
 {
   if (sTimeStamp.length() != 12)
@@ -130,38 +134,38 @@ std::string MSGCommand::parse(std::string const& command_line)
       {
         try // for eventual exceptions
         {
-          while ((iPos < command_line.length()) && (command_line[iPos] == ' '))
+          while ((iPos < static_cast<int>(command_line.length())) && (command_line[iPos] == ' '))
             ++iPos;
           if (command_line[iPos] == '(')
           {
             ++iPos; // skip the ( bracket
             int i = 1;
-            std::string sChannel = sNextTerm(command_line, iPos);
+            std::string l_sChannel = sNextTerm(command_line, iPos);
             while (command_line[iPos] != ')')
             {
-              int iChan = atoi(sChannel.c_str());
+              int iChan = atoi(l_sChannel.c_str());
               if (iChan >= 1 && iChan <= 12)
                 channel[iChan - 1] = i;
               else
                 sErr = "Channel numbers must be between 1 and 12";
-              sChannel = sNextTerm(command_line, iPos);
+              l_sChannel = sNextTerm(command_line, iPos);
               ++i;
             }
-            int iChan = atoi(sChannel.c_str());
+            int iChan = atoi(l_sChannel.c_str());
             if (iChan >= 1 && iChan <= 12)
               channel[iChan - 1] = i;
             else
               sErr = "Channel numbers must be between 1 and 12";
             ++iPos; // skip the ) bracket
-            while ((iPos < command_line.length()) && (command_line[iPos] == ' '))
+            while ((iPos < static_cast<int>(command_line.length())) && (command_line[iPos] == ' '))
               ++iPos;
             if (command_line[iPos] == ',')
               ++iPos;
           }
           else
           {
-            std::string sChannel = sNextTerm(command_line, iPos);
-            int iChan = atoi(sChannel.c_str());
+            std::string l_sChannel = sNextTerm(command_line, iPos);
+            int iChan = atoi(l_sChannel.c_str());
             if (iChan >= 1 && iChan <= 12)
               channel[iChan - 1] = 1;
             else
@@ -182,7 +186,7 @@ std::string MSGCommand::parse(std::string const& command_line)
           iStep = atoi(sStep.c_str());
           if (iStep < 1)
             iStep = 1;
-          while ((iPos < command_line.length()) && (command_line[iPos] == ' '))
+          while ((iPos < static_cast<int>(command_line.length())) && (command_line[iPos] == ' '))
             ++iPos;
           // additional correctness checks
           if (command_line[iPos] != ')')
@@ -205,9 +209,9 @@ std::string MSGCommand::parse(std::string const& command_line)
     else
       sErr = "A folder must be filled in indicating the root of the image data folders.";
   }
-  else if (command_line.find("H-000-MSG") >= 0)
+  else if (command_line.find("H-000-MSG") != std::string::npos)
   {
-    int iPos = command_line.find("H-000-MSG");
+    const size_t iPos = command_line.find("H-000-MSG");
     if ((command_line.length() - iPos) == 61)
     {
       fUseTimestampFolder = false;
@@ -261,7 +265,7 @@ int MSGCommand::iChannel(int iChannelNumber)
   }
 
   // will return a number between 1 and 12
-  return (iRet + 1);
+  return iRet + 1;
 }
 
 int MSGCommand::iNrStrips(int iChannel)
@@ -355,7 +359,7 @@ std::string MSGCommand::sTimeStampToFolder(std::string & sTimeStamp)
   std::string sYear (sTimeStamp.substr(0,4));
   std::string sMonth (sTimeStamp.substr(4, 2));
   std::string sDay (sTimeStamp.substr(6, 2));
-  return (sYear + PATH_SEP + sMonth + PATH_SEP + sDay + PATH_SEP);
+  return sYear + PATH_SEP + sMonth + PATH_SEP + sDay + PATH_SEP;
 }
 
 int MSGCommand::iDaysInMonth(int iMonth, int iYear)
@@ -391,7 +395,7 @@ std::string MSGCommand::sCycle(int iCycle)
   // 200405311115 should result in 200405311130
   // 200405311101 should result in 200405311115
   // 200412312345 should result in 200501010000
-  
+
   std::string sYear (sTimeStamp.substr(0, 4));
   std::string sMonth (sTimeStamp.substr(4, 2));
   std::string sDay (sTimeStamp.substr(6, 2));
@@ -431,22 +435,22 @@ std::string MSGCommand::sCycle(int iCycle)
   }
 
   char sRet [100];
-  sprintf(sRet, "%.4d%.2d%.2d%.2d%.2d", iYear, iMonth, iDay, iHours, iMins);
+  snprintf(sRet, sizeof(sRet), "%.4d%.2d%.2d%.2d%.2d", iYear, iMonth, iDay, iHours, iMins);
 
-  return sRet;  
+  return sRet;
 }
 
 std::string MSGCommand::sFileName(int iSatellite, int iSequence, int iStrip)
 {
   int iNr = iNrChannels();
-  int iChannelNumber = 1 + (iSequence - 1) % iNr;;
+  int iChannelNumber = 1 + (iSequence - 1) % iNr;
   int iCycle = 1 + (iSequence - 1) / iNr;
   char sRet [4096];
   std::string siThCycle (sCycle(iCycle));
   if (fUseTimestampFolder)
-    sprintf(sRet, "%s%sH-000-MSG%d__-MSG%d________-%s-%.6d___-%s-C_", sRootFolder.c_str(), sTimeStampToFolder(siThCycle).c_str(), iSatellite, iSatellite, sChannel(iChannel(iChannelNumber)).c_str(), iStrip, siThCycle.c_str());
+    snprintf(sRet, sizeof(sRet), "%s%sH-000-MSG%d__-MSG%d________-%s-%.6d___-%s-C_", sRootFolder.c_str(), sTimeStampToFolder(siThCycle).c_str(), iSatellite, iSatellite, sChannel(iChannel(iChannelNumber)).c_str(), iStrip, siThCycle.c_str());
   else
-    sprintf(sRet, "%sH-000-MSG%d__-MSG%d________-%s-%.6d___-%s-C_", sRootFolder.c_str(), iSatellite, iSatellite, sChannel(iChannel(iChannelNumber)).c_str(), iStrip, siThCycle.c_str());
+    snprintf(sRet, sizeof(sRet), "%sH-000-MSG%d__-MSG%d________-%s-%.6d___-%s-C_", sRootFolder.c_str(), iSatellite, iSatellite, sChannel(iChannel(iChannelNumber)).c_str(), iStrip, siThCycle.c_str());
   return sRet;
 }
 
@@ -456,9 +460,8 @@ std::string MSGCommand::sPrologueFileName(int iSatellite, int iSequence)
   char sRet [4096];
   std::string siThCycle (sCycle(iCycle));
   if (fUseTimestampFolder)
-    sprintf(sRet, "%s%sH-000-MSG%d__-MSG%d________-_________-PRO______-%s-__", sRootFolder.c_str(), sTimeStampToFolder(siThCycle).c_str(), iSatellite, iSatellite, siThCycle.c_str());
+    snprintf(sRet, sizeof(sRet), "%s%sH-000-MSG%d__-MSG%d________-_________-PRO______-%s-__", sRootFolder.c_str(), sTimeStampToFolder(siThCycle).c_str(), iSatellite, iSatellite, siThCycle.c_str());
   else
-    sprintf(sRet, "%sH-000-MSG%d__-MSG%d________-_________-PRO______-%s-__", sRootFolder.c_str(), iSatellite, iSatellite, siThCycle.c_str());
+    snprintf(sRet, sizeof(sRet), "%sH-000-MSG%d__-MSG%d________-_________-PRO______-%s-__", sRootFolder.c_str(), iSatellite, iSatellite, siThCycle.c_str());
   return sRet;
 }
-

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tifvsi.cpp 24411 2012-05-13 20:16:08Z rouault $
  *
  * Project:  GeoTIFF Driver
  * Purpose:  Implement system hook functions for libtiff on top of CPL/VSI,
@@ -9,6 +8,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam, warmerdam@pobox.com
+ * Copyright (c) 2010-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,13 +29,19 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-/*
- * TIFF Library UNIX-specific Routines.
- */
-#include "cpl_vsi.h"
+// TIFF Library UNIX-specific Routines.
+
+#include "cpl_port.h"
 #include "tifvsi.h"
 
-#include <errno.h>
+#include <string.h>
+#include <cerrno>
+#if HAVE_FCNTL_H
+#  include <fcntl.h>
+#endif
+
+#include "cpl_conv.h"
+#include "cpl_vsi.h"
 
 // We avoid including xtiffio.h since it drags in the libgeotiff version
 // of the VSI functions.
@@ -44,92 +50,203 @@
 #include "gdal_libgeotiff_symbol_rename.h"
 #endif
 
+CPL_CVSID("$Id: tifvsi.cpp 36579 2016-11-30 15:06:24Z goatbar $");
+
 CPL_C_START
-extern TIFF CPL_DLL * XTIFFClientOpen(const char* name, const char* mode, 
-                                      thandle_t thehandle,
-                                      TIFFReadWriteProc, TIFFReadWriteProc,
-                                      TIFFSeekProc, TIFFCloseProc,
-                                      TIFFSizeProc,
-                                      TIFFMapFileProc, TIFFUnmapFileProc);
+extern TIFF CPL_DLL * XTIFFClientOpen( const char* name, const char* mode,
+                                       thandle_t thehandle,
+                                       TIFFReadWriteProc, TIFFReadWriteProc,
+                                       TIFFSeekProc, TIFFCloseProc,
+                                       TIFFSizeProc,
+                                       TIFFMapFileProc, TIFFUnmapFileProc );
 CPL_C_END
 
-static tsize_t
-_tiffReadProc(thandle_t fd, tdata_t buf, tsize_t size)
+static const int BUFFER_SIZE = 65536;
+
+typedef struct
 {
-    return VSIFReadL( buf, 1, size, (VSILFILE *) fd );
+    VSILFILE*   fpL;
+    bool        bAtEndOfFile;
+    vsi_l_offset nExpectedPos;
+    GByte      *abyWriteBuffer;
+    int         nWriteBufferSize;
+} GDALTiffHandle;
+
+static tsize_t
+_tiffReadProc( thandle_t th, tdata_t buf, tsize_t size )
+{
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle *>(th);
+    return VSIFReadL( buf, 1, size, psGTH->fpL );
+}
+
+static bool GTHFlushBuffer( thandle_t th )
+{
+    GDALTiffHandle* psGTH = (GDALTiffHandle*) th;
+    bool bRet = true;
+    if( psGTH->abyWriteBuffer && psGTH->nWriteBufferSize )
+    {
+        const tsize_t nRet = VSIFWriteL( psGTH->abyWriteBuffer, 1,
+                                         psGTH->nWriteBufferSize, psGTH->fpL );
+        bRet = nRet == psGTH->nWriteBufferSize;
+        if( !bRet )
+        {
+            TIFFErrorExt( th, "_tiffWriteProc", "%s", VSIStrerror( errno ) );
+        }
+        psGTH->nWriteBufferSize = 0;
+    }
+    return bRet;
 }
 
 static tsize_t
-_tiffWriteProc(thandle_t fd, tdata_t buf, tsize_t size)
+_tiffWriteProc( thandle_t th, tdata_t buf, tsize_t size )
 {
-    tsize_t nRet = VSIFWriteL( buf, 1, size, (VSILFILE *) fd );
-    if (nRet < size)
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle *>( th );
+
+    // If we have a write buffer and are at end of file, then accumulate
+    // the bytes until the buffer is full.
+    if( psGTH->bAtEndOfFile && psGTH->abyWriteBuffer )
     {
-        TIFFErrorExt( fd, "_tiffWriteProc", "%s", VSIStrerror( errno ) );
+        const GByte* pabyData = reinterpret_cast<GByte *>( buf );
+        tsize_t nRemainingBytes = size;
+        while( true )
+        {
+            if( psGTH->nWriteBufferSize + nRemainingBytes <= BUFFER_SIZE )
+            {
+                memcpy( psGTH->abyWriteBuffer + psGTH->nWriteBufferSize,
+                        pabyData, nRemainingBytes );
+                psGTH->nWriteBufferSize += static_cast<int>(nRemainingBytes);
+                psGTH->nExpectedPos += size;
+                return size;
+            }
+
+            int nAppendable = BUFFER_SIZE - psGTH->nWriteBufferSize;
+            memcpy( psGTH->abyWriteBuffer + psGTH->nWriteBufferSize, pabyData,
+                    nAppendable );
+            const tsize_t nRet = VSIFWriteL( psGTH->abyWriteBuffer, 1,
+                                             BUFFER_SIZE, psGTH->fpL );
+            psGTH->nWriteBufferSize = 0;
+            if( nRet != BUFFER_SIZE )
+            {
+                TIFFErrorExt( th, "_tiffWriteProc", "%s", VSIStrerror( errno ) );
+                return 0;
+            }
+
+            pabyData += nAppendable;
+            nRemainingBytes -= nAppendable;
+        }
+    }
+
+    const tsize_t nRet = VSIFWriteL( buf, 1, size, psGTH->fpL );
+    if( nRet < size )
+    {
+        TIFFErrorExt( th, "_tiffWriteProc", "%s", VSIStrerror( errno ) );
+    }
+    if( psGTH->bAtEndOfFile )
+    {
+        psGTH->nExpectedPos += nRet;
     }
     return nRet;
 }
 
 static toff_t
-_tiffSeekProc(thandle_t fd, toff_t off, int whence)
+_tiffSeekProc( thandle_t th, toff_t off, int whence )
 {
-    if( VSIFSeekL( (VSILFILE *) fd, off, whence ) == 0 )
-        return (toff_t) VSIFTellL( (VSILFILE *) fd );
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle *>( th );
+
+    // Optimization: if we are already at end, then no need to
+    // issue a VSIFSeekL().
+    if( whence == SEEK_END )
+    {
+        if( psGTH->bAtEndOfFile )
+        {
+            return static_cast<toff_t>( psGTH->nExpectedPos );
+        }
+
+        if( VSIFSeekL( psGTH->fpL, off, whence ) != 0 )
+        {
+            TIFFErrorExt( th, "_tiffSeekProc", "%s", VSIStrerror( errno ) );
+            return static_cast<toff_t>( -1 );
+        }
+        psGTH->bAtEndOfFile = true;
+        psGTH->nExpectedPos = VSIFTellL( psGTH->fpL );
+        return static_cast<toff_t>(psGTH->nExpectedPos);
+    }
+
+    GTHFlushBuffer(th);
+    psGTH->bAtEndOfFile = false;
+    psGTH->nExpectedPos = 0;
+
+    if( VSIFSeekL( psGTH->fpL, off, whence ) == 0 )
+    {
+        return static_cast<toff_t>( VSIFTellL( psGTH->fpL ) );
+    }
     else
     {
-        TIFFErrorExt( fd, "_tiffSeekProc", "%s", VSIStrerror( errno ) );
-        return (toff_t) -1;
+        TIFFErrorExt( th, "_tiffSeekProc", "%s", VSIStrerror( errno ) );
+        return static_cast<toff_t>(-1);
     }
 }
 
 static int
-_tiffCloseProc(thandle_t fd)
+_tiffCloseProc( thandle_t th )
 {
-    return VSIFCloseL( (VSILFILE *) fd );
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle*>( th );
+    GTHFlushBuffer(th);
+    CPLFree(psGTH->abyWriteBuffer);
+    CPLFree(psGTH);
+    return 0;
 }
 
 static toff_t
-_tiffSizeProc(thandle_t fd)
+_tiffSizeProc( thandle_t th )
 {
-    vsi_l_offset  old_off;
-    toff_t        file_size;
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle*>( th );
+    if( psGTH->bAtEndOfFile )
+    {
+        return static_cast<toff_t>( psGTH->nExpectedPos );
+    }
 
-    old_off = VSIFTellL( (VSILFILE *) fd );
-    VSIFSeekL( (VSILFILE *) fd, 0, SEEK_END );
-    
-    file_size = (toff_t) VSIFTellL( (VSILFILE *) fd );
-    VSIFSeekL( (VSILFILE *) fd, old_off, SEEK_SET );
+    const vsi_l_offset old_off = VSIFTellL( psGTH->fpL );
+    CPL_IGNORE_RET_VAL(VSIFSeekL( psGTH->fpL, 0, SEEK_END ));
+
+    const toff_t file_size = (toff_t) VSIFTellL( psGTH->fpL );
+    CPL_IGNORE_RET_VAL(VSIFSeekL( psGTH->fpL, old_off, SEEK_SET ));
 
     return file_size;
 }
 
 static int
-_tiffMapProc(thandle_t fd, tdata_t* pbase, toff_t* psize)
+_tiffMapProc( thandle_t /* th */, tdata_t* /* pbase */ , toff_t* /* psize */ )
 {
-	(void) fd; (void) pbase; (void) psize;
-	return (0);
+    return 0;
 }
 
 static void
-_tiffUnmapProc(thandle_t fd, tdata_t base, toff_t size)
+_tiffUnmapProc( thandle_t /* th */, tdata_t /* base */, toff_t /* size */ )
+{}
+
+VSILFILE* VSI_TIFFGetVSILFile( thandle_t th )
 {
-	(void) fd; (void) base; (void) size;
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle *>( th );
+    VSI_TIFFFlushBufferedWrite(th);
+    return psGTH->fpL;
 }
 
-/*
- * Open a TIFF file for read/writing.
- */
-TIFF* VSI_TIFFOpen(const char* name, const char* mode)
+int VSI_TIFFFlushBufferedWrite( thandle_t th )
 {
-    static const char module[] = "TIFFOpen";
-    int           i, a_out;
-    char          access[32];
-    VSILFILE      *fp;
-    TIFF          *tif;
+    GDALTiffHandle* psGTH = reinterpret_cast<GDALTiffHandle*>( th );
+    psGTH->bAtEndOfFile = false;
+    return GTHFlushBuffer(th);
+}
 
-    a_out = 0;
-    access[0] = '\0';
-    for( i = 0; mode[i] != '\0'; i++ )
+// Open a TIFF file for read/writing.
+TIFF* VSI_TIFFOpen( const char* name, const char* mode,
+                    VSILFILE* fpL )
+{
+    char access[32] = { '\0' };
+    bool bAllocBuffer = false;
+    int a_out = 0;
+    for( int i = 0; mode[i] != '\0'; i++ )
     {
         if( mode[i] == 'r'
             || mode[i] == 'w'
@@ -139,27 +256,40 @@ TIFF* VSI_TIFFOpen(const char* name, const char* mode)
             access[a_out++] = mode[i];
             access[a_out] = '\0';
         }
+        if( mode[i] == 'w'
+            || mode[i] == '+'
+            || mode[i] == 'a' )
+        {
+            bAllocBuffer = true;
+        }
     }
+
+    // No need to buffer on /vsimem/
+    if( STARTS_WITH(name, "/vsimem/") )
+        bAllocBuffer = false;
 
     strcat( access, "b" );
-                    
-    fp = VSIFOpenL( name, access );
-    if (fp == NULL) {
-        if( errno >= 0 )
-            TIFFError(module,"%s: %s", name, VSIStrerror( errno ) );
-        else
-            TIFFError(module, "%s: Cannot open", name);
-        return ((TIFF *)0);
-    }
 
-    tif = XTIFFClientOpen(name, mode,
-                          (thandle_t) fp,
-                          _tiffReadProc, _tiffWriteProc,
-                          _tiffSeekProc, _tiffCloseProc, _tiffSizeProc,
-                          _tiffMapProc, _tiffUnmapProc);
+    if( VSIFSeekL(fpL, 0, SEEK_SET) < 0 )
+        return NULL;
 
+    GDALTiffHandle* psGTH = static_cast<GDALTiffHandle *>(
+        CPLMalloc(sizeof(GDALTiffHandle)) );
+    psGTH->fpL = fpL;
+    psGTH->nExpectedPos = 0;
+    psGTH->bAtEndOfFile = false;
+    psGTH->abyWriteBuffer =
+        bAllocBuffer ? static_cast<GByte *>( VSIMalloc(BUFFER_SIZE) ) : NULL;
+    psGTH->nWriteBufferSize = 0;
+
+    TIFF *tif =
+        XTIFFClientOpen( name, mode,
+                         (thandle_t) psGTH,
+                         _tiffReadProc, _tiffWriteProc,
+                         _tiffSeekProc, _tiffCloseProc, _tiffSizeProc,
+                         _tiffMapProc, _tiffUnmapProc );
     if( tif == NULL )
-        VSIFCloseL( fp );
-        
+        CPLFree(psGTH);
+
     return tif;
 }

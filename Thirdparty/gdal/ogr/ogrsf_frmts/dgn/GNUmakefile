@@ -5,7 +5,7 @@ include ../../../GDALmake.opt
 MIN_OBJ	=	dgnopen.o dgnread.o dgnfloat.o dgnhelp.o dgnwrite.o dgnstroke.o
 OBJ =	ogrdgndriver.o ogrdgndatasource.o ogrdgnlayer.o $(MIN_OBJ)
 
-CPPFLAGS	:=	-I.. -I../.. $(GDAL_INCLUDE) $(CPPFLAGS)
+CPPFLAGS	:=	-I.. -I../..  $(CPPFLAGS)
 
 CPL_DIR	=	../../../port
 
@@ -15,7 +15,7 @@ DIST_DIR =	dgnlib-$(DIST_REV)
 DIST_FILE = 	dgnlib-$(DIST_REV).zip
 DIST_FILES =	dgnread.cpp dgnopen.cpp dgnlib.h dgnlibp.h dgnfloat.cpp \
 		dgnstroke.cpp dgnwrite.cpp dgnhelp.cpp \
-		dgnwritetest.c dgndump.c \
+		dgnwritetest.cpp dgndump.cpp \
 		\
 		dist/Makefile dist/Makefile.vc dist/cpl_config.h \
 		dist/README \

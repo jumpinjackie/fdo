@@ -1,3 +1,4 @@
+# -*- Makefile -*- for emacs.
 GDAL_ROOT	=	@abs_top_builddir@
 top_builddir	=	$(GDAL_ROOT)
 
@@ -12,7 +13,7 @@ ifeq ($(HAVE_LIBTOOL),yes)
 LIBTOOL_COMPILE_CC =	$(LIBTOOL) --mode=compile --tag=CC
 LIBTOOL_COMPILE_CXX =	$(LIBTOOL) --mode=compile --tag=CXX
 LIBTOOL_LINK	=	$(LIBTOOL) --mode=link
-LIBTOOL_INSTALL	=	$(LIBTOOL) --mode=install 
+LIBTOOL_INSTALL	=	$(LIBTOOL) --mode=install
 LIBTOOL_FINISH	=	$(LIBTOOL) --mode=finish --silent
 LIBTOOL_CLEAN	=	$(LIBTOOL) --mode=clean
 OBJ_EXT = lo
@@ -34,8 +35,12 @@ INSTALL_DIR	= 	$(GDAL_ROOT)/install-sh -d
 
 LIBS	=	$(SDE_LIB) @LIBS@ $(KAK_LIBS) $(DWG_LIBS) $(CURL_LIB) \
 		$(MRSID_LIBS) $(MRSID_LIDAR_LIBS) $(ECW_LIBS) $(INGRES_LIB) \
-		$(PCIDSK_LIB) $(RASDAMAN_LIB) $(CHARLS_LIB) \
-		$(OPENCL_LIB) $(JVM_LIB) $(LIBICONV) $(FGDB_LIB) $(LIBXML2_LIB)
+		$(PCIDSK_LIB) $(RASDAMAN_LIB) $(CHARLS_LIB) $(SOSI_LIB) \
+		$(OPENCL_LIB) $(JVM_LIB) $(LIBICONV) $(FGDB_LIB) $(LIBXML2_LIB) $(MONGODB_LIB)
+
+SSEFLAGS = @SSEFLAGS@
+SSSE3FLAGS = @SSSE3FLAGS@
+AVXFLAGS = @AVXFLAGS@
 
 PYTHON = @PYTHON@
 PY_HAVE_SETUPTOOLS=@PY_HAVE_SETUPTOOLS@
@@ -44,7 +49,8 @@ PY_HAVE_SETUPTOOLS=@PY_HAVE_SETUPTOOLS@
 BINDINGS	=	@BINDINGS@
 
 HAVE_OGDI = @HAVE_OGDI@
-OGR_ENABLED = @OGR_ENABLED@
+OGR_ENABLED = yes
+GNM_ENABLED = @GNM_ENABLED@
 
 OSX_FRAMEWORK_PREFIX = /Library/Frameworks/GDAL.framework
 OSX_VERSION_FRAMEWORK_PREFIX = ${OSX_FRAMEWORK_PREFIX}/Versions/@GDAL_VERSION_MAJOR@.@GDAL_VERSION_MINOR@
@@ -61,10 +67,39 @@ INST_DOCS	=	@exec_prefix@/doc
 INST_MAN	=	@mandir@
 INST_HTML	=	$(HOME)/www/gdal
 
-CPPFLAGS	= @CPPFLAGS@ -I$(GDAL_ROOT)/port @EXTRA_INCLUDES@
+CPPFLAGS	= @CPPFLAGS@ -I$(GDAL_ROOT)/port @EXTRA_INCLUDES@ -DGDAL_COMPILATION
 CFLAGS		= @CFLAGS@ @C_WFLAGS@ $(USER_DEFS)
 CXXFLAGS	= @CXXFLAGS@ @CXX_WFLAGS@ $(USER_DEFS)
+CFLAGS_NOFTRAPV          = @CFLAGS_NOFTRAPV@ @C_WFLAGS@ $(USER_DEFS)
+CXXFLAGS_NOFTRAPV        = @CXXFLAGS_NOFTRAPV@ @CXX_WFLAGS@ $(USER_DEFS)
+CXXFLAGS_NO_LTO_IF_SSSE3_NONDEFAULT           = @CXXFLAGS_NO_LTO_IF_SSSE3_NONDEFAULT@ @CXX_WFLAGS@ $(USER_DEFS)
+CXXFLAGS_NO_LTO_IF_AVX_NONDEFAULT           = @CXXFLAGS_NO_LTO_IF_AVX_NONDEFAULT@ @CXX_WFLAGS@ $(USER_DEFS)
+
+NO_UNUSED_PARAMETER_FLAG = @NO_UNUSED_PARAMETER_FLAG@
+NO_SIGN_COMPARE = @NO_SIGN_COMPARE@
+NO_NON_VIRTUAL_DTOR_FLAG = @NO_NON_VIRTUAL_DTOR_FLAG@
+NO_LOGICAL_OP_FLAG = @NO_LOGICAL_OP_FLAG@
+
+# Also available -DAFL_FRIENDLY for strcmp(), etc.. variants that will
+# work better with American Fuzzy Lop branch examination logic
+
+# TODO(schwehr): Make these be configure flags.
+# CFLAGS += -Werror
+# CFLAGS += -std=c11
+# CFLAGS += -fsanitize=address
+# CFLAGS += -D_FORTIFY_SOURCE=2
+# CFLAGS += -fPIE -pie
+# CFLAGS += -fstack-protector-all
+
+# CXXFLAGS += -Werror
+# CXXFLAGS += -std=c++11
+# CXXFLAGS += -fsanitize=address
+# CXXFLAGS += -D_FORTIFY_SOURCE=2
+# CXXFLAGS += -fPIE -pie
+# CXXFLAGS += -fstack-protector-all
+
 LDFLAGS     = @LDFLAGS@
+# LDFLAGS += -fsanitize=address
 
 RANLIB		=	@RANLIB@
 SO_EXT		=	@SO_EXT@
@@ -79,13 +114,14 @@ endif
 
 GDAL_INCLUDE	=	-I$(GDAL_ROOT)/port -I$(GDAL_ROOT)/gcore \
 			-I$(GDAL_ROOT)/alg \
-			-I$(GDAL_ROOT)/ogr -I$(GDAL_ROOT)/ogr/ogrsf_frmts
+                        -I$(GDAL_ROOT)/ogr -I$(GDAL_ROOT)/ogr/ogrsf_frmts \
+                        -I$(GDAL_ROOT)/gnm -I$(GDAL_ROOT)/apps
 
 # libtool targets and help variables
 LIBGDAL	:=		libgdal.la
-LIBGDAL_CURRENT	:=	18
-LIBGDAL_REVISION	:=	0
-LIBGDAL_AGE	:=	17
+LIBGDAL_CURRENT	:=	23
+LIBGDAL_REVISION	:=	2
+LIBGDAL_AGE	:=	3
 
 # native build targets and variables
 GDAL_VER	=	@GDAL_VER@
@@ -98,6 +134,7 @@ GDAL_VERSION_REV   =    @GDAL_VERSION_REV@
 GDAL_LIB	= 	$(GDAL_ROOT)/libgdal.a
 GDAL_SLIB	=	$(GDAL_ROOT)/libgdal.$(SO_EXT)
 GDAL_SLIB_LINK	=	-L$(GDAL_ROOT) -lgdal
+#GDAL_SLIB_SONAME = -Wl,-soname,libgdal.$(SO_EXT).@GDAL_VERSION_MAJOR@
 
 # Mac OS X Framework definition
 MACOSX_FRAMEWORK = @MACOSX_FRAMEWORK@
@@ -130,12 +167,24 @@ LIBS	   +=	$(MYSQL_LIB)
 #
 HAVE_HDF4     = @HAVE_HDF4@
 HDF4_INCLUDE  = @HDF4_INCLUDE@ -I$(GDAL_ROOT)/ogr
+HDF4_HAS_MAXOPENFILES = @HDF4_HAS_MAXOPENFILES@
+ifeq ($(HDF4_HAS_MAXOPENFILES),yes)
+HDF4_FLAGS=-DHDF4_HAS_MAXOPENFILES
+endif
 
 #
 # HDF5 Support.
 #
 HAVE_HDF5     = @HAVE_HDF5@
-HDF5_INCLUDE  = @HDF5_INCLUDE@ 
+HDF5_INCLUDE  = @HDF5_INCLUDE@
+
+#
+# KEA Support.
+#
+HAVE_KEA     = @HAVE_KEA@
+KEA_INC      = @KEA_INC@
+KEA_LIB      = @KEA_LIB@
+LIBS       +=   $(KEA_LIB)
 
 #
 # NetCDF Support.
@@ -155,15 +204,19 @@ HAVE_DODS = yes
 endif
 
 #
-# SQLite 
+# SQLite
 #
 SQLITE_INC = @SQLITE_INC@
 SQLITE_HAS_COLUMN_METADATA = @SQLITE_HAS_COLUMN_METADATA@
 HAVE_SQLITE = @HAVE_SQLITE@
 HAVE_SPATIALITE = @HAVE_SPATIALITE@
+SPATIALITE_SONAME = @SPATIALITE_SONAME@
 SPATIALITE_INC = @SPATIALITE_INC@
 SPATIALITE_AMALGAMATION = @SPATIALITE_AMALGAMATION@
+SPATIALITE_412_OR_LATER = @SPATIALITE_412_OR_LATER@
 HAVE_PCRE = @HAVE_PCRE@
+HAVE_RASTERLITE2 = @HAVE_RASTERLITE2@
+RASTERLITE2_CFLAGS = @RASTERLITE2_CFLAGS@
 
 #
 # JPEG2000 via Kakadu Support.
@@ -187,6 +240,7 @@ JASPER_FLAGS	= @JASPER_FLAGS@
 # JPEG-2000 Support via OpenJPEG library.
 #
 HAVE_OPENJPEG   = @HAVE_OPENJPEG@
+OPENJPEG_VERSION = @OPENJPEG_VERSION@
 
 #
 # MrSID support via LizardTech's DSDK
@@ -202,19 +256,24 @@ MRSID_LIBS	= @MRSID_LIBS@
 MRSID_LIDAR_INCLUDE	= @MRSID_LIDAR_INCLUDE@
 MRSID_LIDAR_LIBS	= @MRSID_LIDAR_LIBS@
 
-# 
+#
 # ECW Related
-# 
+#
 ECW_FLAGS	= @ECW_FLAGS@
 ECW_INCLUDE 	= @ECW_INCLUDE@
 ECW_LIBS	= @ECW_LIBS@
+
+#
+# JP2Lura Related
+#
+JP2LURA_INCLUDE 	= @JP2LURA_INCLUDE@
 
 # Xerces C++ XML Parser for GML and ILI
 #
 HAVE_XERCES	= @HAVE_XERCES@
 XERCES_INCLUDE	= @XERCES_INCLUDE@
 
-# 
+#
 # Enable NAS format
 #
 HAVE_NAS	= @HAVE_NAS@
@@ -242,6 +301,16 @@ OCI_INCLUDE	= @OCI_INCLUDE@
 HAVE_GEOS       =       @HAVE_GEOS@
 GEOS_CFLAGS     =       @GEOS_CFLAGS@
 
+# SFCGAL Support
+
+HAVE_SFCGAL       =       @HAVE_SFCGAL@
+SFCGAL_CFLAGS     =       @SFCGAL_CFLAGS@
+
+# QHull Support
+
+QHULL_SETTING   =       @QHULL_SETTING@
+QHULL_INCLUDE_SUBDIR_IS_LIBQHULL   =       @QHULL_INCLUDE_SUBDIR_IS_LIBQHULL@
+
 # GRASS Support
 
 GRASS_SETTING	=	@GRASS_SETTING@
@@ -249,21 +318,28 @@ GRASS_INCLUDE	=	@GRASS_INCLUDE@
 GRASS_GISBASE	=	@GRASS_GISBASE@
 HAVE_GRASS	=	@HAVE_GRASS@
 
-# 
+#
 # SDE
 #
 HAVE_SDE = @SDE_ENABLED@
 SDE_LIB	= @SDE_LIB@
 SDE_INC = @SDE_INC@
 
-# 
+#
 # FileGDB
 #
 HAVE_FGDB = @FGDB_ENABLED@
 FGDB_LIB = @FGDB_LIB@
 FGDB_INC = @FGDB_INC@
 
-# 
+#
+# MongoDB
+#
+HAVE_MONGODB = @MONGODB_ENABLED@
+MONGODB_LIB = @MONGODB_LIB@
+MONGODB_INC = @MONGODB_INC@
+
+#
 # ArcObjects
 #
 HAVE_ARCOBJECTS = @ARCOBJECTS_ENABLED@
@@ -277,15 +353,29 @@ CURL_SETTING 	=	@CURL_SETTING@
 CURL_LIB	=	@CURL_LIB@
 CURL_INC	=	@CURL_INC@
 
-# 
+#
+# libjson-c
+#
+LIBJSONC_SETTING = @LIBJSONC_SETTING@
+JSON_INCLUDE = @JSON_INCLUDE@
+
+#
 # OpenCL support
 #
 OPENCL_LIB	=	@OPENCL_LIB@
 OPENCL_FLAGS	=	@OPENCL_FLAGS@
 
 #
+# SOSI support
+#
+SOSI_INC = @SOSI_INC@
+SOSI_LIB = @SOSI_LIB@
+HAVE_SOSI = @SOSI_ENABLED@
+
+
+#
 # PCIDSK SDK
-# 
+#
 PCIDSK_SETTING  =       @PCIDSK_SETTING@
 PCIDSK_LIB	=	@PCIDSK_LIB@
 PCIDSK_INCLUDE	=	@PCIDSK_INCLUDE@
@@ -303,31 +393,10 @@ HAVE_LIBXML2 = @HAVE_LIBXML2@
 LIBXML2_INC = @LIBXML2_INC@
 LIBXML2_LIB = @LIBXML2_LIB@
 
-# 
-# DWGdirect Library
 #
-DWGDIRECT =	@DWGDIRECT@
-DWG_PLT = @DWG_PLT@
-
-ifneq ($(DWGDIRECT),)
-DWG_LIBDIR =	$(DWGDIRECT)/lib/$(DWG_PLT)
-DWG_LIBS = $(DWG_LIBDIR)/DD_$(DWG_PLT)_ModelerGeometry.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_AcisRenderer.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Br.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_AcisBuilder.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Db.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Gs.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_SpatialIndex.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Gi.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Ge.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Root.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_FT.a \
-	$(DWG_LIBDIR)/DD_$(DWG_PLT)_Alloc.a 
-HAVE_DWGDIRECT = yes
-else
-DWG_LIBS =	
-HAVE_DWGDIRECT = no
-endif
+# CAD Support
+#
+HAVE_CAD	=	@CXX11_SUPPORT@
 
 #
 # Informix DataBlade support
@@ -344,7 +413,7 @@ endif
 #
 ifeq (@X_FME_HOME@,)
 HAVE_FME        =       no
-FME_INCLUDE	=	
+FME_INCLUDE	=
 else
 HAVE_FME        =       yes
 FME_INCLUDE	=	-I@X_FME_HOME@/fmeobjects/cpp
@@ -390,6 +459,11 @@ RASDAMAN_INC  =   @RASDAMAN_INC@
 RASDAMAN_LIB  =   @RASDAMAN_LIB@
 
 #
+# PDF stuff
+#
+PDF_PLUGIN = @PDF_PLUGIN@
+
+#
 # Poppler stuff
 #
 
@@ -398,7 +472,9 @@ POPPLER_HAS_OPTCONTENT = @POPPLER_HAS_OPTCONTENT@
 POPPLER_BASE_STREAM_HAS_TWO_ARGS = @POPPLER_BASE_STREAM_HAS_TWO_ARGS@
 POPPLER_0_20_OR_LATER = @POPPLER_0_20_OR_LATER@
 POPPLER_0_23_OR_LATER = @POPPLER_0_23_OR_LATER@
+POPPLER_0_58_OR_LATER = @POPPLER_0_58_OR_LATER@
 POPPLER_INC = @POPPLER_INC@
+POPPLER_PLUGIN_LIB = @POPPLER_PLUGIN_LIB@
 
 #
 # Podofo stuff
@@ -406,6 +482,15 @@ POPPLER_INC = @POPPLER_INC@
 
 HAVE_PODOFO = @HAVE_PODOFO@
 PODOFO_INC = @PODOFO_INC@
+PODOFO_PLUGIN_LIB = @PODOFO_PLUGIN_LIB@
+
+#
+# Pdfium stuff
+#
+
+HAVE_PDFIUM = @HAVE_PDFIUM@
+PDFIUM_INC = @PDFIUM_INC@
+PDFIUM_PLUGIN_LIB = @PDFIUM_PLUGIN_LIB@
 
 #
 # CharLs stuff
@@ -414,6 +499,12 @@ PODOFO_INC = @PODOFO_INC@
 #HAVE_CHARLS = yes
 #CHARLS_INC = -I/path/to/charls_include
 #CHARLS_LIB = -L/path/to/charls_lib -lCharLS
+
+#
+# Teigha stuff
+#
+HAVE_TEIGHA = @HAVE_TEIGHA@
+TEIGHA_DIR = @TEIGHA_DIR@
 
 #
 # PROJ.4 stuff
@@ -426,18 +517,18 @@ PROJ_INCLUDE	=	@PROJ_INCLUDE@
 
 PAM_SETTING     =       @PAM_SETTING@
 
-ifeq ($(OGR_ENABLED),yes)
 GDAL_LIBS	:= $(GDAL_LIB) $(OCI_LIB) $(GDAL_LIBS)
-CPPFLAGS	:= -DOGR_ENABLED $(CPPFLAGS)
-else
-GDAL_LIBS	=	$(GDAL_LIB)
+
+ifeq ($(GNM_ENABLED),yes)
+CPPFLAGS	:= -DGNM_ENABLED $(CPPFLAGS)
 endif
 
 #
 # Java stuff
 #
-JAVA_INC  =   @JAVA_INC@
-JVM_LIB  =   @JVM_LIB@
+JAVA_HOME = @JAVA_HOME@
+JAVA_INC  = @JAVA_INC@
+JVM_LIB   = @JVM_LIB@
 
 MDB_ENABLED =   @MDB_ENABLED@
 
@@ -451,27 +542,42 @@ HAVE_FREEXL = @HAVE_FREEXL@
 FREEXL_INCLUDE = @FREEXL_INCLUDE@
 
 #
-#	Note these codes have to exactly match the format directory names, 
-#	and their uppercase form should be the format portion of the
-#	format registration entry point.  eg. gdb -> GDALRegister_GDB().
+# cryptopp stuff
 #
-GDAL_FORMATS = 	gxf gtiff hfa aigrid aaigrid ceos ceos2 iso8211 xpm \
-		sdts raw dted mem jdem envisat elas fit vrt usgsdem l1b \
-		nitf bmp pcidsk airsar rs2 ilwis rmf leveller sgi srtmhgt \
-		idrisi gsg ingr ers jaxapalsar dimap gff cosar pds adrg \
-		coasp tsx terragen blx msgn til r northwood saga xyz hf2 \
-		kmlsuperoverlay ctg e00grid zmap ngsgeoid iris map\
-		@OPT_GDAL_FORMATS@
+HAVE_CRYPTOPP    =       @HAVE_CRYPTOPP@
+USE_ONLY_CRYPTODLL_ALG        =       @USE_ONLY_CRYPTODLL_ALG@
 
+#
+#	Note these codes have to exactly match the format directory names,
+#	and their uppercase form should be the format portion of the
+#	format registration entry point.  eg. gdb -> GDALRegister_GTiff().
+#
+GDAL_FORMATS :=
+GDAL_FORMATS += gxf gtiff hfa aigrid aaigrid ceos ceos2 iso8211 xpm
+GDAL_FORMATS += sdts raw dted mem jdem envisat elas fit vrt usgsdem l1b
+GDAL_FORMATS += nitf bmp airsar rs2 ilwis rmf leveller sgi srtmhgt
+GDAL_FORMATS += idrisi gsg ingr ers jaxapalsar dimap gff cosar pds adrg
+GDAL_FORMATS += coasp tsx terragen blx msgn til r northwood saga xyz hf2
+GDAL_FORMATS += kmlsuperoverlay ctg e00grid zmap ngsgeoid iris map cals
+GDAL_FORMATS += safe sentinel2 derived
+GDAL_FORMATS += prf
+GDAL_FORMATS += @OPT_GDAL_FORMATS@
+
+ifneq ($(PCIDSK_SETTING),no)
+GDAL_FORMATS += pcidsk
+endif
 
 ifneq ($(LIBZ_SETTING),no)
-GDAL_FORMATS := $(GDAL_FORMATS) rik ozi pdf
+GDAL_FORMATS := $(GDAL_FORMATS) rik ozi
+
+ifneq ($(PDF_PLUGIN),yes)
+GDAL_FORMATS := $(GDAL_FORMATS) pdf
 endif
 
-ifeq ($(OGR_ENABLED),yes)
+endif
+
 ifeq ($(HAVE_SQLITE),yes)
 GDAL_FORMATS := $(GDAL_FORMATS) rasterlite mbtiles
-endif
 endif
 
 ifeq ($(HAVE_POSTGISRASTER),yes)
@@ -482,9 +588,7 @@ ifeq ($(HAVE_CHARLS),yes)
 GDAL_FORMATS := $(GDAL_FORMATS) jpegls
 endif
 
-ifeq ($(OGR_ENABLED),yes)
 GDAL_FORMATS := $(GDAL_FORMATS) arg
-endif
 
 #
 # CONFIG_LIBS is what local program should link against, and CONFIG_LIBS_INS
@@ -536,16 +640,16 @@ endif # HAVE_LIBTOOL
 O_OBJ =	$(foreach file,$(OBJ),../o/$(file))
 
 ../o/%.$(OBJ_EXT):	%.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(GDAL_INCLUDE) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 ../o/%.$(OBJ_EXT):	%.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CXX) $(GDAL_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 %.$(OBJ_EXT):	%.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CC) $(GDAL_INCLUDE) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 %.$(OBJ_EXT):	%.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+	$(CXX) $(GDAL_INCLUDE) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 #
 # default rules for handling subdirectories

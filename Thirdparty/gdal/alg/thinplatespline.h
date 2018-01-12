@@ -1,13 +1,13 @@
 /******************************************************************************
- * $Id: thinplatespline.h 20193 2010-08-06 17:12:10Z rouault $
+ * $Id: thinplatespline.h 36411 2016-11-21 22:03:48Z rouault $
  *
  * Project:  GDAL Warp API
- * Purpose:  Declarations for 2D Thin Plate Spline transformer. 
+ * Purpose:  Declarations for 2D Thin Plate Spline transformer.
  * Author:   VIZRT Development Team.
  *
- * This code was provided by Gilad Ronnen (gro at visrt dot com) with 
+ * This code was provided by Gilad Ronnen (gro at visrt dot com) with
  * permission to reuse under the following license.
- * 
+ *
  ******************************************************************************
  * Copyright (c) 2004, VIZRT Inc.
  *
@@ -30,20 +30,24 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#ifndef THINPLATESPLINE_H_INCLUDED
+#define THINPLATESPLINE_H_INCLUDED
+
+#ifndef DOXYGEN_SKIP
+
 #include "gdal_alg.h"
 #include "cpl_conv.h"
 
 typedef enum
 {
-	VIZ_GEOREF_SPLINE_ZERO_POINTS,
-	VIZ_GEOREF_SPLINE_ONE_POINT,
-	VIZ_GEOREF_SPLINE_TWO_POINTS,
-	VIZ_GEOREF_SPLINE_ONE_DIMENSIONAL,
-	VIZ_GEOREF_SPLINE_FULL,
-	
-	VIZ_GEOREF_SPLINE_POINT_WAS_ADDED,
-	VIZ_GEOREF_SPLINE_POINT_WAS_DELETED
+    VIZ_GEOREF_SPLINE_ZERO_POINTS,
+    VIZ_GEOREF_SPLINE_ONE_POINT,
+    VIZ_GEOREF_SPLINE_TWO_POINTS,
+    VIZ_GEOREF_SPLINE_ONE_DIMENSIONAL,
+    VIZ_GEOREF_SPLINE_FULL,
 
+    VIZ_GEOREF_SPLINE_POINT_WAS_ADDED,
+    VIZ_GEOREF_SPLINE_POINT_WAS_DELETED
 } vizGeorefInterType;
 
 //#define VIZ_GEOREF_SPLINE_MAX_POINTS 40
@@ -51,34 +55,39 @@ typedef enum
 
 class VizGeorefSpline2D
 {
+    bool grow_points();
+
   public:
 
-    VizGeorefSpline2D(int nof_vars = 1){
-        x = y = u = NULL;
-        unused = index = NULL;
-        for( int i = 0; i < nof_vars; i++ )
+    explicit VizGeorefSpline2D(int nof_vars = 1) :
+        type(VIZ_GEOREF_SPLINE_ZERO_POINTS),
+        _nof_vars(nof_vars),
+        _nof_points(0),
+        _max_nof_points(0),
+        _nof_eqs(0),
+#if 0
+        _tx(0.0),
+        _ty(0.0),
+        _ta(10.0),
+#endif
+        _dx(0.0),
+        _dy(0.0),
+        x(NULL),
+        y(NULL),
+        u(NULL),
+        unused(NULL),
+        index(NULL)
+    {
+        for( int i = 0; i < VIZGEOREF_MAX_VARS; i++ )
         {
             rhs[i] = NULL;
             coef[i] = NULL;
         }
-          
-        _tx = _ty = 0.0;		
-        _ta = 10.0;
-        _nof_points = 0;
-        _nof_vars = nof_vars;
-        _max_nof_points = 0;
-        _AA = NULL;
-        _Ainv = NULL;
+
         grow_points();
-        type = VIZ_GEOREF_SPLINE_ZERO_POINTS;
     }
 
-    ~VizGeorefSpline2D(){
-        if ( _AA )
-            CPLFree(_AA);
-        if ( _Ainv )
-            CPLFree(_Ainv);
-
+    ~VizGeorefSpline2D() {
         CPLFree( x );
         CPLFree( y );
         CPLFree( u );
@@ -91,6 +100,7 @@ class VizGeorefSpline2D
         }
     }
 
+#if 0
     int get_nof_points(){
         return _nof_points;
     }
@@ -110,54 +120,59 @@ class VizGeorefSpline2D
     }
 
     void dump_data_points()
-	{
-            for ( int i = 0; i < _nof_points; i++ )
-            {
-                fprintf(stderr, "X = %f Y = %f Vars = ", x[i], y[i]);
-                for ( int v = 0; v < _nof_vars; v++ )
-                    fprintf(stderr, "%f ", rhs[v][i+3]);
-                fprintf(stderr, "\n");
-            }
-	}
-    int delete_list()
-	{
-            _nof_points = 0;
-            type = VIZ_GEOREF_SPLINE_ZERO_POINTS;
-            if ( _AA )
-            {
-                CPLFree(_AA);
-                _AA = NULL;
-            }
-            if ( _Ainv )
-            {
-                CPLFree(_Ainv);
-                _Ainv = NULL;
-            }
-            return _nof_points;
-	}
+    {
+        for ( int i = 0; i < _nof_points; i++ )
+        {
+            fprintf(stderr, "X = %f Y = %f Vars = ", x[i], y[i]);
+            for ( int v = 0; v < _nof_vars; v++ )
+                fprintf(stderr, "%f ", rhs[v][i+3]);
+            fprintf(stderr, "\n");
+        }
+    }
 
-    void grow_points();
-    int add_point( const double Px, const double Py, const double *Pvars );
-    int delete_point(const double Px, const double Py );
+    int delete_list()
+    {
+        _nof_points = 0;
+        type = VIZ_GEOREF_SPLINE_ZERO_POINTS;
+        if ( _AA )
+        {
+            CPLFree(_AA);
+            _AA = NULL;
+        }
+        if ( _Ainv )
+        {
+            CPLFree(_Ainv);
+            _Ainv = NULL;
+        }
+        return _nof_points;
+    }
+#endif
+
+    bool add_point( const double Px, const double Py, const double *Pvars );
     int get_point( const double Px, const double Py, double *Pvars );
+#if 0
+    int delete_point(const double Px, const double Py );
     bool get_xy(int index, double& x, double& y);
     bool change_point(int index, double x, double y, double* Pvars);
     void reset(void) { _nof_points = 0; }
+#endif
     int solve(void);
 
-  private:	
-    double base_func( const double x1, const double y1,
-                      const double x2, const double y2 );
+  private:
 
     vizGeorefInterType type;
 
-    int _nof_vars;
+    const int _nof_vars;
     int _nof_points;
     int _max_nof_points;
     int _nof_eqs;
 
+#if 0
+    // Disabled because the methods that use there is disabled.
     double _tx, _ty;
     double _ta;
+#endif
+
     double _dx, _dy;
 
     double *x; // [VIZ_GEOREF_SPLINE_MAX_POINTS+3];
@@ -171,8 +186,11 @@ class VizGeorefSpline2D
     double *u; // [VIZ_GEOREF_SPLINE_MAX_POINTS];
     int *unused; // [VIZ_GEOREF_SPLINE_MAX_POINTS];
     int *index; // [VIZ_GEOREF_SPLINE_MAX_POINTS];
-	
-    double *_AA, *_Ainv;
+
+  private:
+    CPL_DISALLOW_COPY_ASSIGN(VizGeorefSpline2D)
 };
 
+#endif /* #ifndef DOXYGEN_SKIP */
 
+#endif /* THINPLATESPLINE_H_INCLUDED */

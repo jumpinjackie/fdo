@@ -20,19 +20,19 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
                 g2float *fld,g2int ngrdpts,g2int ibmap,g2int *bmap)
 //$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    g2_addfield 
+// SUBPROGRAM:    g2_addfield
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2002-11-05
 //
 // ABSTRACT: This routine packs up Sections 4 through 7 for a given field
 //   and adds them to a GRIB2 message.  They are Product Definition Section,
-//   Data Representation Section, Bit-Map Section and Data Section, 
+//   Data Representation Section, Bit-Map Section and Data Section,
 //   respectively.
-//   This routine is used with routines "g2_create", "g2_addlocal", 
-//   "g2_addgrid", and "g2_gribend" to create a complete GRIB2 message.  
+//   This routine is used with routines "g2_create", "g2_addlocal",
+//   "g2_addgrid", and "g2_gribend" to create a complete GRIB2 message.
 //   g2_create must be called first to initialize a new GRIB2 message.
 //   Also, routine g2_addgrid must be called after g2_create and
 //   before this routine to add the appropriate grid description to
-//   the GRIB2 message.   Also, a call to g2_gribend is required to complete 
+//   the GRIB2 message.   Also, a call to g2_gribend is required to complete
 //   GRIB2 message after all fields have been added.
 //
 // PROGRAM HISTORY LOG:
@@ -54,16 +54,16 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
 //                4 through 7 should be added.
 //     ipdsnum  - Product Definition Template Number ( see Code Table 4.0)
 //     ipdstmpl - Contains the data values for the specified Product Definition
-//                Template ( N=ipdsnum ).  Each element of this integer 
+//                Template ( N=ipdsnum ).  Each element of this integer
 //                array contains an entry (in the order specified) of Product
-//                Defintion Template 4.N
-//     coordlist- Array containg floating point values intended to document
+//                Definition Template 4.N
+//     coordlist- Array containing floating point values intended to document
 //                the vertical discretisation associated to model data
 //                on hybrid coordinate vertical levels.
 //     numcoord - number of values in array coordlist.
 //     idrsnum  - Data Representation Template Number ( see Code Table 5.0 )
 //     idrstmpl - Contains the data values for the specified Data Representation
-//                Template ( N=idrsnum ).  Each element of this integer 
+//                Template ( N=idrsnum ).  Each element of this integer
 //                array contains an entry (in the order specified) of Data
 //                Representation Template 5.N
 //                Note that some values in this template (eg. reference
@@ -81,7 +81,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
 //                255 = Bit map does not apply to this product.
 //     bmap[]   - Integer array containing bitmap to be added. ( if ibmap=0 )
 //
-//   OUTPUT ARGUMENT LIST:      
+//   OUTPUT ARGUMENT LIST:
 //     cgrib    - Character array to contain the updated GRIB2 message.
 //                Must be allocated large enough to store the entire
 //                GRIB2 message.
@@ -108,19 +108,18 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
 //
 // ATTRIBUTES:
 //   LANGUAGE: C
-//   MACHINE:  
+//   MACHINE:
 //
 //$$$
 {
-      g2int ierr;
-      static unsigned char G=0x47;       // 'G'
-      static unsigned char R=0x52;       // 'R'
-      static unsigned char I=0x49;       // 'I'
-      static unsigned char B=0x42;       // 'B'
-      static unsigned char s7=0x37;   // '7'
+      const unsigned char G=0x47;       // 'G'
+      const unsigned char R=0x52;       // 'R'
+      const unsigned char I=0x49;       // 'I'
+      const unsigned char B=0x42;       // 'B'
+      const unsigned char s7=0x37;   // '7'
 
       unsigned char *cpack;
-      static g2int  zero=0,one=1,four=4,five=5,six=6,seven=7;
+      const g2int  zero=0,one=1,four=4,five=5,six=6,seven=7;
       const g2int  minsize=50000;
       g2int   iofst,ibeg,lencurr,len,nsize;
       g2int   ilen,isecnum,i,nbits,temp,left;
@@ -131,30 +130,27 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       g2int   width,height,iscan,itemp;
       g2float *pfld;
       xxtemplate  *mappds,*mapdrs;
-      unsigned int allones=4294967295u;
- 
-      ierr=0;
+      const unsigned int allones=4294967295u;
+
 //
 //  Check to see if beginning of GRIB message exists
 //
       if ( cgrib[0]!=G || cgrib[1]!=R || cgrib[2]!=I || cgrib[3]!=B ) {
         printf("g2_addfield: GRIB not found in given message.\n");
-        printf("g2_addfield: Call to routine g2_create required to initialize GRIB messge.\n");
-        ierr=-1;
-        return(ierr);
+        printf("g2_addfield: Call to routine g2_create required to initialize GRIB message.\n");
+        return(-1);
       }
 //
 //  Get current length of GRIB message
-//  
+//
       gbit(cgrib,&lencurr,96,32);
 //
 //  Check to see if GRIB message is already complete
-//  
+//
       if ( cgrib[lencurr-4]==s7 && cgrib[lencurr-3]==s7 &&
            cgrib[lencurr-2]==s7 && cgrib[lencurr-1]==s7 ) {
         printf("g2_addfield: GRIB message already complete.  Cannot add new section.\n");
-        ierr=-2;
-        return(ierr);
+        return(-2);
       }
 //
 //  Loop through all current sections of the GRIB message to
@@ -163,7 +159,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       issec3=0;
       isprevbmap=0;
       len=16;    // length of Section 0
-      for (;;) { 
+      for (;;) {
       //    Get number and length of next section
         iofst=len*8;
         gbit(cgrib,&ilen,iofst,32);
@@ -178,7 +174,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       //  Check if a previous defined bitmap exists
         if (isecnum == 6) {
           gbit(cgrib,&ibmprev,iofst,8);
-          iofst=iofst+8;
+          /*iofst=iofst+8;*/
           if ((ibmprev >= 0) && (ibmprev <= 253)) isprevbmap=1;
         }
         len=len+ilen;
@@ -190,8 +186,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
           printf("g2_addfield: Section byte counts don''t add to total.\n");
           printf("g2_addfield: Sum of section byte counts = %d\n",len);
           printf("g2_addfield: Total byte count in Section 0 = %d\n",lencurr);
-          ierr=-3;
-          return(ierr);
+          return(-3);
         }
       }
 //
@@ -200,8 +195,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       if ( (isecnum != 3) && (isecnum != 7) ) {
         printf("g2_addfield: Sections 4-7 can only be added after Section 3 or 7.\n");
         printf("g2_addfield: Section ',isecnum,' was the last found in given GRIB message.\n");
-        ierr=-4;
-        return(ierr);
+        return(-4);
 //
 //  Sections 4 through 7 can only be added if section 3 was previously defined.
 //
@@ -210,8 +204,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
         printf("g2_addfield: Sections 4-7 can only be added if Section 3 was previously included.\n");
         printf("g2_addfield: Section 3 was not found in given GRIB message.\n");
         printf("g2_addfield: Call to routine addgrid required to specify Grid definition.\n");
-        ierr=-6;
-        return(ierr);
+        return(-6);
       }
 //
 //  Add Section 4  - Product Definition Section
@@ -229,8 +222,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       //
       mappds=getpdstemplate(ipdsnum);
       if (mappds == 0) {          // undefined template
-        ierr=-5;
-        return(ierr);
+        return(-5);
       }
       //
       //   Extend the Product Definition Template, if necessary.
@@ -300,8 +292,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       //
       mapdrs=getdrstemplate(idrsnum);
       if (mapdrs == 0) {
-        ierr=-5;
-        return(ierr);
+        return(-5);
       }
       //
       //  contract data field, removing data at invalid grid points,
@@ -325,11 +316,11 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
         simpack(pfld,ndpts,idrstmpl,cpack,&lcpack);
       else if (idrsnum==2 || idrsnum==3)           //  Complex Packing
         cmplxpack(pfld,ndpts,idrsnum,idrstmpl,cpack,&lcpack);
-      else if (idrsnum == 50) {         //  Sperical Harmonic Simple Packing 
+      else if (idrsnum == 50) {         //  Sperical Harmonic Simple Packing
         simpack(pfld+1,ndpts-1,idrstmpl,cpack,&lcpack);
         mkieee(pfld+0,idrstmpl+4,1);  // ensure RE(0,0) value is IEEE format
       }
-      else if (idrsnum == 51) {         //  Sperical Harmonic Complex Packing 
+      else if (idrsnum == 51) {         //  Sperical Harmonic Complex Packing
         getpoly(cgrib+lpos3,&JJ,&KK,&MM);
         if ( JJ!=0 && KK!=0 && MM!=0 )
            specpack(pfld,ndpts,JJ,KK,MM,idrstmpl,cpack,&lcpack);
@@ -345,7 +336,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
               width=ndpts;
               height=1;
            }
-           else if ( width==allones || height==allones ) {
+           else if ( (unsigned int)width==allones || (unsigned int)height==allones ) {
               width=ndpts;
               height=1;
            }
@@ -370,7 +361,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
               width=ndpts;
               height=1;
            }
-           else if ( width==allones || height==allones ) {
+           else if ( (unsigned int)width==allones || (unsigned int)height==allones ) {
               width=ndpts;
               height=1;
            }
@@ -389,16 +380,14 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
 #endif  /* USE_PNG */
       else {
         printf("g2_addfield: Data Representation Template 5.%d not yet implemented.\n",idrsnum);
-        ierr=-7;
-        return(ierr);
+        return(-7);
       }
       if ( ibmap == 0 || ibmap==254 ) {      // free temp space
          if (fld != pfld) free(pfld);
       }
       if ( lcpack < 0 ) {
         if( cpack != 0 ) free(cpack);
-        ierr=-10;
-        return(ierr);
+        return(-10);
       }
 
 //
@@ -459,12 +448,11 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       if ((ibmap==254) && ( ! isprevbmap)) {
         printf("g2_addfield: Requested previously defined bitmap,");
         printf(" but one does not exist in the current GRIB message.\n");
-        ierr=-8;
-        return(ierr);
+        return(-8);
       }
       //
       //   Calculate length of section 6 and store it in octets
-      //   1-4 of section 6.  Pad to end of octect, if necessary.
+      //   1-4 of section 6.  Pad to end of octet, if necessary.
       //
       left=8-(iofst%8);
       if (left != 8) {
@@ -490,7 +478,7 @@ g2int g2_addfield(unsigned char *cgrib,g2int ipdsnum,g2int *ipdstmpl,
       }
       //
       //   Calculate length of section 7 and store it in octets
-      //   1-4 of section 7.  
+      //   1-4 of section 7.
       //
       lensec7=(iofst-ibeg)/8;
       sbit(cgrib,&lensec7,ibeg,32);

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ntf_codelist.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  NTF Translator
  * Purpose:  NTFCodeList class implementation.
@@ -32,47 +31,49 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ntf_codelist.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ntf_codelist.cpp 38652 2017-05-29 07:37:00Z rouault $");
 
 /************************************************************************/
 /*                             NTFCodeList                              */
 /************************************************************************/
 
-NTFCodeList::NTFCodeList( NTFRecord * poRecord )
-
+NTFCodeList::NTFCodeList( NTFRecord * poRecord ) :
+    nNumCode(atoi(poRecord->GetField(20,22))),
+    papszCodeVal(static_cast<char **>(CPLMalloc(sizeof(char*) * nNumCode))),
+    papszCodeDes(static_cast<char **>(CPLMalloc(sizeof(char*) * nNumCode)))
 {
-    int         iThisField;
-    const char  *pszText;
 
     CPLAssert( EQUAL(poRecord->GetField(1,2),"42") );
-    
-    strcpy( szValType, poRecord->GetField(13,14) );
-    strcpy( szFInter, poRecord->GetField(15,19) );
 
-    nNumCode = atoi(poRecord->GetField(20,22));
+    snprintf( szValType, sizeof(szValType), "%s", poRecord->GetField(13,14) );
+    snprintf( szFInter, sizeof(szFInter), "%s", poRecord->GetField(15,19) );
 
-    papszCodeVal = (char **) CPLMalloc(sizeof(char*) * nNumCode );
-    papszCodeDes = (char **) CPLMalloc(sizeof(char*) * nNumCode );
-
-    pszText = poRecord->GetData() + 22;
-    for( iThisField=0; 
-         *pszText != '\0' && iThisField < nNumCode; 
+    const int nRecordLen = poRecord->GetLength();
+    const char *pszText = poRecord->GetData() + 22;
+    int iThisField = 0;
+    for( ;
+         nRecordLen > 22 && *pszText != '\0' && iThisField < nNumCode;
          iThisField++ )
     {
-        char    szVal[128], szDes[128];
-        int     iLen;
-
-        iLen = 0;
-        while( *pszText != '\\' && *pszText != '\0' )
+        char szVal[128] = {};
+        int iLen = 0;
+        while( iLen < static_cast<int>(sizeof(szVal)) - 1 &&
+               *pszText != '\\' && *pszText != '\0' )
+        {
             szVal[iLen++] = *(pszText++);
+        }
         szVal[iLen] = '\0';
-        
+
         if( *pszText == '\\' )
             pszText++;
-        
+
         iLen = 0;
-        while( *pszText != '\\' && *pszText != '\0' )
+        char szDes[128] = {};
+        while( iLen < static_cast<int>(sizeof(szDes)) - 1 &&
+               *pszText != '\\' && *pszText != '\0' )
+        {
             szDes[iLen++] = *(pszText++);
+        }
         szDes[iLen] = '\0';
 
         if( *pszText == '\\' )
@@ -85,7 +86,7 @@ NTFCodeList::NTFCodeList( NTFRecord * poRecord )
     if( iThisField < nNumCode )
     {
         nNumCode = iThisField;
-        CPLDebug( "NTF", 
+        CPLDebug( "NTF",
                   "Didn't get all the expected fields from a CODELIST." );
     }
 }
@@ -122,5 +123,3 @@ const char *NTFCodeList::Lookup( const char * pszCode )
 
     return NULL;
 }
-
-

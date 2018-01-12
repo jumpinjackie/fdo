@@ -113,7 +113,9 @@ z_streamp strm;
     state->mode = HEAD;
     state->last = 0;
     state->havedict = 0;
+    state->flags = 0;
     state->dmax = 32768U;
+    state->check = 0;
     state->head = Z_NULL;
     state->wsize = 0;
     state->whave = 0;
@@ -627,7 +629,7 @@ int flush;
             state->dmax = 1U << len;
             Tracev((stderr, "inflate:   zlib header ok\n"));
             strm->adler = state->check = adler32(0L, Z_NULL, 0);
-            state->mode = hold & 0x200 ? DICTID : TYPE;
+            state->mode = (hold & 0x200) ? DICTID : TYPE;
             INITBITS();
             break;
 #ifdef GUNZIP

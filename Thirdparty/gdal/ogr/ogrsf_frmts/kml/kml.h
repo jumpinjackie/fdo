@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: kml.h 23978 2012-02-14 20:42:34Z rouault $
+ * $Id: kml.h 35911 2016-10-24 15:03:26Z goatbar $
  *
  * Project:  KML Driver
  * Purpose:  Class for reading, parsing and handling a kmlfile.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Jens Oberender
+ * Copyright (c) 2008-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -50,7 +51,6 @@ namespace std
 
 class KMLNode;
 
-
 typedef enum
 {
     KML_VALIDITY_UNKNOWN,
@@ -61,26 +61,26 @@ typedef enum
 class KML
 {
 public:
-	KML();
-	virtual ~KML();
-	bool open(const char* pszFilename);
-	bool isValid();
-	bool isHandled(std::string const& elem) const;
-	virtual bool isLeaf(std::string const& elem) const;
-	virtual bool isFeature(std::string const& elem) const;
-	virtual bool isFeatureContainer(std::string const& elem) const;
-	virtual bool isContainer(std::string const& elem) const;
-	virtual bool isRest(std::string const& elem) const;
+    KML();
+    virtual ~KML();
+    bool open(const char* pszFilename);
+    bool isValid();
+    bool isHandled(std::string const& elem) const;
+    virtual bool isLeaf(std::string const& elem) const;
+    virtual bool isFeature(std::string const& elem) const;
+    virtual bool isFeatureContainer(std::string const& elem) const;
+    virtual bool isContainer(std::string const& elem) const;
+    virtual bool isRest(std::string const& elem) const;
     virtual void findLayers(KMLNode* poNode, int bKeepEmptyContainers);
 
     bool hasOnlyEmpty() const;
 
-	void parse();
-	void print(unsigned short what = 3);
+    void parse();
+    void print(unsigned short what = 3);
     std::string getError() const;
-	int classifyNodes();
-	void eliminateEmpty();
-	int getNumLayers() const;
+    int classifyNodes();
+    void eliminateEmpty();
+    int getNumLayers() const;
     bool selectLayer(int);
     std::string getCurrentName() const;
     Nodetype getCurrentType() const;
@@ -88,39 +88,40 @@ public:
     int getNumFeatures();
     Feature* getFeature(std::size_t nNum, int& nLastAsked, int &nLastCount);
 
+    void unregisterLayerIfMatchingThisNode(KMLNode* poNode);
+
 protected:
-	void checkValidity();
+    void checkValidity();
 
-	static void XMLCALL startElement(void *, const char *, const char **);
-	static void XMLCALL startElementValidate(void *, const char *, const char **);
-	static void XMLCALL dataHandler(void *, const char *, int);
-        static void XMLCALL dataHandlerValidate(void *, const char *, int);
-	static void XMLCALL endElement(void *, const char *);
+    static void XMLCALL startElement(void *, const char *, const char **);
+    static void XMLCALL startElementValidate(void *, const char *, const char **);
+    static void XMLCALL dataHandler(void *, const char *, int);
+    static void XMLCALL dataHandlerValidate(void *, const char *, int);
+    static void XMLCALL endElement(void *, const char *);
 
-	// trunk of KMLnodes
-	KMLNode* poTrunk_;
-	// number of layers;
-	int nNumLayers_;
-        KMLNode** papoLayers_;
+    // Trunk of KMLnodes.
+    KMLNode* poTrunk_;
+    // Number of layers.
+    int nNumLayers_;
+    KMLNode** papoLayers_;
 
 private:
-	// depth of the DOM
-	unsigned int nDepth_;
-	// KML version number
-	std::string sVersion_;
-	// set to KML_VALIDITY_VALID if the beginning of the file is detected as KML
-	OGRKMLValidity validity;
-	// file descriptor
-	VSILFILE *pKMLFile_;
-	// error text ("" when everything is OK")
-	std::string sError_;
-	// current KMLNode
-	KMLNode *poCurrent_;
-        
-        XML_Parser oCurrentParser;
-        int nDataHandlerCounter;
-        int nWithoutEventCounter;
+    // Depth of the DOM.
+    unsigned int nDepth_;
+    // KML version number.
+    std::string sVersion_;
+    // Set to KML_VALIDITY_VALID if the beginning of the file is detected as KML
+    OGRKMLValidity validity;
+    // File descriptor.
+    VSILFILE *pKMLFile_;
+    // Error text ("" when everything is OK").
+    std::string sError_;
+    // Current KMLNode.
+    KMLNode *poCurrent_;
+
+    XML_Parser oCurrentParser;
+    int nDataHandlerCounter;
+    int nWithoutEventCounter;
 };
 
 #endif /* OGR_KML_KML_H_INCLUDED */
-

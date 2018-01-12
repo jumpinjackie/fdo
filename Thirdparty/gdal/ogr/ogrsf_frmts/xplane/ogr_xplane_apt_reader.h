@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_xplane_apt_reader.h
+ * $Id: ogr_xplane_apt_reader.h$
  *
  * Project:  X-Plane apt.dat file reader headers
  * Purpose:  Definition of classes for X-Plane apt.dat file reader
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_XPLANE_APT_READER_H_INCLUDED
-#define _OGR_XPLANE_APT_READER_H_INCLUDED
+#ifndef OGR_XPLANE_APT_READER_H_INCLUDED
+#define OGR_XPLANE_APT_READER_H_INCLUDED
 
 #include "ogr_xplane.h"
 #include "ogr_xplane_reader.h"
@@ -36,7 +36,6 @@
 /************************************************************************/
 /*                           OGRXPlaneAPTLayer                          */
 /************************************************************************/
-
 
 class OGRXPlaneAPTLayer : public OGRXPlaneLayer
 {
@@ -49,14 +48,13 @@ class OGRXPlaneAPTLayer : public OGRXPlaneLayer
                                    const char* pszAptName,
                                    int nAPTType,
                                    double dfElevation,
-                                   int bHasCoordinates = FALSE,
+                                   bool bHasCoordinates = false,
                                    double dfLat = 0,
                                    double dfLon = 0,
-                                   int bHasTower = FALSE,
+                                   bool bHasTower = false,
                                    double dfHeightTower = 0,
                                    const char* pszTowerName = NULL);
 };
-
 
 /************************************************************************/
 /*                   OGRXPlaneRunwayThresholdLayer                      */
@@ -142,7 +140,7 @@ static const sEnumerationElement runwayREILType[] =
     { 2, "Unidirectional" }
 };
 
-static const sEnumerationElement runwayVisualApproachPathIndicatorTypeV810[] = 
+static const sEnumerationElement runwayVisualApproachPathIndicatorTypeV810[] =
 {
     { 1, "None" },
     { 2, "VASI" },
@@ -183,7 +181,7 @@ class OGRXPlaneRunwayThresholdLayer : public OGRXPlaneLayer
                                    const char* pszREIL);
 
     /* Set a few computed values */
-    void                 SetRunwayLengthAndHeading(OGRFeature* poFeature,
+    static void                 SetRunwayLengthAndHeading(OGRFeature* poFeature,
                                                    double dfLength,
                                                    double dfHeading);
 
@@ -193,7 +191,6 @@ class OGRXPlaneRunwayThresholdLayer : public OGRXPlaneLayer
 /************************************************************************/
 /*                          OGRXPlaneRunwayLayer                        */
 /************************************************************************/
-
 
 class OGRXPlaneRunwayLayer : public OGRXPlaneLayer
 {
@@ -216,11 +213,9 @@ class OGRXPlaneRunwayLayer : public OGRXPlaneLayer
                                    int bHasDistanceRemainingSigns);
 };
 
-
 /************************************************************************/
 /*                        OGRXPlaneStopwayLayer                         */
 /************************************************************************/
-
 
 class OGRXPlaneStopwayLayer : public OGRXPlaneLayer
 {
@@ -240,7 +235,6 @@ class OGRXPlaneStopwayLayer : public OGRXPlaneLayer
 /*                   OGRXPlaneWaterRunwayThresholdLayer                 */
 /************************************************************************/
 
-
 class OGRXPlaneWaterRunwayThresholdLayer : public OGRXPlaneLayer
 {
   public:
@@ -254,11 +248,10 @@ class OGRXPlaneWaterRunwayThresholdLayer : public OGRXPlaneLayer
                                    int bBuoys);
 
     /* Set a few computed values */
-    void                 SetRunwayLengthAndHeading(OGRFeature* poFeature,
+    static void                 SetRunwayLengthAndHeading(OGRFeature* poFeature,
                                                    double dfLength,
                                                    double dfHeading);
 };
-
 
 /************************************************************************/
 /*                         OGRXPlaneWaterRunwayLayer                    */
@@ -282,7 +275,6 @@ class OGRXPlaneWaterRunwayLayer : public OGRXPlaneLayer
                                    int bBuoys);
 };
 
-
 /************************************************************************/
 /*                        OGRXPlaneHelipadLayer                         */
 /************************************************************************/
@@ -290,7 +282,7 @@ class OGRXPlaneWaterRunwayLayer : public OGRXPlaneLayer
 static const sEnumerationElement helipadEdgeLigthingType[] =
 {
     { 0, "None" },
-    { 1, "Yellow" }, 
+    { 1, "Yellow" },
     { 2, "White" }, /* proposed for V90x */
     { 3, "Red" } /* proposed for V90x */
 };
@@ -320,7 +312,6 @@ class OGRXPlaneHelipadLayer : public OGRXPlaneLayer
 /*                     OGRXPlaneHelipadPolygonLayer                     */
 /************************************************************************/
 
-
 class OGRXPlaneHelipadPolygonLayer : public OGRXPlaneLayer
 {
   public:
@@ -340,11 +331,9 @@ class OGRXPlaneHelipadPolygonLayer : public OGRXPlaneLayer
                                    const char* pszEdgeLighing);
 };
 
-
 /************************************************************************/
 /*                    OGRXPlaneTaxiwayRectangleLayer                    */
 /************************************************************************/
-
 
 class OGRXPlaneTaxiwayRectangleLayer : public OGRXPlaneLayer
 {
@@ -362,11 +351,9 @@ class OGRXPlaneTaxiwayRectangleLayer : public OGRXPlaneLayer
                                    int bBlueEdgeLights);
 };
 
-
 /************************************************************************/
 /*                          OGRXPlanePavementLayer                      */
 /************************************************************************/
-
 
 class OGRXPlanePavementLayer : public OGRXPlaneLayer
 {
@@ -385,7 +372,6 @@ class OGRXPlanePavementLayer : public OGRXPlaneLayer
 /*                       OGRXPlaneAPTBoundaryLayer                      */
 /************************************************************************/
 
-
 class OGRXPlaneAPTBoundaryLayer : public OGRXPlaneLayer
 {
   public:
@@ -396,11 +382,9 @@ class OGRXPlaneAPTBoundaryLayer : public OGRXPlaneLayer
                                    OGRPolygon* poPolygon);
 };
 
-
 /************************************************************************/
 /*                 OGRXPlaneAPTLinearFeatureLayer                       */
 /************************************************************************/
-
 
 class OGRXPlaneAPTLinearFeatureLayer : public OGRXPlaneLayer
 {
@@ -411,7 +395,6 @@ class OGRXPlaneAPTLinearFeatureLayer : public OGRXPlaneLayer
                                    const char* pszLinearFeatureName,
                                    OGRMultiLineString* poMultilineString);
 };
-
 
 /************************************************************************/
 /*                         OGRXPlaneATCFreqLayer                         */
@@ -427,7 +410,6 @@ class OGRXPlaneATCFreqLayer : public OGRXPlaneLayer
                                    const char* pszATCFreqName,
                                    double dfFrequency);
 };
-
 
 /************************************************************************/
 /*                     OGRXPlaneStartupLocationLayer                    */
@@ -448,7 +430,6 @@ class OGRXPlaneStartupLocationLayer : public OGRXPlaneLayer
 /************************************************************************/
 /*                     OGRXPlaneAPTLightBeaconLayer                     */
 /************************************************************************/
-
 
 static const sEnumerationElement APTLightBeaconColorType[] =
 {
@@ -488,7 +469,6 @@ class OGRXPlaneAPTWindsockLayer : public OGRXPlaneLayer
                                    double dfLon,
                                    int bIsIllumnited);
 };
-
 
 /************************************************************************/
 /*                       OGRXPlaneTaxiwaySignLayer                      */
@@ -537,14 +517,38 @@ class OGRXPlane_VASI_PAPI_WIGWAG_Layer : public OGRXPlaneLayer
                                    double dfVisualGlidePathAngle);
 };
 
+/************************************************************************/
+/*                       OGRXPlaneTaxiLocationLayer                     */
+/************************************************************************/
 
+class OGRXPlaneTaxiLocationLayer : public OGRXPlaneLayer
+{
+  public:
+                        OGRXPlaneTaxiLocationLayer();
+
+    OGRFeature*         AddFeature(const char* pszAptICAO,
+                                   double dfLat,
+                                   double dfLon,
+                                   double dfHeading,
+                                   const char* pszLocationType,
+                                   const char* pszAirplaneTypes,
+                                   const char* pszName);
+};
+
+typedef enum
+{
+    APT_V_UNKNOWN = 0,
+    APT_V_810 = 810,
+    APT_V_850 = 850,
+    APT_V_1000 = 1000,
+} AptVersion;
 
 enum
 {
     APT_AIRPORT_HEADER         = 1,
     APT_RUNWAY_TAXIWAY_V_810   = 10,
     APT_TOWER                  = 14,
-    APT_STARTUP_LOCATION       = 15,
+    APT_STARTUP_LOCATION       = 15, /* deprecated in V_1000 */
     APT_SEAPLANE_HEADER        = 16,
     APT_HELIPORT_HEADER        = 17,
     APT_LIGHT_BEACONS          = 18,
@@ -570,9 +574,8 @@ enum
     APT_NODE_END_WITH_BEZIER   = 116,
     APT_LINEAR_HEADER          = 120,
     APT_BOUNDARY_HEADER        = 130,
+    APT_TAXI_LOCATION          = 1300, /* added in V_1000 */
 };
-
-
 
 /************************************************************************/
 /*                           OGRXPlaneAptReader                         */
@@ -581,6 +584,8 @@ enum
 class OGRXPlaneAptReader : public OGRXPlaneReader
 {
     private:
+        OGRXPlaneDataSource*                poDataSource;
+
         OGRXPlaneAPTLayer*                  poAPTLayer;
         OGRXPlaneRunwayLayer*               poRunwayLayer;
         OGRXPlaneStopwayLayer*              poStopwayLayer;
@@ -599,6 +604,9 @@ class OGRXPlaneAptReader : public OGRXPlaneReader
         OGRXPlaneAPTWindsockLayer*          poAPTWindsockLayer;
         OGRXPlaneTaxiwaySignLayer*          poTaxiwaySignLayer;
         OGRXPlane_VASI_PAPI_WIGWAG_Layer*   poVASI_PAPI_WIGWAG_Layer;
+        OGRXPlaneTaxiLocationLayer*         poTaxiLocationLayer;
+
+        AptVersion nVersion;
 
         int       bAptHeaderFound;
         double    dfElevation;
@@ -607,15 +615,16 @@ class OGRXPlaneAptReader : public OGRXPlaneReader
         CPLString osAptName;
         int       nAPTType;
 
-        int       bTowerFound;
+        bool      bTowerFound;
         double    dfLatTower, dfLonTower;
         double    dfHeightTower;
         CPLString osTowerName;
 
-        int     bRunwayFound;
-        double  dfLatFirstRwy , dfLonFirstRwy;
+        bool    bRunwayFound;
+        double  dfLatFirstRwy;
+        double  dfLonFirstRwy;
 
-        int     bResumeLine;
+        bool    bResumeLine;
 
     private:
                 OGRXPlaneAptReader();
@@ -635,10 +644,12 @@ class OGRXPlaneAptReader : public OGRXPlaneReader
         void    ParseWindsockRecord();
         void    ParseTaxiwaySignRecord();
         void    ParseVasiPapiWigWagRecord();
+        void    ParseTaxiLocation();
 
         OGRGeometry* FixPolygonTopology(OGRPolygon& polygon);
-        int     ParsePolygonalGeometry(OGRGeometry** ppoGeom);
-        int     ParseLinearGeometry(OGRMultiLineString& multilinestring, int* pbIsValid);
+        bool    ParsePolygonalGeometry(OGRGeometry** ppoGeom);
+        bool    ParseLinearGeometry(
+                    OGRMultiLineString& multilinestring, int* pbIsValid );
 
         static void    AddBezierCurve (OGRLineString& lineString,
                                 double dfLatA, double dfLonA,
@@ -651,13 +662,13 @@ class OGRXPlaneAptReader : public OGRXPlaneReader
                                 double dfLatB, double dfLonB);
 
     protected:
-        virtual void             Read();
+        virtual void             Read() override;
 
     public:
-                                 OGRXPlaneAptReader( OGRXPlaneDataSource* poDataSource );
-        virtual OGRXPlaneReader* CloneForLayer(OGRXPlaneLayer* poLayer);
-        virtual int              IsRecognizedVersion( const char* pszVersionString);
-        virtual void             Rewind();
+        explicit                 OGRXPlaneAptReader( OGRXPlaneDataSource* poDataSource );
+        virtual OGRXPlaneReader* CloneForLayer(OGRXPlaneLayer* poLayer) override;
+        virtual int              IsRecognizedVersion( const char* pszVersionString) override;
+        virtual void             Rewind() override;
 };
 
 #endif

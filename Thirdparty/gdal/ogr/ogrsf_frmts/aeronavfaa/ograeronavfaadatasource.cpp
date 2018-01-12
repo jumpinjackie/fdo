@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ograeronavfaadatasource.cpp 23042 2011-09-04 15:07:22Z rouault $
  *
  * Project:  AeronavFAA Translator
  * Purpose:  Implements OGRAeronavFAADataSource class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,20 +30,17 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ograeronavfaadatasource.cpp 23042 2011-09-04 15:07:22Z rouault $");
+CPL_CVSID("$Id: ograeronavfaadatasource.cpp 35686 2016-10-10 23:47:00Z goatbar $");
 
 /************************************************************************/
 /*                      OGRAeronavFAADataSource()                       */
 /************************************************************************/
 
-OGRAeronavFAADataSource::OGRAeronavFAADataSource()
-
-{
-    papoLayers = NULL;
-    nLayers = 0;
-
-    pszName = NULL;
-}
+OGRAeronavFAADataSource::OGRAeronavFAADataSource() :
+    pszName(NULL),
+    papoLayers(NULL),
+    nLayers(0)
+{}
 
 /************************************************************************/
 /*                     ~OGRAeronavFAADataSource()                       */
@@ -64,8 +60,7 @@ OGRAeronavFAADataSource::~OGRAeronavFAADataSource()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRAeronavFAADataSource::TestCapability( const char * pszCap )
-
+int OGRAeronavFAADataSource::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -87,60 +82,66 @@ OGRLayer *OGRAeronavFAADataSource::GetLayer( int iLayer )
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRAeronavFAADataSource::Open( const char * pszFilename, int bUpdateIn)
+int OGRAeronavFAADataSource::Open( const char * pszFilename )
 
 {
-    if (bUpdateIn)
-    {
-        return FALSE;
-    }
-
     pszName = CPLStrdup( pszFilename );
 
 // --------------------------------------------------------------------
 //      Does this appear to be a .dat file?
 // --------------------------------------------------------------------
-    if( !EQUAL(CPLGetExtension(pszFilename), "dat") )
-        return FALSE;
 
     VSILFILE* fp = VSIFOpenL(pszFilename, "rb");
     if (fp == NULL)
         return FALSE;
 
     char szBuffer[10000];
-    int nbRead = (int)VSIFReadL(szBuffer, 1, sizeof(szBuffer) - 1, fp);
+    const int nbRead = static_cast<int>(
+        VSIFReadL(szBuffer, 1, sizeof(szBuffer) - 1, fp));
     szBuffer[nbRead] = '\0';
 
-    int bIsDOF = (szBuffer[128] == 13 && szBuffer[128+1] == 10 &&
-                  szBuffer[130+128] == 13 && szBuffer[130+129] == 10 &&
-                  szBuffer[2*130+128] == 13 && szBuffer[2*130+129] == 10 &&
-                  strncmp(szBuffer + 3 * 130, "------------------------------------------------------------------------------------------------------------------------- ", 122) == 0);
+    const bool bIsDOF =
+        szBuffer[128] == 13 && szBuffer[128+1] == 10 &&
+        szBuffer[130+128] == 13 && szBuffer[130+129] == 10 &&
+        szBuffer[2*130+128] == 13 && szBuffer[2*130+129] == 10 &&
+        STARTS_WITH(
+            szBuffer + 3 * 130,
+            "-----------------------------------------------------------------"
+            "-------------------------------------------------------- ");
 
-    int bIsNAVAID = (szBuffer[132] == 13 && szBuffer[132+1] == 10 &&
-                     strncmp(szBuffer + 20 - 1, "CREATION DATE", strlen("CREATION DATE")) == 0 &&
-                     szBuffer[134 + 132] == 13 && szBuffer[134 + 132+1] == 10);
+    const bool bIsNAVAID =
+        szBuffer[132] == 13 && szBuffer[132+1] == 10 &&
+        STARTS_WITH(szBuffer + 20 - 1, "CREATION DATE") &&
+        szBuffer[134 + 132] == 13 && szBuffer[134 + 132+1] == 10;
 
-    int bIsROUTE = strncmp(szBuffer, "           UNITED STATES GOVERNMENT FLIGHT INFORMATION PUBLICATION             149343", 85) == 0 &&
-                   szBuffer[85] == 13 && szBuffer[85+1] == 10;
+    const bool bIsIAP =
+        strstr(szBuffer,
+               "INSTRUMENT APPROACH PROCEDURE NAVAID & FIX DATA") != NULL &&
+        szBuffer[85] == 13 && szBuffer[85+1] == 10;
 
-    int bIsIAP = strstr(szBuffer, "INSTRUMENT APPROACH PROCEDURE NAVAID & FIX DATA") != NULL &&
-                   szBuffer[85] == 13 && szBuffer[85+1] == 10;
-    if (bIsIAP)
-        bIsROUTE = FALSE;
+    bool bIsROUTE = STARTS_WITH(
+        szBuffer,
+        "           UNITED STATES GOVERNMENT FLIGHT INFORMATION PUBLICATION"
+        "             149343") &&
+        szBuffer[85] == 13 && szBuffer[85+1] == 10;
 
-    if (bIsDOF)
+    // TODO(schwehr): Fold into bool bIsROUTE so it can be const.
+    if( bIsIAP )
+        bIsROUTE = false;
+
+    if( bIsDOF )
     {
         VSIFSeekL( fp, 0, SEEK_SET );
         nLayers = 1;
-        papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
+        papoLayers = static_cast<OGRLayer **>(CPLMalloc(sizeof(OGRLayer*)));
         papoLayers[0] = new OGRAeronavFAADOFLayer(fp, CPLGetBasename(pszFilename));
         return TRUE;
     }
-    else if (bIsNAVAID)
+    else if( bIsNAVAID )
     {
         VSIFSeekL( fp, 0, SEEK_SET );
         nLayers = 1;
-        papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
+        papoLayers = static_cast<OGRLayer **>(CPLMalloc(sizeof(OGRLayer*)));
         papoLayers[0] = new OGRAeronavFAANAVAIDLayer(fp, CPLGetBasename(pszFilename));
         return TRUE;
     }
@@ -148,17 +149,18 @@ int OGRAeronavFAADataSource::Open( const char * pszFilename, int bUpdateIn)
     {
         VSIFSeekL( fp, 0, SEEK_SET );
         nLayers = 1;
-        papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
+        papoLayers = static_cast<OGRLayer **>(CPLMalloc(sizeof(OGRLayer*)));
         papoLayers[0] = new OGRAeronavFAAIAPLayer(fp, CPLGetBasename(pszFilename));
         return TRUE;
     }
     else if (bIsROUTE)
     {
-        int bIsDPOrSTARS = strstr(szBuffer, "DPs - DEPARTURE PROCEDURES") != NULL ||
-                           strstr(szBuffer, "STARS - STANDARD TERMINAL ARRIVALS") != NULL;
+        const bool bIsDPOrSTARS =
+            strstr(szBuffer, "DPs - DEPARTURE PROCEDURES") != NULL ||
+            strstr(szBuffer, "STARS - STANDARD TERMINAL ARRIVALS") != NULL;
         VSIFSeekL( fp, 0, SEEK_SET );
         nLayers = 1;
-        papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
+        papoLayers = static_cast<OGRLayer **>(CPLMalloc(sizeof(OGRLayer*)));
         papoLayers[0] = new OGRAeronavFAARouteLayer(fp, CPLGetBasename(pszFilename), bIsDPOrSTARS);
         return TRUE;
     }

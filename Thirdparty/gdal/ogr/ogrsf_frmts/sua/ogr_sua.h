@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_sua.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: ogr_sua.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  SUA Translator
  * Purpose:  Definition of classes for OGR .sua driver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_SUA_H_INCLUDED
-#define _OGR_SUA_H_INCLUDED
+#ifndef OGR_SUA_H_INCLUDED
+#define OGR_SUA_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 
@@ -42,8 +42,8 @@ class OGRSUALayer : public OGRLayer
     OGRSpatialReference *poSRS;
 
     VSILFILE*          fpSUA;
-    int                bEOF;
-    int                bHasLastLine;
+    bool               bEOF;
+    bool               bHasLastLine;
     CPLString          osLastLine;
 
     int                nNextFID;
@@ -51,19 +51,15 @@ class OGRSUALayer : public OGRLayer
     OGRFeature *       GetNextRawFeature();
 
   public:
-                        OGRSUALayer(VSILFILE* fp);
-                        ~OGRSUALayer();
+    explicit            OGRSUALayer(VSILFILE* fp);
+                        virtual ~OGRSUALayer();
 
+    virtual void                ResetReading() override;
+    virtual OGRFeature *        GetNextFeature() override;
 
-    virtual void                ResetReading();
-    virtual OGRFeature *        GetNextFeature();
+    virtual OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
-
-    virtual int                 TestCapability( const char * );
-
-    virtual OGRSpatialReference *GetSpatialRef() { return poSRS; }
-
+    virtual int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -79,32 +75,16 @@ class OGRSUADataSource : public OGRDataSource
 
   public:
                         OGRSUADataSource();
-                        ~OGRSUADataSource();
+                        virtual ~OGRSUADataSource();
 
-    int                 Open( const char * pszFilename,
-                              int bUpdate );
+    int                 Open( const char * pszFilename );
 
-    virtual const char*         GetName() { return pszName; }
+    virtual const char*         GetName() override { return pszName; }
 
-    virtual int                 GetLayerCount() { return nLayers; }
-    virtual OGRLayer*           GetLayer( int );
+    virtual int                 GetLayerCount() override { return nLayers; }
+    virtual OGRLayer*           GetLayer( int ) override;
 
-    virtual int                 TestCapability( const char * );
+    virtual int                 TestCapability( const char * ) override;
 };
 
-/************************************************************************/
-/*                             OGRSUADriver                             */
-/************************************************************************/
-
-class OGRSUADriver : public OGRSFDriver
-{
-  public:
-                ~OGRSUADriver();
-
-    virtual const char*         GetName();
-    virtual OGRDataSource*      Open( const char *, int );
-    virtual int                 TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_SUA_H_INCLUDED */
+#endif /* ndef OGR_SUA_H_INCLUDED */

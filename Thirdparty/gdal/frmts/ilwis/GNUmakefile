@@ -3,8 +3,6 @@ include ../../GDALmake.opt
 
 OBJ	=	ilwisdataset.o ilwiscoordinatesystem.o
 
-CPPFLAGS	=	$(GDAL_INCLUDE)
-
 default:	$(OBJ:.o=.$(OBJ_EXT))
 
 clean:

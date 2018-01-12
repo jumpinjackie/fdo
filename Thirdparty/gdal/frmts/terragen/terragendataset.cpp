@@ -5,15 +5,15 @@
  * Purpose:  Reader for Terragen TER documents
  * Author:   Ray Gardener, Daylon Graphics Ltd.
  *
- * Portions of this module derived from GDAL drivers by 
+ * Portions of this module derived from GDAL drivers by
  * Frank Warmerdam, see http://www.gdal.org
 
- rcg	apr 19/06	Fixed bug with hf size being misread by one
-					if xpts/ypts tags not included in file.
-					Added Create() support.
-					Treat pixels as points.
+ rcg    apr 19/06       Fixed bug with hf size being misread by one
+                        if xpts/ypts tags not included in file.
+                        Added Create() support.
+                        Treat pixels as points.
 
- rcg	jun  6/07	Better heightscale/baseheight determination
+ rcg    jun  6/07       Better heightscale/baseheight determination
                     when writing.
 
  *
@@ -38,113 +38,102 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************
- * 
  */
 
 /*
-	Terragen format notes:
+        Terragen format notes:
 
-	Based on official Planetside specs.
+        Based on official Planetside specs.
 
-	All distances along all three axes are in
-	terrain units, which are 30m by default.
-	If a SCAL chunk is present, however, it
-	can indicate something other than 30.
-	Note that uniform scaling should be used.
+        All distances along all three axes are in
+        terrain units, which are 30m by default.
+        If a SCAL chunk is present, however, it
+        can indicate something other than 30.
+        Note that uniform scaling should be used.
 
-	The offset (base height) in the ALTW chunk 
-	is in terrain units, and the scale (height scale)
-	is a normalized value using unsigned 16-bit notation.
-	The physical terrain value for a read pixel is
-		hv' = hv * scale / 65536 + offset.
-		It still needs to be scaled by SCAL to 
-		get to meters.
+        The offset (base height) in the ALTW chunk
+        is in terrain units, and the scale (height scale)
+        is a normalized value using unsigned 16-bit notation.
+        The physical terrain value for a read pixel is
+        hv' = hv * scale / 65536 + offset.
+        It still needs to be scaled by SCAL to
+        get to meters.
 
-	For writing:
-			SCAL = gridpost distance in meters
-			hv_px = hv_m / SCAL
-			span_px = span_m / SCAL
-			offset = see TerragenDataset::write_header()
-			scale = see TerragenDataset::write_header()
-			physical hv =
-				(hv_px - offset) * 65536.0/scale
+        For writing:
 
+        SCAL = gridpost distance in meters
+        hv_px = hv_m / SCAL
+        span_px = span_m / SCAL
+        offset = see TerragenDataset::write_header()
+        scale = see TerragenDataset::write_header()
+        physical hv =
+          (hv_px - offset) * 65536.0/scale
 
-	We tell callers that:
+        We tell callers that:
 
-		Elevations are Int16 when reading, 
-		and Float32 when writing. We need logical 
-		elevations when writing so that we can 
-		encode them with as much precision as possible 
-		when going down to physical 16-bit ints.
-		Implementing band::SetScale/SetOffset won't work because 
-		it requires callers to know format write details.
-		So we've added two Create() options that let the 
-		caller tell us the span's logical extent, and with 
-		those two values we can convert to physical pixels.
+        Elevations are Int16 when reading,
+        and Float32 when writing. We need logical
+        elevations when writing so that we can
+        encode them with as much precision as possible
+        when going down to physical 16-bit ints.
+        Implementing band::SetScale/SetOffset won't work because
+        it requires callers to know format write details.
+        So we've added two Create() options that let the
+        caller tell us the span's logical extent, and with
+        those two values we can convert to physical pixels.
 
-		band::GetUnitType() returns meters.
-		band::GetScale() returns SCAL * (scale/65536)
-		band::GetOffset() returns SCAL * offset 
-		ds::GetProjectionRef() returns a local CS
-			using meters.
-		ds::GetGeoTransform() returns a scale matrix
-			having SCAL sx,sy members.
+        band::GetUnitType() returns meters.
+        band::GetScale() returns SCAL * (scale/65536)
+        band::GetOffset() returns SCAL * offset
+        ds::GetProjectionRef() returns a local CS
+                using meters.
+        ds::GetGeoTransform() returns a scale matrix
+                having SCAL sx,sy members.
 
-		ds::SetGeoTransform() lets us establish the
-			size of ground pixels.
-		ds::SetProjection() lets us establish what
-			units ground measures are in (also needed 
-			to calc the size of ground pixels).
-		band::SetUnitType() tells us what units
-			the given Float32 elevations are in.
-		band::SetScale() is unused.
-		band::SetOffset() is unused.
+        ds::SetGeoTransform() lets us establish the
+                size of ground pixels.
+        ds::SetProjection() lets us establish what
+                units ground measures are in (also needed
+                to calc the size of ground pixels).
+        band::SetUnitType() tells us what units
+                the given Float32 elevations are in.
+        band::SetScale() is unused.
+        band::SetOffset() is unused.
 */
 
 #include "cpl_string.h"
+#include "gdal_frmts.h"
 #include "gdal_pam.h"
 #include "ogr_spatialref.h"
 
-// CPL_CVSID("$Id: terragendataset.cpp 21680 2011-02-11 21:12:07Z warmerdam $");
+#include <cmath>
 
-CPL_C_START
-void	GDALRegister_Terragen(void);
-CPL_C_END
+#include <algorithm>
 
+// CPL_CVSID("$Id: terragendataset.cpp 36501 2016-11-25 14:09:24Z rouault $");
 
 const double kdEarthCircumPolar = 40007849;
 const double kdEarthCircumEquat = 40075004;
 
-#define str_equal(_s1, _s2)	(0 == strcmp((_s1),(_s2)))
-#define array_size(_a)		(sizeof(_a) / sizeof(_a[0]))
-
-#ifndef min
-	#define min(a, b)	( (a) < (b) ? (a) : (b) )
-#endif
-
 static double average(double a, double b)
 {
-	return 0.5 * (a + b);
+    return 0.5 * (a + b);
 }
 
-
-static double degrees_to_radians(double d) 
+static double degrees_to_radians(double d)
 {
-	return (d * 0.017453292);
+    return d * 0.017453292;
 }
 
 static bool approx_equal(double a, double b)
 {
-	const double epsilon = 1e-5;
-	return (fabs(a-b) <= epsilon);
+    const double epsilon = 1e-5;
+    return std::abs(a-b) <= epsilon;
 }
-
-
 
 /************************************************************************/
 /* ==================================================================== */
-/*				TerragenDataset				*/
+/*                              TerragenDataset                         */
 /* ==================================================================== */
 /************************************************************************/
 
@@ -154,62 +143,59 @@ class TerragenDataset : public GDALPamDataset
 {
     friend class TerragenRasterBand;
 
+    double              m_dScale,
+                        m_dOffset,
+                        m_dSCAL, // 30.0 normally, from SCAL chunk
+                        m_adfTransform[6],
+                        m_dGroundScale,
+                        m_dMetersPerGroundUnit,
+                        m_dMetersPerElevUnit,
+                        m_dLogSpan[2],
+                        m_span_m[2],
+                        m_span_px[2];
 
-	double		m_dScale,
-				m_dOffset,
-				m_dSCAL, // 30.0 normally, from SCAL chunk
-	   			m_adfTransform[6],
-				m_dGroundScale,
-				m_dMetersPerGroundUnit,
-				m_dMetersPerElevUnit,
-				m_dLogSpan[2], 
-				m_span_m[2], 
-				m_span_px[2];
+    VSILFILE*           m_fp;
+    vsi_l_offset        m_nDataOffset;
 
-    VSILFILE*			m_fp;
-    vsi_l_offset	m_nDataOffset;
+    GInt16              m_nHeightScale;
+    GInt16              m_nBaseHeight;
 
-    GInt16		m_nHeightScale;
-    GInt16		m_nBaseHeight;
+    char*               m_pszFilename;
+    char*               m_pszProjection;
+    char                m_szUnits[32];
 
-	char*		m_pszFilename;
-    char*		m_pszProjection;
-    char		m_szUnits[32];
-
-	bool		m_bIsGeo;
-
+    bool                m_bIsGeo;
 
     int         LoadFromFile();
 
+  public:
+    TerragenDataset();
+    virtual ~TerragenDataset();
 
-	public:
-		TerragenDataset();
-		~TerragenDataset();
-    
-		static GDALDataset* Open( GDALOpenInfo* );
-		static GDALDataset* Create( const char* pszFilename,
-									int nXSize, int nYSize, int nBands,
-									GDALDataType eType, char** papszOptions );
+    static GDALDataset* Open( GDALOpenInfo* );
+    static GDALDataset* Create( const char* pszFilename,
+                                int nXSize, int nYSize, int nBands,
+                                GDALDataType eType, char** papszOptions );
 
-		virtual CPLErr 	GetGeoTransform( double* );
-		virtual const char*	GetProjectionRef(void);
-		virtual CPLErr SetProjection( const char * );
-		virtual CPLErr SetGeoTransform( double * );
+    virtual CPLErr      GetGeoTransform( double* ) override;
+    virtual const char* GetProjectionRef(void) override;
+    virtual CPLErr SetProjection( const char * ) override;
+    virtual CPLErr SetGeoTransform( double * ) override;
 
-	protected:
-		bool get(GInt16&);
-		bool get(GUInt16&);
-		bool get(float&);
-		bool put(GInt16);
-		bool put(float);
-		bool skip(size_t n) { return ( 0 == VSIFSeekL(m_fp, n, SEEK_CUR) ); }
-		bool pad(size_t n) { return this->skip(n); }
+ protected:
+    bool get(GInt16&);
+    bool get(GUInt16&);
+    bool get(float&);
+    bool put(GInt16);
+    bool put(float);
+    bool skip(size_t n) { return 0 == VSIFSeekL(m_fp, n, SEEK_CUR); }
+    bool pad(size_t n) { return skip( n ); }
 
-		bool read_next_tag(char*);
-		bool write_next_tag(const char*);
-		bool tag_is(const char* szTag, const char*);
+    bool read_next_tag(char*);
+    bool write_next_tag(const char*);
+    static bool tag_is(const char* szTag, const char*);
 
-		bool write_header(void);
+    bool write_header(void);
 };
 
 /************************************************************************/
@@ -222,82 +208,78 @@ class TerragenRasterBand : public GDALPamRasterBand
 {
     friend class TerragenDataset;
 
-	void*	        m_pvLine;
-	bool            m_bFirstTime;
+    void*               m_pvLine;
+    bool            m_bFirstTime;
 
 public:
 
-    TerragenRasterBand(TerragenDataset*);
-	virtual ~TerragenRasterBand()
-	{
-		if(m_pvLine != NULL)
-			CPLFree(m_pvLine);
-	}
-    
+    explicit TerragenRasterBand(TerragenDataset*);
+    virtual ~TerragenRasterBand()
+    {
+        if(m_pvLine != NULL)
+            CPLFree(m_pvLine);
+    }
+
     // Geomeasure support.
-    virtual CPLErr IReadBlock( int, int, void * );
-    virtual const char* GetUnitType();
-    virtual double GetOffset(int* pbSuccess = NULL);
-    virtual double GetScale(int* pbSuccess = NULL);
+    virtual CPLErr IReadBlock( int, int, void * ) override;
+    virtual const char* GetUnitType() override;
+    virtual double GetOffset(int* pbSuccess = NULL) override;
+    virtual double GetScale(int* pbSuccess = NULL) override;
 
-    virtual CPLErr IWriteBlock( int, int, void * );
-	virtual CPLErr SetUnitType( const char* );
+    virtual CPLErr IWriteBlock( int, int, void * ) override;
+    virtual CPLErr SetUnitType( const char* ) override;
 };
-
 
 /************************************************************************/
 /*                         TerragenRasterBand()                         */
 /************************************************************************/
 
-TerragenRasterBand::TerragenRasterBand( TerragenDataset *poDS )
+TerragenRasterBand::TerragenRasterBand( TerragenDataset *poDSIn ) :
+    m_pvLine(CPLMalloc( sizeof(GInt16) * poDSIn->GetRasterXSize() )),
+    m_bFirstTime(true)
 {
-	m_bFirstTime = true;
-    this->poDS = poDS;
-    this->nBand = 1;
+    poDS = poDSIn;
+    nBand = 1;
 
-    eDataType = poDS->GetAccess() == GA_ReadOnly 
-		? GDT_Int16
-		: GDT_Float32;
+    eDataType = poDSIn->GetAccess() == GA_ReadOnly
+        ? GDT_Int16
+        : GDT_Float32;
 
-    nBlockXSize = poDS->GetRasterXSize();
+    nBlockXSize = poDSIn->GetRasterXSize();
     nBlockYSize = 1;
-
-	m_pvLine = CPLMalloc(sizeof(GInt16) * nBlockXSize);
 }
-
 
 /************************************************************************/
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr TerragenRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
+CPLErr TerragenRasterBand::IReadBlock( CPL_UNUSED int nBlockXOff,
+                                       int nBlockYOff,
                                        void* pImage )
-
 {
     //CPLAssert( sizeof(float) == sizeof(GInt32) );
     CPLAssert( nBlockXOff == 0  );
     CPLAssert( pImage != NULL );
 
-    TerragenDataset& ds = *(TerragenDataset *) poDS;
+    TerragenDataset& ds = *reinterpret_cast<TerragenDataset *>( poDS );
 
 /* -------------------------------------------------------------------- */
-/*      Seek to scanline.                                               
-	Terragen is a bottom-top format, so we have to
-	invert the row location.
+/*      Seek to scanline.
+        Terragen is a bottom-top format, so we have to
+        invert the row location.
  -------------------------------------------------------------------- */
     const size_t rowbytes = nBlockXSize * sizeof(GInt16);
 
     if(0 != VSIFSeekL(
-           ds.m_fp, 
-           ds.m_nDataOffset + 
-			  (ds.GetRasterYSize() -1 - nBlockYOff) * rowbytes, 
+           ds.m_fp,
+           ds.m_nDataOffset +
+           (ds.GetRasterYSize() -1 - nBlockYOff) * rowbytes,
            SEEK_SET))
     {
-        CPLError( CE_Failure, CPLE_FileIO, 
+        CPLError( CE_Failure, CPLE_FileIO,
                   "Terragen Seek failed:%s", VSIStrerror( errno ) );
         return CE_Failure;
     }
-
 
 /* -------------------------------------------------------------------- */
 /*      Read the scanline into the line buffer.                        */
@@ -305,7 +287,7 @@ CPLErr TerragenRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
 
     if( VSIFReadL( pImage, rowbytes, 1, ds.m_fp ) != 1 )
     {
-        CPLError( CE_Failure, CPLE_FileIO, 
+        CPLError( CE_Failure, CPLE_FileIO,
                   "Terragen read failed:%s", VSIStrerror( errno ) );
         return CE_Failure;
     }
@@ -313,27 +295,24 @@ CPLErr TerragenRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
 /* -------------------------------------------------------------------- */
 /*      Swap on MSB platforms.                                          */
 /* -------------------------------------------------------------------- */
-#ifdef CPL_MSB 
+#ifdef CPL_MSB
     GDALSwapWords( pImage, sizeof(GInt16), nRasterXSize, sizeof(GInt16) );
-#endif    
+#endif
 
     return CE_None;
 }
-
-
 
 /************************************************************************/
 /*                            GetUnitType()                             */
 /************************************************************************/
 const char *TerragenRasterBand::GetUnitType()
 {
-	// todo: Return elevation units.
-	// For Terragen documents, it's the same as the ground units.
-    TerragenDataset *poGDS = (TerragenDataset *) poDS;
+    // todo: Return elevation units.
+    // For Terragen documents, it's the same as the ground units.
+    TerragenDataset *poGDS = reinterpret_cast<TerragenDataset *>( poDS );
 
     return poGDS->m_szUnits;
 }
-
 
 /************************************************************************/
 /*                              GetScale()                              */
@@ -341,10 +320,11 @@ const char *TerragenRasterBand::GetUnitType()
 
 double TerragenRasterBand::GetScale(int* pbSuccess)
 {
-    const TerragenDataset& ds = *(TerragenDataset *) poDS;
-	if(pbSuccess != NULL)
-		*pbSuccess = TRUE;
-	return ds.m_dScale;
+    const TerragenDataset& ds = *reinterpret_cast<TerragenDataset *>( poDS );
+    if(pbSuccess != NULL)
+        *pbSuccess = TRUE;
+
+    return ds.m_dScale;
 }
 
 /************************************************************************/
@@ -353,100 +333,88 @@ double TerragenRasterBand::GetScale(int* pbSuccess)
 
 double TerragenRasterBand::GetOffset(int* pbSuccess)
 {
-    const TerragenDataset& ds = *(TerragenDataset *) poDS;
-	if(pbSuccess != NULL)
-		*pbSuccess = TRUE;
-	return ds.m_dOffset;
+    const TerragenDataset& ds = *reinterpret_cast<TerragenDataset *>( poDS );
+    if(pbSuccess != NULL)
+        *pbSuccess = TRUE;
+
+    return ds.m_dOffset;
 }
-
-
 
 /************************************************************************/
 /*                             IWriteBlock()                            */
 /************************************************************************/
 
 CPLErr TerragenRasterBand::IWriteBlock
-( 
-	int nBlockXOff, 
-	int nBlockYOff,
+(
+    CPL_UNUSED int nBlockXOff,
+    int nBlockYOff,
     void* pImage
 )
 {
     CPLAssert( nBlockXOff == 0  );
     CPLAssert( pImage != NULL );
-	CPLAssert( m_pvLine != NULL );
+    CPLAssert( m_pvLine != NULL );
 
-	#define sgn(_n) ((_n) < 0 ? -1 : ((_n) > 0 ? 1 : 0) )
-	#define sround(_f)	\
-		(int)((_f) + (0.5 * sgn(_f)))
+    const size_t pixelsize = sizeof(GInt16);
 
-	const size_t pixelsize = sizeof(GInt16);
+    TerragenDataset& ds = *reinterpret_cast<TerragenDataset *>(poDS );
+    if( m_bFirstTime )
+    {
+        m_bFirstTime = false;
+        ds.write_header();
+        ds.m_nDataOffset = VSIFTellL(ds.m_fp);
+    }
+    const size_t rowbytes = nBlockXSize * pixelsize;
 
+    GInt16* pLine = reinterpret_cast<GInt16 *>( m_pvLine );
 
-	TerragenDataset& ds = *(TerragenDataset*)poDS;
-	if(m_bFirstTime)
-	{
-		m_bFirstTime = false;
-		ds.write_header();
-		ds.m_nDataOffset = VSIFTellL(ds.m_fp);
-	}
-	const size_t rowbytes = nBlockXSize * pixelsize;
+    if(0 == VSIFSeekL(
+           ds.m_fp,
+           ds.m_nDataOffset +
+           // Terragen is Y inverted.
+           (ds.GetRasterYSize()-1-nBlockYOff) * rowbytes,
+           SEEK_SET))
+    {
+        // Convert each float32 to int16.
+        float* pfImage = reinterpret_cast<float *>( pImage );
+        for( size_t x = 0; x < static_cast<size_t>( nBlockXSize ); x++ )
+        {
+            const double f = pfImage[x] * ds.m_dMetersPerElevUnit / ds.m_dSCAL;
+            const GInt16 hv = static_cast<GInt16>(
+                ( f - ds.m_nBaseHeight ) * 65536.0 / ds.m_nHeightScale
+                /*+ ds.m_nShift*/ );
+            pLine[x] = hv;
+        }
 
-	GInt16* pLine = (GInt16*)m_pvLine;
+#ifdef CPL_MSB
+        GDALSwapWords( m_pvLine, pixelsize, nBlockXSize, pixelsize );
+#endif
+        if(1 == VSIFWriteL(m_pvLine, rowbytes, 1, ds.m_fp))
+            return CE_None;
+    }
 
-
-	if(0 == VSIFSeekL(
-       ds.m_fp, 
-       ds.m_nDataOffset + 
-		// Terragen is Y inverted.
-		(ds.GetRasterYSize()-1-nBlockYOff) * rowbytes, 
-       SEEK_SET))
-	{
-		// Convert each float32 to int16.
-		float* pfImage = (float*)pImage;
-		for(size_t x = 0; x < (size_t)nBlockXSize; x++)
-		{
-			double f = pfImage[x];
-			f *= ds.m_dMetersPerElevUnit;
-			f /= ds.m_dSCAL;
-			GInt16 hv = 
-				(GInt16)((f - ds.m_nBaseHeight) *
-					65536.0 / ds.m_nHeightScale /*+ ds.m_nShift*/);
-			pLine[x] = hv;
-		}
-
-#ifdef CPL_MSB 
-		GDALSwapWords( m_pvLine, pixelsize, nBlockXSize, pixelsize );
-#endif    
-		if(1 == VSIFWriteL(m_pvLine, rowbytes, 1, ds.m_fp))
-			return CE_None;
-	}
-
-	return CE_Failure;
+    return CE_Failure;
 }
-
 
 CPLErr TerragenRasterBand::SetUnitType( const char* psz )
 {
-	TerragenDataset& ds = *(TerragenDataset*)poDS;
+    TerragenDataset& ds = *reinterpret_cast<TerragenDataset *>( poDS );
 
-	if(EQUAL(psz, "m"))
-		ds.m_dMetersPerElevUnit = 1.0;
-	else if(EQUAL(psz, "ft"))
-		ds.m_dMetersPerElevUnit = 0.3048;
-	else if(EQUAL(psz, "sft"))
-		ds.m_dMetersPerElevUnit = 1200.0 / 3937.0;
-	else
-		return CE_Failure;
+    if(EQUAL(psz, "m"))
+        ds.m_dMetersPerElevUnit = 1.0;
+    else if(EQUAL(psz, "ft"))
+        ds.m_dMetersPerElevUnit = 0.3048;
+    else if(EQUAL(psz, "sft"))
+        ds.m_dMetersPerElevUnit = 1200.0 / 3937.0;
+    else
+        return CE_Failure;
 
-	return CE_None;
+    return CE_None;
 }
-
-
 
 /************************************************************************/
 /* ==================================================================== */
-/*				TerragenDataset		                                    */
+/*                          TerragenDataset                             */
 /* ==================================================================== */
 /************************************************************************/
 
@@ -454,17 +422,23 @@ CPLErr TerragenRasterBand::SetUnitType( const char* psz )
 /*                          TerragenDataset()                           */
 /************************************************************************/
 
-TerragenDataset::TerragenDataset()
+TerragenDataset::TerragenDataset() :
+    m_dScale(0.0),
+    m_dOffset(0.0),
+    m_dSCAL(30.0),
+    m_dGroundScale(0.0),
+    m_dMetersPerGroundUnit(1.0),
+    m_dMetersPerElevUnit(0.0),
+    m_fp(NULL),
+    m_nDataOffset(0),
+    m_nHeightScale(0),
+    m_nBaseHeight(0),
+    m_pszFilename(NULL),
+    m_pszProjection(NULL),
+    m_bIsGeo(false)
 {
-	m_pszFilename = NULL;
-    m_fp = NULL;
-	m_bIsGeo = false;
-	m_pszProjection = NULL;
-	m_nHeightScale = 0; // fix for ticket 2119
-	m_nBaseHeight = 0;
-	m_dMetersPerGroundUnit = 1.0;
-	m_dSCAL = 30.0;
-	m_dLogSpan[0] = m_dLogSpan[1] = 0.0;
+    m_dLogSpan[0] = 0.0;
+    m_dLogSpan[1] = 0.0;
 
     m_adfTransform[0] = 0.0;
     m_adfTransform[1] = m_dSCAL;
@@ -472,6 +446,11 @@ TerragenDataset::TerragenDataset()
     m_adfTransform[3] = 0.0;
     m_adfTransform[4] = 0.0;
     m_adfTransform[5] = m_dSCAL;
+    m_span_m[0] = 0.0;
+    m_span_m[1] = 0.0;
+    m_span_px[0] = 0.0;
+    m_span_px[1] = 0.0;
+    memset( m_szUnits, 0, sizeof(m_szUnits) );
 }
 
 /************************************************************************/
@@ -483,23 +462,22 @@ TerragenDataset::~TerragenDataset()
 {
     FlushCache();
 
-	CPLFree(m_pszProjection);
-	CPLFree(m_pszFilename);
+    CPLFree(m_pszProjection);
+    CPLFree(m_pszFilename);
 
     if( m_fp != NULL )
         VSIFCloseL( m_fp );
 }
 
-
-
 bool TerragenDataset::write_header()
 {
-	char szHeader[16];
-	memcpy(szHeader, "TERRAGENTERRAIN ", sizeof(szHeader));
+    char szHeader[16];
+    // cppcheck-suppress bufferNotZeroTerminated
+    memcpy(szHeader, "TERRAGENTERRAIN ", sizeof(szHeader));
 
-    if(1 != VSIFWriteL( (void *) szHeader, sizeof(szHeader), 1, m_fp ))
-	{
-        CPLError( CE_Failure, CPLE_FileIO, 
+    if(1 != VSIFWriteL( reinterpret_cast<void *>( szHeader ), sizeof(szHeader), 1, m_fp ))
+    {
+        CPLError( CE_Failure, CPLE_FileIO,
                   "Couldn't write to Terragen file %s.\n"
                   "Is file system full?",
                   m_pszFilename );
@@ -508,173 +486,166 @@ bool TerragenDataset::write_header()
         return false;
     }
 
-    
-// -------------------------------------------------------------------- 
+// --------------------------------------------------------------------
 //      Write out the heightfield dimensions, etc.
-// -------------------------------------------------------------------- 
+// --------------------------------------------------------------------
 
-	const int nXSize = this->GetRasterXSize();
-	const int nYSize = this->GetRasterYSize();
+    const int nXSize = GetRasterXSize();
+    const int nYSize = GetRasterYSize();
 
-	this->write_next_tag("SIZE");
-	this->put((GInt16)(min(nXSize, nYSize)-1));
-	this->pad(sizeof(GInt16));
+    write_next_tag( "SIZE" );
+    put( static_cast<GInt16>( std::min( nXSize, nYSize ) - 1 ) );
+    pad( sizeof(GInt16) );
 
-	if(nXSize != nYSize)
-	{
-		this->write_next_tag("XPTS");
-		this->put((GInt16)nXSize); this->pad(sizeof(GInt16));
-		this->write_next_tag("YPTS");
-		this->put((GInt16)nYSize); this->pad(sizeof(GInt16));
-	}
+    if(nXSize != nYSize)
+    {
+        write_next_tag( "XPTS" );
+        put( static_cast<GInt16>( nXSize ) );
+        pad( sizeof(GInt16) );
+        write_next_tag( "YPTS" );
+        put( static_cast<GInt16>( nYSize ) );
+        pad( sizeof(GInt16) );
+    }
 
-	if(m_bIsGeo)
-	{
-		/*
-			With a geographic projection (degrees),
-			m_dGroundScale will be in degrees and
-			m_dMetersPerGroundUnit is undefined.
-			So we're going to estimate a m_dMetersPerGroundUnit
-			value here (i.e., meters per degree).
+    if(m_bIsGeo)
+    {
+        /*
+          With a geographic projection (degrees),
+          m_dGroundScale will be in degrees and
+          m_dMetersPerGroundUnit is undefined.
+          So we're going to estimate a m_dMetersPerGroundUnit
+          value here (i.e., meters per degree).
 
-			We figure out the degree size of one 
-			pixel, and then the latitude degrees 
-			of the heightfield's center. The circumference of
-			the latitude's great circle lets us know how
-			wide the pixel is in meters, and we 
-			average that with the pixel's meter breadth,
-			which is based on the polar circumference.
-		*/
+          We figure out the degree size of one
+          pixel, and then the latitude degrees
+          of the heightfield's center. The circumference of
+          the latitude's great circle lets us know how
+          wide the pixel is in meters, and we
+          average that with the pixel's meter breadth,
+          which is based on the polar circumference.
+        */
 
-		/*const double m_dDegLongPerPixel = 
-			fabs(m_adfTransform[1]);*/
+        /* const double m_dDegLongPerPixel =
+              fabs(m_adfTransform[1]); */
 
-		const double m_dDegLatPerPixel = 
-			fabs(m_adfTransform[5]);
+        const double m_dDegLatPerPixel = std::abs(m_adfTransform[5]);
 
-		/*const double m_dCenterLongitude =
-			m_adfTransform[0] + 
-			(0.5 * m_dDegLongPerPixel * (nXSize-1));*/
+        /* const double m_dCenterLongitude =
+              m_adfTransform[0] +
+              (0.5 * m_dDegLongPerPixel * (nXSize-1)); */
 
-		const double m_dCenterLatitude =
-			m_adfTransform[3] + 
-			(0.5 * m_dDegLatPerPixel * (nYSize-1));
+        const double m_dCenterLatitude =
+            m_adfTransform[3] +
+            (0.5 * m_dDegLatPerPixel * (nYSize-1));
 
+        const double dLatCircum = kdEarthCircumEquat
+            * std::sin( degrees_to_radians( 90.0 - m_dCenterLatitude ) );
 
-		const double dLatCircum = kdEarthCircumEquat 
-			* sin(degrees_to_radians(90.0 - m_dCenterLatitude));
+        const double dMetersPerDegLongitude = dLatCircum / 360;
+        /* const double dMetersPerPixelX =
+              (m_dDegLongPerPixel / 360) * dLatCircum; */
 
-		const double dMetersPerDegLongitude = dLatCircum / 360;
-		/*const double dMetersPerPixelX = 
-			(m_dDegLongPerPixel / 360) * dLatCircum;*/
+        const double dMetersPerDegLatitude =
+            kdEarthCircumPolar / 360;
+        /* const double dMetersPerPixelY =
+              (m_dDegLatPerPixel / 360) * kdEarthCircumPolar; */
 
-		const double dMetersPerDegLatitude = 
-			kdEarthCircumPolar / 360;
-		/*const double dMetersPerPixelY = 
-			(m_dDegLatPerPixel / 360) * kdEarthCircumPolar;*/
+        m_dMetersPerGroundUnit =
+            average(dMetersPerDegLongitude, dMetersPerDegLatitude);
+    }
 
-		m_dMetersPerGroundUnit = 
-			average(dMetersPerDegLongitude, dMetersPerDegLatitude);
+    m_dSCAL = m_dGroundScale * m_dMetersPerGroundUnit;
 
-	}
-		
-	m_dSCAL = m_dGroundScale * m_dMetersPerGroundUnit;
+    if(m_dSCAL != 30.0)
+    {
+        const float sc = static_cast<float>( m_dSCAL );
+        write_next_tag( "SCAL" );
+        put( sc );
+        put( sc );
+        put( sc );
+    }
 
-	if(m_dSCAL != 30.0)
-	{
-		const float sc = (float)m_dSCAL;
-		this->write_next_tag("SCAL");
-		this->put(sc);
-		this->put(sc);
-		this->put(sc);
-	}
-
-	if(!this->write_next_tag("ALTW"))
-	{
-        CPLError( CE_Failure, CPLE_FileIO, 
+    if( !write_next_tag( "ALTW" ) )
+    {
+        CPLError( CE_Failure, CPLE_FileIO,
                   "Couldn't write to Terragen file %s.\n"
                   "Is file system full?",
                   m_pszFilename );
         VSIFCloseL( m_fp );
 
         return false;
-	}
+    }
 
-	// Compute physical scales and offsets.
-	m_span_m[0] = m_dLogSpan[0] * m_dMetersPerElevUnit;
-	m_span_m[1] = m_dLogSpan[1] * m_dMetersPerElevUnit;
+    // Compute physical scales and offsets.
+    m_span_m[0] = m_dLogSpan[0] * m_dMetersPerElevUnit;
+    m_span_m[1] = m_dLogSpan[1] * m_dMetersPerElevUnit;
 
-	m_span_px[0] = m_span_m[0] / m_dSCAL;
-	m_span_px[1] = m_span_m[1] / m_dSCAL;
+    m_span_px[0] = m_span_m[0] / m_dSCAL;
+    m_span_px[1] = m_span_m[1] / m_dSCAL;
 
-	const double span_px = m_span_px[1] - m_span_px[0];
-	m_nHeightScale = (GInt16)span_px;
-	if(m_nHeightScale == 0)
-		m_nHeightScale++;
+    const double span_px = m_span_px[1] - m_span_px[0];
+    m_nHeightScale = static_cast<GInt16>( span_px );
+    if(m_nHeightScale == 0)
+        m_nHeightScale++;
 
-	#define P2L_PX(n, hs, bh)	\
-		((double)(n) / 65536.0 * (hs) + (bh))
+// TODO(schwehr): Make static functions.
+#define P2L_PX(n, hs, bh) (static_cast<double>( n ) / 65536.0 * (hs) + (bh))
 
-	#define L2P_PX(n, hs, bh)	\
-		((int)(((n)-(bh)) * 65536.0 / (hs)))
+#define L2P_PX(n, hs, bh) (static_cast<int>( ((n)-(bh)) * 65536.0 / (hs) ) )
 
-	// Increase the heightscale until the physical span
-	// fits within a 16-bit range. The smaller the logical span,
-	// the more necessary this becomes.
-	int hs, bh=0;
-	for(hs = m_nHeightScale; hs <= 32767; hs++)
-	{
-		double prevdelta = 1.0e30;
-		for(bh = -32768; bh <= 32767; bh++)
-		{
-			int nValley = L2P_PX(m_span_px[0], hs, bh);
-			if(nValley < -32768) continue;
-			int nPeak = L2P_PX(m_span_px[1], hs, bh);
-			if(nPeak > 32767) continue;
+    // Increase the heightscale until the physical span
+    // fits within a 16-bit range. The smaller the logical span,
+    // the more necessary this becomes.
+    int hs = m_nHeightScale;
+    int bh = 0;
+    for( ; hs <= 32767; hs++)
+    {
+        double prevdelta = 1.0e30;
+        for( bh = -32768; bh <= 32767; bh++ )
+        {
+            const int nValley = L2P_PX(m_span_px[0], hs, bh);
+            if(nValley < -32768) continue;
+            const int nPeak = L2P_PX(m_span_px[1], hs, bh);
+            if(nPeak > 32767) continue;
 
-			// now see how closely the baseheight gets
-			// to the pixel span.
-			double d = P2L_PX(nValley, hs, bh);
-			double delta = fabs(d - m_span_px[0]);
-			if(delta < prevdelta) // Converging?
-				prevdelta = delta;
-			else 
-			{
-				// We're diverging, so use the previous bh
-				// and stop looking.
-				bh--;
-				break;
-			}
-		}
-		if(bh != 32768) break;
-	}
-	if(hs == 32768)
-	{
-        CPLError( CE_Failure, CPLE_FileIO, 
+            // now see how closely the baseheight gets
+            // to the pixel span.
+            const double d = P2L_PX(nValley, hs, bh);
+            const double delta = std::abs(d - m_span_px[0]);
+            if(delta < prevdelta) // Converging?
+                prevdelta = delta;
+            else
+            {
+                // We're diverging, so use the previous bh
+                // and stop looking.
+                bh--;
+                break;
+            }
+        }
+        if(bh != 32768) break;
+    }
+    if(hs == 32768)
+    {
+        CPLError( CE_Failure, CPLE_FileIO,
                   "Couldn't write to Terragen file %s.\n"
                   "Cannot find adequate heightscale/baseheight combination.",
                   m_pszFilename );
         VSIFCloseL( m_fp );
 
         return false;
-	}
-		
-	m_nHeightScale = (GInt16) hs;
-	m_nBaseHeight = (GInt16) bh;
+    }
 
+    m_nHeightScale = static_cast<GInt16>( hs );
+    m_nBaseHeight = static_cast<GInt16>( bh );
 
-	// m_nHeightScale is the one that gives us the 
-	// widest use of the 16-bit space. However, there
-	// might be larger heightscales that, even though
-	// the reduce the space usage, give us a better fit
-	// for preserving the span extents.
+    // m_nHeightScale is the one that gives us the
+    // widest use of the 16-bit space. However, there
+    // might be larger heightscales that, even though
+    // the reduce the space usage, give us a better fit
+    // for preserving the span extents.
 
-
-	return (this->put(m_nHeightScale) &&
-			this->put(m_nBaseHeight));
+    return put(m_nHeightScale) && put(m_nBaseHeight);
 }
-
-
 
 /************************************************************************/
 /*                                get()                                 */
@@ -690,7 +661,6 @@ bool TerragenDataset::get(GInt16& value)
     return false;
 }
 
-
 bool TerragenDataset::get(GUInt16& value)
 {
     if(1 == VSIFReadL(&value, sizeof(value), 1, m_fp))
@@ -700,7 +670,6 @@ bool TerragenDataset::get(GUInt16& value)
     }
     return false;
 }
-
 
 bool TerragenDataset::get(float& value)
 {
@@ -712,7 +681,6 @@ bool TerragenDataset::get(float& value)
     return false;
 }
 
-
 /************************************************************************/
 /*                                put()                                 */
 /************************************************************************/
@@ -720,39 +688,34 @@ bool TerragenDataset::get(float& value)
 bool TerragenDataset::put(GInt16 n)
 {
     CPL_LSBPTR16(&n);
-    return (1 == VSIFWriteL(&n, sizeof(n), 1, m_fp));
+    return 1 == VSIFWriteL(&n, sizeof(n), 1, m_fp);
 }
-
 
 bool TerragenDataset::put(float f)
 {
     CPL_LSBPTR32(&f);
-    return( 1 == VSIFWriteL(&f, sizeof(f), 1, m_fp) );
+    return 1 == VSIFWriteL(&f, sizeof(f), 1, m_fp);
 }
 
 /************************************************************************/
 /*                              tag stuff                               */
 /************************************************************************/
 
-
 bool TerragenDataset::read_next_tag(char* szTag)
 {
-	return (1 == VSIFReadL(szTag, 4, 1, m_fp));
+    return 1 == VSIFReadL(szTag, 4, 1, m_fp);
 }
-
 
 bool TerragenDataset::write_next_tag(const char* szTag)
 {
-	return (1 == VSIFWriteL((void*)szTag, 4, 1, m_fp));
+  return 1 == VSIFWriteL(
+      reinterpret_cast<void *>( const_cast<char *> ( szTag ) ), 4, 1, m_fp);
 }
-
 
 bool TerragenDataset::tag_is(const char* szTag, const char* sz)
 {
-	return (0 == memcmp(szTag, sz, 4));
+    return 0 == memcmp(szTag, sz, 4);
 }
-
-
 
 /************************************************************************/
 /*                            LoadFromFile()                            */
@@ -760,83 +723,83 @@ bool TerragenDataset::tag_is(const char* szTag, const char* sz)
 
 int TerragenDataset::LoadFromFile()
 {
-    GUInt16	nSize, xpts=0, ypts=0;
     m_dSCAL = 30.0;
     m_nDataOffset = 0;
 
     if(0 != VSIFSeekL(m_fp, 16, SEEK_SET))
-        return 0;
+        return FALSE;
 
     char szTag[4];
-    if(!this->read_next_tag(szTag) || !tag_is(szTag, "SIZE"))
-        return 0;
+    if( !read_next_tag(szTag) || !tag_is(szTag, "SIZE") )
+        return FALSE;
 
-    if(!this->get(nSize) || !this->skip(2))
-        return 0;
+    GUInt16 nSize;
+    if( !get(nSize) || !skip(2) )
+        return FALSE;
 
-    // Set dimensions to SIZE chunk. If we don't 
+    // Set dimensions to SIZE chunk. If we don't
     // encounter XPTS/YPTS chunks, we can assume
     // the terrain to be square.
-    xpts = ypts = nSize+1;
+    GUInt16 xpts = nSize+1;
+    GUInt16 ypts = nSize+1;
 
-    while(this->read_next_tag(szTag))
+    while( read_next_tag(szTag) )
     {
-        if(this->tag_is(szTag, "XPTS"))
+        if( tag_is(szTag, "XPTS") )
         {
-            this->get(xpts);
-            if(xpts < nSize || !this->skip(2))
-                return 0;
+            get(xpts);
+            if( xpts < nSize || !skip(2) )
+                return FALSE;
             continue;
         }
 
-        if(this->tag_is(szTag, "YPTS"))
+        if( tag_is(szTag, "YPTS") )
         {
-            this->get(ypts);
-            if(ypts < nSize || !this->skip(2))
-                return 0;
+            get( ypts );
+            if( ypts < nSize || !skip(2) )
+                return FALSE;
             continue;
         }
 
-        if(this->tag_is(szTag, "SCAL"))
+        if( tag_is(szTag, "SCAL") )
         {
-            float sc[3];
-            this->get(sc[0]);
-            this->get(sc[1]);
-            this->get(sc[2]);
+            float sc[3] = { 0.0f };
+            get(sc[0]);
+            get(sc[1]);
+            get(sc[2]);
             m_dSCAL = sc[1];
             continue;
         }
 
-        if(this->tag_is(szTag, "CRAD"))
+        if( tag_is(szTag, "CRAD") )
         {
-            if(!this->skip(sizeof(float)))
-                return 0;
+            if( !skip(sizeof(float)) )
+                return FALSE;
             continue;
         }
-        if(this->tag_is(szTag, "CRVM"))
+        if( tag_is(szTag, "CRVM") )
         {
-            if(!this->skip(sizeof(GUInt32)))
-                return 0;
+            if( !skip(sizeof(GUInt32)) )
+                return FALSE;
             continue;
         }
-        if(this->tag_is(szTag, "ALTW"))
+        if( tag_is(szTag, "ALTW") )
         {
-            this->get(m_nHeightScale);
-            this->get(m_nBaseHeight);
+            get(m_nHeightScale);
+            get(m_nBaseHeight);
             m_nDataOffset = VSIFTellL(m_fp);
-            if(!this->skip(xpts * ypts * sizeof(GInt16)))
-                return 0;
+            if( !skip(static_cast<size_t>(xpts) * static_cast<size_t>(ypts) * sizeof(GInt16)) )
+                return FALSE;
             continue;
         }
-        if(this->tag_is(szTag, "EOF "))
+        if( tag_is(szTag, "EOF ") )
         {
             break;
         }
     }
 
-
     if(xpts == 0 || ypts == 0 || m_nDataOffset == 0)
-        return 0;
+        return FALSE;
 
     nRasterXSize = xpts;
     nRasterYSize = ypts;
@@ -858,9 +821,8 @@ int TerragenDataset::LoadFromFile()
     m_adfTransform[4] = 0.0;
     m_adfTransform[5] = m_dSCAL;
 
-
 /* -------------------------------------------------------------------- */
-/*      Set projection.							*/
+/*      Set projection.                                                 */
 /* -------------------------------------------------------------------- */
     // Terragen files as of Apr 2006 are partially georeferenced,
     // we can declare a local coordsys that uses meters.
@@ -868,16 +830,13 @@ int TerragenDataset::LoadFromFile()
 
     sr.SetLocalCS("Terragen world space");
     if(OGRERR_NONE != sr.SetLinearUnits("m", 1.0))
-        return 0;
+        return FALSE;
 
     if(OGRERR_NONE != sr.exportToWkt(&m_pszProjection))
-        return 0;
+        return FALSE;
 
     return TRUE;
 }
-
-
-
 
 /************************************************************************/
 /*                           SetProjection()                            */
@@ -885,8 +844,8 @@ int TerragenDataset::LoadFromFile()
 
 CPLErr TerragenDataset::SetProjection( const char * pszNewProjection )
 {
-    // Terragen files aren't really georeferenced, but 
-    // we should get the projection's linear units so 
+    // Terragen files aren't really georeferenced, but
+    // we should get the projection's linear units so
     // that we can scale elevations correctly.
 
     //m_dSCAL = 30.0; // default
@@ -896,22 +855,22 @@ CPLErr TerragenDataset::SetProjection( const char * pszNewProjection )
 /* -------------------------------------------------------------------- */
 /*      Linear units.                                                   */
 /* -------------------------------------------------------------------- */
-    m_bIsGeo = (oSRS.IsGeographic() != FALSE);
+    m_bIsGeo = oSRS.IsGeographic() != FALSE;
     if(m_bIsGeo)
     {
-        // The caller is using degrees. We need to convert 
+        // The caller is using degrees. We need to convert
         // to meters, otherwise we can't derive a SCAL
         // value to scale elevations with.
         m_bIsGeo = true;
     }
     else
     {
-        double dfLinear = oSRS.GetLinearUnits();
+        const double dfLinear = oSRS.GetLinearUnits();
 
         if( approx_equal(dfLinear, 0.3048))
             m_dMetersPerGroundUnit = 0.3048;
-        else if( approx_equal(dfLinear, atof(SRS_UL_US_FOOT_CONV)) )
-            m_dMetersPerGroundUnit = atof(SRS_UL_US_FOOT_CONV);
+        else if( approx_equal(dfLinear, CPLAtof(SRS_UL_US_FOOT_CONV)) )
+            m_dMetersPerGroundUnit = CPLAtof(SRS_UL_US_FOOT_CONV);
         else
             m_dMetersPerGroundUnit = 1.0;
     }
@@ -923,12 +882,12 @@ CPLErr TerragenDataset::SetProjection( const char * pszNewProjection )
 /*                          GetProjectionRef()                          */
 /************************************************************************/
 
-const char*	TerragenDataset::GetProjectionRef(void)
+const char* TerragenDataset::GetProjectionRef(void)
 {
     if(m_pszProjection == NULL )
         return "";
-    else
-        return m_pszProjection;
+
+    return m_pszProjection;
 }
 
 /************************************************************************/
@@ -937,16 +896,14 @@ const char*	TerragenDataset::GetProjectionRef(void)
 
 CPLErr TerragenDataset::SetGeoTransform( double *padfGeoTransform )
 {
-	memcpy(m_adfTransform, padfGeoTransform, 
-		sizeof(m_adfTransform));
+    memcpy(m_adfTransform, padfGeoTransform,
+           sizeof(m_adfTransform));
 
-	// Average the projection scales.
-	m_dGroundScale = 
-		average(fabs(m_adfTransform[1]), fabs(m_adfTransform[5]));
-	return CE_None;
+    // Average the projection scales.
+    m_dGroundScale =
+        average(fabs(m_adfTransform[1]), fabs(m_adfTransform[5]));
+    return CE_None;
 }
-
-
 
 /************************************************************************/
 /*                          GetGeoTransform()                           */
@@ -958,57 +915,52 @@ CPLErr TerragenDataset::GetGeoTransform(double* padfTransform)
     return CE_None;
 }
 
-
 /************************************************************************/
 /*                                Create()                                */
 /************************************************************************/
 GDALDataset* TerragenDataset::Create
 (
-	const char* pszFilename,
+    const char* pszFilename,
     int nXSize, int nYSize, int nBands,
-    GDALDataType eType, char** papszOptions 
+    GDALDataType eType, char** papszOptions
 )
 {
     TerragenDataset* poDS = new TerragenDataset();
 
     poDS->eAccess = GA_Update;
-	
-	poDS->m_pszFilename = CPLStrdup(pszFilename);
 
-	// -------------------------------------------------------------------- 
-	//      Verify input options.                                           
-	// -------------------------------------------------------------------- 
-    const char* pszValue = CSLFetchNameValue( 
-		papszOptions,"MINUSERPIXELVALUE");
+    poDS->m_pszFilename = CPLStrdup(pszFilename);
+
+    // --------------------------------------------------------------------
+    //      Verify input options.
+    // --------------------------------------------------------------------
+    const char* pszValue = CSLFetchNameValue( papszOptions,"MINUSERPIXELVALUE");
     if( pszValue != NULL )
-        poDS->m_dLogSpan[0] = atof( pszValue );
+        poDS->m_dLogSpan[0] = CPLAtof( pszValue );
 
-    pszValue = CSLFetchNameValue( 
-		papszOptions,"MAXUSERPIXELVALUE");
+    pszValue = CSLFetchNameValue( papszOptions,"MAXUSERPIXELVALUE");
     if( pszValue != NULL )
-        poDS->m_dLogSpan[1] = atof( pszValue );
+        poDS->m_dLogSpan[1] = CPLAtof( pszValue );
 
-
-	if( poDS->m_dLogSpan[1] <= poDS->m_dLogSpan[0] )
-	{
+    if( poDS->m_dLogSpan[1] <= poDS->m_dLogSpan[0] )
+    {
         CPLError( CE_Failure, CPLE_AppDefined,
               "Inverted, flat, or unspecified span for Terragen file." );
 
-		delete poDS;
+        delete poDS;
         return NULL;
-	}
+    }
 
     if( eType != GDT_Float32 )
     {
         CPLError( CE_Failure, CPLE_AppDefined,
               "Attempt to create Terragen dataset with a non-float32\n"
               "data type (%s).\n",
-              GDALGetDataTypeName(eType) );
+                  GDALGetDataTypeName(eType) );
 
-		delete poDS;
+        delete poDS;
         return NULL;
     }
-
 
     if( nBands != 1 )
     {
@@ -1016,15 +968,13 @@ GDALDataset* TerragenDataset::Create
                   "Terragen driver doesn't support %d bands. Must be 1.\n",
                   nBands );
 
-		delete poDS;
+        delete poDS;
         return NULL;
     }
 
-
-// -------------------------------------------------------------------- 
-//      Try to create the file.                                         
-// -------------------------------------------------------------------- 
-    
+// --------------------------------------------------------------------
+//      Try to create the file.
+// --------------------------------------------------------------------
 
     poDS->m_fp = VSIFOpenL( pszFilename, "wb+" );
 
@@ -1033,32 +983,28 @@ GDALDataset* TerragenDataset::Create
         CPLError( CE_Failure, CPLE_OpenFailed,
                   "Attempt to create file `%s' failed.\n",
                   pszFilename );
-		delete poDS;
+        delete poDS;
         return NULL;
     }
 
     poDS->nRasterXSize = nXSize;
     poDS->nRasterYSize = nYSize;
 
-    // Don't bother writing the header here; the first 
-	// call to IWriteBlock will do that instead, since 
-	// the elevation data's location depends on the
-	// header size.
+    // Don't bother writing the header here; the first
+    // call to IWriteBlock will do that instead, since
+    // the elevation data's location depends on the
+    // header size.
 
-
-// -------------------------------------------------------------------- 
-//      Instance a band.                                                
-// -------------------------------------------------------------------- 
+// --------------------------------------------------------------------
+//      Instance a band.
+// --------------------------------------------------------------------
     poDS->SetBand( 1, new TerragenRasterBand( poDS ) );
-	 
 
     //VSIFClose( poDS->m_fp );
 
-    //return (GDALDataset *) GDALOpen( pszFilename, GA_Update );
-    return (GDALDataset *) poDS;
-
+    // return (GDALDataset *) GDALOpen( pszFilename, GA_Update );
+    return reinterpret_cast<GDALDataset *>( poDS );
 }
-
 
 /************************************************************************/
 /*                                Open()                                */
@@ -1071,17 +1017,14 @@ GDALDataset *TerragenDataset::Open( GDALOpenInfo * poOpenInfo )
     if( poOpenInfo->nHeaderBytes < 32 )
         return NULL;
 
-    if( !EQUALN((const char *) poOpenInfo->pabyHeader, 
-		"TERRAGENTERRAIN ", 16) )
+    if( !EQUALN(reinterpret_cast<const char *>( poOpenInfo->pabyHeader ),
+                "TERRAGENTERRAIN ", 16) )
         return NULL;
-
 
 /* -------------------------------------------------------------------- */
 /*      Create a corresponding GDALDataset.                             */
 /* -------------------------------------------------------------------- */
-    TerragenDataset 	*poDS;
-
-    poDS = new TerragenDataset();
+    TerragenDataset *poDS = new TerragenDataset();
 
     // Reopen for large file access.
     if( poOpenInfo->eAccess == GA_Update )
@@ -1094,13 +1037,13 @@ GDALDataset *TerragenDataset::Open( GDALOpenInfo * poOpenInfo )
         CPLError( CE_Failure, CPLE_OpenFailed,
                   "Failed to re-open %s within Terragen driver.\n",
                   poOpenInfo->pszFilename );
+        delete poDS;
         return NULL;
     }
     poDS->eAccess = poOpenInfo->eAccess;
 
-    
 /* -------------------------------------------------------------------- */
-/*	Read the file.							*/
+/*      Read the file.                                                  */
 /* -------------------------------------------------------------------- */
     if( !poDS->LoadFromFile() )
     {
@@ -1126,7 +1069,7 @@ GDALDataset *TerragenDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -1136,31 +1079,25 @@ GDALDataset *TerragenDataset::Open( GDALOpenInfo * poOpenInfo )
 void GDALRegister_Terragen()
 
 {
-    GDALDriver	*poDriver;
+    if( GDALGetDriverByName( "Terragen" ) != NULL )
+        return;
 
-    if( GDALGetDriverByName( "Terragen" ) == NULL )
-    {
-        poDriver = new GDALDriver();
-        
-        poDriver->SetDescription( "Terragen" );
-        poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, 
-                                   "ter" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
-                                   "Terragen heightfield" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
-                                   "frmt_terragen.html" );
+    GDALDriver *poDriver = new GDALDriver();
 
-        poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+    poDriver->SetDescription( "Terragen" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "ter" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Terragen heightfield" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "frmt_terragen.html" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
 "<CreationOptionList>"
 "   <Option name='MINUSERPIXELVALUE' type='float' description='Lowest logical elevation'/>"
 "   <Option name='MAXUSERPIXELVALUE' type='float' description='Highest logical elevation'/>"
 "</CreationOptionList>" );
-        
-        poDriver->pfnOpen = TerragenDataset::Open;
-        poDriver->pfnCreate = TerragenDataset::Create;
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->pfnOpen = TerragenDataset::Open;
+    poDriver->pfnCreate = TerragenDataset::Create;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-
-

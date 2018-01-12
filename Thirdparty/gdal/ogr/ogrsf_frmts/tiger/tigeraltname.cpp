@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigeraltname.cpp 23871 2012-02-02 03:24:07Z warmerdam $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerAltName, providing access to RT4 files.
@@ -30,9 +29,9 @@
 #include "ogr_tiger.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: tigeraltname.cpp 23871 2012-02-02 03:24:07Z warmerdam $");
+CPL_CVSID("$Id: tigeraltname.cpp 38802 2017-06-02 09:04:34Z rouault $");
 
-#define FILE_CODE "4"
+static const char FILE_CODE[] = "4";
 
 static const TigerFieldInfo rt4_fields[] = {
   // fieldname    fmt  type  OFTType         beg  end  len  bDefine bSet bWrite
@@ -52,14 +51,13 @@ static const TigerRecordInfo rt4_info =
     58
   };
 
-
 /************************************************************************/
 /*                            TigerAltName()                            */
 /************************************************************************/
 
 TigerAltName::TigerAltName( OGRTigerDataSource * poDSIn,
-                            const char * pszPrototypeModule ) : TigerFileBase(&rt4_info, FILE_CODE)
-
+                            CPL_UNUSED const char * pszPrototypeModule ) :
+    TigerFileBase(&rt4_info, FILE_CODE)
 {
     OGRFieldDefn        oField("",OFTInteger);
 
@@ -106,6 +104,8 @@ OGRFeature *TigerAltName::GetFeature( int nRecordId )
         return NULL;
     }
 
+    // Overflow cannot happen since psRTInfo->nRecordLength is unsigned
+    // char and sizeof(achRecord) == OGR_TIGER_RECBUF_LEN > 255
     if( VSIFReadL( achRecord, psRTInfo->nRecordLength, 1, fpPrimary ) != 1 )
     {
         CPLError( CE_Failure, CPLE_FileIO,
@@ -126,9 +126,8 @@ OGRFeature *TigerAltName::GetFeature( int nRecordId )
 
     for( int iFeat = 0; iFeat < 5; iFeat++ )
     {
-        const char *    pszFieldText;
-
-        pszFieldText = GetField( achRecord, 19 + iFeat*8, 26 + iFeat*8 );
+        const char *pszFieldText =
+            GetField( achRecord, 19 + iFeat*8, 26 + iFeat*8 );
 
         if( *pszFieldText != '\0' )
             anFeatList[nFeatCount++] = atoi(pszFieldText);
@@ -146,23 +145,23 @@ OGRFeature *TigerAltName::GetFeature( int nRecordId )
 OGRErr TigerAltName::CreateFeature( OGRFeature *poFeature )
 
 {
-  char        szRecord[OGR_TIGER_RECBUF_LEN];
-    const int   *panValue;
-    int         nValueCount = 0;
 
     if( !SetWriteModule( FILE_CODE, psRTInfo->nRecordLength+2, poFeature ) )
         return OGRERR_FAILURE;
 
+    char szRecord[OGR_TIGER_RECBUF_LEN] = {};
     memset( szRecord, ' ', psRTInfo->nRecordLength );
 
     WriteFields( psRTInfo, poFeature, szRecord );
 
-    panValue = poFeature->GetFieldAsIntegerList( "FEAT", &nValueCount );
+    int nValueCount = 0;
+    const int *panValue =
+        poFeature->GetFieldAsIntegerList( "FEAT", &nValueCount );
     for( int i = 0; i < nValueCount; i++ )
     {
-        char    szWork[9];
-        
-        sprintf( szWork, "%8d", panValue[i] );
+        char szWork[9] = {};
+
+        snprintf( szWork, sizeof(szWork), "%8d", panValue[i] );
         strncpy( szRecord + 18 + 8 * i, szWork, 8 );
     }
 

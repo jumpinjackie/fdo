@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrsuadatasource.cpp 23042 2011-09-04 15:07:22Z rouault $
  *
  * Project:  SUA Translator
  * Purpose:  Implements OGRSUADataSource class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,20 +30,17 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrsuadatasource.cpp 23042 2011-09-04 15:07:22Z rouault $");
+CPL_CVSID("$Id: ogrsuadatasource.cpp 35202 2016-08-25 15:43:35Z goatbar $");
 
 /************************************************************************/
 /*                          OGRSUADataSource()                          */
 /************************************************************************/
 
-OGRSUADataSource::OGRSUADataSource()
-
-{
-    papoLayers = NULL;
-    nLayers = 0;
-
-    pszName = NULL;
-}
+OGRSUADataSource::OGRSUADataSource() :
+    pszName(NULL),
+    papoLayers(NULL),
+    nLayers(0)
+{}
 
 /************************************************************************/
 /*                         ~OGRSUADataSource()                          */
@@ -64,8 +60,7 @@ OGRSUADataSource::~OGRSUADataSource()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRSUADataSource::TestCapability( const char * pszCap )
-
+int OGRSUADataSource::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -87,42 +82,18 @@ OGRLayer *OGRSUADataSource::GetLayer( int iLayer )
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRSUADataSource::Open( const char * pszFilename, int bUpdateIn)
+int OGRSUADataSource::Open( const char * pszFilename )
 
 {
-    if (bUpdateIn)
-    {
-        return FALSE;
-    }
-
     pszName = CPLStrdup( pszFilename );
-
-// -------------------------------------------------------------------- 
-//      Does this appear to be a .sua file?
-// --------------------------------------------------------------------
 
     VSILFILE* fp = VSIFOpenL(pszFilename, "rb");
     if (fp == NULL)
         return FALSE;
 
-    char szBuffer[10000];
-    int nbRead = (int)VSIFReadL(szBuffer, 1, sizeof(szBuffer) - 1, fp);
-    szBuffer[nbRead] = '\0';
+    nLayers = 1;
+    papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
+    papoLayers[0] = new OGRSUALayer(fp);
 
-    int bIsSUA = (strstr(szBuffer, "\nTYPE=") != NULL &&
-                  strstr(szBuffer, "\nTITLE=") != NULL &&
-                  (strstr(szBuffer, "\nPOINT=") != NULL ||
-                   strstr(szBuffer, "\nCIRCLE ") != NULL));
-
-    if (bIsSUA)
-    {
-        VSIFSeekL( fp, 0, SEEK_SET );
-        nLayers = 1;
-        papoLayers = (OGRLayer**) CPLMalloc(sizeof(OGRLayer*));
-        papoLayers[0] = new OGRSUALayer(fp);
-    }
-    else
-        VSIFCloseL(fp);
-
-    return bIsSUA;
+    return TRUE;
 }

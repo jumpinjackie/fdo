@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: ogr_capi_test.c 10645 2007-01-18 02:22:39Z warmerdam $
+ * $Id: ogr_capi_test.c 34523 2016-07-02 21:50:47Z goatbar $
  **********************************************************************
  * Copyright (c) 2003, Daniel Morissette
  *
@@ -107,8 +107,8 @@ int OGRCDump(const char *pszFname)
             OGRFieldDefnH fieldDefn;
 
             fieldDefn = OGR_FD_GetFieldDefn( layerDefn, j );
-            printf(" Field %d: %s (%s)\n", 
-                   j, OGR_Fld_GetNameRef(fieldDefn), 
+            printf(" Field %d: %s (%s)\n",
+                   j, OGR_Fld_GetNameRef(fieldDefn),
                    OGR_GetFieldTypeName(OGR_Fld_GetType(fieldDefn)) );
         }
         printf("\n");
@@ -222,7 +222,7 @@ int OGRCCreate(const char *pszFname)
     OGR_G_AddPoint(geometry, 12.34,  45.67, 0);
 
     OGR_F_SetGeometryDirectly(feature, geometry);
- 
+
     OGR_L_CreateFeature( layer, feature );
 
     /* Create a new polygon (square) */
@@ -241,7 +241,7 @@ int OGRCCreate(const char *pszFname)
     OGR_G_AddGeometryDirectly(geometry, ring);
 
     OGR_F_SetGeometryDirectly(feature, geometry);
- 
+
     OGR_L_CreateFeature( layer, feature );
 
     /* Close data source */

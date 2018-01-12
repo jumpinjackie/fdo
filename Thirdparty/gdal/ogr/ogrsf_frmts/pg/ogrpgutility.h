@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogrpgutility.h 22450 2011-05-28 21:25:11Z rouault $
+ * $Id: ogrpgutility.h 35631 2016-10-07 13:45:32Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private utilities for OGR/PostgreSQL driver.
@@ -33,7 +33,8 @@
 #include "libpq-fe.h"
 
 PGresult *OGRPG_PQexec(PGconn *conn, const char *query,
-                       int bMultipleCommandAllowed = FALSE);
+                       int bMultipleCommandAllowed = FALSE,
+                       int bErrorAsDebug = FALSE);
 
 /************************************************************************/
 /*                            OGRPGClearResult                          */
@@ -51,6 +52,8 @@ inline void OGRPGClearResult( PGresult*& hResult )
         hResult = NULL;
     }
 }
+
+bool OGRPG_Check_Table_Exists(PGconn *hPGConn, const char * pszTableName);
 
 #endif /* ndef OGRPGUTILITY_H_INCLUDED */
 

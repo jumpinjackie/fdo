@@ -1,10 +1,10 @@
 /**********************************************************************
- * $Id: e00read.c,v 1.10 2009-02-24 20:03:50 aboudreault Exp $
+ * $Id: e00read.c 39207 2017-06-20 17:57:08Z rouault $
  *
  * Name:     e00read.c
  * Project:  Compressed E00 Read/Write library
  * Language: ANSI C
- * Purpose:  Functions to read Compressed E00 files and return a stream 
+ * Purpose:  Functions to read Compressed E00 files and return a stream
  *           of uncompressed lines.
  * Author:   Daniel Morissette, dmorissette@mapgears.com
  *
@@ -56,7 +56,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
+ *
  **********************************************************************/
 
 #include <stdlib.h>
@@ -85,9 +85,9 @@ static E00ReadPtr  _E00ReadTestOpen(E00ReadPtr psInfo)
     /* Check that the file is in E00 format.
      */
     _ReadNextSourceLine(psInfo);
-    if (!psInfo->bEOF && strncmp(psInfo->szInBuf, "EXP ", 4) == 0)
+    if (!psInfo->bEOF && STARTS_WITH(psInfo->szInBuf, "EXP "))
     {
-        /* We should be in presence of a valid E00 file... 
+        /* We should be in presence of a valid E00 file...
          * Is the file compressed or not?
          *
          * Note: we cannot really rely on the number that follows the EXP to
@@ -95,16 +95,16 @@ static E00ReadPtr  _E00ReadTestOpen(E00ReadPtr psInfo)
          * uncompressed files that start with a "EXP 1" line!!!
          *
          * The best test is to read the first non-empty line: if the file is
-         * compressed, the first line of data should be 79 or 80 characters 
+         * compressed, the first line of data should be 79 or 80 characters
          * long and contain several '~' characters.
          */
         do
         {
             _ReadNextSourceLine(psInfo);
-        }while(!psInfo->bEOF && 
+        }while(!psInfo->bEOF &&
                (psInfo->szInBuf[0] == '\0' || isspace(psInfo->szInBuf[0])) );
 
-         if (!psInfo->bEOF && 
+         if (!psInfo->bEOF &&
              (strlen(psInfo->szInBuf)==79 || strlen(psInfo->szInBuf)==80) &&
              strchr(psInfo->szInBuf, '~') != NULL )
              psInfo->bIsCompressed = 1;
@@ -127,7 +127,7 @@ static E00ReadPtr  _E00ReadTestOpen(E00ReadPtr psInfo)
  *
  * Try to open a E00 file given its filename and return a E00ReadPtr handle.
  *
- * Returns NULL if the file could not be opened or if it does not 
+ * Returns NULL if the file could not be opened or if it does not
  * appear to be a valid E00 file.
  **********************************************************************/
 E00ReadPtr  E00ReadOpen(const char *pszFname)
@@ -137,7 +137,7 @@ E00ReadPtr  E00ReadOpen(const char *pszFname)
 
     CPLErrorReset();
 
-    /* Open the file 
+    /* Open the file
      */
     fp = VSIFOpen(pszFname, "rt");
     if (fp == NULL)
@@ -147,7 +147,7 @@ E00ReadPtr  E00ReadOpen(const char *pszFname)
         return NULL;
     }
 
-    /* File was succesfully opened, allocate and initialize a 
+    /* File was successfully opened, allocate and initialize a
      * E00ReadPtr handle and check that the file is valid.
      */
     psInfo = (E00ReadPtr)CPLCalloc(1, sizeof(struct _E00ReadInfo));
@@ -180,7 +180,7 @@ E00ReadPtr  E00ReadOpen(const char *pszFname)
  *   const char *myReadNextLine(void *pRefData);
  *   void        myReadRewind(void *pRefData);
  *
- *   myReadNextLine() should return a reference to its own internal 
+ *   myReadNextLine() should return a reference to its own internal
  *   buffer, or NULL if an error happens or EOF is reached.
  *
  * E00ReadCallbackOpen() returns a E00ReadPtr handle or NULL if the file
@@ -203,7 +203,7 @@ E00ReadPtr  E00ReadCallbackOpen(void *pRefData,
         return NULL;
     }
 
-    /* Allocate and initialize a 
+    /* Allocate and initialize a
      * E00ReadPtr handle and check that the file is valid.
      */
     psInfo = (E00ReadPtr)CPLCalloc(1, sizeof(struct _E00ReadInfo));
@@ -243,7 +243,7 @@ void    E00ReadClose(E00ReadPtr psInfo)
 /**********************************************************************
  *                          E00ReadRewind()
  *
- * Rewind the E00ReadPtr.  Allows to start another read pass on the 
+ * Rewind the E00ReadPtr.  Allows starting another read pass on the
  * input file.
  **********************************************************************/
 void    E00ReadRewind(E00ReadPtr psInfo)
@@ -282,14 +282,14 @@ const char *E00ReadNextLine(E00ReadPtr psInfo)
     {
         if (!psInfo->bIsCompressed)
         {
-            /* Uncompressed file... return line directly. 
+            /* Uncompressed file... return line directly.
              */
             _ReadNextSourceLine(psInfo);
             pszLine = psInfo->szInBuf;
         }
         else if (psInfo->bIsCompressed && psInfo->nInputLineNo == 0)
         {
-            /* Header line in a compressed file... return line 
+            /* Header line in a compressed file... return line
              * after replacing "EXP  1" with "EXP  0".  E00ReadOpen()
              * has already verified that this line starts with "EXP "
              */
@@ -307,13 +307,13 @@ const char *E00ReadNextLine(E00ReadPtr psInfo)
                 _ReadNextSourceLine(psInfo);
             }
 
-            /* Uncompress the next line of input and return it 
+            /* Uncompress the next line of input and return it
              */
             pszLine = _UncompressNextLine(psInfo);
         }
 
         /* If we just reached EOF then make sure we don't add an extra
-         * empty line at the end of the uncompressed oputput.
+         * empty line at the end of the uncompressed output.
          */
         if (psInfo->bEOF && strlen(pszLine) == 0)
             pszLine = NULL;
@@ -336,7 +336,7 @@ static void _ReadNextSourceLine(E00ReadPtr psInfo)
         psInfo->iInBufPtr = 0;
         psInfo->szInBuf[0] = '\0';
 
-        /* Read either using fgets() or psInfo->pfnReadNextLine() 
+        /* Read either using fgets() or psInfo->pfnReadNextLine()
          * depending on the way the file was opened...
          */
         if (psInfo->pfnReadNextLine == NULL)
@@ -355,6 +355,7 @@ static void _ReadNextSourceLine(E00ReadPtr psInfo)
             if (pszLine)
             {
                 strncpy(psInfo->szInBuf, pszLine, E00_READ_BUF_SIZE);
+                psInfo->szInBuf[E00_READ_BUF_SIZE-1] = '\0';
             }
             else
             {
@@ -366,11 +367,12 @@ static void _ReadNextSourceLine(E00ReadPtr psInfo)
 
         if (!psInfo->bEOF)
         {
-            /* A new line was succesfully read.  Remove trailing '\n' if any.
+            /* A new line was successfully read.  Remove trailing '\n' if any.
              * (Note: For Unix systems, we also have to check for '\r')
              */
             int nLen;
-            nLen = strlen(psInfo->szInBuf);
+            nLen = (int)strlen(psInfo->szInBuf);
+            CPLAssert(nLen < E00_READ_BUF_SIZE);
             while(nLen > 0 && (psInfo->szInBuf[nLen-1] == '\n' ||
                                psInfo->szInBuf[nLen-1] == '\r'   ) )
             {
@@ -387,7 +389,7 @@ static void _ReadNextSourceLine(E00ReadPtr psInfo)
 /**********************************************************************
  *                          _GetNextSourceChar()
  *
- * Returns the next char from the source file input buffer... and 
+ * Returns the next char from the source file input buffer... and
  * reload the input buffer when necessary... this function makes the
  * whole input file appear as one huge null-terminated string with
  * no line delimiters.
@@ -451,15 +453,27 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
     int     bEOL = 0;   /* Set to 1 when End of Line reached */
     int     iOutBufPtr = 0, i, n;
     int     iDecimalPoint, bOddNumDigits, iCurDigit;
-    char    *pszExp;
+    char    const *pszExp;
     int     bPreviousCodeWasNumeric = 0;
 
     while(!bEOL && (c=_GetNextSourceChar(psInfo)) != '\0')
     {
+
+        if (iOutBufPtr < 0)
+        {
+            CPLError(CE_Failure, CPLE_FileIO,
+                     "Corruption around line %d.",
+                     psInfo->nInputLineNo);
+            /* Force the program to abort by simulating a EOF
+             */
+            psInfo->bEOF = 1;
+            bEOL = 1;
+            break;
+        }
+
         if (c != '~')
         {
-            /* Normal character... just copy it 
-             */
+            /* Normal character... just copy it */
             psInfo->szOutBuf[iOutBufPtr++] = c;
             bPreviousCodeWasNumeric = 0;
         }
@@ -479,7 +493,7 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                  */
                 c = _GetNextSourceChar(psInfo);
                 n = c - ' ';
-                for(i=0; i<n; i++)
+                for(i=0; i<n && iOutBufPtr <= 80; i++)
                     psInfo->szOutBuf[iOutBufPtr++] = ' ';
                 bPreviousCodeWasNumeric = 0;
             }
@@ -495,7 +509,7 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                 /* If the previous code was numeric, then the only valid code
                  * sequences are the ones above: "~ " and "~}".  If we end up
                  * here, it is because the number was followed by a '~' but
-                 * this '~' was not a code, it only marked the end of a 
+                 * this '~' was not a code, it only marked the end of a
                  * number that was not followed by any space.
                  *
                  * We should simply ignore the '~' and return the character
@@ -519,13 +533,13 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
              *  ~             marks the beginning of a new code sequence
              *
              *  c0            is a single character code defining the format
-             *                of the number (decimal position, exponent, 
+             *                of the number (decimal position, exponent,
              *                and even or odd number of digits)
              *
-             *  c1 c2 ... cn  each of these characters represent a pair of 
+             *  c1 c2 ... cn  each of these characters represent a pair of
              *                digits of the encoded value with '!' == 00
              *                values 92..99 are encoded on 2 chars that
-             *                must be added to each other 
+             *                must be added to each other
              *                (i.e. 92 == }!, 93 == }", ...)
              *
              *  The sequence ends with a ' ' or a '~' character
@@ -545,21 +559,21 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                     pszExp = "E+";
                 else if (n % 3 == 2 )
                     pszExp = "E-";
-                else 
+                else
                     pszExp = NULL;
 
                 /* Decode the c1 c2 ... cn value and apply the format.
                  * Read characters until we encounter a ' ' or a '~'
                  */
                 iCurDigit = 0;
-                while((c=_GetNextSourceChar(psInfo)) != '\0' && 
-                      c != ' ' && c != '~')
+                while((c=_GetNextSourceChar(psInfo)) != '\0' &&
+                      c != ' ' && c != '~' && iOutBufPtr <= 80 )
                 {
                     n = c - '!';
                     if (n == 92 && (c=_GetNextSourceChar(psInfo)) != '\0')
                         n += c - '!';
 
-                    psInfo->szOutBuf[iOutBufPtr++] = '0' + n/10;
+                    psInfo->szOutBuf[iOutBufPtr++] = (char)('0' + n/10);
 
                     if (++iCurDigit == iDecimalPoint)
                         psInfo->szOutBuf[iOutBufPtr++] = '.';
@@ -579,7 +593,20 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                 /* If odd number of digits, then flush the last one
                  */
                 if (bOddNumDigits)
+                {
+                    if( iOutBufPtr == 0 )
+                    {
+                        CPLError(CE_Failure, CPLE_FileIO,
+                                "Input file possibly corrupt around line %d.",
+                                psInfo->nInputLineNo);
+                        /* Force the program to abort by simulating a EOF
+                        */
+                        psInfo->bEOF = 1;
+                        bEOL = 1;
+                        break;
+                    }
                     iOutBufPtr--;
+                }
 
                 /* Insert the exponent string before the 2 last digits
                  * (we assume the exponent string is 2 chars. long)
@@ -588,7 +615,7 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                 {
                     for(i=0; i<2;i++)
                     {
-                        psInfo->szOutBuf[iOutBufPtr] = 
+                        psInfo->szOutBuf[iOutBufPtr] =
                                    psInfo->szOutBuf[iOutBufPtr-2];
                         psInfo->szOutBuf[iOutBufPtr-2] = pszExp[i];
                         iOutBufPtr++;
@@ -598,7 +625,7 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
             else
             {
                 /* Unsupported code sequence... this is a possibility
-                 * given the fact that this library was written by 
+                 * given the fact that this library was written by
                  * reverse-engineering the format!
                  *
                  * Send an error to the user and abort.
@@ -612,8 +639,8 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                 CPLError(CE_Failure, CPLE_NotSupported,
                          "Unexpected code \"~%c\" encountered in line %d.",
                           c, psInfo->nInputLineNo);
-    
-                /* Force the program to abort by simulating a EOF 
+
+                /* Force the program to abort by simulating a EOF
                  */
                 psInfo->bEOF = 1;
                 bEOL = 1;
@@ -630,7 +657,7 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
                       "Uncompressed line longer than 80 chars. "
                       "Input file possibly corrupt around line %d.",
                       psInfo->nInputLineNo);
-            /* Force the program to abort by simulating a EOF 
+            /* Force the program to abort by simulating a EOF
              */
             psInfo->bEOF = 1;
             bEOL = 1;
@@ -642,5 +669,3 @@ static const char *_UncompressNextLine(E00ReadPtr psInfo)
 
     return psInfo->szOutBuf;
 }
-
-

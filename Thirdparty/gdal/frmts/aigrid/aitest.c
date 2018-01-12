@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: aitest.c 22159 2011-04-14 18:18:54Z warmerdam $
+ * $Id: aitest.c 36393 2016-11-21 14:25:42Z rouault $
  *
  * Project:  Arc/Info Binary Grid Translator
  * Purpose:  Test mainline for examining AIGrid files.
@@ -29,7 +29,7 @@
 
 #include "aigrid.h"
 
-CPL_CVSID("$Id: aitest.c 22159 2011-04-14 18:18:54Z warmerdam $");
+CPL_CVSID("$Id: aitest.c 36393 2016-11-21 14:25:42Z rouault $");
 
 /************************************************************************/
 /*                             DumpMagic()                              */
@@ -49,7 +49,7 @@ static void DumpMagic( AIGInfo_t * psInfo, int bVerbose )
         int	bReport = bVerbose;
         unsigned char abyBlockSize[2];
         const char *pszMessage = "";
-        
+
         if( psTInfo->panBlockSize[i] == 0 )
             continue;
 
@@ -61,7 +61,7 @@ static void DumpMagic( AIGInfo_t * psInfo, int bVerbose )
             VSIFReadL( &byMagic, 1, 1, psTInfo->fpGrid );
 
             if( byMagic != 0 && byMagic != 0x43 && byMagic != 0x04
-                && byMagic != 0x08 && byMagic != 0x10 && byMagic != 0xd7 
+                && byMagic != 0x08 && byMagic != 0x10 && byMagic != 0xd7
                 && byMagic != 0xdf && byMagic != 0xe0 && byMagic != 0xfc
                 && byMagic != 0xf8 && byMagic != 0xff && byMagic != 0x41
                 && byMagic != 0x40 && byMagic != 0x42 && byMagic != 0xf0
@@ -77,7 +77,7 @@ static void DumpMagic( AIGInfo_t * psInfo, int bVerbose )
                 bReport = TRUE;
             }
 
-            if( (abyBlockSize[0] * 256 + abyBlockSize[1])*2 != 
+            if( (abyBlockSize[0] * 256 + abyBlockSize[1])*2 !=
                 psTInfo->panBlockSize[i] )
             {
                 pszMessage = "(block size in data doesn't match index)";
@@ -96,7 +96,7 @@ static void DumpMagic( AIGInfo_t * psInfo, int bVerbose )
 
         if( bReport )
         {
-            printf( " %02x %5d %5d @ %d %s\n", byMagic, i,
+            printf( " %02x %5d %5d @ %u %s\n", byMagic, i,
                     psTInfo->panBlockSize[i],
                     psTInfo->panBlockOffset[i],
                     pszMessage );
@@ -115,7 +115,7 @@ int main( int argc, char ** argv )
     AIGInfo_t	*psInfo;
     GInt32 	*panRaster;
     int		i, j;
-    int		bMagic = FALSE, bSupressMagic = FALSE;
+    int		bMagic = FALSE, bSuppressMagic = FALSE;
     int         iTestTileX = 0, iTestTileY = 0;
 
 /* -------------------------------------------------------------------- */
@@ -127,7 +127,7 @@ int main( int argc, char ** argv )
             bMagic = TRUE;
 
         else if( EQUAL(argv[1],"-nomagic") )
-            bSupressMagic = TRUE;
+            bSuppressMagic = TRUE;
 
         else if( EQUAL(argv[1],"-t") && argc > 2 )
         {
@@ -140,7 +140,7 @@ int main( int argc, char ** argv )
         argc--;
         argv++;
     }
-    
+
     if( argc < 2 ) {
         printf( "Usage: aitest [-magic] coverage [block numbers...]\n" );
         exit( 1 );
@@ -179,20 +179,20 @@ int main( int argc, char ** argv )
             psInfo->dfMax,
             psInfo->dfMean,
             psInfo->dfStdDev );
-    
+
 /* -------------------------------------------------------------------- */
 /*      Do we want a dump of all the ``magic'' numbers for              */
-/*      instantated blocks?                                             */
+/*      instantiated blocks?                                            */
 /* -------------------------------------------------------------------- */
-    if( !bSupressMagic )
+    if( !bSuppressMagic )
         DumpMagic( psInfo, bMagic );
-    
+
 /* -------------------------------------------------------------------- */
-/*      Read a block, and report it's contents.                         */
+/*      Read a block, and report its contents.                          */
 /* -------------------------------------------------------------------- */
     panRaster = (GInt32 *)
         CPLMalloc(psInfo->nBlockXSize * psInfo->nBlockYSize * 4);
-    
+
     while( argc > 2 && (atoi(argv[2]) > 0 || argv[2][0] == '0') )
     {
         int	nBlock = atoi(argv[2]);
@@ -201,7 +201,7 @@ int main( int argc, char ** argv )
 
         argv++;
         argc--;
-        
+
         eErr = AIGReadBlock( psTInfo->fpGrid,
                              psTInfo->panBlockOffset[nBlock],
                              psTInfo->panBlockSize[nBlock],
@@ -215,7 +215,7 @@ int main( int argc, char ** argv )
             printf( "  Error! Skipping block.\n" );
             continue;
         }
-        
+
         for( j = 0; j < psInfo->nBlockYSize; j++ )
         {
             for( i = 0; i < psInfo->nBlockXSize; i++ )
@@ -231,7 +231,7 @@ int main( int argc, char ** argv )
                 else if( psInfo->nCellType == AIG_CELLTYPE_FLOAT )
                     printf( "%f ",
                             ((float *) panRaster)[i+j*psInfo->nBlockXSize] );
-                else 
+                else
                     printf( "%3d ", panRaster[i+j*psInfo->nBlockXSize] );
             }
             printf( "\n" );

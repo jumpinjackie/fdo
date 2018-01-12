@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: nitfrasterband.cpp 25784 2013-03-23 11:13:42Z rouault $
  *
  * Project:  NITF Read/Write Translator
  * Purpose:  NITFRasterBand (and related proxy band) implementations.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2002, Frank Warmerdam
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Portions Copyright (c) Her majesty the Queen in right of Canada as
  * represented by the Minister of National Defence, 2006.
@@ -30,11 +30,31 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "nitfdataset.h"
-#include "cpl_string.h"
-#include "cpl_csv.h"
 
-CPL_CVSID("$Id: nitfrasterband.cpp 25784 2013-03-23 11:13:42Z rouault $");
+#include <climits>
+#include <cstring>
+#if HAVE_FCNTL_H
+#  include <fcntl.h>
+#endif
+#include <algorithm>
+#include <map>
+#include <utility>
+
+#include "cpl_conv.h"
+#include "cpl_csv.h"
+#include "cpl_error.h"
+#include "cpl_progress.h"
+#include "cpl_string.h"
+#include "cpl_vsi.h"
+#include "gdal.h"
+#include "gdal_pam.h"
+#include "gdal_priv.h"
+#include "nitflib.h"
+
+
+CPL_CVSID("$Id: nitfrasterband.cpp 37346 2017-02-11 23:03:44Z goatbar $");
 
 /************************************************************************/
 /*                       NITFMakeColorTable()                           */
@@ -46,14 +66,11 @@ static GDALColorTable* NITFMakeColorTable(NITFImage* psImage, NITFBandInfo *psBa
 
     if( psBandInfo->nSignificantLUTEntries > 0 )
     {
-        int  iColor;
-
         poColorTable = new GDALColorTable();
 
-        for( iColor = 0; iColor < psBandInfo->nSignificantLUTEntries; iColor++)
+        for( int iColor = 0; iColor < psBandInfo->nSignificantLUTEntries; iColor++)
         {
             GDALColorEntry sEntry;
-
             sEntry.c1 = psBandInfo->pabyLUT[  0 + iColor];
             sEntry.c2 = psBandInfo->pabyLUT[256 + iColor];
             sEntry.c3 = psBandInfo->pabyLUT[512 + iColor];
@@ -64,8 +81,7 @@ static GDALColorTable* NITFMakeColorTable(NITFImage* psImage, NITFBandInfo *psBa
 
         if (psImage->bNoDataSet)
         {
-            GDALColorEntry sEntry;
-            sEntry.c1 = sEntry.c2 = sEntry.c3 = sEntry.c4 = 0;
+            GDALColorEntry sEntry = { 0, 0, 0, 0 };
             poColorTable->SetColorEntry( psImage->nNoDataValue, &sEntry );
         }
     }
@@ -75,10 +91,9 @@ static GDALColorTable* NITFMakeColorTable(NITFImage* psImage, NITFBandInfo *psBa
 /* -------------------------------------------------------------------- */
     if( poColorTable == NULL && psImage->nBitsPerSample == 1 )
     {
-        GDALColorEntry sEntry;
-
         poColorTable = new GDALColorTable();
 
+        GDALColorEntry sEntry;
         sEntry.c1 = 0;
         sEntry.c2 = 0;
         sEntry.c3 = 0;
@@ -91,7 +106,7 @@ static GDALColorTable* NITFMakeColorTable(NITFImage* psImage, NITFBandInfo *psBa
         sEntry.c4 = 255;
         poColorTable->SetColorEntry( 1, &sEntry );
     }
-    
+
     return poColorTable;
 }
 
@@ -107,47 +122,11 @@ NITFProxyPamRasterBand::~NITFProxyPamRasterBand()
     while(oIter != oMDMap.end())
     {
         CSLDestroy(oIter->second);
-        oIter ++;
+        ++oIter;
     }
 }
 
-
-#define RB_PROXY_METHOD_WITH_RET(retType, retErrValue, methodName, argList, argParams) \
-retType NITFProxyPamRasterBand::methodName argList \
-{ \
-    retType ret; \
-    GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand(); \
-    if (_poSrcBand) \
-    { \
-        ret = _poSrcBand->methodName argParams; \
-        UnrefUnderlyingRasterBand(_poSrcBand); \
-    } \
-    else \
-    { \
-        ret = retErrValue; \
-    } \
-    return ret; \
-}
-
-
-#define RB_PROXY_METHOD_WITH_RET_AND_CALL_OTHER_METHOD(retType, retErrValue, methodName, underlyingMethodName, argList, argParams) \
-retType NITFProxyPamRasterBand::methodName argList \
-{ \
-    retType ret; \
-    GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand(); \
-    if (_poSrcBand) \
-    { \
-        ret = _poSrcBand->underlyingMethodName argParams; \
-        UnrefUnderlyingRasterBand(_poSrcBand); \
-    } \
-    else \
-    { \
-        ret = retErrValue; \
-    } \
-    return ret; \
-}
-
-char      **NITFProxyPamRasterBand::GetMetadata( const char * pszDomain  )
+char **NITFProxyPamRasterBand::GetMetadata( const char * pszDomain  )
 {
     GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand();
     if (_poSrcBand)
@@ -172,7 +151,6 @@ char      **NITFProxyPamRasterBand::GetMetadata( const char * pszDomain  )
     return GDALPamRasterBand::GetMetadata(pszDomain);
 }
 
-
 const char *NITFProxyPamRasterBand::GetMetadataItem( const char * pszName,
                                                      const char * pszDomain )
 {
@@ -194,8 +172,6 @@ CPLErr NITFProxyPamRasterBand::GetStatistics( int bApproxOK, int bForce,
                                       double *pdfMin, double *pdfMax,
                                       double *pdfMean, double *pdfStdDev )
 {
-    CPLErr ret;
-
 /* -------------------------------------------------------------------- */
 /*      Do we already have metadata items for the requested values?     */
 /* -------------------------------------------------------------------- */
@@ -212,8 +188,9 @@ CPLErr NITFProxyPamRasterBand::GetStatistics( int bApproxOK, int bForce,
     GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand();
     if (_poSrcBand)
     {
-        ret = _poSrcBand->GetStatistics( bApproxOK, bForce,
-                                         pdfMin, pdfMax, pdfMean, pdfStdDev);
+        CPLErr ret = _poSrcBand->GetStatistics( bApproxOK, bForce,
+                                                pdfMin, pdfMax, pdfMean,
+                                                pdfStdDev);
         if (ret == CE_None)
         {
             /* Report underlying statistics at PAM level */
@@ -227,12 +204,10 @@ CPLErr NITFProxyPamRasterBand::GetStatistics( int bApproxOK, int bForce,
                             _poSrcBand->GetMetadataItem("STATISTICS_STDDEV"));
         }
         UnrefUnderlyingRasterBand(_poSrcBand);
+        return ret;
     }
-    else
-    {
-        ret = CE_Failure;
-    }
-    return ret;
+
+    return CE_Failure;
 }
 
 CPLErr NITFProxyPamRasterBand::ComputeStatistics( int bApproxOK,
@@ -240,13 +215,12 @@ CPLErr NITFProxyPamRasterBand::ComputeStatistics( int bApproxOK,
                                         double *pdfMean, double *pdfStdDev,
                                         GDALProgressFunc pfn, void *pProgressData )
 {
-    CPLErr ret;
     GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand();
     if (_poSrcBand)
     {
-        ret = _poSrcBand->ComputeStatistics( bApproxOK, pdfMin, pdfMax,
-                                             pdfMean, pdfStdDev,
-                                             pfn, pProgressData);
+        CPLErr ret = _poSrcBand->ComputeStatistics( bApproxOK, pdfMin, pdfMax,
+                                                    pdfMean, pdfStdDev,
+                                                    pfn, pProgressData);
         if (ret == CE_None)
         {
             /* Report underlying statistics at PAM level */
@@ -260,14 +234,11 @@ CPLErr NITFProxyPamRasterBand::ComputeStatistics( int bApproxOK,
                             _poSrcBand->GetMetadataItem("STATISTICS_STDDEV"));
         }
         UnrefUnderlyingRasterBand(_poSrcBand);
+        return ret;
     }
-    else
-    {
-        ret = CE_Failure;
-    }
-    return ret;
-}
 
+    return CE_Failure;
+}
 
 #define RB_PROXY_METHOD_GET_DBL_WITH_SUCCESS(methodName) \
 double NITFProxyPamRasterBand::methodName( int *pbSuccess ) \
@@ -297,6 +268,23 @@ RB_PROXY_METHOD_GET_DBL_WITH_SUCCESS(GetNoDataValue)
 RB_PROXY_METHOD_GET_DBL_WITH_SUCCESS(GetMinimum)
 RB_PROXY_METHOD_GET_DBL_WITH_SUCCESS(GetMaximum)
 
+#define RB_PROXY_METHOD_WITH_RET_AND_CALL_OTHER_METHOD(retType, retErrValue, methodName, underlyingMethodName, argList, argParams) \
+retType NITFProxyPamRasterBand::methodName argList \
+{ \
+    retType ret; \
+    GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand(); \
+    if (_poSrcBand) \
+    { \
+        ret = _poSrcBand->underlyingMethodName argParams; \
+        UnrefUnderlyingRasterBand(_poSrcBand); \
+    } \
+    else \
+    { \
+        ret = retErrValue; \
+    } \
+    return ret; \
+}
+
 RB_PROXY_METHOD_WITH_RET_AND_CALL_OTHER_METHOD(CPLErr, CE_Failure, IReadBlock, ReadBlock,
                                 ( int nXBlockOff, int nYBlockOff, void* pImage),
                                 (nXBlockOff, nYBlockOff, pImage) )
@@ -308,11 +296,28 @@ RB_PROXY_METHOD_WITH_RET_AND_CALL_OTHER_METHOD(CPLErr, CE_Failure, IRasterIO, Ra
                                 int nXOff, int nYOff, int nXSize, int nYSize,
                                 void * pData, int nBufXSize, int nBufYSize,
                                 GDALDataType eBufType,
-                                int nPixelSpace,
-                                int nLineSpace ),
+                                GSpacing nPixelSpace, GSpacing nLineSpace,
+                                GDALRasterIOExtraArg* psExtraArg ),
                         (eRWFlag, nXOff, nYOff, nXSize, nYSize,
                                 pData, nBufXSize, nBufYSize, eBufType,
-                                nPixelSpace, nLineSpace ) )
+                                nPixelSpace, nLineSpace, psExtraArg ) )
+
+#define RB_PROXY_METHOD_WITH_RET(retType, retErrValue, methodName, argList, argParams) \
+retType NITFProxyPamRasterBand::methodName argList \
+{ \
+    retType ret; \
+    GDALRasterBand* _poSrcBand = RefUnderlyingRasterBand(); \
+    if (_poSrcBand) \
+    { \
+        ret = _poSrcBand->methodName argParams; \
+        UnrefUnderlyingRasterBand(_poSrcBand); \
+    } \
+    else \
+    { \
+        ret = retErrValue; \
+    } \
+    return ret; \
+}
 
 RB_PROXY_METHOD_WITH_RET(CPLErr, CE_Failure, FlushCache, (), ())
 
@@ -329,7 +334,7 @@ RB_PROXY_METHOD_WITH_RET(int, 0, HasArbitraryOverviews, (), ())
 RB_PROXY_METHOD_WITH_RET(int, 0,  GetOverviewCount, (), ())
 RB_PROXY_METHOD_WITH_RET(GDALRasterBand*, NULL,  GetOverview, (int arg1), (arg1))
 RB_PROXY_METHOD_WITH_RET(GDALRasterBand*, NULL,  GetRasterSampleOverview,
-                        (int arg1), (arg1))
+                        (GUIntBig arg1), (arg1))
 
 RB_PROXY_METHOD_WITH_RET(CPLErr, CE_Failure, BuildOverviews,
                         (const char * arg1, int arg2, int *arg3,
@@ -344,17 +349,13 @@ RB_PROXY_METHOD_WITH_RET(CPLErr, CE_Failure, AdviseRead,
 
 RB_PROXY_METHOD_WITH_RET(GDALRasterBand*, NULL, GetMaskBand, (), ())
 RB_PROXY_METHOD_WITH_RET(int, 0, GetMaskFlags, (), ())
-RB_PROXY_METHOD_WITH_RET(CPLErr, CE_Failure, CreateMaskBand, ( int nFlags ), (nFlags))
-
+RB_PROXY_METHOD_WITH_RET(CPLErr, CE_Failure, CreateMaskBand, ( int nFlagsIn ), (nFlagsIn))
 
 /************************************************************************/
 /*                 UnrefUnderlyingRasterBand()                        */
 /************************************************************************/
 
-void NITFProxyPamRasterBand::UnrefUnderlyingRasterBand(GDALRasterBand* poUnderlyingRasterBand)
-{
-}
-
+void NITFProxyPamRasterBand::UnrefUnderlyingRasterBand(CPL_UNUSED GDALRasterBand* poUnderlyingRasterBand) {}
 
 /************************************************************************/
 /* ==================================================================== */
@@ -366,38 +367,39 @@ void NITFProxyPamRasterBand::UnrefUnderlyingRasterBand(GDALRasterBand* poUnderly
 /*                           NITFRasterBand()                           */
 /************************************************************************/
 
-NITFRasterBand::NITFRasterBand( NITFDataset *poDS, int nBand )
-
+NITFRasterBand::NITFRasterBand( NITFDataset *poDSIn, int nBandIn ) :
+    psImage(poDSIn->psImage),
+    poColorTable(NULL),
+    pUnpackData(NULL),
+    bScanlineAccess(FALSE)
 {
-    NITFBandInfo *psBandInfo = poDS->psImage->pasBandInfo + nBand - 1;
+    NITFBandInfo *psBandInfo = poDSIn->psImage->pasBandInfo + nBandIn - 1;
 
-    this->poDS = poDS;
-    this->nBand = nBand;
-
-    this->eAccess = poDS->eAccess;
-    this->psImage = poDS->psImage;
+    poDS = poDSIn;
+    nBand = nBandIn;
+    eAccess = poDSIn->eAccess;
 
 /* -------------------------------------------------------------------- */
 /*      Translate data type(s).                                         */
 /* -------------------------------------------------------------------- */
     if( psImage->nBitsPerSample <= 8 )
         eDataType = GDT_Byte;
-    else if( psImage->nBitsPerSample == 16 
+    else if( psImage->nBitsPerSample == 16
              && EQUAL(psImage->szPVType,"SI") )
         eDataType = GDT_Int16;
     else if( psImage->nBitsPerSample == 16 )
         eDataType = GDT_UInt16;
     else if( psImage->nBitsPerSample == 12 )
         eDataType = GDT_UInt16;
-    else if( psImage->nBitsPerSample == 32 
+    else if( psImage->nBitsPerSample == 32
              && EQUAL(psImage->szPVType,"SI") )
         eDataType = GDT_Int32;
-    else if( psImage->nBitsPerSample == 32 
+    else if( psImage->nBitsPerSample == 32
              && EQUAL(psImage->szPVType,"R") )
         eDataType = GDT_Float32;
     else if( psImage->nBitsPerSample == 32 )
         eDataType = GDT_UInt32;
-    else if( psImage->nBitsPerSample == 64 
+    else if( psImage->nBitsPerSample == 64
              && EQUAL(psImage->szPVType,"R") )
         eDataType = GDT_Float64;
     else if( psImage->nBitsPerSample == 64
@@ -406,7 +408,7 @@ NITFRasterBand::NITFRasterBand( NITFDataset *poDS, int nBand )
     /* ERO : note I'm not sure if CFloat64 can be transmitted as NBPP is only 2 characters */
     else
     {
-        int bOpenUnderlyingDS = CSLTestBoolean(
+        int bOpenUnderlyingDS = CPLTestBool(
                 CPLGetConfigOption("NITF_OPEN_UNDERLYING_DS", "YES"));
         if (!bOpenUnderlyingDS && psImage->nBitsPerSample > 8 && psImage->nBitsPerSample < 16)
         {
@@ -428,7 +430,7 @@ NITFRasterBand::NITFRasterBand( NITFDataset *poDS, int nBand )
 /*      Work out block size. If the image is all one big block we       */
 /*      handle via the scanline access API.                             */
 /* -------------------------------------------------------------------- */
-    if( psImage->nBlocksPerRow == 1 
+    if( psImage->nBlocksPerRow == 1
         && psImage->nBlocksPerColumn == 1
         && psImage->nBitsPerSample >= 8
         && EQUAL(psImage->szIC,"NC") )
@@ -450,7 +452,7 @@ NITFRasterBand::NITFRasterBand( NITFDataset *poDS, int nBand )
     poColorTable = NITFMakeColorTable(psImage,
                                       psBandInfo);
 
-    if( psImage->nBitsPerSample == 1 
+    if( psImage->nBitsPerSample == 1
     ||  psImage->nBitsPerSample == 3
     ||  psImage->nBitsPerSample == 5
     ||  psImage->nBitsPerSample == 6
@@ -458,12 +460,22 @@ NITFRasterBand::NITFRasterBand( NITFDataset *poDS, int nBand )
     ||  psImage->nBitsPerSample == 12 )
         SetMetadataItem( "NBITS", CPLString().Printf("%d", psImage->nBitsPerSample), "IMAGE_STRUCTURE" );
 
-    pUnpackData = 0;
     if (psImage->nBitsPerSample == 3
     ||  psImage->nBitsPerSample == 5
     ||  psImage->nBitsPerSample == 6
     ||  psImage->nBitsPerSample == 7)
-      pUnpackData = new GByte[((nBlockXSize*nBlockYSize+7)/8)*8];
+    {
+        if( nBlockXSize > (INT_MAX - 7) / nBlockYSize )
+        {
+            eDataType = GDT_Unknown;
+        }
+        else
+        {
+            pUnpackData = static_cast<GByte*>(VSI_MALLOC_VERBOSE(((nBlockXSize*nBlockYSize+7)/8)*8));
+            if( pUnpackData == NULL )
+                eDataType = GDT_Unknown;
+        }
+    }
 }
 
 /************************************************************************/
@@ -476,7 +488,7 @@ NITFRasterBand::~NITFRasterBand()
     if( poColorTable != NULL )
         delete poColorTable;
 
-    delete[] pUnpackData;
+    VSIFree(pUnpackData);
 }
 
 /************************************************************************/
@@ -487,8 +499,7 @@ CPLErr NITFRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
                                    void * pImage )
 
 {
-    int  nBlockResult;
-    NITFDataset *poGDS = (NITFDataset *) poDS;
+    NITFDataset *poGDS = reinterpret_cast<NITFDataset *>( poDS );
 
 /* -------------------------------------------------------------------- */
 /*      Special case for JPEG blocks.                                   */
@@ -496,14 +507,15 @@ CPLErr NITFRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
     if( EQUAL(psImage->szIC,"C3") || EQUAL(psImage->szIC,"M3") )
     {
         CPLErr eErr = poGDS->ReadJPEGBlock( nBlockXOff, nBlockYOff );
-        int nBlockBandSize = psImage->nBlockWidth*psImage->nBlockHeight*
-                             (GDALGetDataTypeSize(eDataType)/8);
+        const int nBlockBandSize =
+            psImage->nBlockWidth * psImage->nBlockHeight *
+            GDALGetDataTypeSizeBytes(eDataType);
 
         if( eErr != CE_None )
             return eErr;
 
-        memcpy( pImage, 
-                poGDS->pabyJPEGBlock + (nBand - 1) * nBlockBandSize, 
+        memcpy( pImage,
+                poGDS->pabyJPEGBlock + (nBand - 1) * nBlockBandSize,
                 nBlockBandSize );
 
         return eErr;
@@ -512,21 +524,23 @@ CPLErr NITFRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
 /* -------------------------------------------------------------------- */
 /*      Read the line/block                                             */
 /* -------------------------------------------------------------------- */
+    int nBlockResult;
+
     if( bScanlineAccess )
     {
-        nBlockResult = 
+        nBlockResult =
             NITFReadImageLine(psImage, nBlockYOff, nBand, pImage);
     }
     else
     {
-        nBlockResult = 
+        nBlockResult =
             NITFReadImageBlock(psImage, nBlockXOff, nBlockYOff, nBand, pImage);
     }
 
     if( nBlockResult == BLKREAD_OK )
     {
         if( psImage->nBitsPerSample % 8 )
-            Unpack((GByte*)pImage);
+            Unpack( reinterpret_cast<GByte *>( pImage ) );
 
         return CE_None;
     }
@@ -540,10 +554,10 @@ CPLErr NITFRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
 /*      8bit.                                                           */
 /* -------------------------------------------------------------------- */
     if( psImage->bNoDataSet )
-        memset( pImage, psImage->nNoDataValue, 
+        memset( pImage, psImage->nNoDataValue,
                 psImage->nWordSize*psImage->nBlockWidth*psImage->nBlockHeight);
     else
-        memset( pImage, 0, 
+        memset( pImage, 0,
                 psImage->nWordSize*psImage->nBlockWidth*psImage->nBlockHeight);
 
     return CE_None;
@@ -555,28 +569,28 @@ CPLErr NITFRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
 
 CPLErr NITFRasterBand::IWriteBlock( int nBlockXOff, int nBlockYOff,
                                     void * pImage )
-    
-{
-    int  nBlockResult;
 
+{
 /* -------------------------------------------------------------------- */
 /*      Write the line/block                                            */
 /* -------------------------------------------------------------------- */
+    int  nBlockResult;
+
     if( bScanlineAccess )
     {
-        nBlockResult = 
+        nBlockResult =
             NITFWriteImageLine(psImage, nBlockYOff, nBand, pImage);
     }
     else
     {
-        nBlockResult = 
+        nBlockResult =
             NITFWriteImageBlock(psImage, nBlockXOff, nBlockYOff, nBand,pImage);
     }
 
     if( nBlockResult == BLKREAD_OK )
         return CE_None;
-    else
-        return CE_Failure;
+
+    return CE_Failure;
 }
 
 /************************************************************************/
@@ -591,8 +605,8 @@ double NITFRasterBand::GetNoDataValue( int *pbSuccess )
 
     if( psImage->bNoDataSet )
         return psImage->nNoDataValue;
-    else
-        return GDALPamRasterBand::GetNoDataValue( pbSuccess );
+
+    return GDALPamRasterBand::GetNoDataValue( pbSuccess );
 }
 
 /************************************************************************/
@@ -606,7 +620,7 @@ GDALColorInterp NITFRasterBand::GetColorInterpretation()
 
     if( poColorTable != NULL )
         return GCI_PaletteIndex;
-    
+
     if( EQUAL(psBandInfo->szIREPBAND,"R") )
         return GCI_RedBand;
     if( EQUAL(psBandInfo->szIREPBAND,"G") )
@@ -629,14 +643,12 @@ GDALColorInterp NITFRasterBand::GetColorInterpretation()
 /*                     NITFSetColorInterpretation()                     */
 /************************************************************************/
 
-CPLErr NITFSetColorInterpretation( NITFImage *psImage, 
+CPLErr NITFSetColorInterpretation( NITFImage *psImage,
                                    int nBand,
                                    GDALColorInterp eInterp )
-    
+
 {
-    NITFBandInfo *psBandInfo = psImage->pasBandInfo + nBand - 1;
     const char *pszREP = NULL;
-    GUIntBig nOffset;
 
     if( eInterp == GCI_RedBand )
         pszREP = "R";
@@ -657,7 +669,7 @@ CPLErr NITFSetColorInterpretation( NITFImage *psImage,
 
     if( pszREP == NULL )
     {
-        CPLError( CE_Failure, CPLE_NotSupported, 
+        CPLError( CE_Failure, CPLE_NotSupported,
                   "Requested color interpretation (%s) not supported in NITF.",
                   GDALGetColorInterpretationName( eInterp ) );
         return CE_Failure;
@@ -666,30 +678,32 @@ CPLErr NITFSetColorInterpretation( NITFImage *psImage,
 /* -------------------------------------------------------------------- */
 /*      Where does this go in the file?                                 */
 /* -------------------------------------------------------------------- */
+    NITFBandInfo *psBandInfo = psImage->pasBandInfo + nBand - 1;
     strcpy( psBandInfo->szIREPBAND, pszREP );
-    nOffset = NITFIHFieldOffset( psImage, "IREPBAND" );
+    GUIntBig nOffset = NITFIHFieldOffset( psImage, "IREPBAND" );
 
     if( nOffset != 0 )
         nOffset += (nBand - 1) * 13;
-    
+
 /* -------------------------------------------------------------------- */
 /*      write it (space padded).                                        */
 /* -------------------------------------------------------------------- */
     char szPadded[4];
     strcpy( szPadded, pszREP );
     strcat( szPadded, " " );
-    
+
     if( nOffset != 0 )
     {
-        if( VSIFSeekL( psImage->psFile->fp, nOffset, SEEK_SET ) != 0 
-            || VSIFWriteL( (void *) szPadded, 1, 2, psImage->psFile->fp ) != 2 )
+        if( VSIFSeekL( psImage->psFile->fp, nOffset, SEEK_SET ) != 0
+            || VSIFWriteL( reinterpret_cast<void *>( szPadded ), 1, 2,
+                           psImage->psFile->fp ) != 2 )
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
+            CPLError( CE_Failure, CPLE_AppDefined,
                       "IO failure writing new IREPBAND value to NITF file." );
             return CE_Failure;
         }
     }
-    
+
     return CE_None;
 }
 
@@ -720,19 +734,18 @@ GDALColorTable *NITFRasterBand::GetColorTable()
 CPLErr NITFRasterBand::SetColorTable( GDALColorTable *poNewCT )
 
 {
-    NITFDataset *poGDS = (NITFDataset *) poDS;
+    NITFDataset *poGDS = reinterpret_cast<NITFDataset *>( poDS );
     if( poGDS->bInLoadXML )
         return GDALPamRasterBand::SetColorTable(poNewCT);
-        
+
     if( poNewCT == NULL )
         return CE_Failure;
 
     GByte abyNITFLUT[768];
-    int   i;
-    int   nCount = MIN(256,poNewCT->GetColorEntryCount());
-
     memset( abyNITFLUT, 0, 768 );
-    for( i = 0; i < nCount; i++ )
+
+    const int nCount = std::min(256, poNewCT->GetColorEntryCount());
+    for( int i = 0; i < nCount; i++ )
     {
         GDALColorEntry sEntry;
 
@@ -744,8 +757,8 @@ CPLErr NITFRasterBand::SetColorTable( GDALColorTable *poNewCT )
 
     if( NITFWriteLUT( psImage, nBand, nCount, abyNITFLUT ) )
         return CE_None;
-    else
-        return CE_Failure;
+
+    return CE_Failure;
 }
 
 /************************************************************************/
@@ -754,9 +767,7 @@ CPLErr NITFRasterBand::SetColorTable( GDALColorTable *poNewCT )
 
 void NITFRasterBand::Unpack( GByte* pData )
 {
-  long n = nBlockXSize*nBlockYSize;
-  long i;
-  long k;
+  const int n = nBlockXSize*nBlockYSize;
 
   GByte abyTempData[7] = {0, 0, 0, 0, 0, 0, 0};
   const GByte* pDataSrc = pData;
@@ -772,33 +783,36 @@ void NITFRasterBand::Unpack( GByte* pData )
     case 1:
     {
       // unpack 1-bit in-place in reverse
-      for (i = n; --i >= 0; )
+      // DANGER: Non-standard decrement of counter in the test section of for.
+      for( int i = n; --i >= 0; )
         pData[i] = (pData[i>>3] & (0x80 >> (i&7))) != 0;
-       
+
       break;
     }
     case 2:
     {
       static const int s_Shift2[] = {6, 4, 2, 0};
       // unpack 2-bit in-place in reverse
-      for (i = n; --i >= 0; )
+      // DANGER: Non-standard decrement of counter in the test section of for.
+      for (int i = n; --i >= 0; )
         pData[i] = (pData[i>>2] >> (GByte)s_Shift2[i&3]) & 0x03;
-       
+
       break;
     }
     case 4:
     {
       static const int s_Shift4[] = {4, 0};
       // unpack 4-bit in-place in reverse
-      for (i = n; --i >= 0; )
+      // DANGER: Non-standard decrement of counter in the test section of for.
+      for( int i = n; --i >= 0; )
         pData[i] = (pData[i>>1] >> (GByte)s_Shift4[i&1]) & 0x0f;
-       
+
       break;
     }
     case 3:
     {
       // unpacks 8 pixels (3 bytes) at time
-      for (i = 0, k = 0; i < n; i += 8, k += 3)
+      for( int i = 0, k = 0; i < n; i += 8, k += 3 )
       {
         pUnpackData[i+0] = ((pDataSrc[k+0] >> 5));
         pUnpackData[i+1] = ((pDataSrc[k+0] >> 2) & 0x07);
@@ -816,7 +830,7 @@ void NITFRasterBand::Unpack( GByte* pData )
     case 5:
     {
       // unpacks 8 pixels (5 bytes) at time
-      for (i = 0, k = 0; i < n; i += 8, k += 5)
+      for( int i = 0, k = 0; i < n; i += 8, k += 5 )
       {
         pUnpackData[i+0] = ((pDataSrc[k+0] >> 3));
         pUnpackData[i+1] = ((pDataSrc[k+0] << 2) & 0x1f) | (pDataSrc[k+1] >> 6);
@@ -834,7 +848,7 @@ void NITFRasterBand::Unpack( GByte* pData )
     case 6:
     {
       // unpacks 4 pixels (3 bytes) at time
-      for (i = 0, k = 0; i < n; i += 4, k += 3)
+      for( int i = 0, k = 0; i < n; i += 4, k += 3 )
       {
         pUnpackData[i+0] = ((pDataSrc[k+0] >> 2));
         pUnpackData[i+1] = ((pDataSrc[k+0] << 4) & 0x3f) | (pDataSrc[k+1] >> 4);
@@ -848,7 +862,7 @@ void NITFRasterBand::Unpack( GByte* pData )
     case 7:
     {
       // unpacks 8 pixels (7 bytes) at time
-      for (i = 0, k = 0; i < n; i += 8, k += 7)
+      for( int i = 0, k = 0; i < n; i += 8, k += 7 )
       {
         pUnpackData[i+0] = ((pDataSrc[k+0] >> 1));
         pUnpackData[i+1] = ((pDataSrc[k+0] << 6) & 0x7f) | (pDataSrc[k+1] >> 2);
@@ -865,11 +879,12 @@ void NITFRasterBand::Unpack( GByte* pData )
     }
     case 12:
     {
-      GByte*   pabyImage = (GByte  *)pData;
-      GUInt16* panImage  = (GUInt16*)pData;
-      for (i = n; --i >= 0; )
+      GByte *pabyImage = reinterpret_cast<GByte *>( pData );
+      GUInt16 *panImage  = reinterpret_cast<GUInt16 *>( pData );
+      // DANGER: Non-standard decrement of counter in the test section of for.
+      for( int i = n; --i >= 0; )
       {
-        long iOffset = i*3 / 2;
+        const long iOffset = i*3 / 2;
         if (i % 2 == 0)
           panImage[i] = pabyImage[iOffset] + (pabyImage[iOffset+1] & 0xf0) * 16;
         else
@@ -893,20 +908,21 @@ void NITFRasterBand::Unpack( GByte* pData )
 /*                      NITFWrapperRasterBand()                         */
 /************************************************************************/
 
-NITFWrapperRasterBand::NITFWrapperRasterBand( NITFDataset * poDS,
-                                              GDALRasterBand* poBaseBand,
-                                              int nBand)
+NITFWrapperRasterBand::NITFWrapperRasterBand( NITFDataset * poDSIn,
+                                              GDALRasterBand* poBaseBandIn,
+                                              int nBandIn) :
+    poBaseBand(poBaseBandIn),
+    poColorTable(NULL),
+    eInterp(poBaseBandIn->GetColorInterpretation()),
+    bIsJPEG(poBaseBandIn->GetDataset() != NULL &&
+            poBaseBandIn->GetDataset()->GetDriver() != NULL &&
+            EQUAL(poBaseBandIn->GetDataset()->GetDriver()->GetDescription(),
+                  "JPEG"))
 {
-    this->poDS = poDS;
-    this->nBand = nBand;
-    this->poBaseBand = poBaseBand;
-    eDataType = poBaseBand->GetRasterDataType();
+    poDS = poDSIn;
+    nBand = nBandIn;
     poBaseBand->GetBlockSize(&nBlockXSize, &nBlockYSize);
-    poColorTable = NULL;
-    eInterp = poBaseBand->GetColorInterpretation();
-    bIsJPEG = poBaseBand->GetDataset() != NULL &&
-              poBaseBand->GetDataset()->GetDriver() != NULL &&
-              EQUAL(poBaseBand->GetDataset()->GetDriver()->GetDescription(), "JPEG");
+    eDataType = poBaseBandIn->GetRasterDataType();
 }
 
 /************************************************************************/
@@ -944,7 +960,7 @@ GDALColorTable *NITFWrapperRasterBand::GetColorTable()
 
 void NITFWrapperRasterBand::SetColorTableFromNITFBandInfo()
 {
-    NITFDataset* poGDS = (NITFDataset* )poDS;
+    NITFDataset* poGDS = reinterpret_cast<NITFDataset *>( poDS );
     poColorTable = NITFMakeColorTable(poGDS->psImage,
                                       poGDS->psImage->pasBandInfo + nBand - 1);
 }
@@ -962,9 +978,9 @@ GDALColorInterp NITFWrapperRasterBand::GetColorInterpretation()
 /*                        SetColorInterpretation()                      */
 /************************************************************************/
 
-CPLErr NITFWrapperRasterBand::SetColorInterpretation( GDALColorInterp eInterp)
+CPLErr NITFWrapperRasterBand::SetColorInterpretation( GDALColorInterp eInterpIn)
 {
-    this->eInterp = eInterp;
+    this->eInterp = eInterpIn;
     if( poBaseBand->GetDataset() != NULL &&
         poBaseBand->GetDataset()->GetDriver() != NULL &&
         EQUAL(poBaseBand->GetDataset()->GetDriver()->GetDescription(), "JP2ECW") )
@@ -980,13 +996,13 @@ int NITFWrapperRasterBand::GetOverviewCount()
 {
     if( bIsJPEG )
     {
-        if( ((NITFDataset*)poDS)->ExposeUnderlyingJPEGDatasetOverviews() )
+        if( (reinterpret_cast<NITFDataset *>( poDS) )->ExposeUnderlyingJPEGDatasetOverviews() )
             return NITFProxyPamRasterBand::GetOverviewCount();
-        else
-            return GDALPamRasterBand::GetOverviewCount();
+
+        return GDALPamRasterBand::GetOverviewCount();
     }
-    else
-        return NITFProxyPamRasterBand::GetOverviewCount();
+
+    return NITFProxyPamRasterBand::GetOverviewCount();
 }
 
 /************************************************************************/
@@ -997,11 +1013,11 @@ GDALRasterBand * NITFWrapperRasterBand::GetOverview(int iOverview)
 {
     if( bIsJPEG )
     {
-        if( ((NITFDataset*)poDS)->ExposeUnderlyingJPEGDatasetOverviews() )
+        if( (reinterpret_cast<NITFDataset *>( poDS ) )->ExposeUnderlyingJPEGDatasetOverviews() )
             return NITFProxyPamRasterBand::GetOverview(iOverview);
-        else
-            return GDALPamRasterBand::GetOverview(iOverview);
+
+        return GDALPamRasterBand::GetOverview(iOverview);
     }
-    else
-        return NITFProxyPamRasterBand::GetOverview(iOverview);
+
+    return NITFProxyPamRasterBand::GetOverview(iOverview);
 }

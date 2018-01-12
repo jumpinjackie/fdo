@@ -30,8 +30,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
  
-#ifndef __INCLUDE_SEGMENT_METADATASEGMENT_H
-#define __INCLUDE_SEGMENT_METADATASEGMENT_H
+#ifndef INCLUDE_SEGMENT_METADATASEGMENT_H
+#define INCLUDE_SEGMENT_METADATASEGMENT_H
 
 #include "pcidsk_buffer.h"
 #include "segment/cpcidsksegment.h"
@@ -48,18 +48,17 @@ namespace PCIDSK
     class MetadataSegment : virtual public CPCIDSKSegment
     {
 
-
     public:
         MetadataSegment( PCIDSKFile *file, int segment,
                          const char *segment_pointer );
         virtual     ~MetadataSegment();
 
-        void         FetchMetadata( const char *group, int id, 
-                                    std::map<std::string,std::string> &md_set );
-        void         SetMetadataValue( const char *group, int id,
-                                       const std::string& key, const std::string& value );
+        void         FetchGroupMetadata( const char *group, int id, 
+                                         std::map<std::string, std::string> &md_set );
+        void         SetGroupMetadataValue( const char *group, int id,
+                                            const std::string& key, const std::string& value );
 
-        void         Synchronize();
+        void         Synchronize() override;
                                    
     private:
        bool         loaded;
@@ -73,4 +72,4 @@ namespace PCIDSK
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_SEGMENT_METADATASEGMENT_H
+#endif // INCLUDE_SEGMENT_METADATASEGMENT_H

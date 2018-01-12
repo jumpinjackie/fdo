@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_PCT_H
-#define __INCLUDE_PCIDSK_PCT_H
+#ifndef INCLUDE_PCIDSK_PCT_H
+#define INCLUDE_PCIDSK_PCT_H
 
 #include <string>
 #include <vector>
@@ -41,12 +41,12 @@ namespace PCIDSK
     class PCIDSK_DLL PCIDSK_PCT
     {
     public:
-        virtual	~PCIDSK_PCT() {}
+        virtual ~PCIDSK_PCT() {}
 
 /**
 \brief Read a PCT Segment (SEG_PCT).
 
-@param pct	 Pseudo-Color Table buffer (768 entries) into which the
+@param pct  Pseudo-Color Table buffer (768 entries) into which the
 pseudo-color table is read.  It consists of the red gun output
 values (pct[0-255]), followed by the green gun output values (pct[256-511]) 
 and ends with the blue gun output values (pct[512-767]).
@@ -57,7 +57,7 @@ and ends with the blue gun output values (pct[512-767]).
 /**
 \brief Write a PCT Segment.
 
-@param pct	 Pseudo-Color Table buffer (768 entries) from which the
+@param pct  Pseudo-Color Table buffer (768 entries) from which the
 pseudo-color table is written.  It consists of the red gun output
 values (pct[0-255]), followed by the green gun output values (pct[256-511]) 
 and ends with the blue gun output values (pct[512-767]).
@@ -67,4 +67,4 @@ and ends with the blue gun output values (pct[512-767]).
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_PCIDSK_PCT_H
+#endif // INCLUDE_PCIDSK_PCT_H

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrosmdriver.cpp 24950 2012-09-22 13:54:36Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGROSMDriver class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -34,41 +33,52 @@
 
 extern "C" void CPL_DLL RegisterOGROSM();
 
-CPL_CVSID("$Id: ogrosmdriver.cpp 24950 2012-09-22 13:54:36Z rouault $");
+CPL_CVSID("$Id: ogrosmdriver.cpp 35847 2016-10-21 06:06:13Z goatbar $");
 
 /************************************************************************/
-/*                         ~OGROSMDriver()                           */
+/*                      OGROSMDriverIdentify()                          */
 /************************************************************************/
 
-OGROSMDriver::~OGROSMDriver()
+static int OGROSMDriverIdentify( GDALOpenInfo* poOpenInfo )
 
 {
-}
+    if( poOpenInfo->fpL == NULL || poOpenInfo->nHeaderBytes == 0 )
+        return GDAL_IDENTIFY_FALSE;
 
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
+    if( strstr((const char*)poOpenInfo->pabyHeader, "<osm") != NULL )
+    {
+        return GDAL_IDENTIFY_TRUE;
+    }
 
-const char *OGROSMDriver::GetName()
+    const int nLimitI =
+        poOpenInfo->nHeaderBytes - static_cast<int>(strlen("OSMHeader"));
+    for(int i = 0; i < nLimitI; i++)
+    {
+        if( memcmp( poOpenInfo->pabyHeader + i, "OSMHeader",
+                    strlen("OSMHeader") ) == 0 )
+        {
+            return GDAL_IDENTIFY_TRUE;
+        }
+    }
 
-{
-    return "OSM";
+    return GDAL_IDENTIFY_FALSE;
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGROSMDriver::Open( const char * pszFilename,
-                                   int bUpdate )
+static GDALDataset *OGROSMDriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
-    if (bUpdate)
+    if( poOpenInfo->eAccess == GA_Update )
+        return NULL;
+    if( OGROSMDriverIdentify(poOpenInfo) == FALSE )
         return NULL;
 
-    OGROSMDataSource   *poDS = new OGROSMDataSource();
+    OGROSMDataSource *poDS = new OGROSMDataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+    if( !poDS->Open( poOpenInfo->pszFilename, poOpenInfo->papszOpenOptions ) )
     {
         delete poDS;
         poDS = NULL;
@@ -78,35 +88,37 @@ OGRDataSource *OGROSMDriver::Open( const char * pszFilename,
 }
 
 /************************************************************************/
-/*                          CreateDataSource()                          */
-/************************************************************************/
-
-OGRDataSource *OGROSMDriver::CreateDataSource( const char * pszName,
-                                               char **papszOptions )
-
-{
-    return NULL;
-}
-
-/************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGROSMDriver::TestCapability( const char * pszCap )
-
-{
-    return FALSE;
-}
-
-/************************************************************************/
 /*                        RegisterOGROSM()                           */
 /************************************************************************/
 
 void RegisterOGROSM()
 {
-    if (! GDAL_CHECK_VERSION("OGR/OSM driver"))
+    if( !GDAL_CHECK_VERSION("OGR/OSM driver") )
         return;
 
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGROSMDriver );
-}
+    if( GDALGetDriverByName( "OSM" ) != NULL )
+        return;
 
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "OSM" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "OpenStreetMap XML and PBF" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSIONS, "osm pbf" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_osm.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_OPENOPTIONLIST,
+"<OpenOptionList>"
+"  <Option name='CONFIG_FILE' type='string' description='Configuration filename.'/>"
+"  <Option name='USE_CUSTOM_INDEXING' type='boolean' description='Whether to enable custom indexing.' default='YES'/>"
+"  <Option name='COMPRESS_NODES' type='boolean' description='Whether to compress nodes in temporary DB.' default='NO'/>"
+"  <Option name='MAX_TMPFILE_SIZE' type='int' description='Maximum size in MB of in-memory temporary file. If it exceeds that value, it will go to disk' default='100'/>"
+"  <Option name='INTERLEAVED_READING' type='boolean' description='Whether to enable interleaved reading.' default='NO'/>"
+"</OpenOptionList>" );
+
+    poDriver->pfnOpen = OGROSMDriverOpen;
+    poDriver->pfnIdentify = OGROSMDriverIdentify;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

@@ -6,10 +6,10 @@
 void mkieee(g2float *a,g2int *rieee,g2int num)
 //$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    mkieee 
+// SUBPROGRAM:    mkieee
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2002-10-29
 //
-// ABSTRACT: This subroutine stores a list of real values in 
+// ABSTRACT: This subroutine stores a list of real values in
 //   32-bit IEEE floating point format.
 //
 // PROGRAM HISTORY LOG:
@@ -20,7 +20,7 @@ void mkieee(g2float *a,g2int *rieee,g2int num)
 //     a        - Input array of floating point values.
 //     num      - Number of floating point values to convert.
 //
-//   OUTPUT ARGUMENT LIST:      
+//   OUTPUT ARGUMENT LIST:
 //     rieee    - Output array of data values in 32-bit IEEE format
 //                stored in g2int integer array.  rieee must be allocated
 //                with at least 4*num bytes of memory before calling this
@@ -30,13 +30,13 @@ void mkieee(g2float *a,g2int *rieee,g2int num)
 //
 // ATTRIBUTES:
 //   LANGUAGE: C
-//   MACHINE:  
+//   MACHINE:
 //
 //$$$
 {
 
       g2int  j,n,ieee,iexp,imant;
-      double  alog2,atemp;
+      double  /* alog2, */ atemp;
 
       static double  two23,two126;
       static g2int test=0;
@@ -50,17 +50,17 @@ void mkieee(g2float *a,g2int *rieee,g2int num)
          test=1;
       }
 
-      alog2=0.69314718;       //  ln(2.0)
+      // alog2=0.69314718;       //  ln(2.0)
 
       for (j=0;j<num;j++) {
-      
+
         ieee=0;
 
         if (a[j] == 0.0) {
           rieee[j]=ieee;
           continue;
         }
-        
+
 //
 //  Set Sign bit (bit 31 - leftmost bit)
 //
@@ -97,9 +97,9 @@ void mkieee(g2float *a,g2int *rieee,g2int num)
         ieee = ieee | ( iexp << 23 );
 //
 //  Determine Mantissa
-// 
+//
         if (iexp != 255) {
-          if (iexp != 0) 
+          if (iexp != 0)
             atemp=(atemp/int_power(2.0,n))-1.0;
           else
             atemp=atemp*two126;

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogrunionlayer.h 24640 2012-07-01 19:37:38Z rouault $
+ * $Id: ogrunionlayer.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Defines OGRUnionLayer class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,10 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGRUNIONLAYER_H_INCLUDED
-#define _OGRUNIONLAYER_H_INCLUDED
+#ifndef OGRUNIONLAYER_H_INCLUDED
+#define OGRUNIONLAYER_H_INCLUDED
+
+#ifndef DOXYGEN_SKIP
 
 #include "ogrsf_frmts.h"
+
+/************************************************************************/
+/*                      OGRUnionLayerGeomFieldDefn                      */
+/************************************************************************/
+
+class OGRUnionLayerGeomFieldDefn: public OGRGeomFieldDefn
+{
+    public:
+
+    int             bGeomTypeSet;
+    int             bSRSSet;
+    OGREnvelope     sStaticEnvelope;
+
+            OGRUnionLayerGeomFieldDefn(const char* pszName, OGRwkbGeometryType eType);
+   explicit OGRUnionLayerGeomFieldDefn(OGRGeomFieldDefn* poSrc);
+   explicit OGRUnionLayerGeomFieldDefn(OGRUnionLayerGeomFieldDefn* poSrc);
+           ~OGRUnionLayerGeomFieldDefn();
+};
 
 /************************************************************************/
 /*                         OGRUnionLayer                                */
@@ -44,13 +64,6 @@ typedef enum
     FIELD_SPECIFIED,
 } FieldUnionStrategy;
 
-typedef enum
-{
-    GEOMTYPE_FROM_FIRST_LAYER,
-    GEOMTYPE_UNION_ALL_LAYERS,
-    GEOMTYPE_SPECIFIED,
-} GeometryTypeUnionStrategy;
-
 class OGRUnionLayer : public OGRLayer
 {
   protected:
@@ -62,19 +75,14 @@ class OGRUnionLayer : public OGRLayer
     OGRFeatureDefn     *poFeatureDefn;
     int                 nFields;
     OGRFieldDefn      **papoFields;
+    int                 nGeomFields;
+    OGRUnionLayerGeomFieldDefn **papoGeomFields;
     FieldUnionStrategy eFieldStrategy;
     CPLString           osSourceLayerFieldName;
 
-    OGRwkbGeometryType  eGeomType;
-    GeometryTypeUnionStrategy eGeometryTypeStrategy;
-
     int                 bPreserveSrcFID;
 
-    OGRSpatialReference *poSRS;
-    int                  bSRSSet;
-
-    int                 nFeatureCount;
-    OGREnvelope         sStaticEnvelope;
+    GIntBig             nFeatureCount;
 
     int                 iCurLayer;
     char               *pszAttributeFilter;
@@ -84,63 +92,66 @@ class OGRUnionLayer : public OGRLayer
     int                 bAttrFilterPassThroughValue;
     int                *pabModifiedLayers;
     int                *pabCheckIfAutoWrap;
+    OGRSpatialReference *poGlobalSRS;
 
     void                AutoWarpLayerIfNecessary(int iSubLayer);
     OGRFeature         *TranslateFromSrcLayer(OGRFeature* poSrcFeature);
     void                ApplyAttributeFilterToSrcLayer(int iSubLayer);
     int                 GetAttrFilterPassThroughValue();
     void                ConfigureActiveLayer();
+    void                SetSpatialFilterToSourceLayer(OGRLayer* poSrcLayer);
 
   public:
                         OGRUnionLayer( const char* pszName,
                                        int nSrcLayers, /* must be >= 1 */
-                                       OGRLayer** papoSrcLayers, /* array itself ownership always transfered, layer ownership depending on bTakeLayerOwnership */
+                                       OGRLayer** papoSrcLayers, /* array itself ownership always transferred, layer ownership depending on bTakeLayerOwnership */
                                        int bTakeLayerOwnership);
 
     virtual             ~OGRUnionLayer();
 
     /* All the following non virtual methods must be called just after the constructor */
     /* and before any virtual method */
-    void                SetSRS(OGRSpatialReference *poSRS);  /* duplicated by the method */
     void                SetFields(FieldUnionStrategy eFieldStrategy,
                                   int nFields,
-                                  OGRFieldDefn** papoFields); /* duplicated by the method */
-    void                SetGeometryType(GeometryTypeUnionStrategy eGeometryTypeStrategy,
-                                        OGRwkbGeometryType eGeomType);
+                                  OGRFieldDefn** papoFields,  /* duplicated by the method */
+                                  int nGeomFields, /* maybe -1 to explicitly disable geometry fields */
+                                  OGRUnionLayerGeomFieldDefn** papoGeomFields  /* duplicated by the method */);
     void                SetSourceLayerFieldName(const char* pszSourceLayerFieldName);
     void                SetPreserveSrcFID(int bPreserveSrcFID);
     void                SetFeatureCount(int nFeatureCount);
-    void                SetExtent(double dfXMin, double dfYMin, double dfXMax, double dfYMax);
+    virtual const char  *GetName() override { return osName.c_str(); }
+    virtual OGRwkbGeometryType GetGeomType() override;
 
-    virtual const char  *GetName() { return osName.c_str(); }
-    virtual OGRwkbGeometryType GetGeomType();
+    virtual void        ResetReading() override;
+    virtual OGRFeature *GetNextFeature() override;
 
-    virtual void        ResetReading();
-    virtual OGRFeature *GetNextFeature();
+    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
 
-    virtual OGRFeature *GetFeature( long nFeatureId );
+    virtual OGRErr      ICreateFeature( OGRFeature* poFeature ) override;
 
-    virtual OGRErr      CreateFeature( OGRFeature* poFeature );
+    virtual OGRErr      ISetFeature( OGRFeature* poFeature ) override;
 
-    virtual OGRErr      SetFeature( OGRFeature* poFeature );
+    virtual OGRFeatureDefn *GetLayerDefn() override;
 
-    virtual OGRFeatureDefn *GetLayerDefn();
+    virtual OGRSpatialReference *GetSpatialRef() override;
 
-    virtual OGRSpatialReference *GetSpatialRef();
+    virtual GIntBig     GetFeatureCount( int ) override;
 
-    virtual int         GetFeatureCount( int );
+    virtual OGRErr      SetAttributeFilter( const char * ) override;
 
-    virtual OGRErr      SetAttributeFilter( const char * );
+    virtual int         TestCapability( const char * ) override;
 
-    virtual int         TestCapability( const char * );
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual OGRErr      GetExtent( OGREnvelope *psExtent, int bForce ) override;
 
-    virtual OGRErr      GetExtent( OGREnvelope *psExtent, int bForce );
+    virtual void        SetSpatialFilter( OGRGeometry * poGeomIn ) override;
+    virtual void        SetSpatialFilter( int iGeomField, OGRGeometry * ) override;
 
-    virtual void        SetSpatialFilter( OGRGeometry * poGeomIn );
+    virtual OGRErr      SetIgnoredFields( const char **papszFields ) override;
 
-    virtual OGRErr      SetIgnoredFields( const char **papszFields );
-
-    virtual OGRErr      SyncToDisk();
+    virtual OGRErr      SyncToDisk() override;
 };
 
-#endif // _OGRUNIONLAYER_H_INCLUDED
+#endif /* #ifndef DOXYGEN_SKIP */
+
+#endif // OGRUNIONLAYER_H_INCLUDED

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigerpolygoncorrections.cpp 22961 2011-08-20 17:09:59Z rouault $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerPolygonCorrections, providing access to .RTB files.
@@ -30,9 +29,9 @@
 #include "ogr_tiger.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: tigerpolygoncorrections.cpp 22961 2011-08-20 17:09:59Z rouault $");
+CPL_CVSID("$Id: tigerpolygoncorrections.cpp 35629 2016-10-06 23:39:06Z goatbar $");
 
-#define FILE_CODE       "B"
+static const char FILE_CODE[] = "B";
 
 static const TigerFieldInfo rtB_fields[] = {
   // fieldname    fmt  type OFTType      beg  end  len  bDefine bSet bWrite
@@ -69,9 +68,10 @@ static const TigerRecordInfo rtB_info =
 /*                     TigerPolygonCorrections()                        */
 /************************************************************************/
 
-TigerPolygonCorrections::TigerPolygonCorrections( OGRTigerDataSource * poDSIn,
-                              const char * pszPrototypeModule ) : TigerFileBase(&rtB_info, FILE_CODE)
-
+TigerPolygonCorrections::TigerPolygonCorrections(
+    OGRTigerDataSource * poDSIn,
+    const char * /* pszPrototypeModule */ ) :
+    TigerFileBase(&rtB_info, FILE_CODE)
 {
     OGRFieldDefn        oField("",OFTInteger);
 
@@ -83,6 +83,5 @@ TigerPolygonCorrections::TigerPolygonCorrections( OGRTigerDataSource * poDSIn,
     /* -------------------------------------------------------------------- */
     /*      Fields from type B record.                                      */
     /* -------------------------------------------------------------------- */
-
     AddFieldDefns( psRTInfo, poFeatureDefn );
 }

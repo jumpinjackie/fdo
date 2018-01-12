@@ -1,9 +1,8 @@
 /******************************************************************************
- * $Id: ogr_srs_dict.cpp 11881 2007-08-13 18:03:48Z mloskot $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
- * Purpose:  Implement importFromDict() method to read a WKT SRS from a 
- *           coordinate system dictionary in a simple text format. 
+ * Purpose:  Implement importFromDict() method to read a WKT SRS from a
+ *           coordinate system dictionary in a simple text format.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
@@ -28,11 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "ogr_spatialref.h"
+
+#include <cstring>
+
 #include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_vsi.h"
+#include "ogr_core.h"
+#include "ogr_srs_api.h"
 
-CPL_CVSID("$Id: ogr_srs_dict.cpp 11881 2007-08-13 18:03:48Z mloskot $");
-
+CPL_CVSID("$Id: ogr_srs_dict.cpp 36289 2016-11-19 06:41:23Z goatbar $");
 
 /************************************************************************/
 /*                           importFromDict()                           */
@@ -41,18 +47,18 @@ CPL_CVSID("$Id: ogr_srs_dict.cpp 11881 2007-08-13 18:03:48Z mloskot $");
 /**
  * Read SRS from WKT dictionary.
  *
- * This method will attempt to find the indicated coordinate system identity 
+ * This method will attempt to find the indicated coordinate system identity
  * in the indicated dictionary file.  If found, the WKT representation is
- * imported and used to initialize this OGRSpatialReference.  
+ * imported and used to initialize this OGRSpatialReference.
  *
  * More complete information on the format of the dictionary files can
  * be found in the epsg.wkt file in the GDAL data tree.  The dictionary
  * files are searched for in the "GDAL" domain using CPLFindFile().  Normally
- * this results in searching /usr/local/share/gdal or somewhere similar. 
+ * this results in searching /usr/local/share/gdal or somewhere similar.
  *
  * This method is the same as the C function OSRImportFromDict().
  *
- * @param pszDictFile the name of the dictionary file to load.  
+ * @param pszDictFile the name of the dictionary file to load.
  *
  * @param pszCode the code to lookup in the dictionary.
  *
@@ -60,50 +66,48 @@ CPL_CVSID("$Id: ogr_srs_dict.cpp 11881 2007-08-13 18:03:48Z mloskot $");
  * found, and OGRERR_SRS_FAILURE if something more dramatic goes wrong.
  */
 
-OGRErr OGRSpatialReference::importFromDict( const char *pszDictFile, 
+OGRErr OGRSpatialReference::importFromDict( const char *pszDictFile,
                                             const char *pszCode )
 
 {
-    const char *pszFilename;
-    FILE *fp;
-    OGRErr eErr = OGRERR_UNSUPPORTED_SRS;
-
 /* -------------------------------------------------------------------- */
 /*      Find and open file.                                             */
 /* -------------------------------------------------------------------- */
-    pszFilename = CPLFindFile( "gdal", pszDictFile );
+    const char *pszFilename = CPLFindFile( "gdal", pszDictFile );
     if( pszFilename == NULL )
         return OGRERR_UNSUPPORTED_SRS;
 
-    fp = VSIFOpen( pszFilename, "rb" );
+    VSILFILE *fp = VSIFOpenL( pszFilename, "rb" );
     if( fp == NULL )
         return OGRERR_UNSUPPORTED_SRS;
 
 /* -------------------------------------------------------------------- */
 /*      Process lines.                                                  */
 /* -------------------------------------------------------------------- */
-    const char *pszLine;
+    OGRErr eErr = OGRERR_UNSUPPORTED_SRS;
+    const char *pszLine = NULL;
 
-    while( (pszLine = CPLReadLine(fp)) != NULL )
+    while( (pszLine = CPLReadLineL(fp)) != NULL )
 
     {
         if( pszLine[0] == '#' )
-            /* do nothing */;
+            continue;
 
-        else if( EQUALN(pszLine,"include ",8) )
+        if( STARTS_WITH_CI(pszLine, "include ") )
         {
             eErr = importFromDict( pszLine + 8, pszCode );
             if( eErr != OGRERR_UNSUPPORTED_SRS )
                 break;
+            continue;
         }
 
-        else if( strstr(pszLine,",") == NULL )
-            /* do nothing */;
+        if( strstr(pszLine, ",") == NULL )
+            continue;
 
-        else if( EQUALN(pszLine,pszCode,strlen(pszCode))
-                 && pszLine[strlen(pszCode)] == ',' )
+        if( EQUALN(pszLine, pszCode, strlen(pszCode))
+            && pszLine[strlen(pszCode)] == ',' )
         {
-            char *pszWKT = (char *) pszLine + strlen(pszCode)+1;
+            char *pszWKT = const_cast<char *>(pszLine) + strlen(pszCode)+1;
 
             eErr = importFromWkt( &pszWKT );
             break;
@@ -113,8 +117,8 @@ OGRErr OGRSpatialReference::importFromDict( const char *pszDictFile,
 /* -------------------------------------------------------------------- */
 /*      Cleanup                                                         */
 /* -------------------------------------------------------------------- */
-    VSIFClose( fp );
-    
+    VSIFCloseL( fp );
+
     return eErr;
 }
 
@@ -122,13 +126,38 @@ OGRErr OGRSpatialReference::importFromDict( const char *pszDictFile,
 /*                         OSRImportFromDict()                          */
 /************************************************************************/
 
-OGRErr OSRImportFromDict( OGRSpatialReferenceH hSRS, 
-                          const char *pszDictFile, 
+/**
+ * Read SRS from WKT dictionary.
+ *
+ * This method will attempt to find the indicated coordinate system identity
+ * in the indicated dictionary file.  If found, the WKT representation is
+ * imported and used to initialize this OGRSpatialReference.
+ *
+ * More complete information on the format of the dictionary files can
+ * be found in the epsg.wkt file in the GDAL data tree.  The dictionary
+ * files are searched for in the "GDAL" domain using CPLFindFile().  Normally
+ * this results in searching /usr/local/share/gdal or somewhere similar.
+ *
+ * This method is the same as the C++ method
+ * OGRSpatialReference::importFromDict().
+ *
+ * @param hSRS spatial reference system handle.
+ *
+ * @param pszDictFile the name of the dictionary file to load.
+ *
+ * @param pszCode the code to lookup in the dictionary.
+ *
+ * @return OGRERR_NONE on success, or OGRERR_SRS_UNSUPPORTED if the code isn't
+ * found, and OGRERR_SRS_FAILURE if something more dramatic goes wrong.
+ */
+
+OGRErr OSRImportFromDict( OGRSpatialReferenceH hSRS,
+                          const char *pszDictFile,
                           const char *pszCode )
 
 {
-    VALIDATE_POINTER1( hSRS, "OSRImportFromDict", CE_Failure );
+    VALIDATE_POINTER1( hSRS, "OSRImportFromDict", OGRERR_FAILURE );
 
-    return ((OGRSpatialReference *) hSRS)->importFromDict( pszDictFile,
-                                                           pszCode );
+    return reinterpret_cast<OGRSpatialReference *>(hSRS)->
+        importFromDict( pszDictFile, pszCode );
 }

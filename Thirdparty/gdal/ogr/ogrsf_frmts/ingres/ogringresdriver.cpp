@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogringresdriver.cpp 15463 2008-10-06 18:31:28Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRIngresDriver class.
@@ -30,7 +29,7 @@
 #include "ogr_ingres.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogringresdriver.cpp 15463 2008-10-06 18:31:28Z rouault $");
+CPL_CVSID("$Id: ogringresdriver.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                          ~OGRIngresDriver()                           */
@@ -72,11 +71,9 @@ OGRDataSource *OGRIngresDriver::Open( const char * pszFilename,
                                      int bUpdate )
 
 {
-    OGRIngresDataSource     *poDS = NULL;
+    OGRIngresDataSource *poDS = NULL;
     char **papszOptions = ParseWrappedName( pszFilename );
-    const char *pszDriver;
-
-    pszDriver = CSLFetchNameValue( papszOptions, "driver" );
+    const char *pszDriver = CSLFetchNameValue( papszOptions, "driver" );
     if( pszDriver != NULL && EQUAL(pszDriver,"ingres") )
     {
         poDS = new OGRIngresDataSource();
@@ -89,10 +86,9 @@ OGRDataSource *OGRIngresDriver::Open( const char * pszFilename,
     }
 
     CSLDestroy( papszOptions );
-    
+
     return poDS;
 }
-
 
 /************************************************************************/
 /*                          CreateDataSource()                          */
@@ -102,13 +98,11 @@ OGRDataSource *OGRIngresDriver::CreateDataSource( const char * pszName,
                                                   char ** /* papszOptions */ )
 
 {
-    OGRIngresDataSource     *poDS = NULL;
-    char **papszOpenOptions;
-    const char *pszDriver;
+    OGRIngresDataSource *poDS = NULL;
 
-    papszOpenOptions = ParseWrappedName( pszName );
+    char **papszOpenOptions = ParseWrappedName( pszName );
 
-    pszDriver = CSLFetchNameValue( papszOpenOptions, "driver" );
+    const char *pszDriver = CSLFetchNameValue( papszOpenOptions, "driver" );
 
     if( pszDriver != NULL && EQUAL(pszDriver,"ingres") )
     {
@@ -117,7 +111,7 @@ OGRDataSource *OGRIngresDriver::CreateDataSource( const char * pszName,
         {
             delete poDS;
             poDS = NULL;
-            CPLError( CE_Failure, CPLE_AppDefined, 
+            CPLError( CE_Failure, CPLE_AppDefined,
                       "Ingres driver doesn't currently support database creation.\n"
                       "Please create database before using." );
         }
@@ -127,7 +121,6 @@ OGRDataSource *OGRIngresDriver::CreateDataSource( const char * pszName,
 
     return poDS;
 }
-
 
 /************************************************************************/
 /*                           TestCapability()                           */
@@ -139,10 +132,10 @@ int OGRIngresDriver::TestCapability( const char * pszCap )
     if( EQUAL(pszCap,ODsCCreateLayer) )
         return TRUE;
     if( EQUAL(pszCap,ODsCDeleteLayer) )
-        return TRUE;     
+        return TRUE;
     if( EQUAL(pszCap,ODrCCreateDataSource) )
         return TRUE;
-        
+
     return FALSE;
 }
 
@@ -153,8 +146,7 @@ int OGRIngresDriver::TestCapability( const char * pszCap )
 void RegisterOGRIngres()
 
 {
-    if (! GDAL_CHECK_VERSION("Ingres"))
+    if( !GDAL_CHECK_VERSION("Ingres") )
         return;
     OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver(new OGRIngresDriver);
 }
-

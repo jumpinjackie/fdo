@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogr_xplane_reader.cpp 21634 2011-02-06 14:45:00Z rouault $
  *
  * Project:  X-Plane aeronautical data reader
  * Purpose:  Definition of classes for OGR X-Plane aeronautical data driver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,22 +30,21 @@
 
 #include "ogr_xplane_reader.h"
 
-CPL_CVSID("$Id: ogr_xplane_reader.cpp 21634 2011-02-06 14:45:00Z rouault $");
+CPL_CVSID("$Id: ogr_xplane_reader.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /***********************************************************************/
 /*                       OGRXPlaneReader()                             */
 /***********************************************************************/
 
-OGRXPlaneReader::OGRXPlaneReader()
-{
-    papszTokens = NULL;
-    fp = NULL;
-    pszFilename = NULL;
-    bEOF = FALSE;
-    nLineNumber = 0;
-    poInterestLayer = NULL;
-    nTokens = 0;
-}
+OGRXPlaneReader::OGRXPlaneReader() :
+    nLineNumber(0),
+    papszTokens(NULL),
+    nTokens(0),
+    fp(NULL),
+    pszFilename(NULL),
+    bEOF(false),
+    poInterestLayer(NULL)
+{}
 
 /***********************************************************************/
 /*                         ~OGRXPlaneReader()                          */
@@ -69,11 +67,11 @@ OGRXPlaneReader::~OGRXPlaneReader()
 /*                         StartParsing()                               */
 /************************************************************************/
 
-int OGRXPlaneReader::StartParsing( const char * pszFilename )
+bool OGRXPlaneReader::StartParsing( const char * pszFilenameIn )
 {
-    fp = VSIFOpenL( pszFilename, "rb" );
+    fp = VSIFOpenL( pszFilenameIn, "rb" );
     if (fp == NULL)
-        return FALSE;
+        return false;
 
     fp = (VSILFILE*) VSICreateBufferedReaderHandle ( (VSIVirtualHandle*) fp );
 
@@ -83,26 +81,26 @@ int OGRXPlaneReader::StartParsing( const char * pszFilename )
     {
         VSIFCloseL(fp);
         fp = NULL;
-        return FALSE;
+        return false;
     }
 
     pszLine = CPLReadLineL(fp);
-    if (!pszLine || IsRecognizedVersion(pszLine) == FALSE)
+    if( !pszLine || !IsRecognizedVersion(pszLine) )
     {
         VSIFCloseL(fp);
         fp = NULL;
-        return FALSE;
+        return false;
     }
 
-    CPLFree(this->pszFilename);
-    this->pszFilename = CPLStrdup(pszFilename);
+    CPLFree(pszFilename);
+    pszFilename = CPLStrdup(pszFilenameIn);
 
     nLineNumber = 2;
     CPLDebug("XPlane", "Version/Copyright : %s", pszLine);
 
     Rewind();
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
@@ -111,19 +109,19 @@ int OGRXPlaneReader::StartParsing( const char * pszFilename )
 
 void OGRXPlaneReader::Rewind()
 {
-    if (fp != NULL)
-    {
-        VSIRewindL(fp);
-        CPLReadLineL(fp);
-        CPLReadLineL(fp);
+    if (fp == NULL)
+        return;
 
-        nLineNumber = 2;
+    VSIRewindL(fp);
+    CPLReadLineL(fp);
+    CPLReadLineL(fp);
 
-        CSLDestroy(papszTokens);
-        papszTokens = NULL;
+    nLineNumber = 2;
 
-        bEOF = FALSE;
-    }
+    CSLDestroy(papszTokens);
+    papszTokens = NULL;
+
+    bEOF = false;
 }
 
 /************************************************************************/
@@ -132,7 +130,7 @@ void OGRXPlaneReader::Rewind()
 
 int OGRXPlaneReader::GetNextFeature()
 {
-    if (fp == NULL || bEOF == TRUE || poInterestLayer == NULL)
+    if( fp == NULL || bEOF || poInterestLayer == NULL )
         return FALSE;
 
     Read();
@@ -143,59 +141,60 @@ int OGRXPlaneReader::GetNextFeature()
 /*                          ReadWholeFile()                             */
 /************************************************************************/
 
-int OGRXPlaneReader::ReadWholeFile()
+bool OGRXPlaneReader::ReadWholeFile()
 {
-    if (fp == NULL || bEOF == TRUE || nLineNumber != 2 || poInterestLayer != NULL)
-        return FALSE;
+    if( fp == NULL || bEOF || nLineNumber != 2 || poInterestLayer != NULL )
+        return false;
 
     Read();
-    return TRUE;
+    return true;
 }
-
 
 /***********************************************************************/
 /*                          assertMinCol()                             */
 /***********************************************************************/
 
-int OGRXPlaneReader::assertMinCol(int nMinColNum)
+bool OGRXPlaneReader::assertMinCol( int nMinColNum ) const
 {
     if (nTokens < nMinColNum)
     {
-        CPLDebug("XPlane", "Line %d : not enough columns : %d. %d is the minimum required",
-                nLineNumber, nTokens, nMinColNum);
-        return FALSE;
+        CPLDebug("XPlane",
+                 "Line %d : not enough columns : %d. "
+                 "%d is the minimum required",
+                 nLineNumber, nTokens, nMinColNum);
+        return false;
     }
-    return TRUE;
+    return true;
 }
-
 
 /***********************************************************************/
 /*                           readDouble()                              */
 /***********************************************************************/
 
-int OGRXPlaneReader::readDouble(double* pdfValue, int iToken, const char* pszTokenDesc)
+bool OGRXPlaneReader::readDouble( double* pdfValue, int iToken,
+                                  const char* pszTokenDesc ) const
 {
-    char* pszNext;
+    char* pszNext = NULL;
     *pdfValue = CPLStrtod(papszTokens[iToken], &pszNext);
     if (*pszNext != '\0' )
     {
         CPLDebug("XPlane", "Line %d : invalid %s '%s'",
                     nLineNumber, pszTokenDesc, papszTokens[iToken]);
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 }
 
 /***********************************************************************/
 /*                  readDoubleWithBoundsAndConversion()                */
 /***********************************************************************/
 
-int OGRXPlaneReader::readDoubleWithBoundsAndConversion(
-                double* pdfValue, int iToken, const char* pszTokenDesc,
-                double dfFactor, double dfLowerBound, double dfUpperBound)
+bool OGRXPlaneReader::readDoubleWithBoundsAndConversion(
+    double* pdfValue, int iToken, const char* pszTokenDesc,
+    double dfFactor, double dfLowerBound, double dfUpperBound ) const
 {
-    int bRet = readDouble(pdfValue, iToken, pszTokenDesc);
-    if (bRet)
+    const bool bRet = readDouble(pdfValue, iToken, pszTokenDesc);
+    if( bRet )
     {
         *pdfValue *= dfFactor;
         if (*pdfValue < dfLowerBound || *pdfValue > dfUpperBound)
@@ -203,7 +202,7 @@ int OGRXPlaneReader::readDoubleWithBoundsAndConversion(
             CPLDebug("XPlane", "Line %d : %s '%s' out of bounds [%f, %f]",
                      nLineNumber, pszTokenDesc, papszTokens[iToken],
                      dfLowerBound / dfFactor, dfUpperBound / dfFactor);
-            return FALSE;
+            return false;
         }
     }
     return bRet;
@@ -213,12 +212,12 @@ int OGRXPlaneReader::readDoubleWithBoundsAndConversion(
 /*                     readDoubleWithBounds()                          */
 /***********************************************************************/
 
-int OGRXPlaneReader::readDoubleWithBounds(
-                        double* pdfValue, int iToken, const char* pszTokenDesc,
-                        double dfLowerBound, double dfUpperBound)
+bool OGRXPlaneReader::readDoubleWithBounds(
+    double* pdfValue, int iToken, const char* pszTokenDesc,
+    double dfLowerBound, double dfUpperBound ) const
 {
     return readDoubleWithBoundsAndConversion(pdfValue, iToken, pszTokenDesc,
-                                             1., dfLowerBound, dfUpperBound);
+                                             1.0, dfLowerBound, dfUpperBound);
 }
 
 /***********************************************************************/
@@ -230,7 +229,6 @@ CPLString OGRXPlaneReader::readStringUntilEnd(int iFirstTokenIndice)
     CPLString osResult;
     if (nTokens > iFirstTokenIndice)
     {
-        int i;
         int nIDsToSum = nTokens - iFirstTokenIndice;
         const unsigned char* pszStr = (const unsigned char*)papszTokens[iFirstTokenIndice];
         for(int j=0;pszStr[j];j++)
@@ -240,7 +238,7 @@ CPLString OGRXPlaneReader::readStringUntilEnd(int iFirstTokenIndice)
             else
                 CPLDebug("XPlane", "Line %d : string with non ASCII characters", nLineNumber);
         }
-        for(i=1;i<nIDsToSum;i++)
+        for( int i=1; i < nIDsToSum; i++ )
         {
             osResult += " ";
             pszStr = (const unsigned char*)papszTokens[iFirstTokenIndice + i];
@@ -256,15 +254,15 @@ CPLString OGRXPlaneReader::readStringUntilEnd(int iFirstTokenIndice)
     return osResult;
 }
 
-
 /***********************************************************************/
 /*                             readLatLon()                            */
 /***********************************************************************/
 
-int OGRXPlaneReader::readLatLon(double* pdfLat, double* pdfLon, int iToken)
+bool OGRXPlaneReader::readLatLon( double* pdfLat, double* pdfLon, int iToken )
 {
-    int bRet = readDoubleWithBounds(pdfLat, iToken, "latitude", -90., 90.);
-    bRet    &= readDoubleWithBounds(pdfLon, iToken + 1, "longitude", -180., 180.);
+    bool bRet = readDoubleWithBounds(pdfLat, iToken, "latitude", -90., 90.);
+    bRet     &= readDoubleWithBounds(pdfLon, iToken + 1,
+                                     "longitude", -180., 180.);
     return bRet;
 }
 
@@ -272,32 +270,31 @@ int OGRXPlaneReader::readLatLon(double* pdfLat, double* pdfLon, int iToken)
 /*                             readTrueHeading()                       */
 /***********************************************************************/
 
-int OGRXPlaneReader::readTrueHeading(double* pdfTrueHeading, int iToken, const char* pszTokenDesc)
+bool OGRXPlaneReader::readTrueHeading( double* pdfTrueHeading, int iToken,
+                                       const char* pszTokenDesc )
 {
-    int bRet = readDoubleWithBounds(pdfTrueHeading, iToken, pszTokenDesc, -180., 360.);
-    if (bRet)
+    const bool bRet = readDoubleWithBounds(pdfTrueHeading, iToken, pszTokenDesc,
+                                           -180.0, 360.0);
+    if( bRet )
     {
-        if (*pdfTrueHeading < 0.)
+        if( *pdfTrueHeading < 0. )
             *pdfTrueHeading += 180.;
     }
     return bRet;
 }
 
-
-
 /***********************************************************************/
 /*                       OGRXPlaneEnumeration()                        */
 /***********************************************************************/
 
-
-OGRXPlaneEnumeration::OGRXPlaneEnumeration(const char *pszEnumerationName,
-                            const sEnumerationElement*  osElements,
-                            int nElements) :
-                                 m_pszEnumerationName(pszEnumerationName),
-                                 m_osElements(osElements),
-                                 m_nElements(nElements)
-{
-}
+OGRXPlaneEnumeration::OGRXPlaneEnumeration(
+    const char *pszEnumerationName,
+    const sEnumerationElement*  osElements,
+    int nElements ) :
+    m_pszEnumerationName(pszEnumerationName),
+    m_osElements(osElements),
+    m_nElements(nElements)
+{}
 
 /***********************************************************************/
 /*                              GetText()                              */
@@ -305,8 +302,7 @@ OGRXPlaneEnumeration::OGRXPlaneEnumeration(const char *pszEnumerationName,
 
 const char* OGRXPlaneEnumeration::GetText(int eValue)
 {
-    int i;
-    for(i=0;i<m_nElements;i++)
+    for( int i=0; i < m_nElements; i++ )
     {
         if (m_osElements[i].eValue == eValue)
             return m_osElements[i].pszText;
@@ -322,10 +318,9 @@ const char* OGRXPlaneEnumeration::GetText(int eValue)
 
 int OGRXPlaneEnumeration::GetValue(const char* pszText)
 {
-    int i;
     if (pszText != NULL)
     {
-        for(i=0;i<m_nElements;i++)
+        for( int i=0; i < m_nElements; i++ )
         {
             if (strcmp(m_osElements[i].pszText, pszText) == 0)
                 return m_osElements[i].eValue;

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogropenairlabellayer.cpp 20996 2010-10-28 18:38:15Z rouault $
  *
  * Project:  OpenAir Translator
  * Purpose:  Implements OGROpenAirLabelLayer class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,37 +26,36 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_openair.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogr_openair.h"
 #include "ogr_p.h"
 #include "ogr_srs_api.h"
 
-CPL_CVSID("$Id: ogropenairlabellayer.cpp 20996 2010-10-28 18:38:15Z rouault $");
+CPL_CVSID("$Id: ogropenairlabellayer.cpp 36682 2016-12-04 20:34:45Z rouault $");
 
 /************************************************************************/
 /*                      OGROpenAirLabelLayer()                          */
 /************************************************************************/
 
-OGROpenAirLabelLayer::OGROpenAirLabelLayer( VSILFILE* fp )
-
+OGROpenAirLabelLayer::OGROpenAirLabelLayer( VSILFILE* fp ) :
+    poFeatureDefn(new OGRFeatureDefn("labels")),
+    poSRS(new OGRSpatialReference(SRS_WKT_WGS84)),
+    fpOpenAir(fp),
+    nNextFID(0)
 {
-    fpOpenAir = fp;
-    nNextFID = 0;
-
-    poSRS = new OGRSpatialReference(SRS_WKT_WGS84);
-
-    poFeatureDefn = new OGRFeatureDefn( "labels"  );
+    SetDescription( poFeatureDefn->GetName() );
     poFeatureDefn->Reference();
     poFeatureDefn->SetGeomType( wkbPoint );
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
 
-    OGRFieldDefn    oField1( "CLASS", OFTString);
+    OGRFieldDefn oField1( "CLASS", OFTString);
     poFeatureDefn->AddFieldDefn( &oField1 );
-    OGRFieldDefn    oField2( "NAME", OFTString);
+    OGRFieldDefn oField2( "NAME", OFTString);
     poFeatureDefn->AddFieldDefn( &oField2 );
-    OGRFieldDefn    oField3( "FLOOR", OFTString);
+    OGRFieldDefn oField3( "FLOOR", OFTString);
     poFeatureDefn->AddFieldDefn( &oField3 );
-    OGRFieldDefn    oField4( "CEILING", OFTString);
+    OGRFieldDefn oField4( "CEILING", OFTString);
     poFeatureDefn->AddFieldDefn( &oField4 );
 }
 
@@ -76,7 +74,6 @@ OGROpenAirLabelLayer::~OGROpenAirLabelLayer()
     VSIFCloseL( fpOpenAir );
 }
 
-
 /************************************************************************/
 /*                            ResetReading()                            */
 /************************************************************************/
@@ -88,18 +85,15 @@ void OGROpenAirLabelLayer::ResetReading()
     VSIFSeekL( fpOpenAir, 0, SEEK_SET );
 }
 
-
 /************************************************************************/
 /*                           GetNextFeature()                           */
 /************************************************************************/
 
 OGRFeature *OGROpenAirLabelLayer::GetNextFeature()
 {
-    OGRFeature  *poFeature;
-
-    while(TRUE)
+    while( true )
     {
-        poFeature = GetNextRawFeature();
+        OGRFeature *poFeature = GetNextRawFeature();
         if (poFeature == NULL)
             return NULL;
 
@@ -110,8 +104,8 @@ OGRFeature *OGROpenAirLabelLayer::GetNextFeature()
         {
             return poFeature;
         }
-        else
-            delete poFeature;
+
+        delete poFeature;
     }
 }
 
@@ -121,22 +115,22 @@ OGRFeature *OGROpenAirLabelLayer::GetNextFeature()
 
 OGRFeature *OGROpenAirLabelLayer::GetNextRawFeature()
 {
-    const char* pszLine;
-    double dfLat = 0, dfLon = 0;
-    int bHasCoord = FALSE;
+    double dfLat = 0;
+    double dfLon = 0;
+    bool bHasCoord = false;
 
-    while(TRUE)
+    while( true )
     {
-        pszLine = CPLReadLine2L(fpOpenAir, 1024, NULL);
+        const char* pszLine = CPLReadLine2L(fpOpenAir, 1024, NULL);
         if (pszLine == NULL)
             return NULL;
 
         if (pszLine[0] == '*' || pszLine[0] == '\0')
             continue;
 
-        if (EQUALN(pszLine, "AC ", 3))
+        if (STARTS_WITH_CI(pszLine, "AC "))
         {
-            if (osCLASS.size() != 0)
+            if (!osCLASS.empty())
             {
                 osNAME = "";
                 osCEILING = "";
@@ -144,13 +138,13 @@ OGRFeature *OGROpenAirLabelLayer::GetNextRawFeature()
             }
             osCLASS = pszLine + 3;
         }
-        else if (EQUALN(pszLine, "AN ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AN "))
             osNAME = pszLine + 3;
-        else if (EQUALN(pszLine, "AH ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AH "))
             osCEILING = pszLine + 3;
-        else if (EQUALN(pszLine, "AL ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AL "))
             osFLOOR = pszLine + 3;
-        else if (EQUALN(pszLine, "AT ", 3))
+        else if (STARTS_WITH_CI(pszLine, "AT "))
         {
             bHasCoord = OGROpenAirGetLatLon(pszLine + 3, dfLat, dfLon);
             break;
@@ -183,9 +177,7 @@ OGRFeature *OGROpenAirLabelLayer::GetNextRawFeature()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGROpenAirLabelLayer::TestCapability( const char * pszCap )
-
+int OGROpenAirLabelLayer::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
-

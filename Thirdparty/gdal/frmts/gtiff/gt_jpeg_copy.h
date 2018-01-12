@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: gt_jpeg_copy.h 24274 2012-04-21 12:52:45Z rouault $
+ * $Id: gt_jpeg_copy.h 34122 2016-04-26 14:48:21Z goatbar $
  *
  * Project:  GeoTIFF Driver
  * Purpose:  Specialized copy of JPEG content into TIFF.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,33 +30,34 @@
 #ifndef GT_JPEG_COPY_H_INCLUDED
 #define GT_JPEG_COPY_H_INCLUDED
 
+#include "cpl_error.h"
+#include "cpl_vsi.h"
+#include "gdal_priv.h"
+
 #ifdef JPEG_DIRECT_COPY
 
-#include "gdal_priv.h"
-#include "cpl_vsi.h"
+int GTIFF_CanDirectCopyFromJPEG( GDALDataset* poSrcDS,
+                                 char** &papszCreateOptions );
 
-int GTIFF_CanDirectCopyFromJPEG(GDALDataset* poSrcDS, char** &papszCreateOptions);
-
-CPLErr GTIFF_DirectCopyFromJPEG(GDALDataset* poDS, GDALDataset* poSrcDS,
-                                GDALProgressFunc pfnProgress, void * pProgressData,
-                                int& bShouldFallbackToNormalCopyIfFail);
+CPLErr GTIFF_DirectCopyFromJPEG( GDALDataset* poDS, GDALDataset* poSrcDS,
+                                 GDALProgressFunc pfnProgress,
+                                 void * pProgressData,
+                                 int& bShouldFallbackToNormalCopyIfFail );
 
 #endif // JPEG_DIRECT_COPY
 
 #ifdef HAVE_LIBJPEG
 
-#include "gdal_priv.h"
-#include "cpl_error.h"
 #include "tiffio.h"
 
-int GTIFF_CanCopyFromJPEG(GDALDataset* poSrcDS, char** &papszCreateOptions);
+int GTIFF_CanCopyFromJPEG( GDALDataset* poSrcDS, char** &papszCreateOptions );
 
-CPLErr GTIFF_CopyFromJPEG_WriteAdditionalTags(TIFF* hTIFF,
-                                              GDALDataset* poSrcDS);
+CPLErr GTIFF_CopyFromJPEG_WriteAdditionalTags( TIFF* hTIFF,
+                                               GDALDataset* poSrcDS );
 
-CPLErr GTIFF_CopyFromJPEG(GDALDataset* poDS, GDALDataset* poSrcDS,
-                          GDALProgressFunc pfnProgress, void * pProgressData,
-                          int& bShouldFallbackToNormalCopyIfFail);
+CPLErr GTIFF_CopyFromJPEG( GDALDataset* poDS, GDALDataset* poSrcDS,
+                           GDALProgressFunc pfnProgress, void * pProgressData,
+                           int& bShouldFallbackToNormalCopyIfFail );
 
 #endif // HAVE_LIBJPEG
 

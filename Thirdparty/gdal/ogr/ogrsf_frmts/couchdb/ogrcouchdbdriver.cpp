@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrcouchdbdriver.cpp 22229 2011-04-25 17:44:28Z rouault $
  *
  * Project:  CouchDB Translator
  * Purpose:  Implements OGRCouchDBDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,39 +30,42 @@
 
 // g++ -g -Wall -fPIC -shared -o ogr_CouchDB.so -Iport -Igcore -Iogr -Iogr/ogrsf_frmts -Iogr/ogrsf_frmts/couchdb ogr/ogrsf_frmts/couchdb/*.c* -L. -lgdal -Iogr/ogrsf_frmts/geojson/jsonc
 
-CPL_CVSID("$Id: ogrcouchdbdriver.cpp 22229 2011-04-25 17:44:28Z rouault $");
+CPL_CVSID("$Id: ogrcouchdbdriver.cpp 37371 2017-02-13 11:41:59Z rouault $");
 
 extern "C" void RegisterOGRCouchDB();
 
 /************************************************************************/
-/*                         ~OGRCouchDBDriver()                          */
+/*                   OGRCouchDBDriverIdentify()                         */
 /************************************************************************/
 
-OGRCouchDBDriver::~OGRCouchDBDriver()
+static int OGRCouchDBDriverIdentify( GDALOpenInfo* poOpenInfo )
 
 {
+    if (STARTS_WITH(poOpenInfo->pszFilename, "http://") ||
+        STARTS_WITH(poOpenInfo->pszFilename, "https://"))
+    {
+        return -1;
+    }
+    else if (STARTS_WITH_CI(poOpenInfo->pszFilename, "CouchDB:"))
+        return 1;
+    else
+        return 0;
+
 }
 
 /************************************************************************/
-/*                              GetName()                               */
+/*                  OGRCouchDBDriverOpen()                              */
 /************************************************************************/
 
-const char *OGRCouchDBDriver::GetName()
+static GDALDataset* OGRCouchDBDriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
-    return "CouchDB";
-}
+    if( OGRCouchDBDriverIdentify(poOpenInfo) == 0 )
+        return NULL;
 
-/************************************************************************/
-/*                                Open()                                */
-/************************************************************************/
-
-OGRDataSource *OGRCouchDBDriver::Open( const char * pszFilename, int bUpdate )
-
-{
     OGRCouchDBDataSource   *poDS = new OGRCouchDBDataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+    if( !poDS->Open( poOpenInfo->pszFilename, poOpenInfo->eAccess == GA_Update ) )
     {
         delete poDS;
         poDS = NULL;
@@ -72,14 +74,16 @@ OGRDataSource *OGRCouchDBDriver::Open( const char * pszFilename, int bUpdate )
     return poDS;
 }
 
-
 /************************************************************************/
 /*                          CreateDataSource()                          */
 /************************************************************************/
 
-OGRDataSource *OGRCouchDBDriver::CreateDataSource( const char * pszName,
-                                               char **papszOptions )
-
+static GDALDataset* OGRCouchDBDriverCreate( const char * pszName,
+                                            int /* nXSize */,
+                                            int /* nYSize */,
+                                            int /* nBands */,
+                                            GDALDataType /* eDT */,
+                                            char ** /* papszOptions */ )
 {
     OGRCouchDBDataSource   *poDS = new OGRCouchDBDataSource();
 
@@ -93,25 +97,40 @@ OGRDataSource *OGRCouchDBDriver::CreateDataSource( const char * pszName,
 }
 
 /************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRCouchDBDriver::TestCapability( const char * pszCap )
-
-{
-    if (EQUAL(pszCap, ODrCCreateDataSource))
-        return TRUE;
-
-    return FALSE;
-}
-
-/************************************************************************/
 /*                         RegisterOGRCouchDB()                         */
 /************************************************************************/
 
 void RegisterOGRCouchDB()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRCouchDBDriver );
-}
+    if( GDALGetDriverByName( "CouchDB" ) != NULL )
+      return;
 
+    GDALDriver  *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "CouchDB" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "CouchDB / GeoCouch" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_couchdb.html" );
+    poDriver->SetMetadataItem( GDAL_DMD_CONNECTION_PREFIX, "CouchDB:" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+                               "<CreationOptionList/>");
+
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+    "<LayerCreationOptionList>"
+    "  <Option name='UPDATE_PERMISSIONS' type='string' description='Update permissions for the new layer.'/>"
+    "  <Option name='GEOJSON ' type='boolean' description='Whether to write documents as GeoJSON documents.' default='YES'/>"
+    "  <Option name='COORDINATE_PRECISION' type='int' description='Maximum number of figures after decimal separator to write in coordinates.' default='15'/>"
+    "</LayerCreationOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONFIELDDATATYPES,
+                               "Integer Integer64 Real String Date DateTime "
+                               "Time IntegerList Integer64List RealList "
+                               "StringList Binary" );
+
+    poDriver->pfnIdentify = OGRCouchDBDriverIdentify;
+    poDriver->pfnOpen = OGRCouchDBDriverOpen;
+    poDriver->pfnCreate = OGRCouchDBDriverCreate;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}
