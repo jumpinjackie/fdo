@@ -53,6 +53,9 @@ FdoSmPhSqsColumn::FdoSmPhSqsColumn(FdoSmPhRdColumnReader* reader)
             {
                 m_computedExpression += computedExprReader->GetString(L"", L"Text");
             }
+
+            //A computed column is read-only by definition
+            SetReadOnly(true);
         }
     }
 }

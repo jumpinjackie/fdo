@@ -25,10 +25,14 @@ class SqlServerFdoSchemaTest : public FdoSchemaTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSchemaTest, FdoSchemaTest);
  //   CPPUNIT_TEST (SQLServerOverridesTest);
+    CPPUNIT_TEST(TestDateColumn);
+    CPPUNIT_TEST(TestReadOnlyComputedColumn);
     CPPUNIT_TEST_SUITE_END ();
 
     virtual void set_provider();
     virtual void SQLServerOverridesTest();
+    void TestDateColumn();
+    void TestReadOnlyComputedColumn();
 };
 
 #endif // SQLSERVER_FDOSCHEMATEST_H

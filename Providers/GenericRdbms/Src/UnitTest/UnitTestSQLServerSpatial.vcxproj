@@ -96,7 +96,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SQL_SERVER_XPLAT;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -126,7 +126,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SQL_SERVER_XPLAT;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -153,7 +153,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SQL_SERVER_XPLAT;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -177,7 +177,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SQL_SERVER_XPLAT;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

@@ -229,6 +229,7 @@ int local_odbcdr_desc_slct(
             *rdbi_type = RDBI_WSTRING_ULEN;
 			break;
 		case SQL_TYPE_TIMESTAMP :
+        case SQL_TYPE_DATE:
             *rdbi_type	 = RDBI_DATE;
 			*binary_size = ODBCDR_DATE_SIZE + 1;
 			break;

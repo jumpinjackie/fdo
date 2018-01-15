@@ -39,6 +39,9 @@
     <ClCompile Include="UpdateTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VrtTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConnectTests.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UpdateTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VrtTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

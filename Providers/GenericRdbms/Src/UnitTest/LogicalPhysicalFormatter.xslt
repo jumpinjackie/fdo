@@ -39,6 +39,16 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 		</xsl:element>
 	</xsl:if>
 </xsl:template>
+<xsl:template match="lp:error/text()">
+	<xsl:choose>
+		<xsl:when test="contains(current(), '.cpp: ')">
+			<xsl:value-of select="substring-after(current(), ') ')"/>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="current()" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
 <xsl:template match="@pkeyName"/>
 <xsl:template match="@*|node()">
   <xsl:copy>

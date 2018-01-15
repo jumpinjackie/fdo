@@ -60,10 +60,12 @@ FdoSmPhReaderP FdoSmPhRdSqsOwnerReader::MakeQueryReader(
     if ( !reader ) {
         // Generate sql statement if not already done
 
+        // NOTE: If we ever want to support Azure SQL database through this provider, note that HAS_DBACCESS() 
+        // is not supported. As that is not currently the case ...
         sqlString = FdoStringP::Format(
               L"select name \n"
               L" from master.dbo.sysdatabases S \n"
-              L" where databasepropertyex(name, 'Status')='ONLINE' %ls \n"
+              L" where databasepropertyex(name, 'Status')='ONLINE' and HAS_DBACCESS(name) = 1 %ls \n"
               L" order by name collate latin1_general_bin asc",
                owner_set ? L"and S.name = ?" : L""
         );

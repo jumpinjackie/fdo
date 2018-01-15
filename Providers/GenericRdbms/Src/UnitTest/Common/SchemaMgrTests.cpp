@@ -2021,13 +2021,17 @@ void SchemaMgrTests::testConfigError ()
 
         fdoConn = UnitTestUtil::GetProviderConnectionObject();
         FdoIoFileStreamP stream1 = FdoIoFileStream::Create( L"config1_in.xml", L"rt" );
+        //Doesn't matter what prefix here, the document is not meant to be set, but we still want the default Oracle
+        //schema mappings to be bent by the XSL stylesheet so FDO doesn't try to load the OracleProvider when it
+        //visits the schema mappings
+        FdoIoStreamP stream2 = OverrideBend(stream1, L"(user)", L"dbo");
 
-        fdoConn->SetConfiguration(stream1);
+        fdoConn->SetConfiguration(CvtConf(stream2));
         fdoConn->SetConnectionString ( dbConnectString);
         fdoConn->Open();
  
-        FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
-        UnitTestUtil::ExportDb( fdoConn, stream2 );
+        FdoIoMemoryStreamP stream3 = FdoIoMemoryStream::Create();
+        UnitTestUtil::ExportDb( fdoConn, stream3 );
 
         CPPUNIT_FAIL( "Setting config doc for datastore with MetaSchema was supposed to fail" );
     }

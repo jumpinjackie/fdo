@@ -32,7 +32,8 @@ UnitTest_SOURCES = \
   SelectTests.cpp \
   FdoExpressionFunctionTest.cpp \
   UnitTest.cpp \
-  glibpatch.cpp
+  glibpatch.cpp \
+  VrtTests.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   ConnectTests.h \
@@ -40,7 +41,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   UpdateTests.h \
   DeleteTests.h \
   SelectTests.h \
-  FdoExpressionFunctionTest.h
+  FdoExpressionFunctionTest.h \
+  VrtTests.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

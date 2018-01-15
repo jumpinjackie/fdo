@@ -1,6 +1,6 @@
 /*
  * 
-* Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2017  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -512,8 +512,13 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
 				wcscpy (idx_file, GetSpatialIndex ()->FileName ());
 				mSSI->CloseFile ();
 				if (!FdoCommonFile::Delete (idx_file))
-					throw FdoException::Create (NlsMsgGet(SHP_CONNECTION_FILE_MISMATCH, "The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.", 
-												idx_file, (FdoString *)GetShapeIndexFile ()->FileName()));
+				{
+					FdoString * fileName = (FdoString *)GetShapeIndexFile()->FileName();
+					delete mSSI;
+					mSSI = NULL;
+					throw FdoException::Create(NlsMsgGet(SHP_CONNECTION_FILE_MISMATCH, "The file '%1$ls' is corrupt or does not have the same number of objects as the file '%2$ls'.",
+						idx_file, fileName));
+				}
 				else
 				{
 					delete mSSI;

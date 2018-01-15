@@ -267,14 +267,14 @@ const wchar_t* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime time, wcha
         time.year += 1900;
 
     if ((isDateSupplied) && (!isTimeSupplied))
-        swprintf (dest, size, L"%04d-%02d-%02d", time.year, time.month, time.day);
+        swprintf (dest, size, L"%04d%02d%02d", time.year, time.month, time.day);
     else
     {
         float sec = ((int)(time.seconds*1000.0f))/1000.0f;
         if (sec >= 60.0f)
             sec = 59.999f;
 
-        swprintf (dest, size, L"%04d-%02d-%02d %02d:%02d:%06.3f",
+        swprintf (dest, size, L"%04d%02d%02d %02d:%02d:%06.3f",
                  time.year,
                  time.month,
                  time.day,
@@ -328,14 +328,14 @@ const char* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime  when )
         when.year += 1900;
 
     if ((isDateSupplied) && (!isTimeSupplied))
-        sprintf (ret, "%04d-%02d-%02d", when.year, when.month, when.day);
+        sprintf (ret, "%04d%02d%02d", when.year, when.month, when.day);
     else
     {
         float sec = ((int)(when.seconds*1000.0f))/1000.0f;
         if (sec >= 60.0f)
             sec = 59.999f;
 
-        sprintf (ret, "%04d-%02d-%02d %02d:%02d:%06.3f",
+        sprintf (ret, "%04d%02d%02d %02d:%02d:%06.3f",
                  when.year,
                  when.month,
                  when.day,

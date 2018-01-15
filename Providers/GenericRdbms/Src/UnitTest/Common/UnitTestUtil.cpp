@@ -1082,7 +1082,7 @@ wchar_t *UnitTestUtil::GetConnectionString(StringConnTypeRequest pTypeReq, FdoSt
 	return UnitTestUtil::InfoUtilConnection->GetConnectionString(pTypeReq, suffix, bAddExtraneousSpaces);
 }
 
-void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suffix, int lt_method, bool lt_method_fixed)
+void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suffix, int lt_method, bool lt_method_fixed, bool useFdoMeta)
 {
     FdoStringP service = UnitTestUtil::GetEnviron("service");
     FdoStringP username = UnitTestUtil::GetEnviron("username");
@@ -1113,7 +1113,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suff
     {
         connection->Open ();
 
-		CreateDB( connection, datastore, description, password, (char*)(const char*)schemaType, local_lt_method );
+		CreateDB( connection, datastore, description, password, (char*)(const char*)schemaType, local_lt_method, useFdoMeta);
         connection->Close();
         connectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore, suffix);
         connection->SetConnectionString ( connectString);
@@ -1139,7 +1139,7 @@ void UnitTestUtil::CreateDB(bool addSchema, bool useBaseMapping, FdoString *suff
     connection->Close ();
 }
 
-void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method )
+void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, FdoString *description, FdoString *password, char *schemaType, int local_lt_method, bool useFdoMeta )
 {
     FdoPtr<FdoICreateDataStore> createCmd = (FdoICreateDataStore*)connection->CreateCommand( FdoCommandType_CreateDataStore );
 	
@@ -1177,7 +1177,7 @@ void UnitTestUtil::CreateDB( FdoIConnection* connection, FdoString *datastore, F
 		}			
 		else if ( wcscmp( name, L"IsFdoEnabled" ) == 0 )
 		{
-			FdoStringP value(L"true"); // TODO
+			FdoStringP value(useFdoMeta ? L"true" : L"false");
 			dictionary->SetProperty( name, value );
 		}			
 	}
@@ -1310,7 +1310,7 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                     fprintf( fp, "%ls", (FdoString*) subStr );
 
                     // Move current ptr to right of '( ... .cpp ... )'
-                    pMessage = nextPos3 + 1;
+                    pMessage = nextPos3 + 2; //2 spaces as there is a space between the ')' and the message
                     state = 0;
                     break;
 
@@ -1323,12 +1323,11 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                 }
             }
 #else
-        message = message.Mid(0, message.GetLength() - 1);
         pMessage = message;
-		fprintf( fp, " %ls \n", pMessage );
+		fprintf( fp, "%ls\n", pMessage );
 #endif
 #else
-		fprintf( fp, " %ls \n", pMessage );
+		fprintf( fp, "%ls\n", pMessage );
 #endif
         }
         else {

@@ -25,6 +25,7 @@ class SqlServerFdoDatastoreTest : public FdoDatastoreTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoDatastoreTest, FdoDatastoreTest);
   	CPPUNIT_TEST( Cmd_CreateNoMeta );
+    CPPUNIT_TEST(ListDataStores_LimitedPrivilegeUser);
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -35,6 +36,8 @@ class SqlServerFdoDatastoreTest : public FdoDatastoreTest
 	}
 
     virtual void ReservedName(FdoIConnection* connection);
+
+    void ListDataStores_LimitedPrivilegeUser();
 };
 
 #endif // SQLSERVER_FDODATASTORETEST_H

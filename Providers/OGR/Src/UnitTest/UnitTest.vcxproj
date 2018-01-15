@@ -27,6 +27,7 @@
     <ClCompile Include="InsertTests.cpp" />
     <ClCompile Include="SelectTests.cpp" />
     <ClCompile Include="UpdateTests.cpp" />
+    <ClCompile Include="VrtTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\stdafx.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="SelectTests.h" />
     <ClInclude Include="UnitTestUtil.h" />
     <ClInclude Include="UpdateTests.h" />
+    <ClInclude Include="VrtTests.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="CopyFdo">
