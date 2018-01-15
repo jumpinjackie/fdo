@@ -33,15 +33,20 @@ class WmsTestCustomCommands : public WmsTests
 #ifdef _FDO_RUN_INTERNAL_TEST	
 
 #endif
-
-    CPPUNIT_TEST (testGetImageFormats);
-    CPPUNIT_TEST (testGetFeatureStyles);
-    CPPUNIT_TEST (testGetFeatureCRSNames);
+	
     CPPUNIT_TEST (testSpacialFeatureClassName);
 	CPPUNIT_TEST (testInvalidParamForStyle);
 	CPPUNIT_TEST (testInvalidParamForCRS);
-	CPPUNIT_TEST (testGetFeatureInfo);
-	CPPUNIT_TEST (testGetFeatureInfoFormats);
+	CPPUNIT_TEST (testGetFeatureInfo);	
+
+#if 0
+	// NOTE: disabled because the server cannot connect
+	CPPUNIT_TEST(testGetImageFormats);
+	CPPUNIT_TEST(testGetFeatureStyles);
+	CPPUNIT_TEST(testGetFeatureCRSNames);
+	CPPUNIT_TEST(testGetFeatureInfoFormats);
+
+#endif
 
 	CPPUNIT_TEST_SUITE_END ();
 

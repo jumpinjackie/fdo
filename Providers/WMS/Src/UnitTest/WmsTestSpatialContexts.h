@@ -31,7 +31,12 @@ class WmsTestSpatialContext : public WmsTests
 #ifdef _FDO_RUN_INTERNAL_TEST
 	CPPUNIT_TEST (testServer1);
 #endif
+
+#if 0
+	// NOTE: disabled because the server cannot connect
 	CPPUNIT_TEST (testServer2);
+#endif
+
 	CPPUNIT_TEST_SUITE_END ();
 
 public:
