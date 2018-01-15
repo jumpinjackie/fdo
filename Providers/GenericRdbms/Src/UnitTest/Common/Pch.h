@@ -31,11 +31,11 @@
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
 #ifdef __CPPUNIT_MFC_APP
     #ifdef WIN32
-	    #ifdef _DEBUG
-		    #pragma comment(lib, "testrunnerd.lib")
-	    #else
-		    #pragma comment(lib, "testrunner.lib")
-	    #endif
+        #ifdef _DEBUG
+            #pragma comment(lib, "testrunnerd.lib")
+        #else
+            #pragma comment(lib, "testrunner.lib")
+        #endif
     #endif
 #endif
 
@@ -75,5 +75,11 @@
 #include <TestCommon.h>
 
 #include "UnitTestUtil.h"
+
+#ifdef CPPUNIT_MODERN_API
+    #define THROW_CPPUNIT_EXCEPTION(message) throw CppUnit::Exception(CppUnit::Message(message))
+#else
+    #define THROW_CPPUNIT_EXCEPTION(message) throw CppUnit::Exception(message)
+#endif //CPPUNIT_MODERN_API
 
 #endif //_GENERICRDBMSUNITTESTCOMMONPCH_H_

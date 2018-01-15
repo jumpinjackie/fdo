@@ -171,10 +171,10 @@ FdoConnectionState OgrConnection::Open()
 
     std::string mbtmp = W2A_SLOW(tmp);
 
-    delete tmp;
+    delete[] tmp;
     
 #if DEBUG
-    printf ("Attempt OGR connect to %s \n", mbtmp);
+    printf ("Attempt OGR connect to %s \n", mbtmp.c_str());
     printf ("ReadOnly %d\n", (int)readonly);
 #endif
     
@@ -800,7 +800,7 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
         char filter[32];
         snprintf(filter, 32, "FID=%d", fid);
         layer->SetAttributeFilter(filter);
-        return new OgrFeatureReader(this, layer, NULL, false);
+        return new OgrFeatureReader(this, layer, NULL, NULL);
     }
 
     throw FdoCommandException::Create(L"Insert of feature failed.");

@@ -21,6 +21,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
+#include <stdio.h>
 #include <pthread.h>
 #endif
 
@@ -193,7 +194,11 @@ FdoString* FdoException::NLSGetMessage(FdoInt32 msgNum, const char* defMsg, cons
     wchar_t*    pBuffer = szDebugMessage[iDebugMessage];
     iDebugMessage = (iDebugMessage + 1) % countBuffers;
 
+#ifdef _WIN32
     _snwprintf(pBuffer, sizeBuffers - 1, L"(%S: %i) %s", file, line, pMsg);
+#else
+    swprintf(pBuffer, sizeBuffers - 1, L"(%s: %i) %S", file, line, pMsg);
+#endif
     pBuffer[sizeBuffers - 1] = 0;
     return pBuffer;
 #else

@@ -415,7 +415,7 @@ REC_NO ShpScrollableFeatureReader::SearchSortedTable( SortContextDef *ctx, SortE
 			delete [] propCache[i]->value.strVal;
 	}
 	delete [] propCache[0];
-	delete propCache;
+	delete [] propCache;
 
 	return (elem1? rowid + 1 : 0); // one-based
 }
@@ -615,8 +615,8 @@ REC_NO ShpScrollableFeatureReader::SearchNewSortedTable( FdoPropertyValueCollect
 		else if ( sortedTable->propCache[0][i].type == FdoDataType_String )
 			delete [] sortedTable->propCache[0][i].value.strVal;
 	}
-	delete [] sortedTable->propCache[0];
-	delete sortedTable->propCache;
+	delete sortedTable->propCache[0];
+	delete [] sortedTable->propCache;
 	delete ctx;
 
 	return rowid;

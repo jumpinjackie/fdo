@@ -8,4 +8,4 @@ include_directories(
 add_subdirectory( sqlite )
 add_subdirectory( SpatialIndex )
 add_subdirectory( Provider )
-
+add_subdirectory( UnitTest )

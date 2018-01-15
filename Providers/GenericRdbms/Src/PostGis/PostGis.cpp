@@ -168,7 +168,12 @@ HRESULT APIENTRY DllUnregisterServer (void)
 }
 #else
 
+#ifdef CMAKE_BUILD //CMake build will define this
+const char *RDBMS_LIB_NAME = "libPostgreSQLProvider";
+#else //Autotools will not
 const char *RDBMS_LIB_NAME = "libFdoPostgreSQL";
+#endif
+
 #include <link.h>
 #include <wchar.h>
 

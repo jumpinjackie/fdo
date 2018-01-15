@@ -1,28 +1,31 @@
 include_directories(
-	BEFORE
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	)
-
-set( GRFPOverrides_SRCS
-   RFPOverrides.cpp
-   FdoGrfpClassDefinition.cpp
-   FdoGrfpPhysicalSchemaMapping.cpp
-   FdoGrfpRasterDefinition.cpp
-   FdoGrfpRasterImageDefinition.cpp
-   FdoGrfpRasterLocation.cpp
-   FdoGrfpRasterFeatureDefinition.cpp
-   FdoGrfpRasterBandDefinition.cpp
-   FdoGrfpRasterGeoreferenceLocation.cpp
+    BEFORE
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_library( GRFPOverrides-${FDO_VERSION} SHARED ${GRFPOverrides_SRCS} )
+set( GRFPOverrides_SRCS
+    RFPOverrides.cpp
+    FdoGrfpClassDefinition.cpp
+    FdoGrfpPhysicalSchemaMapping.cpp
+    FdoGrfpRasterDefinition.cpp
+    FdoGrfpRasterImageDefinition.cpp
+    FdoGrfpRasterLocation.cpp
+    FdoGrfpRasterFeatureDefinition.cpp
+    FdoGrfpRasterBandDefinition.cpp
+    FdoGrfpRasterGeoreferenceLocation.cpp
+)
 
-target_link_libraries( GRFPOverrides-${FDO_VERSION}
-	ProvidersCommon
-	FDO-${FDO_VERSION}
- )
+add_library( GRFPOverrides${FDO_VERSION_SUFFIX} SHARED ${GRFPOverrides_SRCS} )
 
-install( TARGETS GRFPOverrides-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+target_link_libraries( GRFPOverrides${FDO_VERSION_SUFFIX}
+    ProvidersCommon
+    FDO${FDO_VERSION_SUFFIX}
+)
+
+add_dependencies( GRFPOverrides${FDO_VERSION_SUFFIX} GRFPMessage )
+
+install( TARGETS GRFPOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPOverrides${FDO_VERSION_SUFFIX}.so libGRFPOverrides.so ${FDO_COMPONENT} )

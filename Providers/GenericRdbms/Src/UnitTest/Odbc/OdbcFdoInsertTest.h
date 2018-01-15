@@ -161,6 +161,7 @@ class OdbcSybaseFdoInsertTest : public OdbcBaseFdoInsertTest
     CPPUNIT_TEST( insertTable1 );
     CPPUNIT_TEST_SUITE_END ();
 
+public:
     OdbcSybaseFdoInsertTest(void) { this->mSetup.SetTypeDB(DataBaseType_Sybase); }
     virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSybase" ); }
 };

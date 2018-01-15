@@ -22,7 +22,7 @@
 #include <Fdo.h>
 #include <TestCommonInsert.h>
 
-class InsertTest : TestCommonInsert
+class InsertTest : public TestCommonInsert
 {
     CPPUNIT_TEST_SUB_SUITE( InsertTest, TestCommonInsert );
     CPPUNIT_TEST_SUITE_END();

@@ -1,11 +1,11 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CPPUNIT_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CPPUNIT_INCLUDE_DIR}
+)
 
 set( UnitTest_SRCS
-   	app.cpp
+    app.cpp
     CapabilitiesTest.cpp
     ClientServicesTest.cpp
     CommandTest.cpp
@@ -28,17 +28,37 @@ set( UnitTest_SRCS
     GmlWriteTest.cpp
 )
 
+# HACK: Workaround a bug in system-installed xalan
+#
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=718303
+# https://issues.apache.org/jira/browse/XALANC-751
+#
+# TODO: We ideally should version check known distros that have
+# the fix. Also if/when we merge the fix into our internal copy
+# of xalan, we should also check if we're building against system
+# or internal copy of xalan
+add_definitions(-DHAS_XALANC_751_BUG)
+
 link_directories( ${CPPUNIT_LIBRARY_DIR} )
 
 add_executable( UnitTest ${UnitTest_SRCS} )
+add_sanitizers( UnitTest )
 add_dependencies( UnitTest FDOMessage )
 
 if( LOCAL_CPPUNIT )
-	add_dependencies( UnitTest Internal_Cppunit )
+    add_dependencies( UnitTest Internal_Cppunit )
 endif( LOCAL_CPPUNIT )
 
 target_link_libraries( UnitTest
-	cppunit
-	FDO-${FDO_VERSION}
-	dl
-	)
+    cppunit
+    FDO${FDO_VERSION_SUFFIX}
+    dl
+)
+
+# Ensure test data is copied to where the unit test binary is generated
+file(GLOB UnitTestFdo_TESTDATA
+    "*.txt"
+    "*.xml"
+    "*.xsd"
+)
+file(COPY ${UnitTestFdo_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -7,7 +7,7 @@ set( PROVIDERS
 	#ArcSDE
 	GenericRdbms
 	#KingKML
-	#KingOracle
+	KingOracle
 	#PostGIS
 	SHP
 	WMS

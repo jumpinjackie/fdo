@@ -246,6 +246,7 @@ static double *RING4_POINTS[NUM_DIM_CASES] = { RING4_POINTS_XY, RING4_POINTS_XYZ
 
 
 GeometryTests::GeometryTests (void)
+    : mRdbiContext(NULL)
 {
 }
 
@@ -265,21 +266,21 @@ void GeometryTests::setUp ()
         FdoStringP userPassword = UnitTestUtil::GetEnviron("password");
         if (!bDatastoreCreated)
         {
-	        try
+            try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
+                FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();
-		        FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
-		        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
-		        dictionary->SetProperty( L"DataStore",  dataStoreName);
-		        pDelCmd->Execute();
-		        connection->Close();
+                FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
+                FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
+                dictionary->SetProperty( L"DataStore",  dataStoreName);
+                pDelCmd->Execute();
+                connection->Close();
             }
             catch(...) { }
 
-	        UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
+            UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
             bDatastoreCreated = true;
         }
 
@@ -310,26 +311,32 @@ void GeometryTests::setUp ()
 
 void GeometryTests::tearDown ()
 {
-    try
+    if (mRdbiContext)
     {
         try
         {
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            try
+            {
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            }
+            catch (CppUnit::Exception exception)
+            {
+                rdbi_term (&mRdbiContext);
+                throw exception;
+            }
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
+            mRdbiContext = NULL;
         }
         catch (CppUnit::Exception exception)
         {
-            rdbi_term (&mRdbiContext);
+            mRdbiContext = NULL;
             throw exception;
         }
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
-    }
-    catch (CppUnit::Exception exception)
-    {
-        throw exception;
-    }
-    catch (...)
-    {
-        CPPUNIT_FAIL ("unexpected exception encountered");
+        catch (...)
+        {
+            mRdbiContext = NULL;
+            CPPUNIT_FAIL ("unexpected exception encountered");
+        }
     }
 }
 
@@ -415,15 +422,15 @@ void GeometryTests::ddl ()
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -512,15 +519,15 @@ void GeometryTests::define ()
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -617,15 +624,15 @@ void GeometryTests::bind ()
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -747,14 +754,14 @@ void GeometryTests::RoundTripGeometries()
 
         //if ( supportsCurvePolygon ) 
             //RoundTripGeometry_CurvePolygon();
-			//Disable this test as wkt string compare fail while test should pass.
-			//Input wkt: CURVEPOLYGON ((1 1.1 (LINESTRINGSEGMENT (21 1.1), LINESTRINGSEGMENT (21 21.1), LINESTRINGSEGMENT (1 21.1), LINESTRINGSEGMENT (1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1), LINESTRINGSEGMENT (11 11.1), LINESTRINGSEGMENT (11 9.1), LINESTRINGSEGMENT (9 9.1))))
-			//Output wkt: CURVEPOLYGON ((1 1.1 (LINESTRINGSEGMENT (21 1.1, 21 21.1, 1 21.1, 1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1, 11 11.1, 11 9.1, 9 9.1))))
+            //Disable this test as wkt string compare fail while test should pass.
+            //Input wkt: CURVEPOLYGON ((1 1.1 (LINESTRINGSEGMENT (21 1.1), LINESTRINGSEGMENT (21 21.1), LINESTRINGSEGMENT (1 21.1), LINESTRINGSEGMENT (1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1), LINESTRINGSEGMENT (11 11.1), LINESTRINGSEGMENT (11 9.1), LINESTRINGSEGMENT (9 9.1))))
+            //Output wkt: CURVEPOLYGON ((1 1.1 (LINESTRINGSEGMENT (21 1.1, 21 21.1, 1 21.1, 1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1, 11 11.1, 11 9.1, 9 9.1))))
         //if ( supportsMultiCurvePolygon ) 
             //RoundTripGeometry_MultiCurvePolygon();
-			//Disable this test as wkt string compare fail while test should pass.
-			//Input wkt: MULTICURVEPOLYGON (((1 1.1 (LINESTRINGSEGMENT (21 1.1), LINESTRINGSEGMENT (21 21.1), LINESTRINGSEGMENT (1 21.1), LINESTRINGSEGMENT (1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1), LINESTRINGSEGMENT (11 11.1), LINESTRINGSEGMENT (11 9.1), LINESTRINGSEGMENT (9 9.1)))), ((101 101.1 (LINESTRINGSEGMENT (121 101.1), LINESTRINGSEGMENT (121 121.1), LINESTRINGSEGMENT (101 121.1), LINESTRINGSEGMENT (101 101.1))), (109 109.1 (LINESTRINGSEGMENT (109 111.1), LINESTRINGSEGMENT (111 111.1), LINESTRINGSEGMENT (111 109.1), LINESTRINGSEGMENT (109 109.1)))))
-			//Output wkt: MULTICURVEPOLYGON (((1 1.1 (LINESTRINGSEGMENT (21 1.1, 21 21.1, 1 21.1, 1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1, 11 11.1, 11 9.1, 9 9.1)))), ((101 101.1 (LINESTRINGSEGMENT (121 101.1, 121 121.1, 101 121.1, 101 101.1))), (109 109.1 (LINESTRINGSEGMENT (109 111.1, 111 111.1, 111 109.1, 109 109.1)))))
+            //Disable this test as wkt string compare fail while test should pass.
+            //Input wkt: MULTICURVEPOLYGON (((1 1.1 (LINESTRINGSEGMENT (21 1.1), LINESTRINGSEGMENT (21 21.1), LINESTRINGSEGMENT (1 21.1), LINESTRINGSEGMENT (1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1), LINESTRINGSEGMENT (11 11.1), LINESTRINGSEGMENT (11 9.1), LINESTRINGSEGMENT (9 9.1)))), ((101 101.1 (LINESTRINGSEGMENT (121 101.1), LINESTRINGSEGMENT (121 121.1), LINESTRINGSEGMENT (101 121.1), LINESTRINGSEGMENT (101 101.1))), (109 109.1 (LINESTRINGSEGMENT (109 111.1), LINESTRINGSEGMENT (111 111.1), LINESTRINGSEGMENT (111 109.1), LINESTRINGSEGMENT (109 109.1)))))
+            //Output wkt: MULTICURVEPOLYGON (((1 1.1 (LINESTRINGSEGMENT (21 1.1, 21 21.1, 1 21.1, 1 1.1))), (9 9.1 (LINESTRINGSEGMENT (9 11.1, 11 11.1, 11 9.1, 9 9.1)))), ((101 101.1 (LINESTRINGSEGMENT (121 101.1, 121 121.1, 101 121.1, 101 101.1))), (109 109.1 (LINESTRINGSEGMENT (109 111.1, 111 111.1, 111 109.1, 109 109.1)))))
     }
 }
 
@@ -1006,7 +1013,7 @@ void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba, FdoStringP ge
         //FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection("", true);
 
         FdoPtr<FdoIFeatureReader> myReader;
-	    FdoPtr<FdoISelect> selCmd;
+        FdoPtr<FdoISelect> selCmd;
 
         // Want to retrieve the geom with exactly the same dimensionality
         gf = FdoFgfGeometryFactory::GetInstance();
@@ -1021,9 +1028,9 @@ void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba, FdoStringP ge
         names->Add(name);
 
         FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
-	                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
-	                FdoComparisonOperations_EqualTo, 
-	                FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt64)feat_num) ) ); 
+                    FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
+                    FdoComparisonOperations_EqualTo, 
+                    FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt64)feat_num) ) ); 
 
         selCmd->SetFilter(filter);
 
@@ -1094,7 +1101,7 @@ void GeometryTests::fetch_geom(FdoGeometryType geom_type, long feat_num, int num
         );
 
         // Create a byte array 
-  	    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+          FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
         FdoPtr<FdoIGeometry> geom;
 
         switch (geom_type) {
@@ -1181,7 +1188,7 @@ void GeometryTests::fetch_geom(FdoGeometryType geom_type, long feat_num, int num
                 throw 0;
         }
 
-	    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(geom);
+        FdoPtr<FdoByteArray> byteArray = gf->GetFgf(geom);
       
         ///////////////////////////////////
         check_geom(feat_num, byteArray, geomPropName);
@@ -1212,85 +1219,85 @@ void GeometryTests::createDb ()
 
         // Create schema if it isn't there already.
         FdoPtr<FdoIDescribeSchema> pDescCmd = (FdoIDescribeSchema*) mConn->CreateCommand(FdoCommandType_DescribeSchema);
-	    FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
-	    FdoPtr<FdoFeatureSchema> pSchema = pSchemas->FindItem( L"GeometryTestSchema" );
+        FdoPtr<FdoFeatureSchemaCollection> pSchemas = pDescCmd->Execute();
+        FdoPtr<FdoFeatureSchema> pSchema = pSchemas->FindItem( L"GeometryTestSchema" );
 
         if (pSchema == NULL)
         {
-		    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) mConn->CreateCommand(FdoCommandType_ApplySchema);
+            FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) mConn->CreateCommand(FdoCommandType_ApplySchema);
 
-		    FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"GeometryTestSchema", L"Geometry test schema" );
+            FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create( L"GeometryTestSchema", L"Geometry test schema" );
 
             FdoPtr<FdoFeatureClass> pGeometryClass1 = FdoFeatureClass::Create( L"GeometryClass1", L"Geometry test class 1" );
-		    pGeometryClass1->SetIsAbstract(false);
+            pGeometryClass1->SetIsAbstract(false);
 
-	        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
-	        pProp->SetDataType( FdoDataType_Int64 );
-	        pProp->SetNullable(false);
+            FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
+            pProp->SetDataType( FdoDataType_Int64 );
+            pProp->SetNullable(false);
             pProp->SetIsAutoGenerated(true);
             ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pProp );
-	        ((FdoPtr<FdoDataPropertyDefinitionCollection>)pGeometryClass1->GetIdentityProperties())->Add( pProp );
+            ((FdoPtr<FdoDataPropertyDefinitionCollection>)pGeometryClass1->GetIdentityProperties())->Add( pProp );
 
-	        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZ", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZ", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( true );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryM", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryM", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasMeasure( true );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZM", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZM", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( true );
             pGeomProp->SetHasMeasure( true );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        FdoClassesP(pSchema->GetClasses())->Add( pGeometryClass1 );
+            FdoClassesP(pSchema->GetClasses())->Add( pGeometryClass1 );
 
             pGeometryClass1 = FdoFeatureClass::Create( L"ObsGeomClass1", L"Geometry test class 1" );
-		    pGeometryClass1->SetIsAbstract(false);
+            pGeometryClass1->SetIsAbstract(false);
 
-	        pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
-	        pProp->SetDataType( FdoDataType_Int64 );
-	        pProp->SetNullable(false);
+            pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
+            pProp->SetDataType( FdoDataType_Int64 );
+            pProp->SetNullable(false);
             pProp->SetIsAutoGenerated(true);
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pProp );
-	        ((FdoPtr<FdoDataPropertyDefinitionCollection>)pGeometryClass1->GetIdentityProperties())->Add( pProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pProp );
+            ((FdoPtr<FdoDataPropertyDefinitionCollection>)pGeometryClass1->GetIdentityProperties())->Add( pProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry2D", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry2D", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( false );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry3D", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry3D", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( true );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"NoIndex2D", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"NoIndex2D", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( false );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"NoIndex3D", L"location and shape" );
-	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp = FdoGeometricPropertyDefinition::Create( L"NoIndex3D", L"location and shape" );
+            pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( true );
-	        ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
+            ((FdoPtr<FdoPropertyDefinitionCollection>)pGeometryClass1->GetProperties())->Add( pGeomProp );
 
-	        FdoClassesP(pSchema->GetClasses())->Add( pGeometryClass1 );
+            FdoClassesP(pSchema->GetClasses())->Add( pGeometryClass1 );
 
             pCmd->SetFeatureSchema( pSchema );
-	        pCmd->Execute();
+            pCmd->Execute();
         }
-	}
-	catch ( FdoException *ex )
-	{
+    }
+    catch ( FdoException *ex )
+    {
         if ( mConn )
         {
             mConn->Close ();
@@ -1300,12 +1307,12 @@ void GeometryTests::createDb ()
         printf("Failed to create database '%ls'.\n", (FdoString*)UnitTestUtil::GetEnviron("datastore", DB_SUFFIX));
         FdoPtr<FdoException> exp = ex; // force a release
         CPPUNIT_FAIL (UnitTestUtil::w2a(exp->GetExceptionMessage()));
-  	}
+      }
     catch (...)
     {
         if ( mConn )
         {
-      	    mConn->Close();
+              mConn->Close();
             mConn = NULL;
         }
         printf("Failed to create database '%ls'.\n", (FdoString*)UnitTestUtil::GetEnviron("datastore", DB_SUFFIX));
@@ -1349,7 +1356,7 @@ void GeometryTests::connect ()
     }
     catch (...)
     {
-      	mConn->Close();
+          mConn->Close();
         mConn = NULL;
         throw;
     }
@@ -1362,7 +1369,7 @@ void GeometryTests::disconnect ()
     {
         if (mConn)
         {
-      	    mConn->Close();
+              mConn->Close();
             mConn = NULL;
         }
     }
@@ -1387,7 +1394,7 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
 
     try
     {
-	    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
         if (NULL != specialGeom)
         {
@@ -1590,12 +1597,12 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
 
             FdoPtr<FdoIInsert> insertCommand = (FdoIInsert *) mConn->CreateCommand(FdoCommandType_Insert);
             insertCommand->SetFeatureClassName(L"GeometryClass1");
-	        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+            FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
             FdoPtr<FdoPropertyValue> propertyValue =  FdoPropertyValue::Create();
             propertyValue->SetName( geomPropName );
             propertyValues->Add( propertyValue );
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-	        propertyValue->SetValue(geometryValue);
+            propertyValue->SetValue(geometryValue);
             FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
 
             if( reader != NULL && reader->ReadNext() )
@@ -1610,22 +1617,22 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
         {
             FdoPtr<FdoIUpdate> updateCommand = (FdoIUpdate *) mConn->CreateCommand(FdoCommandType_Update);
             updateCommand->SetFeatureClassName(L"GeometryTestSchema:GeometryClass1");
-	        FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt64)*feat_num) ) ); 
+            FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt64)*feat_num) ) ); 
 
-	        updateCommand->SetFilter(filter);
+            updateCommand->SetFilter(filter);
 
             FdoPtr<FdoPropertyValueCollection> propertyValues = updateCommand->GetPropertyValues();
             FdoPtr<FdoPropertyValue> propertyValue =  FdoPropertyValue::Create();
             propertyValue->SetName( geomPropName );
             propertyValues->Add( propertyValue );
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
-	        propertyValue->SetValue(geometryValue);
+            propertyValue->SetValue(geometryValue);
 
             FdoInt32 numUpdated = updateCommand->Execute();
-			CPPUNIT_ASSERT_MESSAGE("Wrong count of updated features", 1 == numUpdated);
+            CPPUNIT_ASSERT_MESSAGE("Wrong count of updated features", 1 == numUpdated);
         } 
         else 
         {
@@ -1638,12 +1645,12 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
     }
     catch (FdoException *ex)
     {
-      	printf("ERROR in set_geom_feat_fgf().\n");
+          printf("ERROR in set_geom_feat_fgf().\n");
         throw ex;
     }
     catch (...)
     {
-      	printf("ERROR in set_geom_feat_fgf().\n");
+          printf("ERROR in set_geom_feat_fgf().\n");
         throw;
     }
 }
@@ -1660,12 +1667,12 @@ void GeometryTests::create_feat_fgf( FdoGeometryType geom_type, int num_ords, lo
     }
     catch (FdoException *ex)
     {
-      	printf("ERROR in create_feat_fgf().\n");
+          printf("ERROR in create_feat_fgf().\n");
         throw ex;
     }
     catch (...)
     {
-      	printf("ERROR in create_feat_fgf().\n");
+          printf("ERROR in create_feat_fgf().\n");
         throw;
     }
 }
@@ -1684,12 +1691,12 @@ void GeometryTests::update_feat_fgf(FdoGeometryType geom_type, long feat_num, in
     }
     catch (FdoException *ex)
     {
-      	printf("ERROR in update_feat_fgf().\n");
+          printf("ERROR in update_feat_fgf().\n");
         throw ex;
     }
     catch (...)
     {
-      	printf("ERROR in update_feat_fgf().\n");
+          printf("ERROR in update_feat_fgf().\n");
         throw;
     }
 
@@ -1710,12 +1717,12 @@ void GeometryTests::RoundTripGeometry( FdoGeometryType geomType, FdoIGeometry * 
     } 
     catch (FdoException *ex)
     {
-      	printf("ERROR in RoundTripGeometry().\n");
+          printf("ERROR in RoundTripGeometry().\n");
         throw ex;
     }
     catch (...)
     {
-      	printf("ERROR in RoundTripGeometry().\n");
+          printf("ERROR in RoundTripGeometry().\n");
         throw;
     }
 }
@@ -1788,17 +1795,17 @@ FdoICurveString * GeometryTests::createCurveString( FdoFgfGeometryFactory * gf, 
         // Error
     }
 
-	// Add arcsegment in segments collection
+    // Add arcsegment in segments collection
     FdoPtr<FdoICurveSegmentAbstract> seg = gf->CreateCircularArcSegment(start, mid, end);
-	FdoPtr<FdoCurveSegmentCollection> segs = FdoCurveSegmentCollection::Create();
-	segs->Add(seg);
+    FdoPtr<FdoCurveSegmentCollection> segs = FdoCurveSegmentCollection::Create();
+    segs->Add(seg);
 
     start = mid = end = 0;
 
     FdoInt32 numOrdsLeft = num_ords - (2 * mNumPointOrdinates);
     FdoInt32 numPositions = numOrdsLeft / mNumPointOrdinates;
   
- 	// Create a single LineStringSegment having numPositions
+     // Create a single LineStringSegment having numPositions
     double * ordinates; // offset due Arc above
 
     if ( mFdoDimensionality == FdoDimensionality_XY )
@@ -1822,12 +1829,12 @@ FdoICurveString * GeometryTests::createCurveString( FdoFgfGeometryFactory * gf, 
         // Error
     }
 
-	seg = gf->CreateLineStringSegment(mFdoDimensionality, numPositions*mNumPointOrdinates, ordinates);
+    seg = gf->CreateLineStringSegment(mFdoDimensionality, numPositions*mNumPointOrdinates, ordinates);
 
-	// Add it to segments collection
-	segs->Add(seg);
+    // Add it to segments collection
+    segs->Add(seg);
     
-	// Create a curvestring from curvesegments
+    // Create a curvestring from curvesegments
     FdoICurveString * curveString = gf->CreateCurveString(segs);
 
     return curveString;

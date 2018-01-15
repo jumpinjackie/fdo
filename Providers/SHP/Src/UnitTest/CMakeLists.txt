@@ -1,56 +1,64 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../ShpRead
-	${CMAKE_CURRENT_SOURCE_DIR}/../ShpSpatialIndex
-	${CPPUNIT_INCLUDE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${UTILITIES_TESTCOMMON_INCLUDE_DIR}
-	${UTILITIES_OWS_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../Provider
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ShpRead
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ShpSpatialIndex
+    ${CPPUNIT_INCLUDE_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${UTILITIES_TESTCOMMON_INCLUDE_DIR}
+    ${UTILITIES_OWS_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Provider
+)
 
 add_definitions( -D__STDC_LIMIT_MACROS )
 
 set( UnitTest_SRCS
-   UnitTest.cpp
-   glibpatch.cpp
-   ShpTests.cpp
-   FileAccessTests.cpp
-   ConnectTests.cpp
-   ConnectionInfoTests.cpp
-   IndexTests.cpp
-   SelectTests.cpp
-   SelectAggregatesTests.cpp
-   InsertTests.cpp
-   # InsertTests2.cpp
-   DeleteTests.cpp
-   SchemaTests.cpp
-   OverridesTest.cpp
-   FilterTests.cpp
-   SpatialFilterTests.cpp
-   XmlFormatter.cpp
-   PerformanceTests.cpp
-   UpdateTests.cpp
-   FidelityTests.cpp
-   BigPerformanceTests.cpp
-   ExtendedSelectTests.cpp
-   FdoExpressionFunctionTest.cpp
+    UnitTest.cpp
+    glibpatch.cpp
+    ShpTests.cpp
+    FileAccessTests.cpp
+    ConnectTests.cpp
+    ConnectionInfoTests.cpp
+    IndexTests.cpp
+    SelectTests.cpp
+    SelectAggregatesTests.cpp
+    InsertTests.cpp
+    InsertTests2.cpp
+    DeleteTests.cpp
+    SchemaTests.cpp
+    OverridesTest.cpp
+    FilterTests.cpp
+    SpatialFilterTests.cpp
+    XmlFormatter.cpp
+    PerformanceTests.cpp
+    UpdateTests.cpp
+    FidelityTests.cpp
+    BigPerformanceTests.cpp
+    ExtendedSelectTests.cpp
+    FdoExpressionFunctionTest.cpp
 )
 
 add_executable( SHPUnitTest ${UnitTest_SRCS} )
-
+add_sanitizers( SHPUnitTest )
 set_target_properties( SHPUnitTest
-	PROPERTIES OUTPUT_NAME "UnitTest" )
+    PROPERTIES OUTPUT_NAME "UnitTest" )
 
 target_link_libraries( SHPUnitTest
-	FDO-${FDO_VERSION}
-	${CPPUNIT_LIBRARIES}
-	ProvidersCommon
-	TestCommon
-	SHPOverrides-${FDO_VERSION}
-	SHPRead
-	SHPSpatialIndex
-	)
+    FDO${FDO_VERSION_SUFFIX}
+    ${CPPUNIT_LIBRARIES}
+    ProvidersCommon
+    TestCommon
+    SHPOverrides${FDO_VERSION_SUFFIX}
+    SHPRead
+    SHPSpatialIndex
+)
 
+# Ensure test data is copied to where the unit test binary is generated
+file(GLOB UnitTestSHP_TESTDATA
+    "*.txt"
+    "*.xml"
+)
+file(COPY ${UnitTestSHP_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Remove providers.xml from output as that is windows-only
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")

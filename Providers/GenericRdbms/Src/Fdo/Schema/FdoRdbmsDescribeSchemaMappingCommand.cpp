@@ -24,8 +24,13 @@
 
 #ifndef ASSERT
 #ifdef _DEBUG
-    #include <CrtDbg.h>
-    #define ASSERT  _ASSERT
+    #ifdef _WIN32
+        #include <CrtDbg.h>
+        #define ASSERT  _ASSERT
+    #else
+        #include <assert.h>
+        #define ASSERT assert
+    #endif
 #else
     #define ASSERT(x) {}
 #endif

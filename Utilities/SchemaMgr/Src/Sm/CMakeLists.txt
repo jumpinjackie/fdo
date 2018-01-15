@@ -23,7 +23,7 @@ add_library( SchemaMgr STATIC ${SchemaMgr_SRCS} )
 
 target_link_libraries( SchemaMgr
 	ProvidersCommon
-	FDO-${FDO_VERSION} )
+	FDO${FDO_VERSION_SUFFIX} )
 
 add_dependencies( SchemaMgr SMMessage )
 

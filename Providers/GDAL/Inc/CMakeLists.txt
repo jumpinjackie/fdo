@@ -1,11 +1,12 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 
-INSTALL(
-	DIRECTORY GdalFile
-        DESTINATION include
-        PATTERN *.h
-		PATTERN .svn EXCLUDE
-        )
+install(
+    DIRECTORY GdalFile
+    DESTINATION include
+    COMPONENT ${FDO_COMPONENT}
+    PATTERN *.h
+    PATTERN .svn EXCLUDE
+)

@@ -40,4 +40,4 @@ set( SHPRead_SRCS
 
 add_library( SHPRead STATIC ${SHPRead_SRCS} )
 
-add_dependencies( SHPRead SHPMessage )
+add_dependencies( SHPRead ShpMessage )

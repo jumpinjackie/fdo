@@ -1,51 +1,60 @@
 include_directories(
-	BEFORE
-	${CPPUNIT_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}
-	)
+    BEFORE
+    ${CPPUNIT_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 add_definitions( -D__STDC_LIMIT_MACROS )
 
 set( GDALUnitTest_SRCS
-   XmlFormatter.cpp
-   UnitTestUtil.cpp
-   RfpNoConfigTest.cpp
-   RfpNoConfigTest2.cpp
-   RfpOverridesSerializeTest.cpp
-   RfpRasterConversion.cpp
-   RfpTestExample1.cpp
-   RfpTestGeotiff.cpp
-   RfpTestGetRaster.cpp
-   RfpTestMosaic.cpp
-   RfpTestResample.cpp
-   RfpTestSpatialContext.cpp
-   RfpTestThorough.cpp
-   RfpUnitTest.cpp
-   UnitTest.cpp
-   UnitTestLinux.cpp
-   RfpTestMrSID.cpp
-   RfpTestBand.cpp
-   RfpTestJp2.cpp
-   RfpTestEcw.cpp
-   RfpTestDem.cpp
-   RfpTestBandConfig.cpp
-   RfpTestPng.cpp
-   RfpTestJpg.cpp
-   RfpTestAAIGrid.cpp
-   RfpTestSpatialQuery.cpp
+    XmlFormatter.cpp
+    UnitTestUtil.cpp
+    RfpNoConfigTest.cpp
+    RfpNoConfigTest2.cpp
+    RfpOverridesSerializeTest.cpp
+    RfpRasterConversion.cpp
+    RfpTestExample1.cpp
+    RfpTestGeotiff.cpp
+    RfpTestGetRaster.cpp
+    RfpTestMosaic.cpp
+    RfpTestResample.cpp
+    RfpTestSpatialContext.cpp
+    RfpTestThorough.cpp
+    RfpUnitTest.cpp
+    UnitTest.cpp
+    UnitTestLinux.cpp
+    RfpTestMrSID.cpp
+    RfpTestBand.cpp
+    RfpTestJp2.cpp
+    RfpTestEcw.cpp
+    RfpTestDem.cpp
+    RfpTestBandConfig.cpp
+    RfpTestPng.cpp
+    RfpTestJpg.cpp
+    RfpTestAAIGrid.cpp
+    RfpTestSpatialQuery.cpp
 )
 
 add_executable( GDALUnitTest ${GDALUnitTest_SRCS} )
+add_sanitizers( GDALUnitTest )
 
 set_target_properties( GDALUnitTest
-	PROPERTIES OUTPUT_NAME "UnitTest" )
+    PROPERTIES OUTPUT_NAME "UnitTest" )
 
 target_link_libraries( GDALUnitTest
-	GRFPOverrides-${FDO_VERSION}
-	ProvidersCommon
-	${CPPUNIT_LIBRARIES}
-	FDO-${FDO_VERSION}
-	)
+    GRFPOverrides${FDO_VERSION_SUFFIX}
+    ProvidersCommon
+    ${CPPUNIT_LIBRARIES}
+    FDO${FDO_VERSION_SUFFIX}
+)
+
+# Ensure test data is copied to where the unit test binary is generated
+file(GLOB UnitTestGDAL_TESTDATA
+    "*.xml"
+)
+file(COPY ${UnitTestGDAL_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Remove providers.xml from output as that is windows-only
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")

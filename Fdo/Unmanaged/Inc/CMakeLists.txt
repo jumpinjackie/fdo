@@ -1,14 +1,19 @@
-INSTALL( FILES
-        Fdo.h
-        FdoStd.h
-        FdoCommon.h
-        FdoGeometry.h
-        DESTINATION include )
+install( FILES
+    Fdo.h
+    FdoStd.h
+    FdoCommon.h
+    FdoGeometry.h
+    FdoSpatial.h
+    FdoLimits.h
+    DESTINATION include
+    COMPONENT ${FDO_COMPONENT}
+)
 
-INSTALL(
-	DIRECTORY Common Fdo Geometry
-        DESTINATION include
-        PATTERN *.h
-		PATTERN "TransformerXalan.h" EXCLUDE
-		PATTERN .svn EXCLUDE
-        )
+install(
+    DIRECTORY Common Fdo Geometry Spatial
+    DESTINATION include
+    COMPONENT ${FDO_COMPONENT}
+    PATTERN *.h
+    PATTERN "TransformerXalan.h" EXCLUDE
+    PATTERN .svn EXCLUDE
+)

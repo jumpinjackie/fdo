@@ -97,7 +97,7 @@ void RfpTestPng::testLoad()
             
             // no data
             CPPUNIT_ASSERT(reader->ReadNext(buffer, 0, 1) == 0);
-            delete buffer;
+            delete[] buffer;
             count++;
         }
 
@@ -165,7 +165,7 @@ void RfpTestPng::testSpecialCharacters()
             
             // no data
             CPPUNIT_ASSERT(reader->ReadNext(buffer, 0, 1) == 0);
-            delete buffer;
+            delete[] buffer;
             count++;
         }
 

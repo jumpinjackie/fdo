@@ -1,10 +1,10 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}/../Message/Inc/
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${GDAL_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/../Message/Inc/
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${GDAL_INCLUDE_DIR}
+    )
 
 set( GRFPProvider_SRCS
    FdoRfpClassData.cpp
@@ -50,13 +50,14 @@ set( GRFPProvider_SRCS
    stdafx.cpp
 )
 
-add_library( GRFPProvider-${FDO_VERSION} SHARED ${GRFPProvider_SRCS} )
+add_library( GRFPProvider${FDO_VERSION_SUFFIX} SHARED ${GRFPProvider_SRCS} )
 
-target_link_libraries( GRFPProvider-${FDO_VERSION}
-	GRFPOverrides-${FDO_VERSION}
-	ProvidersCommon
-	FDO-${FDO_VERSION}
-	${GDAL_LIBRARY}
- )
+target_link_libraries( GRFPProvider${FDO_VERSION_SUFFIX}
+    GRFPOverrides${FDO_VERSION_SUFFIX}
+    ProvidersCommon
+    FDO${FDO_VERSION_SUFFIX}
+    ${GDAL_LIBRARY}
+)
 
-install( TARGETS GRFPProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS GRFPProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider${FDO_VERSION_SUFFIX}.so libGRFPProvider.so ${FDO_COMPONENT} )

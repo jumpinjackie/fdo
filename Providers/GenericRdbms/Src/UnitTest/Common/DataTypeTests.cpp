@@ -21,6 +21,7 @@
 #include "UnitTestUtil.h"
 
 DataTypeTests::DataTypeTests (void)
+    : mRdbiContext(NULL)
 {
 }
 
@@ -40,17 +41,17 @@ void DataTypeTests::setUp ()
         FdoStringP userPassword = UnitTestUtil::GetEnviron("password");
         if (!bDatastoreCreated)
         {
-	        try
+            try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
+                FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();
-		        FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
-		        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
-		        dictionary->SetProperty( L"DataStore",  dataStoreName);
-		        pDelCmd->Execute();
-		        connection->Close();
+                FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
+                FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
+                dictionary->SetProperty( L"DataStore",  dataStoreName);
+                pDelCmd->Execute();
+                connection->Close();
             }
             catch(FdoException* exc)
             {
@@ -61,7 +62,7 @@ void DataTypeTests::setUp ()
                 printf("Unknown exception\n");
             }
 
-	        UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
+            UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
             bDatastoreCreated = true;
         }
 
@@ -97,26 +98,32 @@ void DataTypeTests::setUp ()
 
 void DataTypeTests::tearDown ()
 {
-    try
+    if (mRdbiContext)
     {
         try
         {
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            try
+            {
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            }
+            catch (CppUnit::Exception exception)
+            {
+                rdbi_term (&mRdbiContext);
+                throw exception;
+            }
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
+            mRdbiContext = NULL;
         }
         catch (CppUnit::Exception exception)
         {
-            rdbi_term (&mRdbiContext);
+            mRdbiContext = NULL;
             throw exception;
         }
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
-    }
-    catch (CppUnit::Exception exception)
-    {
-        throw exception;
-    }
-    catch (...)
-    {
-        CPPUNIT_FAIL ("unexpected exception encountered");
+        catch (...)
+        {
+            mRdbiContext = NULL;
+            CPPUNIT_FAIL ("unexpected exception encountered");
+        }
     }
 }
 
@@ -187,7 +194,7 @@ void DataTypeTests::roundtrip_insert (
     long null_ind1 = 0;
     long null_ind2 = 0;
     int rows;
-	long *variable2 = 0; // NOTE: for geometries, we need null data.
+    long *variable2 = 0; // NOTE: for geometries, we need null data.
     int desc_rdbi_type = (out_rdbi_type == -1) ? rdbi_type : out_rdbi_type;
 
     cursor = -1;
@@ -198,7 +205,7 @@ void DataTypeTests::roundtrip_insert (
         // drop the table if it already exists... ignore errors
         sprintf (statement, "drop table bar");
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
-		rdbi_execute (mRdbiContext, cursor, 1, 0);
+        rdbi_execute (mRdbiContext, cursor, 1, 0);
 
         // create the table with 2 columns (not null/null)
         sprintf (statement, "create table bar (xyz1 %s, xyz2 %s null ) %s", sql_type, sql_type, get_geometry_storage());
@@ -227,7 +234,7 @@ void DataTypeTests::roundtrip_insert (
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
-		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
+        CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
         CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(desc_rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
         // CPPUNIT_ASSERT_MESSAGE ("column not nullable", 0 != null_ok);
@@ -238,12 +245,12 @@ void DataTypeTests::roundtrip_insert (
 
         data1 = alloca (bytes);
         memset( data1, '\0', bytes);//size
-		void *addr1 = ( rdbi_type == RDBI_GEOMETRY )? &data1 : data1;
+        void *addr1 = ( rdbi_type == RDBI_GEOMETRY )? &data1 : data1;
         CPPUNIT_ASSERT_MESSAGE ("rdbi_define failed", RDBI_SUCCESS == rdbi_define (mRdbiContext, cursor, "1", rdbi_type, bytes, (char*)addr1, (char*)&null_ind1));
 
         data2 = alloca (bytes);
         memset( data2, '\0', bytes);//size
-		void *addr2 = ( rdbi_type == RDBI_GEOMETRY )? &data2 : data2;
+        void *addr2 = ( rdbi_type == RDBI_GEOMETRY )? &data2 : data2;
         CPPUNIT_ASSERT_MESSAGE ("rdbi_define failed", RDBI_SUCCESS == rdbi_define (mRdbiContext, cursor, "2", rdbi_type, bytes, (char*)addr2, (char*)&null_ind2));
 
         // execute, fetch and check the values
@@ -262,26 +269,26 @@ void DataTypeTests::roundtrip_insert (
 
             CPPUNIT_ASSERT_MESSAGE ("column is wrong value", tolerance > tol);
         } 
-		else if ( rdbi_type != RDBI_GEOMETRY )
-		{
+        else if ( rdbi_type != RDBI_GEOMETRY )
+        {
             CPPUNIT_ASSERT_MESSAGE ("column is wrong value", 0 == memcmp (variable, data1, (bytes < size) ? bytes:size));//size
         } 
-		else if ( rdbi_type == RDBI_GEOMETRY ) {
-			FdoIGeometry** pg = (FdoIGeometry**)(variable);
-			FdoIPoint *     g = (FdoIPoint *) (*pg);
-			FdoPtr<FdoIDirectPosition> p = g->GetPosition();
-			double x = p->GetX();
-			double y = p->GetY();
+        else if ( rdbi_type == RDBI_GEOMETRY ) {
+            FdoIGeometry** pg = (FdoIGeometry**)(variable);
+            FdoIPoint *     g = (FdoIPoint *) (*pg);
+            FdoPtr<FdoIDirectPosition> p = g->GetPosition();
+            double x = p->GetX();
+            double y = p->GetY();
 
-			FdoIGeometry** pg1 = (FdoIGeometry**)(addr1);
-			FdoIPoint* g1 = (FdoIPoint *) (*pg1);
-			FdoPtr<FdoIDirectPosition> p1 = g1->GetPosition();
-			double x1 = p1->GetX();
-			double y1 = p1->GetY();
-			
-			CPPUNIT_ASSERT_MESSAGE ("point X is wrong value", fabs(x1-x) < 0.0001);
-			CPPUNIT_ASSERT_MESSAGE ("point Y is wrong value", fabs(y1-y) < 0.0001);
-		}
+            FdoIGeometry** pg1 = (FdoIGeometry**)(addr1);
+            FdoIPoint* g1 = (FdoIPoint *) (*pg1);
+            FdoPtr<FdoIDirectPosition> p1 = g1->GetPosition();
+            double x1 = p1->GetX();
+            double y1 = p1->GetY();
+            
+            CPPUNIT_ASSERT_MESSAGE ("point X is wrong value", fabs(x1-x) < 0.0001);
+            CPPUNIT_ASSERT_MESSAGE ("point Y is wrong value", fabs(y1-y) < 0.0001);
+        }
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_fre_cursor failed", RDBI_SUCCESS == rdbi_fre_cursor (mRdbiContext, cursor));
         cursor = -1;
@@ -292,15 +299,15 @@ void DataTypeTests::roundtrip_insert (
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -331,7 +338,7 @@ void DataTypeTests::roundtrip_update (
     long null_ind1 = 0;
     long null_ind2 = 0;
     int rows;
-	long *variable2 = 0; // NOTE: for geometries, we need null data.
+    long *variable2 = 0; // NOTE: for geometries, we need null data.
     int desc_rdbi_type = (out_rdbi_type == -1) ? rdbi_type : out_rdbi_type;
 
     cursor = -1;
@@ -360,7 +367,7 @@ void DataTypeTests::roundtrip_update (
 
         CPPUNIT_ASSERT_MESSAGE ("rdbi_sql failed", RDBI_SUCCESS == rdbi_sql_Ex (mRdbiContext, cursor, statement));
         CPPUNIT_ASSERT_MESSAGE ("rdbi_desc_slct failed", RDBI_SUCCESS == rdbi_desc_slct_Ex (mRdbiContext, cursor, 1, sizeof (statement), statement, &type, &bytes, &null_ok));
-		CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
+        CPPUNIT_ASSERT_MESSAGE ("column wrong name", 0 == FdoCommonOSUtil::stricmp ("xyz1", statement));
         CPPUNIT_ASSERT_MESSAGE ("column wrong type", is_datatype_equal(desc_rdbi_type, type) );
         // CPPUNIT_ASSERT_MESSAGE ("column wrong size", rdbi_scale == bytes);
         // CPPUNIT_ASSERT_MESSAGE ("column not nullable", 0 != null_ok);
@@ -371,12 +378,12 @@ void DataTypeTests::roundtrip_update (
 
         data1 = alloca (bytes);
         memset( data1, '\0', bytes);//size
-		void *addr1 = ( rdbi_type == RDBI_GEOMETRY )? &data1 : data1;
+        void *addr1 = ( rdbi_type == RDBI_GEOMETRY )? &data1 : data1;
         CPPUNIT_ASSERT_MESSAGE ("rdbi_define failed", RDBI_SUCCESS == rdbi_define (mRdbiContext, cursor, "1", rdbi_type, bytes, (char*)addr1, (char*)&null_ind1));
 
         data2 = alloca (bytes);
         memset( data2, '\0', bytes);//size
-		void *addr2 = ( rdbi_type == RDBI_GEOMETRY )? &data2 : data2;
+        void *addr2 = ( rdbi_type == RDBI_GEOMETRY )? &data2 : data2;
         CPPUNIT_ASSERT_MESSAGE ("rdbi_define failed", RDBI_SUCCESS == rdbi_define (mRdbiContext, cursor, "2", rdbi_type, bytes, (char*)addr2, (char*)&null_ind2));
 
         // execute, fetch and check the values
@@ -395,26 +402,26 @@ void DataTypeTests::roundtrip_update (
 
             CPPUNIT_ASSERT_MESSAGE ("column is wrong value", tolerance > tol);
         } 
-		else if ( rdbi_type != RDBI_GEOMETRY )
-		{
+        else if ( rdbi_type != RDBI_GEOMETRY )
+        {
             CPPUNIT_ASSERT_MESSAGE ("column is wrong value", 0 == memcmp (variable, data1, (bytes < size) ? bytes:size));//size
         }
-		else if ( rdbi_type == RDBI_GEOMETRY ) {
-			FdoIGeometry** pg = (FdoIGeometry**)(variable);
-			FdoIPoint *     g = (FdoIPoint *) (*pg);
-			FdoPtr<FdoIDirectPosition> p = g->GetPosition();
-			double x = p->GetX();
-			double y = p->GetY();
+        else if ( rdbi_type == RDBI_GEOMETRY ) {
+            FdoIGeometry** pg = (FdoIGeometry**)(variable);
+            FdoIPoint *     g = (FdoIPoint *) (*pg);
+            FdoPtr<FdoIDirectPosition> p = g->GetPosition();
+            double x = p->GetX();
+            double y = p->GetY();
 
-			FdoIGeometry** pg1 = (FdoIGeometry**)(addr1);
-			FdoPtr<FdoIPoint> g1 = (FdoIPoint *) (*pg1);
-			FdoPtr<FdoIDirectPosition> p1 = g1->GetPosition();
-			double x1 = p1->GetX();
-			double y1 = p1->GetY();
-			
-			CPPUNIT_ASSERT_MESSAGE ("point X is wrong value", fabs(x1-x) < 0.0001);
-			CPPUNIT_ASSERT_MESSAGE ("point Y is wrong value", fabs(y1-y) < 0.0001);
-		}
+            FdoIGeometry** pg1 = (FdoIGeometry**)(addr1);
+            FdoPtr<FdoIPoint> g1 = (FdoIPoint *) (*pg1);
+            FdoPtr<FdoIDirectPosition> p1 = g1->GetPosition();
+            double x1 = p1->GetX();
+            double y1 = p1->GetY();
+            
+            CPPUNIT_ASSERT_MESSAGE ("point X is wrong value", fabs(x1-x) < 0.0001);
+            CPPUNIT_ASSERT_MESSAGE ("point Y is wrong value", fabs(y1-y) < 0.0001);
+        }
 
         // clean up
         sprintf (statement, "drop table bar");
@@ -430,15 +437,15 @@ void DataTypeTests::roundtrip_update (
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -456,7 +463,7 @@ void DataTypeTests::geometry ()
 
     roundtrip_insert (get_geometry_type(), RDBI_GEOMETRY, 0, 0, &g, sizeof(g));
 
-	g->Release();
+    g->Release();
 }
 
 void DataTypeTests::single_char ()
@@ -465,8 +472,8 @@ void DataTypeTests::single_char ()
 
     ch[0] = 'K'; ch[1] = '\0'; // Null terminator
     roundtrip_insert ("CHAR", RDBI_CHAR, 1, 0, &ch, 1);
-	ch[0] = 'F';
-	roundtrip_update ("CHAR", RDBI_CHAR, 1, 0, &ch, 1);
+    ch[0] = 'F';
+    roundtrip_update ("CHAR", RDBI_CHAR, 1, 0, &ch, 1);
 }
 
 void DataTypeTests::single_character ()
@@ -483,7 +490,7 @@ void DataTypeTests::dozen_char ()
 
     sprintf (ch, "initializer");
     roundtrip_insert ("CHAR (12)", RDBI_FIXED_CHAR, 12, 0, &ch, sizeof (ch));
-	sprintf (ch, "1nitialize1");
+    sprintf (ch, "1nitialize1");
     roundtrip_update ("CHAR (12)", RDBI_FIXED_CHAR, 12, 0, &ch, sizeof (ch));
 }
 
@@ -521,7 +528,7 @@ void DataTypeTests::varchar ()
     sprintf (ch, "mechanism");
     roundtrip_insert ("VARCHAR (25)", RDBI_STRING, 25, 0, &ch, (int)strlen (ch) + 1);
 
-	memset (ch, 0, sizeof (ch));
+    memset (ch, 0, sizeof (ch));
     sprintf (ch, "update test");
     roundtrip_update ("VARCHAR (25)", RDBI_STRING, 25, 0, &ch, (int)strlen (ch) + 1);
 }

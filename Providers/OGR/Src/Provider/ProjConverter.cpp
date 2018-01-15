@@ -36,7 +36,7 @@ std::wstring ProjConverter::TranslateProjection(const wchar_t* proj)
     if (res != m_translations.end())
     {
 #if DEBUG
-        printf("Converted projection from %s to %s\"", mbproj, res->second.c_str());
+        printf("Converted projection from %s to %s\"", s.c_str(), res->second.c_str());
 #endif
         const char* y = res->second.c_str();
         ret = A2W_SLOW(y);

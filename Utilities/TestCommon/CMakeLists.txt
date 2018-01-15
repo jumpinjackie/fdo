@@ -29,7 +29,7 @@ add_library( TestCommon STATIC ${TestCommon_STAT_SRCS} )
 set_target_properties( TestCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 
 target_link_libraries( TestCommon 
-	FDO-${FDO_VERSION}
+	FDO${FDO_VERSION_SUFFIX}
 	ProvidersCommon
 	${CPPUNIT_LIBRARIES}
 )
