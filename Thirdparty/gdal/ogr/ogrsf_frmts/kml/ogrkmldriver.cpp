@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrkmldriver.cpp 23978 2012-02-14 20:42:34Z rouault $
  *
  * Project:  KML Driver
  * Purpose:  Implementation of OGRKMLDriver class.
@@ -28,74 +27,85 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
+
 #include "ogr_kml.h"
+
 #include "cpl_conv.h"
 #include "cpl_error.h"
 
+CPL_CVSID("$Id: ogrkmldriver.cpp 39692 2017-07-30 19:32:43Z rouault $");
+
 /************************************************************************/
-/*                          ~OGRKMLDriver()                           */
+/*                         OGRKMLDriverIdentify()                       */
 /************************************************************************/
 
-OGRKMLDriver::~OGRKMLDriver()
+static int OGRKMLDriverIdentify( GDALOpenInfo* poOpenInfo )
+
 {
-}
+    if( poOpenInfo->fpL == NULL )
+        return FALSE;
 
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRKMLDriver::GetName()
-{
-    return "KML";
+    return strstr(reinterpret_cast<char *>(poOpenInfo->pabyHeader),
+                  "<kml") != NULL ||
+           strstr(reinterpret_cast<char *>(poOpenInfo->pabyHeader),
+                  "<kml:kml") != NULL;
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRKMLDriver::Open( const char * pszName, int bUpdate )
+static GDALDataset *OGRKMLDriverOpen( GDALOpenInfo* poOpenInfo )
+
 {
-    CPLAssert( NULL != pszName );
-
-    OGRKMLDataSource* poDS = NULL;
-
-#ifdef HAVE_EXPAT
-    if( bUpdate )
+    if( poOpenInfo->eAccess == GA_Update )
         return NULL;
 
-    poDS = new OGRKMLDataSource();
+    if( !OGRKMLDriverIdentify(poOpenInfo) )
+        return NULL;
 
-    if( poDS->Open( pszName, TRUE ) )
+#ifdef HAVE_EXPAT
+    OGRKMLDataSource* poDS = new OGRKMLDataSource();
+
+    if( poDS->Open( poOpenInfo->pszFilename, TRUE ) )
     {
-        /*if( poDS->GetLayerCount() == 0 )
+#ifdef DEBUG_VERBOSE
+        if( poDS->GetLayerCount() == 0 )
         {
-            CPLError( CE_Failure, CPLE_OpenFailed, 
+            CPLError( CE_Failure, CPLE_OpenFailed,
                 "No layers in KML file: %s.", pszName );
 
             delete poDS;
             poDS = NULL;
-        }*/
+        }
+#endif
     }
     else
     {
         delete poDS;
         poDS = NULL;
     }
-#endif
 
     return poDS;
+#else
+    return NULL;
+#endif
 }
 
 /************************************************************************/
-/*                          CreateDataSource()                          */
+/*                               Create()                               */
 /************************************************************************/
 
-OGRDataSource *OGRKMLDriver::CreateDataSource( const char* pszName,
-                                               char** papszOptions )
+static GDALDataset *OGRKMLDriverCreate( const char * pszName,
+                                        int /* nBands */,
+                                        int /* nXSize */ ,
+                                        int /* nYSize */,
+                                        GDALDataType /* eDT */,
+                                        char **papszOptions )
 {
     CPLAssert( NULL != pszName );
     CPLDebug( "KML", "Attempt to create: %s", pszName );
-    
+
     OGRKMLDataSource *poDS = new OGRKMLDataSource();
 
     if( !poDS->Create( pszName, papszOptions ) )
@@ -108,24 +118,45 @@ OGRDataSource *OGRKMLDriver::CreateDataSource( const char* pszName,
 }
 
 /************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRKMLDriver::TestCapability( const char* pszCap )
-{
-    if( EQUAL(pszCap, ODrCCreateDataSource) )
-        return TRUE;
-    else
-        return FALSE;
-}
-
-/************************************************************************/
 /*                           RegisterOGRKML()                           */
 /************************************************************************/
 
 void RegisterOGRKML()
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRKMLDriver );
+    if( GDALGetDriverByName( "KML" ) != NULL )
+        return;
+
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "KML" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "Keyhole Markup Language (KML)" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "kml" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_kml.html" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+"<CreationOptionList>"
+"  <Option name='DOCUMENT_ID' type='string' description='Id of the root &lt;Document&gt; node' default='root_doc'/>'"
+"  <Option name='GPX_USE_EXTENSIONS' type='boolean' description='Whether to write non-GPX attributes in an <extensions> tag' default='NO'/>"
+"  <Option name='NameField' type='string' description='Field to use to fill the KML <name> element' default='Name'/>"
+"  <Option name='DescriptionField' type='string' description='Field to use to fill the KML <description> element' default='Description'/>"
+"  <Option name='AltitudeMode' type='string-select' description='Value of the <AltitudeMode> element for 3D geometries'>"
+"    <Value>clampToGround</Value>"
+"    <Value>relativeToGround</Value>"
+"    <Value>absolute</Value>"
+"  </Option>"
+"</CreationOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+                               "<LayerCreationOptionList/>" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONFIELDDATATYPES,
+                               "Integer Real String" );
+
+    poDriver->pfnOpen = OGRKMLDriverOpen;
+    poDriver->pfnIdentify = OGRKMLDriverIdentify;
+    poDriver->pfnCreate = OGRKMLDriverCreate;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-
-

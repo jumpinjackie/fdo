@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_ARRAY_H
-#define __INCLUDE_PCIDSK_ARRAY_H
+#ifndef INCLUDE_PCIDSK_ARRAY_H
+#define INCLUDE_PCIDSK_ARRAY_H
 
 #include <string>
 #include <vector>
@@ -41,16 +41,16 @@ namespace PCIDSK
     class PCIDSK_DLL PCIDSK_ARRAY
     {
     public:
-        virtual	~PCIDSK_ARRAY() {}
+        virtual ~PCIDSK_ARRAY() {}
 
         //ARRAY functions
-        virtual	unsigned char GetDimensionCount() const =0;
-        virtual	void SetDimensionCount(unsigned char nDim) =0;
-        virtual	const std::vector<unsigned int>& GetSizes() const =0;
-        virtual	void SetSizes(const std::vector<unsigned int>& oSizes) =0;
-        virtual	const std::vector<double>& GetArray() const =0;
-        virtual	void SetArray(const std::vector<double>& oArray) =0;
+        virtual unsigned char GetDimensionCount() const =0;
+        virtual void SetDimensionCount(unsigned char nDim) =0;
+        virtual const std::vector<unsigned int>& GetSizes() const =0;
+        virtual void SetSizes(const std::vector<unsigned int>& oSizes) =0;
+        virtual const std::vector<double>& GetArray() const =0;
+        virtual void SetArray(const std::vector<double>& oArray) =0;
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_PCIDSK_ARRAY_H
+#endif // INCLUDE_PCIDSK_ARRAY_H

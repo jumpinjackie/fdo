@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogrsqliteexecutesql.h 24972 2012-09-25 05:53:19Z rouault $
+ * $Id: ogrsqliteexecutesql.h 35911 2016-10-24 15:03:26Z goatbar $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Run SQL requests with SQLite SQL engine
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2004, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,17 +28,16 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_SQLITE_EXECUTE_SQL_H_INCLUDED
-#define _OGR_SQLITE_EXECUTE_SQL_H_INCLUDED
+#ifndef OGR_SQLITE_EXECUTE_SQL_H_INCLUDED
+#define OGR_SQLITE_EXECUTE_SQL_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include <set>
 
-OGRLayer * OGRSQLiteExecuteSQL( OGRDataSource* poDS,
+OGRLayer * OGRSQLiteExecuteSQL( GDALDataset* poDS,
                                 const char *pszStatement,
                                 OGRGeometry *poSpatialFilter,
                                 const char *pszDialect );
-
 
 /************************************************************************/
 /*                               LayerDesc                              */
@@ -61,6 +61,5 @@ class LayerDesc
 
 std::set<LayerDesc> OGRSQLiteGetReferencedLayers(const char* pszStatement);
 
-#endif /* ndef _OGR_SQLITE_EXECUTE_SQL_H_INCLUDED */
-
+#endif /* ndef OGR_SQLITE_EXECUTE_SQL_H_INCLUDED */
 

@@ -3,8 +3,6 @@ include ../../GDALmake.opt
 
 OBJ	=	sagadataset.o
 
-CPPFLAGS	=	$(GDAL_INCLUDE)
-
 default:	$(OBJ:.o=.$(OBJ_EXT))
 
 clean:

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_error_map.i 12444 2007-10-16 17:48:23Z ajolma $
+ * $Id: ogr_error_map.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Project:  GDAL SWIG Interfaces.
  * Purpose:  OGRErr handling typemap.
@@ -28,9 +28,9 @@
  *****************************************************************************/
 
 #ifdef SWIGRUBY
-%header 
+%header
 #else
-%fragment("OGRErrMessages","header") 
+%fragment("OGRErrMessages","header")
 #endif
 %{
 
@@ -56,6 +56,8 @@ OGRErrMessages( int rc ) {
     return "OGR Error: Unsupported SRS";
   case OGRERR_INVALID_HANDLE:
     return "OGR Error: Invalid handle";
+  case OGRERR_NON_EXISTING_FEATURE:
+    return "OGR Error: Non existing feature";
   default:
     return "OGR Error: Unknown";
   }

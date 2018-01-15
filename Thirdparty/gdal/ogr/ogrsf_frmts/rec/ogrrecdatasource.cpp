@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrrecdatasource.cpp 13025 2007-11-25 18:03:46Z rouault $
  *
  * Project:  Epiinfo .REC Translator
  * Purpose:  Implements OGRRECDataSource class
@@ -31,19 +30,16 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrrecdatasource.cpp 13025 2007-11-25 18:03:46Z rouault $");
+CPL_CVSID("$Id: ogrrecdatasource.cpp 38951 2017-06-07 21:40:45Z rouault $");
 
 /************************************************************************/
 /*                          OGRRECDataSource()                          */
 /************************************************************************/
 
-OGRRECDataSource::OGRRECDataSource()
-
-{
-    poLayer = NULL;
-
-    pszName = NULL;
-}
+OGRRECDataSource::OGRRECDataSource() :
+    pszName(NULL),
+    poLayer(NULL)
+{}
 
 /************************************************************************/
 /*                         ~OGRRECDataSource()                          */
@@ -77,8 +73,8 @@ OGRLayer *OGRRECDataSource::GetLayer( int iLayer )
 {
     if( iLayer == 0 )
         return poLayer;
-    else
-        return NULL;
+
+    return NULL;
 }
 
 /************************************************************************/
@@ -89,32 +85,33 @@ int OGRRECDataSource::Open( const char * pszFilename )
 
 {
     pszName = CPLStrdup( pszFilename );
-    
+
 /* -------------------------------------------------------------------- */
 /*      Verify that the extension is REC.                               */
 /* -------------------------------------------------------------------- */
     if( !(strlen(pszFilename) > 4 &&
           EQUAL(pszFilename+strlen(pszFilename)-4,".rec") ) )
         return FALSE;
-    
+
 /* -------------------------------------------------------------------- */
 /*      Open the file.                                                  */
 /* -------------------------------------------------------------------- */
-    const char * pszLine;
-    FILE       * fp;
-
-    fp = VSIFOpen( pszFilename, "r" );
+    FILE *fp = VSIFOpen( pszFilename, "rb" );
     if( fp == NULL )
         return FALSE;
-    
+
 /* -------------------------------------------------------------------- */
 /*      Read a line, and verify that it consists of at least one        */
 /*      field that is a number greater than zero.                       */
 /* -------------------------------------------------------------------- */
-    int  nFieldCount;
-    pszLine = CPLReadLine( fp );
+    const char * pszLine = CPLReadLine( fp );
+    if( pszLine == NULL )
+    {
+        VSIFClose( fp );
+        return FALSE;
+    }
 
-    nFieldCount = atoi(pszLine);
+    const int nFieldCount = atoi(pszLine);
     if( nFieldCount < 1 || nFieldCount > 1000 )
     {
         VSIFClose( fp );

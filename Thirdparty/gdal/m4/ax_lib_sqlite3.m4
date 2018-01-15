@@ -1,4 +1,4 @@
-dnl $Id: ax_lib_sqlite3.m4 18833 2010-02-14 19:27:53Z rouault $
+dnl $Id: ax_lib_sqlite3.m4 32092 2015-12-08 14:54:56Z goatbar $
 dnl
 dnl @synopsis AX_LIB_SQLITE3([MINIMUM-VERSION])
 dnl 
@@ -6,9 +6,9 @@ dnl Test for the SQLite 3 library of a particular version (or newer)
 dnl
 dnl This macro takes only one optional argument, required version
 dnl of SQLite 3 library. If required version is not passed,
-dnl 3.0.0 is used in the test of existance of SQLite 3.
+dnl 3.0.0 is used in the test of existence of SQLite 3.
 dnl
-dnl If no intallation prefix to the installed SQLite library is given
+dnl If no installation prefix to the installed SQLite library is given
 dnl the macro searches under /usr, /usr/local, and /opt.
 dnl
 dnl This macro calls:
@@ -24,10 +24,10 @@ dnl
 dnl @category InstalledPackages
 dnl @category Cxx
 dnl @author Mateusz Loskot <mateusz@loskot.net>
-dnl @version $Date: 2010-02-14 11:27:53 -0800 (Sun, 14 Feb 2010) $
+dnl @version $Date: 2015-12-08 06:54:56 -0800 (Tue, 08 Dec 2015) $
 dnl @license AllPermissive
 dnl
-dnl $Id: ax_lib_sqlite3.m4 18833 2010-02-14 19:27:53Z rouault $
+dnl $Id: ax_lib_sqlite3.m4 32092 2015-12-08 14:54:56Z goatbar $
 dnl
 AC_DEFUN([AX_LIB_SQLITE3],
 [
@@ -149,7 +149,7 @@ AC_DEFUN([AX_LIB_SQLITE3],
             [
             AC_MSG_RESULT([not found])
             HAVE_SQLITE3="no"
-            succees="no"
+            success="no"
             ]
         )
         AC_LANG_POP([C++])

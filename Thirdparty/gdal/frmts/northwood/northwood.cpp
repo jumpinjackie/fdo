@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: northwood.cpp 24120 2012-03-15 19:41:49Z warmerdam $
  *
  * Project:  GRC/GRD Reader
  * Purpose:  Northwood Format basic implementation
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Waypoint Information Technology
+ * Copyright (c) 2009-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,20 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-
-//#ifndef MSVC
 #include "gdal_pam.h"
-//#endif
 
 #include "northwood.h"
 
+#include <algorithm>
+#include <string>
+
+CPL_CVSID("$Id: northwood.cpp 38735 2017-05-31 20:39:50Z dmorissette $");
 
 int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
 {
-    int i;
-    unsigned short usTmp;
-    double dfTmp;
-    unsigned char cTmp[256];
+    /* double dfTmp; */
 
     if( nwtHeader[4] == '1' )
         pGrd->cFormat = 0x00;        // grd - surface type
@@ -49,65 +47,86 @@ int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
 
     pGrd->stClassDict = NULL;
 
-    memcpy( (void *) &pGrd->fVersion, (void *) &nwtHeader[5],
-              sizeof(pGrd->fVersion) );
+    memcpy( reinterpret_cast<void *>( &pGrd->fVersion ),
+            reinterpret_cast<void *>( &nwtHeader[5] ),
+            sizeof( pGrd->fVersion ) );
     CPL_LSBPTR32(&pGrd->fVersion);
 
-    memcpy( (void *) &usTmp, (void *) &nwtHeader[9], 2 );
+    unsigned short usTmp;
+    memcpy( reinterpret_cast<void *>( &usTmp ),
+            reinterpret_cast<void *>( &nwtHeader[9] ),
+            2 );
     CPL_LSBPTR16(&usTmp);
-    pGrd->nXSide = (unsigned int) usTmp;
+    pGrd->nXSide = static_cast<unsigned int>( usTmp );
     if( pGrd->nXSide == 0 )
     {
-        memcpy( (void *) &pGrd->nXSide, (void *) &nwtHeader[128],
+        memcpy( reinterpret_cast<void *>( &pGrd->nXSide ),
+                reinterpret_cast<void *>( &nwtHeader[128] ),
                 sizeof(pGrd->nXSide) );
         CPL_LSBPTR32(&pGrd->nXSide);
     }
 
-    memcpy( (void *) &usTmp, (void *) &nwtHeader[11], 2 );
+    memcpy( reinterpret_cast<void *>( &usTmp ),
+            reinterpret_cast<void *>( &nwtHeader[11] ),
+            2 );
     CPL_LSBPTR16(&usTmp);
-    pGrd->nYSide = (unsigned int) usTmp;
+    pGrd->nYSide = static_cast<unsigned int>( usTmp );
     if( pGrd->nYSide == 0 )
     {
-        memcpy( (void *) &pGrd->nYSide, (void *) &nwtHeader[132],
-                sizeof(pGrd->nYSide) );
+        memcpy( reinterpret_cast<void *>( &pGrd->nYSide ),
+                reinterpret_cast<void *>( &nwtHeader[132] ),
+                sizeof( pGrd->nYSide ) );
         CPL_LSBPTR32(&pGrd->nYSide);
     }
 
-    memcpy( (void *) &pGrd->dfMinX, (void *) &nwtHeader[13],
+    memcpy( reinterpret_cast<void *>( &pGrd->dfMinX ),
+            reinterpret_cast<void *>( &nwtHeader[13] ),
             sizeof(pGrd->dfMinX) );
     CPL_LSBPTR64(&pGrd->dfMinX);
-    memcpy( (void *) &pGrd->dfMaxX, (void *) &nwtHeader[21],
+    memcpy( reinterpret_cast<void *>( &pGrd->dfMaxX ),
+            reinterpret_cast<void *>( &nwtHeader[21] ),
             sizeof(pGrd->dfMaxX) );
     CPL_LSBPTR64(&pGrd->dfMaxX);
-    memcpy( (void *) &pGrd->dfMinY, (void *) &nwtHeader[29],
+    memcpy( reinterpret_cast<void *>( &pGrd->dfMinY ),
+            reinterpret_cast<void *>( &nwtHeader[29] ),
             sizeof(pGrd->dfMinY) );
     CPL_LSBPTR64(&pGrd->dfMinY);
-    memcpy( (void *) &pGrd->dfMaxY, (void *) &nwtHeader[37],
+    memcpy( reinterpret_cast<void *>( &pGrd->dfMaxY ),
+            reinterpret_cast<void *>( &nwtHeader[37] ),
             sizeof(pGrd->dfMaxY) );
     CPL_LSBPTR64(&pGrd->dfMaxY);
 
     pGrd->dfStepSize = (pGrd->dfMaxX - pGrd->dfMinX) / (pGrd->nXSide - 1);
-    dfTmp = (pGrd->dfMaxY - pGrd->dfMinY) / (pGrd->nYSide - 1);
+    /* dfTmp = (pGrd->dfMaxY - pGrd->dfMinY) / (pGrd->nYSide - 1); */
 
-    memcpy( (void *) &pGrd->fZMin, (void *) &nwtHeader[45],
+    memcpy( reinterpret_cast<void *>( &pGrd->fZMin ),
+            reinterpret_cast<void *>( &nwtHeader[45] ),
             sizeof(pGrd->fZMin) );
     CPL_LSBPTR32(&pGrd->fZMin);
-    memcpy( (void *) &pGrd->fZMax, (void *) &nwtHeader[49],
+    memcpy( reinterpret_cast<void *>( &pGrd->fZMax ),
+            reinterpret_cast<void *>( &nwtHeader[49] ),
             sizeof(pGrd->fZMax) );
     CPL_LSBPTR32(&pGrd->fZMax);
-    memcpy( (void *) &pGrd->fZMinScale, (void *) &nwtHeader[53],
+    memcpy( reinterpret_cast<void *>( &pGrd->fZMinScale ),
+            reinterpret_cast<void *>( &nwtHeader[53] ),
             sizeof(pGrd->fZMinScale) );
     CPL_LSBPTR32(&pGrd->fZMinScale);
-    memcpy( (void *) &pGrd->fZMaxScale, (void *) &nwtHeader[57],
+    memcpy( reinterpret_cast<void *>( &pGrd->fZMaxScale ),
+            reinterpret_cast<void *>( &nwtHeader[57] ),
             sizeof(pGrd->fZMaxScale) );
     CPL_LSBPTR32(&pGrd->fZMaxScale);
 
-    memcpy( (void *) &pGrd->cDescription, (void *) &nwtHeader[61],
+    memcpy( reinterpret_cast<void *>( &pGrd->cDescription ),
+            reinterpret_cast<void *>( &nwtHeader[61] ),
             sizeof(pGrd->cDescription) );
-    memcpy( (void *) &pGrd->cZUnits, (void *) &nwtHeader[93],
+    memcpy( reinterpret_cast<void *>( &pGrd->cZUnits ),
+            reinterpret_cast<void *>( &nwtHeader[93] ),
             sizeof(pGrd->cZUnits) );
 
-    memcpy( (void *) &i, (void *) &nwtHeader[136], 4 );
+    int i;
+    memcpy( reinterpret_cast<void *>( &i ),
+            reinterpret_cast<void *>( &nwtHeader[136] ),
+            4 );
     CPL_LSBPTR32(&i);
 
     if( i == 1129336130 )
@@ -119,7 +138,8 @@ int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
         }
     }
 
-    memcpy( (void *) &pGrd->cMICoordSys, (void *) &nwtHeader[256],
+    memcpy( reinterpret_cast<void *>( &pGrd->cMICoordSys ),
+            reinterpret_cast<void *>( &nwtHeader[256] ),
             sizeof(pGrd->cMICoordSys) );
     pGrd->cMICoordSys[sizeof(pGrd->cMICoordSys)-1] = '\0';
 
@@ -134,40 +154,41 @@ int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
     if( nwtHeader[513] & 0x20 )
         pGrd->bHillShadeExists = true;
 
-    memcpy( (void *) &pGrd->iNumColorInflections, (void *) &nwtHeader[516],
+    memcpy( reinterpret_cast<void *>( &pGrd->iNumColorInflections ),
+            reinterpret_cast<void *>( &nwtHeader[516] ),
             2 );
     CPL_LSBPTR16(&pGrd->iNumColorInflections);
 
     if (pGrd->iNumColorInflections > 32)
     {
         CPLError(CE_Failure, CPLE_AppDefined, "Corrupt header");
-        pGrd->iNumColorInflections = (unsigned short)i;
+        pGrd->iNumColorInflections = 0;
         return FALSE;
     }
-    
+
     for( i = 0; i < pGrd->iNumColorInflections; i++ )
     {
-        
-        memcpy( (void *) &pGrd->stInflection[i].zVal,
-                (void *) &nwtHeader[518 + (7 * i)], 4 );
+        memcpy( reinterpret_cast<void *>( &pGrd->stInflection[i].zVal ),
+                reinterpret_cast<void *>( &nwtHeader[518 + (7 * i)] ), 4 );
         CPL_LSBPTR32(&pGrd->stInflection[i].zVal);
-        memcpy( (void *) &pGrd->stInflection[i].r,
-                (void *) &nwtHeader[522 + (7 * i)], 1 );
-        memcpy( (void *) &pGrd->stInflection[i].g,
-                (void *) &nwtHeader[523 + (7 * i)], 1 );
-        memcpy( (void *) &pGrd->stInflection[i].b,
-                (void *) &nwtHeader[524 + (7 * i)], 1 );
+        memcpy( reinterpret_cast<void *>( &pGrd->stInflection[i].r ),
+                reinterpret_cast<void *>( &nwtHeader[522 + (7 * i)] ), 1 );
+        memcpy( reinterpret_cast<void *>( &pGrd->stInflection[i].g ),
+                reinterpret_cast<void *>( &nwtHeader[523 + (7 * i)] ), 1 );
+        memcpy( reinterpret_cast<void *>( &pGrd->stInflection[i].b ),
+                reinterpret_cast<void *>( &nwtHeader[524 + (7 * i)] ), 1 );
     }
 
-    memcpy( (void *) &pGrd->fHillShadeAzimuth, (void *) &nwtHeader[966],
+    memcpy( reinterpret_cast<void *>( &pGrd->fHillShadeAzimuth ),
+            reinterpret_cast<void *>( &nwtHeader[966] ),
             sizeof(pGrd->fHillShadeAzimuth) );
     CPL_LSBPTR32(&pGrd->fHillShadeAzimuth);
-    memcpy( (void *) &pGrd->fHillShadeAngle, (void *) &nwtHeader[970],
+    memcpy( reinterpret_cast<void *>( &pGrd->fHillShadeAngle ),
+            reinterpret_cast<void *>( &nwtHeader[970] ),
             sizeof(pGrd->fHillShadeAngle) );
     CPL_LSBPTR32(&pGrd->fHillShadeAngle);
 
     pGrd->cFormat += nwtHeader[1023];    // the msb for grd/grc was already set
-
 
     // there are more types than this - need to build other types for testing
     if( pGrd->cFormat & 0x80 )
@@ -180,7 +201,6 @@ int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
     else
         pGrd->nBitsPerPixel = nwtHeader[1023] * 8;
 
-
     if( pGrd->cFormat & 0x80 )        // if is GRC load the Dictionary
     {
         VSIFSeekL( pGrd->fp,
@@ -189,67 +209,71 @@ int nwt_ParseHeader( NWT_GRID * pGrd, char *nwtHeader )
 
         if( !VSIFReadL( &usTmp, 2, 1, pGrd->fp) )
         {
-            CPLError( CE_Failure, CPLE_FileIO, 
+            CPLError( CE_Failure, CPLE_FileIO,
                       "Read failure, file short?" );
             return FALSE;
         }
         CPL_LSBPTR16(&usTmp);
-        pGrd->stClassDict =
-            (NWT_CLASSIFIED_DICT *) calloc( sizeof(NWT_CLASSIFIED_DICT), 1 );
+        pGrd->stClassDict = reinterpret_cast<NWT_CLASSIFIED_DICT *>(
+             calloc( sizeof(NWT_CLASSIFIED_DICT), 1 ) );
 
         pGrd->stClassDict->nNumClassifiedItems = usTmp;
 
-        pGrd->stClassDict->stClassifedItem =
-            (NWT_CLASSIFIED_ITEM **) calloc( sizeof(NWT_CLASSIFIED_ITEM *),
-                                             pGrd->
-                                             stClassDict->nNumClassifiedItems +
-                                             1 );
+        pGrd->stClassDict->stClassifedItem
+            = reinterpret_cast<NWT_CLASSIFIED_ITEM **> (
+              calloc( sizeof(NWT_CLASSIFIED_ITEM *),
+                      pGrd->stClassDict->nNumClassifiedItems + 1 ) );
 
         //load the dictionary
         for( usTmp=0; usTmp < pGrd->stClassDict->nNumClassifiedItems; usTmp++ )
         {
-            NWT_CLASSIFIED_ITEM *psItem = 
+            NWT_CLASSIFIED_ITEM *psItem =
                 pGrd->stClassDict->stClassifedItem[usTmp] =
-                (NWT_CLASSIFIED_ITEM *) calloc(sizeof(NWT_CLASSIFIED_ITEM), 1);
+                reinterpret_cast<NWT_CLASSIFIED_ITEM *>(
+                    calloc(sizeof(NWT_CLASSIFIED_ITEM), 1) );
 
+            unsigned char cTmp[256];
             if( !VSIFReadL( &cTmp, 9, 1, pGrd->fp ) )
             {
-                CPLError( CE_Failure, CPLE_FileIO, 
+                CPLError( CE_Failure, CPLE_FileIO,
                           "Read failure, file short?" );
                 return FALSE;
             }
-            memcpy( (void *) &psItem->usPixVal, (void *) &cTmp[0], 2 );
+            memcpy( reinterpret_cast<void *>( &psItem->usPixVal ),
+                    reinterpret_cast<void *>( &cTmp[0]) , 2 );
             CPL_LSBPTR16(&psItem->usPixVal);
-            memcpy( (void *) &psItem->res1,
-                    (void *) &cTmp[2], 1 );
-            memcpy( (void *) &psItem->r,
-                    (void *) &cTmp[3], 1 );
-            memcpy( (void *) &psItem->g,
-                    (void *) &cTmp[4], 1 );
-            memcpy( (void *) &psItem->b,
-                    (void *) &cTmp[5], 1 );
-            memcpy( (void *) &psItem->res2,
-                    (void *) &cTmp[6], 1 );
-            memcpy( (void *) &psItem->usLen,
-                    (void *) &cTmp[7], 2 );
+            memcpy( reinterpret_cast<void *>( &psItem->res1 ),
+                    reinterpret_cast<void *>( &cTmp[2] ), 1 );
+            memcpy( reinterpret_cast<void *>( &psItem->r ),
+                    reinterpret_cast<void *>( &cTmp[3] ), 1 );
+            memcpy( reinterpret_cast<void *>( &psItem->g ),
+                    reinterpret_cast<void *>( &cTmp[4] ), 1 );
+            memcpy( reinterpret_cast<void *>( &psItem->b ),
+                    reinterpret_cast<void *>( &cTmp[5] ), 1 );
+            memcpy( reinterpret_cast<void *>( &psItem->res2 ),
+                    reinterpret_cast<void *>( &cTmp[6] ), 1 );
+            memcpy( reinterpret_cast<void *>( &psItem->usLen ),
+                    reinterpret_cast<void *>( &cTmp[7] ), 2 );
             CPL_LSBPTR16(&psItem->usLen);
-                    
+
             if ( psItem->usLen > sizeof(psItem->szClassName)-1 )
             {
-                CPLError( CE_Failure, CPLE_AppDefined, 
+                CPLError( CE_Failure, CPLE_AppDefined,
                           "Unexpected long class name, %d characters long - unable to read file.",
                           psItem->usLen );
                 return FALSE;
             }
 
-            if( !VSIFReadL( &psItem->szClassName, psItem->usLen, 1, pGrd->fp ) )
+            // 0-len class names are possible
+            psItem->szClassName[0] = '\0';
+            if( psItem->usLen > 0 &&
+                !VSIFReadL( &psItem->szClassName, psItem->usLen, 1, pGrd->fp ) )
                 return FALSE;
         }
     }
-    
+
     return TRUE;
 }
-
 
 // Create a color gradient ranging from ZMin to Zmax using the color
 // inflections defined in grid
@@ -260,6 +284,9 @@ int nwt_LoadColors( NWT_RGB * pMap, int mapSize, NWT_GRID * pGrd )
     int nWarkerMark = 0;
 
     createIP( 0, 255, 255, 255, pMap, &nWarkerMark );
+    if( pGrd->iNumColorInflections == 0 )
+        return 0;
+
     // If Zmin is less than the 1st inflection use the 1st inflections color to
     // the start of the ramp
     if( pGrd->fZMin <= pGrd->stInflection[0].zVal )
@@ -311,10 +338,11 @@ int nwt_LoadColors( NWT_RGB * pMap, int mapSize, NWT_GRID * pGrd )
                 break;
             }
             // save the inflections between zmin and zmax
-            index = (int)( ( (pGrd->stInflection[i].zVal - pGrd->fZMin) /
-                                              (pGrd->fZMax - pGrd->fZMin) )
-                           * mapSize);
-                           
+            index = static_cast<int>(
+                ( (pGrd->stInflection[i].zVal - pGrd->fZMin) /
+                  (pGrd->fZMax - pGrd->fZMin) )
+                * mapSize );
+
             if ( index >= mapSize )
                 index = mapSize - 1;
             createIP( index,
@@ -352,11 +380,11 @@ void linearColor( NWT_RGB * pRGB, NWT_INFLECTION * pIPLow, NWT_INFLECTION * pIPH
     else
     {
         float scale = (fMid - pIPLow->zVal) / (pIPHigh->zVal - pIPLow->zVal);
-        pRGB->r = (unsigned char)
+        pRGB->r = static_cast<unsigned char>
                 (scale * (pIPHigh->r - pIPLow->r) + pIPLow->r + 0.5);
-        pRGB->g = (unsigned char)
+        pRGB->g = static_cast<unsigned char>
                 (scale * (pIPHigh->g - pIPLow->g) + pIPLow->g + 0.5);
-        pRGB->b = (unsigned char)
+        pRGB->b = static_cast<unsigned char>
                 (scale * (pIPHigh->b - pIPLow->b) + pIPLow->b + 0.5);
     }
 }
@@ -381,14 +409,14 @@ void createIP( int index, unsigned char r, unsigned char g, unsigned char b,
 
     int wm = *pnWarkerMark;
 
-    float rslope = (float)(r - map[wm].r) / (float)(index - wm);
-    float gslope = (float)(g - map[wm].g) / (float)(index - wm);
-    float bslope = (float)(b - map[wm].b) / (float)(index - wm);
+    float rslope = static_cast<float>(r - map[wm].r) / static_cast<float>(index - wm);
+    float gslope = static_cast<float>(g - map[wm].g) / static_cast<float>(index - wm);
+    float bslope = static_cast<float>(b - map[wm].b) / static_cast<float>(index - wm);
     for( i = wm + 1; i < index; i++)
     {
-        map[i].r = map[wm].r + (unsigned char)(((i - wm) * rslope) + 0.5);
-        map[i].g = map[wm].g + (unsigned char)(((i - wm) * gslope) + 0.5);
-        map[i].b = map[wm].b + (unsigned char)(((i - wm) * bslope) + 0.5);
+        map[i].r = static_cast<unsigned char>(map[wm].r + ((i - wm) * rslope) + 0.5);
+        map[i].g = static_cast<unsigned char>(map[wm].g + ((i - wm) * gslope) + 0.5);
+        map[i].b = static_cast<unsigned char>(map[wm].b + ((i - wm) * bslope) + 0.5);
     }
     map[index].r = r;
     map[index].g = g;
@@ -415,16 +443,14 @@ void nwt_HillShade( unsigned char *r, unsigned char *g, unsigned char *b,
     return;
 }
 
-
 NWT_GRID *nwtOpenGrid( char *filename )
 {
-    NWT_GRID *pGrd;
     char nwtHeader[1024];
-    VSILFILE *fp;
+    VSILFILE *fp = VSIFOpenL( filename, "rb" );
 
-    if( (fp = VSIFOpenL( filename, "rb" )) == NULL )
+    if( fp == NULL )
     {
-        fprintf( stderr, "\nCan't open %s\n", filename );
+        CPLError(CE_Failure, CPLE_OpenFailed, "Can't open %s", filename );
         return NULL;
     }
 
@@ -437,7 +463,8 @@ NWT_GRID *nwtOpenGrid( char *filename )
         nwtHeader[3] != 'C' )
           return NULL;
 
-    pGrd = (NWT_GRID *) calloc( sizeof(NWT_GRID), 1 );
+    NWT_GRID *pGrd = reinterpret_cast<NWT_GRID *>(
+        calloc( sizeof(NWT_GRID), 1 ) );
 
     if( nwtHeader[4] == '1' )
         pGrd->cFormat = 0x00;        // grd - surface type
@@ -445,14 +472,16 @@ NWT_GRID *nwtOpenGrid( char *filename )
         pGrd->cFormat = 0x80;        //  grc classified type
     else
     {
-        fprintf( stderr, "\nUnhandled Northwood format type = %0xd\n",
+        CPLError(CE_Failure, CPLE_NotSupported,
+                 "Unhandled Northwood format type = %0xd",
                  nwtHeader[4] );
         if( pGrd )
             free( pGrd );
         return NULL;
     }
 
-    strcpy( pGrd->szFileName, filename );
+    strncpy( pGrd->szFileName, filename, sizeof(pGrd->szFileName) );
+    pGrd->szFileName[sizeof(pGrd->szFileName) - 1] = '\0';
     pGrd->fp = fp;
     nwt_ParseHeader( pGrd, nwtHeader );
 
@@ -462,11 +491,9 @@ NWT_GRID *nwtOpenGrid( char *filename )
 //close the file and free the mem
 void nwtCloseGrid( NWT_GRID * pGrd )
 {
-    unsigned short usTmp;
-
     if( (pGrd->cFormat & 0x80) && pGrd->stClassDict )        // if is GRC - free the Dictionary
     {
-        for( usTmp = 0; usTmp < pGrd->stClassDict->nNumClassifiedItems; usTmp++ )
+        for( unsigned short usTmp = 0; usTmp < pGrd->stClassDict->nNumClassifiedItems; usTmp++ )
         {
             free( pGrd->stClassDict->stClassifedItem[usTmp] );
         }
@@ -479,88 +506,81 @@ void nwtCloseGrid( NWT_GRID * pGrd )
         return;
 }
 
-void nwtGetRow( NWT_GRID * pGrd )
-{
-
-}
-
 void nwtPrintGridHeader( NWT_GRID * pGrd )
 {
-    int i;
-
     if( pGrd->cFormat & 0x80 )
     {
-        printf( "\n%s\n\nGrid type is Classified ", pGrd->szFileName );
+        printf( "\n%s\n\nGrid type is Classified ", pGrd->szFileName );/*ok*/
         if( pGrd->cFormat == 0x81 )
-            printf( "4 bit (Less than 16 Classes)" );
+            printf( "4 bit (Less than 16 Classes)" );/*ok*/
         else if( pGrd->cFormat == 0x82 )
-            printf( "8 bit (Less than 256 Classes)" );
+            printf( "8 bit (Less than 256 Classes)" );/*ok*/
         else if( pGrd->cFormat == 0x84 )
-            printf( "16 bit (Less than 65536 Classes)" );
+            printf( "16 bit (Less than 65536 Classes)" );/*ok*/
         else
         {
-            printf( "GRC - Unhandled Format or Type %d", pGrd->cFormat );
+            printf( "GRC - Unhandled Format or Type %d", pGrd->cFormat );/*ok*/
             return;
         }
     }
     else
     {
-        printf( "\n%s\n\nGrid type is Numeric ", pGrd->szFileName );
+        printf( "\n%s\n\nGrid type is Numeric ", pGrd->szFileName );/*ok*/
         if( pGrd->cFormat == 0x00 )
-            printf( "16 bit (Standard Percision)" );
+            printf( "16 bit (Standard Precision)" );/*ok*/
         else if( pGrd->cFormat == 0x01 )
-            printf( "32 bit (High Percision)" );
+            printf( "32 bit (High Precision)" );/*ok*/
         else
         {
-            printf( "GRD - Unhandled Format or Type %d", pGrd->cFormat );
+            printf( "GRD - Unhandled Format or Type %d", pGrd->cFormat );/*ok*/
             return;
         }
     }
-    printf( "\nDim (x,y) = (%d,%d)", pGrd->nXSide, pGrd->nYSide );
-    printf( "\nStep Size = %f", pGrd->dfStepSize );
-    printf( "\nBounds = (%f,%f) (%f,%f)", pGrd->dfMinX, pGrd->dfMinY,
+    printf( "\nDim (x,y) = (%u,%u)", pGrd->nXSide, pGrd->nYSide );/*ok*/
+    printf( "\nStep Size = %f", pGrd->dfStepSize );/*ok*/
+    printf( "\nBounds = (%f,%f) (%f,%f)", pGrd->dfMinX, pGrd->dfMinY,/*ok*/
             pGrd->dfMaxX, pGrd->dfMaxY );
-    printf( "\nCoordinate System = %s", pGrd->cMICoordSys );
+    printf( "\nCoordinate System = %s", pGrd->cMICoordSys );/*ok*/
 
     if( !(pGrd->cFormat & 0x80) )    // print the numeric specific stuff
     {
-        printf( "\nMin Z = %f Max Z = %f Z Units = %d \"%s\"", pGrd->fZMin,
+        printf( "\nMin Z = %f Max Z = %f Z Units = %d \"%s\"", pGrd->fZMin,/*ok*/
                 pGrd->fZMax, pGrd->iZUnits, pGrd->cZUnits );
 
-        printf( "\n\nDisplay Mode =" );
+        printf( "\n\nDisplay Mode =" );/*ok*/
         if( pGrd->bShowGradient )
-            printf( " Color Gradient" );
+            printf( " Color Gradient" );/*ok*/
 
         if( pGrd->bShowGradient && pGrd->bShowHillShade )
-            printf( " and" );
+            printf( " and" );/*ok*/
 
         if( pGrd->bShowHillShade )
-            printf( " Hill Shading" );
+            printf( " Hill Shading" );/*ok*/
 
-        for( i = 0; i < pGrd->iNumColorInflections; i++ )
+        for( int i = 0; i < pGrd->iNumColorInflections; i++ )
         {
-            printf( "\nColor Inflection %d - %f (%d,%d,%d)", i + 1,
+            printf( "\nColor Inflection %d - %f (%d,%d,%d)", i + 1,/*ok*/
                     pGrd->stInflection[i].zVal, pGrd->stInflection[i].r,
                     pGrd->stInflection[i].g, pGrd->stInflection[i].b );
         }
 
         if( pGrd->bHillShadeExists )
         {
-            printf("\n\nHill Shade Azumith = %.1f Inclination = %.1f "
+            printf("\n\nHill Shade Azumith = %.1f Inclination = %.1f "/*ok*/
                    "Brightness = %d Contrast = %d",
                    pGrd->fHillShadeAzimuth, pGrd->fHillShadeAngle,
                    pGrd->cHillShadeBrightness, pGrd->cHillShadeContrast );
         }
         else
-            printf( "\n\nNo Hill Shade Data" );
+            printf( "\n\nNo Hill Shade Data" );/*ok*/
     }
     else                            // print the classified specific stuff
     {
-        printf( "\nNumber of Classes defined = %d",
+        printf( "\nNumber of Classes defined = %u",/*ok*/
                 pGrd->stClassDict->nNumClassifiedItems );
-        for( i = 0; i < (int) pGrd->stClassDict->nNumClassifiedItems; i++ )
+        for( int i = 0; i < static_cast<int>( pGrd->stClassDict->nNumClassifiedItems ); i++ )
         {
-            printf( "\n%s - (%d,%d,%d)  Raw = %d  %d %d",
+            printf( "\n%s - (%d,%d,%d)  Raw = %d  %d %d",/*ok*/
                     pGrd->stClassDict->stClassifedItem[i]->szClassName,
                     pGrd->stClassDict->stClassifedItem[i]->r,
                     pGrd->stClassDict->stClassifedItem[i]->g,
@@ -574,20 +594,18 @@ void nwtPrintGridHeader( NWT_GRID * pGrd )
 
 HLS RGBtoHLS( NWT_RGB rgb )
 {
-    short R, G, B;                /* input RGB values */
-    HLS hls;
-    unsigned char cMax, cMin;        /* max and min RGB values */
-    short Rdelta, Gdelta, Bdelta;    /* intermediate value: % of spread from max */
     /* get R, G, and B out of DWORD */
-    R = rgb.r;
-    G = rgb.g;
-    B = rgb.b;
+    short R = rgb.r;
+    short G = rgb.g;
+    short B = rgb.b;
 
     /* calculate lightness */
-    cMax = (unsigned char) MAX( MAX(R,G), B );
-    cMin = (unsigned char) MIN( MIN(R,G), B );
+    unsigned char cMax = static_cast<unsigned char>( std::max( std::max(R,G), B ) );
+    unsigned char cMin = static_cast<unsigned char>( std::min( std::min(R,G), B ) );
+    HLS hls;
     hls.l = (((cMax + cMin) * HLSMAX) + RGBMAX) / (2 * RGBMAX);
 
+    short Rdelta, Gdelta, Bdelta;    /* intermediate value: % of spread from max */
     if( cMax == cMin )
     {                            /* r=g=b --> achromatic case */
         hls.s = 0;                /* saturation */
@@ -626,9 +644,8 @@ HLS RGBtoHLS( NWT_RGB rgb )
     return hls;
 }
 
-
 /* utility routine for HLStoRGB */
-short HueToRGB( short n1, short n2, short hue )
+static short HueToRGB( short n1, short n2, short hue )
 {
     /* range check: note values passed add/subtract thirds of range */
     if( hue < 0 )
@@ -639,25 +656,27 @@ short HueToRGB( short n1, short n2, short hue )
 
     /* return r,g, or b value from this tridrant */
     if( hue < (HLSMAX / 6) )
-        return (n1 + (((n2 - n1) * hue + (HLSMAX / 12)) / (HLSMAX / 6)));
+        return n1 + (((n2 - n1) * hue + (HLSMAX / 12)) / (HLSMAX / 6));
     if( hue < (HLSMAX / 2) )
-        return (n2);
+        return n2;
     if( hue < ((HLSMAX * 2) / 3) )
-        return (n1 +
-                (((n2 - n1) * (((HLSMAX * 2) / 3) - hue) +
-                (HLSMAX / 12)) / (HLSMAX / 6)));
+        return
+            n1 +
+            (((n2 - n1) * (((HLSMAX * 2) / 3) - hue) +
+              (HLSMAX / 12)) / (HLSMAX / 6));
     else
-        return (n1);
+        return n1;
 }
 
 NWT_RGB HLStoRGB( HLS hls )
 {
     NWT_RGB rgb;
-    short Magic1, Magic2;            /* calculated magic numbers (really!) */
 
     if( hls.s == 0 )
     {                            /* achromatic case */
-        rgb.r = rgb.g = rgb.b = (unsigned char) ((hls.l * RGBMAX) / HLSMAX);
+        rgb.r = static_cast<unsigned char>( (hls.l * RGBMAX) / HLSMAX );
+        rgb.g = rgb.r;
+        rgb.b = rgb.r;
         if( hls.h != UNDEFINED )
         {
             /* ERROR */
@@ -666,6 +685,7 @@ NWT_RGB HLStoRGB( HLS hls )
     else
     {                            /* chromatic case */
         /* set up magic numbers */
+        short Magic1, Magic2;            /* calculated magic numbers (really!) */
         if( hls.l <= (HLSMAX / 2) )
             Magic2 = (hls.l * (HLSMAX + hls.s) + (HLSMAX / 2)) / HLSMAX;
         else
@@ -673,9 +693,9 @@ NWT_RGB HLStoRGB( HLS hls )
         Magic1 = 2 * hls.l - Magic2;
 
         /* get RGB, change units from HLSMAX to RGBMAX */
-        rgb.r = (unsigned char) ((HueToRGB (Magic1, Magic2, hls.h + (HLSMAX / 3)) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
-        rgb.g = (unsigned char) ((HueToRGB (Magic1, Magic2, hls.h) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
-        rgb.b = (unsigned char) ((HueToRGB (Magic1, Magic2, hls.h - (HLSMAX / 3)) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
+        rgb.r = static_cast<unsigned char> ((HueToRGB (Magic1, Magic2, hls.h + (HLSMAX / 3)) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
+        rgb.g = static_cast<unsigned char> ((HueToRGB (Magic1, Magic2, hls.h) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
+        rgb.b = static_cast<unsigned char> ((HueToRGB (Magic1, Magic2, hls.h - (HLSMAX / 3)) * RGBMAX + (HLSMAX / 2)) / HLSMAX);
     }
 
     return rgb;

@@ -11,7 +11,7 @@
 
 This driver reads files encoded in the French EDIGEO exchange format,
 a text based file format aimed at exchanging geographical information between GIS, with
-powerful description capabilities, topology modelling, etc.<p>
+powerful description capabilities, topology modeling, etc.<p>
 
 The driver has been developed to read files of the French PCI
 (Plan Cadastral Informatis&eacute; - Digital Cadastral Plan) as produced by the
@@ -22,7 +22,7 @@ The driver must be provided with the .THF file describing the EDIGEO exchange an
 read the associated .DIC, .GEO, .SCD, .QAL and .VEC files.<p>
 
 In order the SRS of the layers to be correctly built, the IGNF file that contains
-the defintion of IGN SRS must be placed in the directory of PROJ.4 ressource files.<p>
+the definition of IGN SRS must be placed in the directory of PROJ.4 resource files.<p>
 
 The whole set of files will be parsed into memory. This may be a limitation if dealing with
 big EDIGEO exchanges.<p>
@@ -35,7 +35,7 @@ the layers of the French PCI will be ordered such as they overlay nicely when op
 <h3>Labels</h3>
 
 For EDIGEO PCI files, the labels are contained in the ID_S_OBJ_Z_1_2_2 layer. OGR will export
-styling following the <a href="http://gdal.org/ogr/ogr_feature_style.html">OGR Feature Style specification</a>.<p>
+styling following the <a href="http://gdal.org/ogr_feature_style.html">OGR Feature Style specification</a>.<p>
 
 It will also add the following fields :
 <ul>
@@ -56,7 +56,7 @@ according to the value of xxx=OBJ_OBJ_LNK_LAYER. This can be disabled by setting
 <ul>
 <li> <a href="http://georezo.net/wiki/main/donnees/edigeo">Introduction to the EDIGEO standard</a> (in French)
 <li> <a href="http://georezo.net/wiki/_media/main/geomatique/norme_edigeo.zip">EDIGEO standard - AFNOR NF Z 52000</a> (in French)
-<li> <a href="http://www.craig.fr/contenu/ressources/dossiers/pci/pdf/EDIGeO_PCI.pdf">Standard d'&eacute;change des objets du PCI selon la norme EDIGEO</a> (in French)
+<li> <a href="https://www.craig.fr/sites/default/files/contenu/60-2010-le-pci-en-auvergne/docs/edigeopci.pdf">Standard d'&eacute;change des objets du PCI selon la norme EDIGEO</a> (in French)
 <li> <a href="http://www.cadastre.gouv.fr">Homepage of the French Digital Cadastral Plan</a> (in French)
 <li> <a href="http://docs.codehaus.org/pages/viewpage.action?pageId=77692976">Geotools EDIGEO module description</a> (in English)
 <li> <a href="http://svn.geotools.org/trunk/modules/unsupported/edigeo/src/test/resources/org/geotools/data/edigeo/test-data/">Sample of EDIGEO data</a>

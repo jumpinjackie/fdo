@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: jpeg2000_vsil_io.h 17567 2009-08-23 14:38:13Z rouault $
+ * $Id: jpeg2000_vsil_io.h 35222 2016-08-28 06:06:11Z goatbar $
  *
  * Project:  JPEG-2000
  * Purpose:  Return a stream for a VSIL file
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2009, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,7 +29,7 @@
 
 #ifndef JPEG2000_VSIL_IO_H
 #define JPEG2000_VSIL_IO_H
- 
+
 #include <jasper/jasper.h>
 
 jas_stream_t *JPEG2000_VSIL_fopen(const char *filename, const char *mode);

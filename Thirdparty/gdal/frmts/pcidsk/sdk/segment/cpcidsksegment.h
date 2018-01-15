@@ -25,8 +25,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _INCLUDE_SEGMENT_PCIDSKSEGMENT_H
-#define _INCLUDE_SEGMENT_PCIDSKSEGMENT_H
+#ifndef INCLUDE_SEGMENT_PCIDSKSEGMENT_H
+#define INCLUDE_SEGMENT_PCIDSKSEGMENT_H
 
 #include "pcidsk_config.h"
 #include "pcidsk_types.h"
@@ -54,7 +54,7 @@ namespace PCIDSK
     public:
         CPCIDSKSegment( PCIDSKFile *file, int segment,
             const char *segment_pointer );
-        virtual	~CPCIDSKSegment();
+        virtual ~CPCIDSKSegment();
 
         void        LoadSegmentPointer( const char *segment_pointer );
         void        LoadSegmentHeader();
@@ -62,30 +62,30 @@ namespace PCIDSK
         PCIDSKBuffer &GetHeader() { return header; }
         void        FlushHeader();
 
-        void      WriteToFile( const void *buffer, uint64 offset, uint64 size );
-        void      ReadFromFile( void *buffer, uint64 offset, uint64 size );
+        void      WriteToFile( const void *buffer, uint64 offset, uint64 size ) override;
+        void      ReadFromFile( void *buffer, uint64 offset, uint64 size ) override;
 
-        eSegType    GetSegmentType() { return segment_type; }
-        std::string GetName() { return segment_name; }
-        std::string GetDescription();
-        int         GetSegmentNumber() { return segment; }
-        uint64      GetContentSize() { return data_size - 1024; }
-        bool        IsAtEOF();
+        eSegType    GetSegmentType() override { return segment_type; }
+        std::string GetName() override { return segment_name; }
+        std::string GetDescription() override;
+        int         GetSegmentNumber() override { return segment; }
+        uint64      GetContentSize() override { return data_size - 1024; }
+        bool        IsAtEOF() override;
 
-        void        SetDescription( const std::string &description);
+        void        SetDescription( const std::string &description) override;
         
-        std::string GetMetadataValue( const std::string &key ) const;
-        void        SetMetadataValue( const std::string &key, const std::string &value );
-        std::vector<std::string> GetMetadataKeys() const;
+        std::string GetMetadataValue( const std::string &key ) const override;
+        void        SetMetadataValue( const std::string &key, const std::string &value ) override;
+        std::vector<std::string> GetMetadataKeys() const override;
             
-        virtual void Synchronize() {}
+        virtual void Synchronize() override {}
         
-        std::vector<std::string> GetHistoryEntries() const;
-        void SetHistoryEntries( const std::vector<std::string> &entries );
+        std::vector<std::string> GetHistoryEntries() const override;
+        void SetHistoryEntries( const std::vector<std::string> &entries ) override;
         void PushHistory(const std::string &app,
-                         const std::string &message);
+                         const std::string &message) override;
 
-        virtual std::string ConsistencyCheck() { return ""; }
+        virtual std::string ConsistencyCheck() override { return ""; }
 
     protected:
         PCIDSKFile *file;
@@ -96,7 +96,7 @@ namespace PCIDSK
         char        segment_flag;
         std::string segment_name;
 
-        uint64	    data_offset;     // includes 1024 byte segment header.
+        uint64      data_offset;     // includes 1024 byte segment header.
         uint64      data_size;
 
         PCIDSKBuffer header;
@@ -110,4 +110,4 @@ namespace PCIDSK
     };
     
 } // end namespace PCIDSK
-#endif // _INCLUDE_SEGMENT_PCIDSKSEGMENT_H
+#endif // INCLUDE_SEGMENT_PCIDSKSEGMENT_H

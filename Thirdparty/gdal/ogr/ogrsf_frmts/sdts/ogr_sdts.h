@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_sdts.h 15583 2008-10-23 00:04:33Z warmerdam $
+ * $Id: ogr_sdts.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  STS Translator
  * Purpose:  Definition of classes finding SDTS support into OGRDriver
@@ -28,8 +28,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_SDTS_H_INCLUDED
-#define _OGR_SDTS_H_INCLUDED
+#ifndef OGR_SDTS_H_INCLUDED
+#define OGR_SDTS_H_INCLUDED
 
 #include "sdts_al.h"
 #include "ogrsf_frmts.h"
@@ -52,25 +52,16 @@ class OGRSDTSLayer : public OGRLayer
 
     OGRFeature         *GetNextUnfilteredFeature();
 
-    void                BuildPolygons();
-    int                 bPolygonsBuilt;
-    
   public:
                         OGRSDTSLayer( SDTSTransfer *, int, OGRSDTSDataSource*);
                         ~OGRSDTSLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-//    OGRFeature         *GetFeature( long nFeatureId );
-    
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-//    int                 GetFeatureCount( int );
-
-    OGRSpatialReference *GetSpatialRef();
-    
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -86,34 +77,19 @@ class OGRSDTSDataSource : public OGRDataSource
     OGRSDTSLayer        **papoLayers;
 
     OGRSpatialReference *poSRS;
-    
+
   public:
                         OGRSDTSDataSource();
                         ~OGRSDTSDataSource();
 
     int                 Open( const char * pszFilename, int bTestOpen );
-    
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
-    int                 TestCapability( const char * );
+
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
+    int                 TestCapability( const char * ) override;
 
     OGRSpatialReference *GetSpatialRef() { return poSRS; }
 };
 
-/************************************************************************/
-/*                            OGRSDTSDriver                             */
-/************************************************************************/
-
-class OGRSDTSDriver : public OGRSFDriver
-{
-  public:
-                ~OGRSDTSDriver();
-                
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-    int         TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_SDTS_H_INCLUDED */
+#endif /* ndef OGR_SDTS_H_INCLUDED */

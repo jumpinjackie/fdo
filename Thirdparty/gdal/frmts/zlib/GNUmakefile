@@ -1,4 +1,4 @@
-# $Id: GNUmakefile 15888 2008-12-03 08:22:31Z dron $
+# $Id: GNUmakefile 32078 2015-12-08 09:09:45Z rouault $
 #
 # Makefile to build zlib using GNU Make and GCC.
 #
@@ -17,6 +17,8 @@ OBJ = \
 	trees.o \
 	uncompr.o \
 	zutil.o
+
+CPPFLAGS	:=	$(CPPFLAGS) -DDONT_DEPRECATE_SPRINTF
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 

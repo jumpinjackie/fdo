@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id: geoconcept_syscoord.h
+ * $Id: geoconcept_syscoord.h$
  *
  * Name:     geoconcept_syscoord.h
  * Project:  OpenGIS Simple Features Reference Implementation
@@ -9,6 +9,7 @@
  *
  **********************************************************************
  * Copyright (c) 2007,  Geoconcept and IGN
+ * Copyright (c) 2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,8 +29,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
-#ifndef _GEOCONCEPT_SYSCOORD_H_INCLUDED
-#define _GEOCONCEPT_SYSCOORD_H_INCLUDED
+#ifndef GEOCONCEPT_SYSCOORD_H_INCLUDED
+#define GEOCONCEPT_SYSCOORD_H_INCLUDED
 
 #include "ogr_srs_api.h"
 
@@ -44,17 +45,6 @@
 
 #ifndef GCSRSAPI_CALL1
 #  define GCSRSAPI_CALL1(x) x GCSRSAPI_CALL
-#endif
-
-/* -------------------------------------------------------------------- */
-/*      Macros for controlling CVSID and ensuring they don't appear     */
-/*      as unreferenced variables resulting in lots of warnings.        */
-/* -------------------------------------------------------------------- */
-#ifndef DISABLE_CVSID
-#  define GCSRS_CVSID(string)     static char gcsrs_cvsid[] = string; \
-static char *cvsid_aw() { return( cvsid_aw() ? ((char *) NULL) : gcsrs_cvsid ); }
-#else
-#  define GCSRS_CVSID(string)
 #endif
 
 #ifdef __cplusplus
@@ -72,7 +62,7 @@ typedef struct _tSysCoord_GCSRS GCSysCoord;
 struct _tSpheroidInfo_GCSRS {
   const char *pszSpheroidName;
   double      dfA; /* semi major axis in meters */
-  double      dfE; /* excentricity */
+  double      dfE; /* eccentricity */
   int         nEllipsoidID;
 };
 
@@ -98,6 +88,7 @@ struct _tDatumInfo_GCSRS {
 
 struct _tProjectionInfo_GCSRS {
   const char *pszProjName;
+  /* TODO: Translate to English. */
   int         nSphere;/*
                        * 1 = sphere de courbure
                        * 2 = sphere equatoriale
@@ -110,8 +101,8 @@ struct _tProjectionInfo_GCSRS {
 };
 
 struct _tSysCoord_GCSRS {
-  char   *pszSysCoordName;
-  char   *pszUnit;
+  const char   *pszSysCoordName;
+  const char   *pszUnit;
 
   double  dfPM;
   /* inherited : */
@@ -194,5 +185,4 @@ OGRSpatialReferenceH GCSRSAPI_CALL SysCoord2OGRSpatialReference_GCSRS ( GCSysCoo
 }
 #endif
 
-
-#endif /* ndef _GEOCONCEPT_SYSCOORD_H_INCLUDED */
+#endif /* ndef GEOCONCEPT_SYSCOORD_H_INCLUDED */

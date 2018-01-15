@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_ili2.h 13906 2008-03-01 13:08:28Z rouault $
+ * $Id: ogr_ili2.h 37743 2017-03-17 13:14:00Z rouault $
  *
  * Project:  Interlis 2 Translator
  * Purpose:   Definition of classes for OGR Interlis 2 driver.
@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_ILI2_H_INCLUDED
-#define _OGR_ILI2_H_INCLUDED
+#ifndef OGR_ILI2_H_INCLUDED
+#define OGR_ILI2_H_INCLUDED
 
 #include "ogrsf_frmts.h"
+#include "imdreader.h"
 #include "ili2reader.h"
-#include "iom/iom.h"
 
 #include <string>
 #include <list>
@@ -45,41 +45,37 @@ class OGRILI2DataSource;
 
 class OGRILI2Layer : public OGRLayer
 {
-private:
-    OGRSpatialReference *poSRS;
+  private:
     OGRFeatureDefn     *poFeatureDefn;
+    GeomFieldInfos      oGeomFieldInfos;
     std::list<OGRFeature *>    listFeature;
     std::list<OGRFeature *>::const_iterator listFeatureIt;
 
-    int                 bWriter;
-
-    OGRILI2DataSource   *poDS;
+    OGRILI2DataSource  *poDS;
 
   public:
-                        OGRILI2Layer( const char * pszName, 
-                                     OGRSpatialReference *poSRS, 
-                                     int bWriter,
-                                     OGRwkbGeometryType eType,
-                                     OGRILI2DataSource *poDS );
+                        OGRILI2Layer( OGRFeatureDefn* poFeatureDefn,
+                                      const GeomFieldInfos& oGeomFieldInfos,
+                                      OGRILI2DataSource *poDS );
 
                        ~OGRILI2Layer();
 
-    OGRErr              SetFeature(OGRFeature *poFeature);
-    
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                AddFeature(OGRFeature *poFeature);
 
-    int                 GetFeatureCount( int bForce = TRUE );
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    OGRErr              CreateFeature( OGRFeature *poFeature );
-    
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
 
-    OGRErr              CreateField( OGRFieldDefn *poField, int bApproxOK = TRUE );
+    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
 
-    OGRSpatialReference *GetSpatialRef();
-    
-    int                 TestCapability( const char * );
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+
+    CPLString           GetIliGeomType( const char* cFieldName) { return oGeomFieldInfos[cFieldName].iliGeomType; };
+
+    OGRErr              CreateField( OGRFieldDefn *poField, int bApproxOK = TRUE ) override;
+
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -90,51 +86,33 @@ class OGRILI2DataSource : public OGRDataSource
 {
   private:
     std::list<OGRLayer *> listLayer;
-    
+
     char        *pszName;
+    ImdReader   *poImdReader;
     IILI2Reader *poReader;
-    IOM_FILE    fpTransfer;  //for writing
-    IOM_BASKET  basket;
+    VSILFILE    *fpOutput;
 
     int         nLayers;
     OGRILI2Layer** papoLayers;
 
   public:
                 OGRILI2DataSource();
-               ~OGRILI2DataSource();
+               virtual ~OGRILI2DataSource();
 
-    int         Open( const char *, int bTestOpen );
+    int         Open( const char *, char** papszOpenOptions, int bTestOpen );
     int         Create( const char *pszFile, char **papszOptions );
 
-    const char *GetName() { return pszName; }
-    IOM_BASKET  GetBasket() { return basket; }
-    int         GetLayerCount() { return listLayer.size(); }
-    OGRLayer   *GetLayer( int );
+    const char *GetName() override { return pszName; }
+    int         GetLayerCount() override { return static_cast<int>(listLayer.size()); }
+    OGRLayer   *GetLayer( int ) override;
 
-    virtual OGRLayer *CreateLayer( const char *, 
+    virtual OGRLayer *ICreateLayer( const char *,
                                       OGRSpatialReference * = NULL,
                                       OGRwkbGeometryType = wkbUnknown,
-                                      char ** = NULL );
+                                      char ** = NULL ) override;
 
-    int         TestCapability( const char * );
+    VSILFILE *  GetOutputFP() { return fpOutput; }
+    int         TestCapability( const char * ) override;
 };
 
-/************************************************************************/
-/*                            OGRILI2Driver                             */
-/************************************************************************/
-
-class OGRILI2Driver : public OGRSFDriver
-{
-  public:
-                ~OGRILI2Driver();
-
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-
-    virtual OGRDataSource *CreateDataSource( const char *pszName,
-                                             char ** = NULL );
-
-    int                 TestCapability( const char * );
-};
-
-#endif /* _OGR_ILI2_H_INCLUDED */
+#endif /* OGR_ILI2_H_INCLUDED */

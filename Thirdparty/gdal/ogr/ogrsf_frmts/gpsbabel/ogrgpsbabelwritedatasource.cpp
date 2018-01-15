@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrgpsbabelwritedatasource.cpp 25598 2013-02-05 22:24:35Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRGPSBabelWriteDataSource class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,27 +26,26 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include <string.h>
-#include "ogr_gpsbabel.h"
+#include <cstring>
 #include "cpl_conv.h"
 #include "cpl_string.h"
 #include "cpl_error.h"
 #include "cpl_spawn.h"
 
-CPL_CVSID("$Id: ogrgpsbabelwritedatasource.cpp 25598 2013-02-05 22:24:35Z rouault $");
+#include "ogr_gpsbabel.h"
+
+CPL_CVSID("$Id: ogrgpsbabelwritedatasource.cpp 36682 2016-12-04 20:34:45Z rouault $");
 
 /************************************************************************/
 /*                    OGRGPSBabelWriteDataSource()                      */
 /************************************************************************/
 
-OGRGPSBabelWriteDataSource::OGRGPSBabelWriteDataSource()
-
-{
-    pszName = NULL;
-    pszGPSBabelDriverName = NULL;
-    pszFilename = NULL;
-    poGPXDS = NULL;
-}
+OGRGPSBabelWriteDataSource::OGRGPSBabelWriteDataSource() :
+    pszName(NULL),
+    pszGPSBabelDriverName(NULL),
+    pszFilename(NULL),
+    poGPXDS(NULL)
+{}
 
 /************************************************************************/
 /*                  ~OGRGPSBabelWriteDataSource()                       */
@@ -57,7 +55,7 @@ OGRGPSBabelWriteDataSource::~OGRGPSBabelWriteDataSource()
 
 {
     if (poGPXDS)
-        OGRDataSource::DestroyDataSource(poGPXDS);
+        GDALClose( poGPXDS );
 
     Convert();
 
@@ -70,19 +68,21 @@ OGRGPSBabelWriteDataSource::~OGRGPSBabelWriteDataSource()
 /*                                Convert()                             */
 /************************************************************************/
 
-int OGRGPSBabelWriteDataSource::Convert()
+bool OGRGPSBabelWriteDataSource::Convert()
 {
     int nRet = -1;
-    if (osTmpFileName.size() > 0 && pszFilename != NULL && pszGPSBabelDriverName != NULL)
+    if( !osTmpFileName.empty() && pszFilename != NULL &&
+         pszGPSBabelDriverName != NULL )
     {
         if (OGRGPSBabelDataSource::IsSpecialFile(pszFilename))
         {
             /* Special file : don't try to open it */
-            const char* const argv[] = { "gpsbabel", "-i", "gpx", "-f", "-",
-                                          "-o", pszGPSBabelDriverName, "-F", pszFilename, NULL };
             VSILFILE* tmpfp = VSIFOpenL(osTmpFileName.c_str(), "rb");
             if (tmpfp)
             {
+                const char* const argv[] = {
+                    "gpsbabel", "-i", "gpx", "-f", "-",
+                    "-o", pszGPSBabelDriverName, "-F", pszFilename, NULL };
                 nRet = CPLSpawn(argv, tmpfp, NULL, TRUE);
 
                 VSIFCloseL(tmpfp);
@@ -94,16 +94,17 @@ int OGRGPSBabelWriteDataSource::Convert()
             VSILFILE* fp = VSIFOpenL(pszFilename, "wb");
             if (fp == NULL)
             {
-                CPLError(CE_Failure, CPLE_AppDefined,
-                        "Cannot open file %s", pszFilename);
+                CPLError( CE_Failure, CPLE_AppDefined,
+                          "Cannot open file %s", pszFilename );
             }
             else
             {
-                const char* const argv[] = { "gpsbabel", "-i", "gpx", "-f", "-",
-                                            "-o", pszGPSBabelDriverName, "-F", "-", NULL };
                 VSILFILE* tmpfp = VSIFOpenL(osTmpFileName.c_str(), "rb");
                 if (tmpfp)
                 {
+                    const char* const argv[] = {
+                        "gpsbabel", "-i", "gpx", "-f", "-",
+                        "-o", pszGPSBabelDriverName, "-F", "-", NULL };
                     nRet = CPLSpawn(argv, tmpfp, fp, TRUE);
 
                     VSIFCloseL(tmpfp);
@@ -126,17 +127,19 @@ int OGRGPSBabelWriteDataSource::Convert()
 /*                                 Create()                             */
 /************************************************************************/
 
-int OGRGPSBabelWriteDataSource::Create( const char * pszName,
+int OGRGPSBabelWriteDataSource::Create( const char * pszNameIn,
                                         char **papszOptions )
 {
-    OGRSFDriver* poGPXDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName("GPX");
+    GDALDriver* poGPXDriver
+        = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName("GPX");
     if (poGPXDriver == NULL)
     {
-        CPLError(CE_Failure, CPLE_AppDefined, "GPX driver is necessary for GPSBabel write support");
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "GPX driver is necessary for GPSBabel write support" );
         return FALSE;
     }
 
-    if (!EQUALN(pszName, "GPSBABEL:", 9))
+    if (!STARTS_WITH_CI(pszNameIn, "GPSBABEL:"))
     {
         const char* pszOptionGPSBabelDriverName =
                 CSLFetchNameValue(papszOptions, "GPSBABEL_DRIVER");
@@ -144,23 +147,25 @@ int OGRGPSBabelWriteDataSource::Create( const char * pszName,
             pszGPSBabelDriverName = CPLStrdup(pszOptionGPSBabelDriverName);
         else
         {
-            CPLError(CE_Failure, CPLE_AppDefined, "GPSBABEL_DRIVER dataset creation option expected");
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "GPSBABEL_DRIVER dataset creation option expected" );
             return FALSE;
         }
 
-        pszFilename = CPLStrdup(pszName);
+        pszFilename = CPLStrdup(pszNameIn);
     }
     else
     {
-        const char* pszSep = strchr(pszName + 9, ':');
+        const char* pszSep = strchr(pszNameIn + 9, ':');
         if (pszSep == NULL)
         {
-            CPLError(CE_Failure, CPLE_AppDefined,
-                    "Wrong syntax. Expected GPSBabel:driver_name[,options]*:file_name");
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "Wrong syntax. Expected GPSBabel:driver_name[,options]*:"
+                      "file_name" );
             return FALSE;
         }
 
-        pszGPSBabelDriverName = CPLStrdup(pszName + 9);
+        pszGPSBabelDriverName = CPLStrdup(pszNameIn + 9);
         *(strchr(pszGPSBabelDriverName, ':')) = '\0';
 
         pszFilename = CPLStrdup(pszSep+1);
@@ -170,37 +175,38 @@ int OGRGPSBabelWriteDataSource::Create( const char * pszName,
     if (!OGRGPSBabelDataSource::IsValidDriverName(pszGPSBabelDriverName))
         return FALSE;
 
-    const char* pszOptionUseTempFile = CSLFetchNameValue(papszOptions, "USE_TEMPFILE");
+    const char* pszOptionUseTempFile
+        = CSLFetchNameValue(papszOptions, "USE_TEMPFILE");
     if (pszOptionUseTempFile == NULL)
         pszOptionUseTempFile = CPLGetConfigOption("USE_TEMPFILE", NULL);
-    if (pszOptionUseTempFile && CSLTestBoolean(pszOptionUseTempFile))
+    if (pszOptionUseTempFile && CPLTestBool(pszOptionUseTempFile))
         osTmpFileName = CPLGenerateTempFilename(NULL);
     else
         osTmpFileName.Printf("/vsimem/ogrgpsbabeldatasource_%p", this);
 
-    poGPXDS = poGPXDriver->CreateDataSource(osTmpFileName.c_str(), papszOptions);
+    poGPXDS = poGPXDriver->Create( osTmpFileName.c_str(), 0, 0, 0,
+                                   GDT_Unknown, papszOptions);
     if (poGPXDS == NULL)
         return FALSE;
 
-    this->pszName = CPLStrdup(pszName);
+    pszName = CPLStrdup(pszNameIn);
 
     return TRUE;
 }
 
 /************************************************************************/
-/*                            CreateLayer()                             */
+/*                           ICreateLayer()                             */
 /************************************************************************/
 
-OGRLayer * OGRGPSBabelWriteDataSource::CreateLayer( const char * pszLayerName,
+OGRLayer *OGRGPSBabelWriteDataSource::ICreateLayer( const char * pszLayerName,
                                                     OGRSpatialReference *poSRS,
                                                     OGRwkbGeometryType eType,
                                                     char ** papszOptions )
 {
-    if (poGPXDS)
+    if( poGPXDS )
         return poGPXDS->CreateLayer(pszLayerName, poSRS, eType, papszOptions);
     return NULL;
 }
-
 
 /************************************************************************/
 /*                           TestCapability()                           */
@@ -211,6 +217,7 @@ int OGRGPSBabelWriteDataSource::TestCapability( const char * pszCap )
 {
     if( EQUAL(pszCap,ODsCCreateLayer) )
         return TRUE;
+
     return FALSE;
 }
 
@@ -221,8 +228,9 @@ int OGRGPSBabelWriteDataSource::TestCapability( const char * pszCap )
 OGRLayer *OGRGPSBabelWriteDataSource::GetLayer( int iLayer )
 
 {
-    if (poGPXDS)
+    if( poGPXDS )
         return poGPXDS->GetLayer(iLayer);
+
     return NULL;
 }
 
@@ -233,7 +241,8 @@ OGRLayer *OGRGPSBabelWriteDataSource::GetLayer( int iLayer )
 int OGRGPSBabelWriteDataSource::GetLayerCount()
 
 {
-    if (poGPXDS)
+    if( poGPXDS )
         return poGPXDS->GetLayerCount();
+
     return 0;
 }

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrdodsdriver.cpp 12396 2007-10-13 10:02:17Z rouault $
  *
  * Project:  OGR/DODS Interface
  * Purpose:  Implements OGRDODSDriver class.
@@ -30,7 +29,7 @@
 #include "ogr_dods.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrdodsdriver.cpp 12396 2007-10-13 10:02:17Z rouault $");
+CPL_CVSID("$Id: ogrdodsdriver.cpp 36179 2016-11-09 10:19:21Z rouault $");
 
 /************************************************************************/
 /*                            ~OGRDODSDriver()                            */
@@ -48,7 +47,7 @@ OGRDODSDriver::~OGRDODSDriver()
 const char *OGRDODSDriver::GetName()
 
 {
-    return "DODS";
+    return "OGR_DODS";
 }
 
 /************************************************************************/
@@ -56,15 +55,13 @@ const char *OGRDODSDriver::GetName()
 /************************************************************************/
 
 OGRDataSource *OGRDODSDriver::Open( const char * pszFilename,
-                                     int bUpdate )
+                                     int /*bUpdate*/ )
 
 {
-    OGRDODSDataSource     *poDS;
-
-    if( !EQUALN(pszFilename,"DODS:http:",10) )
+    if( !STARTS_WITH_CI(pszFilename, "DODS:http:") )
         return NULL;
 
-    poDS = new OGRDODSDataSource();
+    OGRDODSDataSource *poDS = new OGRDODSDataSource();
 
     if( !poDS->Open( pszFilename ) )
     {
@@ -79,7 +76,7 @@ OGRDataSource *OGRDODSDriver::Open( const char * pszFilename,
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRDODSDriver::TestCapability( const char * pszCap )
+int OGRDODSDriver::TestCapability( const char * /*pszCap*/ )
 
 {
     return FALSE;
@@ -96,4 +93,3 @@ void RegisterOGRDODS()
         return;
     OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRDODSDriver );
 }
-

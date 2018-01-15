@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: cpl_http.h 25478 2013-01-10 00:28:54Z warmerdam $
+ * $Id: cpl_http.h 37645 2017-03-08 00:15:33Z rouault $
  *
  * Project:  Common Portability Library
  * Purpose:  Function wrapper for libcurl HTTP access.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2006, Frank Warmerdam
+ * Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -45,36 +46,37 @@ CPL_C_START
 /*! Describe a part of a multipart message */
 typedef struct {
     /*! NULL terminated array of headers */ char **papszHeaders;
-    
+
     /*! Buffer with data of the part     */ GByte *pabyData;
     /*! Buffer length                    */ int    nDataLen;
 } CPLMimePart;
 
 /*! Describe the result of a CPLHTTPFetch() call */
 typedef struct {
-    /*! cURL error code : 0=success, non-zero if request failed */ 
+    /*! cURL error code : 0=success, non-zero if request failed */
     int     nStatus;
 
-    /*! Content-Type of the response */                                
+    /*! Content-Type of the response */
     char    *pszContentType;
 
-    /*! Error message from curl, or NULL */                            
+    /*! Error message from curl, or NULL */
     char    *pszErrBuf;
 
-    /*! Length of the pabyData buffer */                               
+    /*! Length of the pabyData buffer */
     int     nDataLen;
+    /*! Allocated size of the pabyData buffer */
     int     nDataAlloc;
 
-    /*! Buffer with downloaded data */                                 
+    /*! Buffer with downloaded data */
     GByte   *pabyData;
 
     /*! Headers returned */
     char    **papszHeaders;
 
-    /*! Number of parts in a multipart message */                      
+    /*! Number of parts in a multipart message */
     int     nMimePartCount;
 
-    /*! Array of parts (resolved by CPLHTTPParseMultipartMime()) */    
+    /*! Array of parts (resolved by CPLHTTPParseMultipartMime()) */
     CPLMimePart *pasMimePart;
 
 } CPLHTTPResult;
@@ -100,5 +102,13 @@ char CPL_DLL *GOA2GetAccessToken( const char *pszRefreshToken,
                                   const char *pszScope );
 
 CPL_C_END
+
+#ifdef __cplusplus
+/*! @cond Doxygen_Suppress */
+// Not sure if this belong here, used in cpl_http.cpp, cpl_vsil_curl.cpp and frmts/wms/gdalhttp.cpp
+void* CPLHTTPSetOptions(void *pcurl, const char * const* papszOptions);
+char** CPLHTTPGetOptionsFromEnv();
+/*! @endcond */
+#endif // __cplusplus
 
 #endif /* ndef CPL_HTTP_H_INCLUDED */

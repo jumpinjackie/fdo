@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_gml.h 24481 2012-05-20 12:50:29Z rouault $
+ * $Id: ogr_gml.h 37265 2017-02-01 06:20:23Z goatbar $
  *
  * Project:  GML Reader
  * Purpose:  Declarations for OGR wrapper classes for GML, and GML<->OGR
@@ -8,6 +8,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2002, Frank Warmerdam
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -15,24 +16,25 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_GML_H_INCLUDED
-#define _OGR_GML_H_INCLUDED
+#ifndef OGR_GML_H_INCLUDED
+#define OGR_GML_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include "gmlreader.h"
+#include "gmlutils.h"
 
 class OGRGMLDataSource;
 
@@ -49,15 +51,14 @@ typedef enum
 
 class OGRGMLLayer : public OGRLayer
 {
-    OGRSpatialReference *poSRS;
     OGRFeatureDefn     *poFeatureDefn;
 
-    int                 iNextGMLId;
-    int                 nTotalGMLCount;
-    int                 bInvalidFIDFound;
+    GIntBig             iNextGMLId;
+    bool                bInvalidFIDFound;
     char                *pszFIDPrefix;
 
-    int                 bWriter;
+    bool                bWriter;
+    bool                bSameSRS;
 
     OGRGMLDataSource    *poDS;
 
@@ -65,37 +66,35 @@ class OGRGMLLayer : public OGRLayer
 
     void                *hCacheSRS;
 
-    int                 bUseOldFIDFormat;
+    bool                bUseOldFIDFormat;
 
-    int                 bFaceHoleNegative;
+    bool                bFaceHoleNegative;
 
   public:
-                        OGRGMLLayer( const char * pszName, 
-                                     OGRSpatialReference *poSRS, 
-                                     int bWriter,
-                                     OGRwkbGeometryType eType,
+                        OGRGMLLayer( const char * pszName,
+                                     bool bWriter,
                                      OGRGMLDataSource *poDS );
 
-                        ~OGRGMLLayer();
+                        virtual ~OGRGMLLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    int                 GetFeatureCount( int bForce = TRUE );
-    OGRErr              GetExtent(OGREnvelope *psExtent, int bForce = TRUE);
+    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
+    OGRErr              GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
+                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
 
-    OGRErr              CreateFeature( OGRFeature *poFeature );
-    
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
+
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
     virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE );
+                                     int bApproxOK = TRUE ) override;
+    virtual OGRErr      CreateGeomField( OGRGeomFieldDefn *poField,
+                                     int bApproxOK = TRUE ) override;
 
-    virtual OGRSpatialReference *GetSpatialRef();
-    
-    int                 TestCapability( const char * );
-    
-    virtual const char *GetGeometryColumn();
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -106,71 +105,82 @@ class OGRGMLDataSource : public OGRDataSource
 {
     OGRGMLLayer     **papoLayers;
     int                 nLayers;
-    
+
     char                *pszName;
-    
+
     OGRGMLLayer         *TranslateGMLSchema( GMLFeatureClass * );
 
     char               **papszCreateOptions;
 
-    // output related parameters 
+    // output related parameters
     VSILFILE           *fpOutput;
-    int                 bFpOutputIsNonSeekable;
-    int                 bFpOutputSingleFile;
+    bool                bFpOutputIsNonSeekable;
+    bool                bFpOutputSingleFile;
     OGREnvelope3D       sBoundingRect;
-    int                 bBBOX3D;
+    bool                bBBOX3D;
     int                 nBoundedByLocation;
-    
+
     int                 nSchemaInsertLocation;
-    int                 bIsOutputGML3;
-    int                 bIsOutputGML3Deegree; /* if TRUE, then bIsOutputGML3 is also TRUE */
-    int                 bIsOutputGML32; /* if TRUE, then bIsOutputGML3 is also TRUE */
-    int                 bIsLongSRSRequired;
-    int                 bWriteSpaceIndentation;
+    bool                bIsOutputGML3;
+    bool                bIsOutputGML3Deegree; /* if TRUE, then bIsOutputGML3 is also TRUE */
+    bool                bIsOutputGML32; /* if TRUE, then bIsOutputGML3 is also TRUE */
+    OGRGMLSRSNameFormat eSRSNameFormat;
+    bool                bWriteSpaceIndentation;
+
+    OGRSpatialReference* poWriteGlobalSRS;
+    bool                bWriteGlobalSRS;
 
     // input related parameters.
     CPLString           osFilename;
     CPLString           osXSDFilename;
 
     IGMLReader          *poReader;
-    int                 bOutIsTempFile;
+    bool                bOutIsTempFile;
 
     void                InsertHeader();
 
-    int                 bExposeGMLId;
-    int                 bExposeFid;
-    int                 bIsWFS;
+    bool                bExposeGMLId;
+    bool                bExposeFid;
+    bool                bIsWFS;
 
-    OGRSpatialReference* poGlobalSRS;
+    bool                bUseGlobalSRSName;
 
-    int                 m_bInvertAxisOrderIfLatLong;
-    int                 m_bConsiderEPSGAsURN;
-    int                 m_bGetSecondaryGeometryOption;
+    bool                m_bInvertAxisOrderIfLatLong;
+    bool                m_bConsiderEPSGAsURN;
+    GMLSwapCoordinatesEnum m_eSwapCoordinates;
+    bool                m_bGetSecondaryGeometryOption;
 
     ReadMode            eReadMode;
     GMLFeature         *poStoredGMLFeature;
     OGRGMLLayer        *poLastReadLayer;
 
-    void                FindAndParseBoundedBy(VSILFILE* fp);
+    bool                bEmptyAsNull;
+
+    void                FindAndParseTopElements(VSILFILE* fp);
     void                SetExtents(double dfMinX, double dfMinY, double dfMaxX, double dfMaxY);
+
+    void                BuildJointClassFromXSD();
+    void                BuildJointClassFromScannedSchema();
+
+    void                WriteTopElements();
 
   public:
                         OGRGMLDataSource();
-                        ~OGRGMLDataSource();
+                        virtual ~OGRGMLDataSource();
 
-    int                 Open( const char *, int bTestOpen );
-    int                 Create( const char *pszFile, char **papszOptions );
+    bool                Open( GDALOpenInfo* poOpenInfo );
+    bool                Create( const char *pszFile, char **papszOptions );
 
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
 
-    virtual OGRLayer    *CreateLayer( const char *, 
+    virtual OGRLayer    *ICreateLayer( const char *,
                                       OGRSpatialReference * = NULL,
                                       OGRwkbGeometryType = wkbUnknown,
-                                      char ** = NULL );
+                                      char ** = NULL ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     VSILFILE            *GetOutputFP() const { return fpOutput; }
     IGMLReader          *GetReader() const { return poReader; }
@@ -181,16 +191,17 @@ class OGRGMLDataSource : public OGRDataSource
 
     static void         PrintLine(VSILFILE* fp, const char *fmt, ...) CPL_PRINT_FUNC_FORMAT (2, 3);
 
-    int                 IsGML3Output() const { return bIsOutputGML3; }
-    int                 IsGML3DeegreeOutput() const { return bIsOutputGML3Deegree; }
-    int                 IsGML32Output() const { return bIsOutputGML32; }
-    int                 IsLongSRSRequired() const { return bIsLongSRSRequired; }
-    int                 WriteSpaceIndentation() const { return bWriteSpaceIndentation; }
+    bool                IsGML3Output() const { return bIsOutputGML3; }
+    bool                IsGML3DeegreeOutput() const { return bIsOutputGML3Deegree; }
+    bool                IsGML32Output() const { return bIsOutputGML32; }
+    OGRGMLSRSNameFormat GetSRSNameFormat() const { return eSRSNameFormat; }
+    bool                WriteSpaceIndentation() const { return bWriteSpaceIndentation; }
     const char         *GetGlobalSRSName();
 
-    int                 GetInvertAxisOrderIfLatLong() const { return m_bInvertAxisOrderIfLatLong; }
-    int                 GetConsiderEPSGAsURN() const { return m_bConsiderEPSGAsURN; }
-    int                 GetSecondaryGeometryOption() const { return m_bGetSecondaryGeometryOption; }
+    bool                GetInvertAxisOrderIfLatLong() const { return m_bInvertAxisOrderIfLatLong; }
+    bool                GetConsiderEPSGAsURN() const { return m_bConsiderEPSGAsURN; }
+    GMLSwapCoordinatesEnum GetSwapCoordinates() const { return m_eSwapCoordinates; }
+    bool                GetSecondaryGeometryOption() const { return m_bGetSecondaryGeometryOption; }
 
     ReadMode            GetReadMode() const { return eReadMode; }
     void                SetStoredGMLFeature(GMLFeature* poStoredGMLFeatureIn) { poStoredGMLFeature = poStoredGMLFeatureIn; }
@@ -200,29 +211,16 @@ class OGRGMLDataSource : public OGRDataSource
     void                SetLastReadLayer(OGRGMLLayer* poLayer) { poLastReadLayer = poLayer; }
 
     const char         *GetAppPrefix();
+    bool                RemoveAppPrefix();
+    bool                WriteFeatureBoundedBy();
+    const char         *GetSRSDimensionLoc();
 
     virtual OGRLayer *          ExecuteSQL( const char *pszSQLCommand,
                                             OGRGeometry *poSpatialFilter,
-                                            const char *pszDialect );
-    virtual void                ReleaseResultSet( OGRLayer * poResultsSet );
+                                            const char *pszDialect ) override;
+    virtual void                ReleaseResultSet( OGRLayer * poResultsSet ) override;
+
+    static bool          CheckHeader(const char* pszStr);
 };
 
-/************************************************************************/
-/*                             OGRGMLDriver                             */
-/************************************************************************/
-
-class OGRGMLDriver : public OGRSFDriver
-{
-  public:
-                ~OGRGMLDriver();
-                
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-
-    virtual OGRDataSource *CreateDataSource( const char *pszName,
-                                             char ** = NULL );
-    
-    int                 TestCapability( const char * );
-};
-
-#endif /* _OGR_GML_H_INCLUDED */
+#endif /* OGR_GML_H_INCLUDED */

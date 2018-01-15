@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: dodsdataset2.cpp 20634 2010-09-16 22:02:29Z rouault $
  *
  * Project:  OPeNDAP Raster Driver
  * Purpose:  Implements DODSDataset and DODSRasterBand classes.
@@ -8,6 +7,7 @@
  ******************************************************************************
  * Copyright (c) 2004, Frank Warmerdam <warmerdam@pobox.com>
  * Copyright (c) 2003 OPeNDAP, Inc.
+ * Copyright (c) 2007-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,50 +35,20 @@
 
 #include <debug.h>
 
-#include <BaseType.h>		// DODS
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Url.h>
-#include <Array.h>
-#include <Structure.h>
-#include <Sequence.h>
-#include <Grid.h>
+#include "libdap_headers.h"
 
-#ifdef LIBDAP_310
-/* AISConnect.h/AISConnect class was renamed to Connect.h/Connect in libdap 3.10 */
-#include <Connect.h>
-#define AISConnect Connect
-#else
-#include <AISConnect.h>
-#endif
-
-#include <DDS.h>
-#include <DAS.h>
-#include <BaseTypeFactory.h>
-#include <Error.h>
-#include <escaping.h>
-
-#include "gdal_priv.h"		// GDAL
-#include "ogr_spatialref.h"
 #include "cpl_string.h"
+#include "gdal_frmts.h"
+#include "gdal_priv.h"
+#include "ogr_spatialref.h"
 
 using namespace libdap;
 
-CPL_CVSID("$Id: dodsdataset2.cpp 20634 2010-09-16 22:02:29Z rouault $");
-
-CPL_C_START
-void GDALRegister_DODS(void);
-CPL_C_END
+CPL_CVSID("$Id: dodsdataset2.cpp 36663 2016-12-03 21:34:45Z rouault $");
 
 /** Attribute names used to encode geo-referencing information. Note that
     these are not C++ objects to avoid problems with static global
-    constructors. 
+    constructors.
 
     @see get_geo_info
 
@@ -88,8 +58,8 @@ const char *nlat = "Northernmost_Latitude"; ///<
 const char *slat = "Southernmost_Latitude"; ///<
 const char *wlon = "Westernmost_Longitude"; ///<
 const char *elon = "Easternmost_Longitude"; ///<
-const char *gcs = "GeographicCS";	    ///<
-const char *pcs = "ProjectionCS";	    ///<
+const char *gcs = "GeographicCS";           ///<
+const char *pcs = "ProjectionCS";           ///<
 const char *norm_proj_param = "Norm_Proj_Param"; ///<
 const char *spatial_ref = "spatial_ref";    ///<
 //@}
@@ -119,13 +89,13 @@ get_variable(DDS &dds, const string &n)
 {
     BaseType *poBT = dds.var(www2id(n));
     if (!poBT) {
-	try {
-	    string leaf = n.substr(n.find_last_of('.')+1);
-	    poBT = dds.var(www2id(leaf));
-	}
-	catch (const std::exception &e) {
-	    poBT = 0;
-	}
+        try {
+            string leaf = n.substr(n.find_last_of('.')+1);
+            poBT = dds.var(www2id(leaf));
+        }
+        catch (const std::exception &e) {
+            poBT = 0;
+        }
     }
 
     return poBT;
@@ -141,18 +111,17 @@ get_variable(DDS &dds, const string &n)
 static string StripQuotes( string oInput )
 
 {
-    char *pszResult;
-
     if( oInput.length() < 2 )
         return oInput;
 
     oInput = oInput.substr(1,oInput.length()-2);
 
-    pszResult = CPLUnescapeString( oInput.c_str(), NULL, 
-                                   CPLES_BackslashQuotable );
+    char *pszResult =
+        CPLUnescapeString( oInput.c_str(), NULL,
+                           CPLES_BackslashQuotable );
 
     oInput = pszResult;
-    
+
     CPLFree( pszResult );
 
     return oInput;
@@ -185,7 +154,7 @@ static int GetDimension( string oCE, const char *pszDimName,
         if( pszCE[i] == '[' && pszCE[i+1] == pszDimName[0] )
             return iCount;
 
-        else if( pszCE[i] == '[' 
+        else if( pszCE[i] == '['
                  && pszCE[i+1] == '-'
                  && pszCE[i+2] == pszDimName[0] )
         {
@@ -210,12 +179,12 @@ static int GetDimension( string oCE, const char *pszDimName,
 class DODSDataset : public GDALDataset
 {
 private:
-    AISConnect *poConnect; 	//< Virtual connection to the data source
+    AISConnect *poConnect;      // Virtual connection to the data source
 
-    string oURL;		//< data source URL
+    string oURL;                // data source URL
     double adfGeoTransform[6];
     int    bGotGeoTransform;
-    string oWKT;		//< Constructed WKT string
+    string oWKT;                // Constructed WKT string
 
     DAS    oDAS;
     DDS   *poDDS;
@@ -223,8 +192,8 @@ private:
 
     AISConnect *connect_to_server() throw(Error);
 
-    static string      SubConstraint( string raw_constraint, 
-                                      string x_constraint, 
+    static string      SubConstraint( string raw_constraint,
+                                      string x_constraint,
                                       string y_constraint );
 
     char            **CollectBandsFromDDS();
@@ -234,7 +203,7 @@ private:
     void            HarvestDAS();
     static void     HarvestMetadata( GDALMajorObject *, AttrTable * );
     void            HarvestMaps( string oVarName, string oCE );
-    
+
     friend class DODSRasterBand;
 
 public:
@@ -242,8 +211,8 @@ public:
     virtual        ~DODSDataset();
 
     // Overridden GDALDataset methods
-    CPLErr GetGeoTransform(double *padfTransform);
-    const char *GetProjectionRef();
+    CPLErr GetGeoTransform(double *padfTransform) override;
+    const char *GetProjectionRef() override;
 
     /// Open is not a method in GDALDataset; it's the driver.
     static GDALDataset *Open(GDALOpenInfo *);
@@ -263,18 +232,18 @@ public:
 /* ==================================================================== */
 /************************************************************************/
 
-class DODSRasterBand : public GDALRasterBand 
+class DODSRasterBand : public GDALRasterBand
 {
 private:
-    string oVarName;          
-    string oCE;		        // Holds the CE (with [x] and [y] still there
+    string oVarName;
+    string oCE;                 // Holds the CE (with [x] and [y] still there
 
     friend class DODSDataset;
 
     GDALColorInterp eColorInterp;
     GDALColorTable  *poCT;
 
-    int		   nOverviewCount;
+    int    nOverviewCount;
     DODSRasterBand **papoOverviewBand;
 
     int    nOverviewFactor;     // 1 for base, or 2/4/8 for overviews.
@@ -287,17 +256,17 @@ private:
     void            HarvestDAS();
 
 public:
-    DODSRasterBand( DODSDataset *poDS, string oVarName, string oCE, 
+    DODSRasterBand( DODSDataset *poDS, string oVarName, string oCE,
                     int nOverviewFactor );
     virtual ~DODSRasterBand();
 
-    virtual int    GetOverviewCount();
-    virtual GDALRasterBand *GetOverview( int );
-    virtual CPLErr IReadBlock(int, int, void *);
-    virtual GDALColorInterp GetColorInterpretation();
-    virtual GDALColorTable *GetColorTable();
-		virtual CPLErr          SetNoDataValue( double );
-    virtual double          GetNoDataValue( int * );
+    virtual int    GetOverviewCount() override;
+    virtual GDALRasterBand *GetOverview( int ) override;
+    virtual CPLErr IReadBlock(int, int, void *) override;
+    virtual GDALColorInterp GetColorInterpretation() override;
+    virtual GDALColorTable *GetColorTable() override;
+    virtual CPLErr          SetNoDataValue( double ) override;
+    virtual double          GetNoDataValue( int * ) override;
 };
 
 /************************************************************************/
@@ -310,8 +279,10 @@ public:
 /*                            DODSDataset()                             */
 /************************************************************************/
 
-DODSDataset::DODSDataset()
-
+DODSDataset::DODSDataset() :
+    poConnect(NULL),
+    bGotGeoTransform(FALSE),
+    poBaseTypeFactory(new BaseTypeFactory())
 {
     adfGeoTransform[0] = 0.0;
     adfGeoTransform[1] = 1.0;
@@ -319,10 +290,7 @@ DODSDataset::DODSDataset()
     adfGeoTransform[3] = 0.0;
     adfGeoTransform[4] = 0.0;
     adfGeoTransform[5] = 1.0;
-    bGotGeoTransform = FALSE;
-
-    poConnect = NULL;
-    poBaseTypeFactory = new BaseTypeFactory();
+    // Need to be done after poBaseTypeFactory initialization
     poDDS = new DDS( poBaseTypeFactory );
 }
 
@@ -351,8 +319,8 @@ DODSDataset::connect_to_server() throw(Error)
 {
     // does the string start with 'http?'
     if (oURL.find("http://") == string::npos
-	&& oURL.find("https://") == string::npos)
-	throw Error(
+        && oURL.find("https://") == string::npos)
+        throw Error(
             "The URL does not start with 'http' or 'https,' I won't try connecting.");
 
 /* -------------------------------------------------------------------- */
@@ -360,18 +328,18 @@ DODSDataset::connect_to_server() throw(Error)
 /*      the putenv() if there isn't already a DODS_CONF in the          */
 /*      environment.                                                    */
 /* -------------------------------------------------------------------- */
-    if( CPLGetConfigOption( "DODS_CONF", NULL ) != NULL 
+    if( CPLGetConfigOption( "DODS_CONF", NULL ) != NULL
         && getenv("DODS_CONF") == NULL )
     {
         static char szDODS_CONF[1000];
-            
-        sprintf( szDODS_CONF, "DODS_CONF=%.980s", 
+
+        snprintf( szDODS_CONF, sizeof(szDODS_CONF), "DODS_CONF=%.980s",
                  CPLGetConfigOption( "DODS_CONF", "" ) );
         putenv( szDODS_CONF );
     }
 
 /* -------------------------------------------------------------------- */
-/*      If we have a overridding AIS file location, apply it now.       */
+/*      If we have a overriding AIS file location, apply it now.       */
 /* -------------------------------------------------------------------- */
     if( CPLGetConfigOption( "DODS_AIS_FILE", NULL ) != NULL )
     {
@@ -386,7 +354,7 @@ DODSDataset::connect_to_server() throw(Error)
     string version = poConnection->request_version();
     /*    if (version.empty() || version.find("/3.") == string::npos)
     {
-        CPLError( CE_Warning, CPLE_AppDefined, 
+        CPLError( CE_Warning, CPLE_AppDefined,
                   "I connected to the URL but could not get a DAP 3.x version string\n"
                   "from the server.  I will continue to connect but access may fail.");
     }
@@ -401,12 +369,15 @@ DODSDataset::connect_to_server() throw(Error)
 /*      constraint string for the [x] and [y] parts.                    */
 /************************************************************************/
 
-string DODSDataset::SubConstraint( string raw_constraint, 
-                                   string x_constraint, 
+string DODSDataset::SubConstraint( string raw_constraint,
+                                   string x_constraint,
                                    string y_constraint )
 
 {
-    string::size_type x_off, y_off, x_len=3, y_len=3;
+    string::size_type x_off;
+    string::size_type y_off;
+    string::size_type x_len = 3;
+    string::size_type y_len = 3;
     string final_constraint;
 
     x_off = raw_constraint.find( "[x]" );
@@ -426,14 +397,14 @@ string DODSDataset::SubConstraint( string raw_constraint,
     CPLAssert( x_off != string::npos && y_off != string::npos );
 
     if( x_off < y_off )
-        final_constraint = 
+        final_constraint =
             raw_constraint.substr( 0, x_off )
             + x_constraint
             + raw_constraint.substr( x_off + x_len, y_off - x_off - x_len )
             + y_constraint
             + raw_constraint.substr( y_off + y_len );
     else
-        final_constraint = 
+        final_constraint =
             raw_constraint.substr( 0, y_off )
             + y_constraint
             + raw_constraint.substr( y_off + y_len, x_off - y_off - y_len )
@@ -455,8 +426,8 @@ string DODSDataset::SubConstraint( string raw_constraint,
 /*      candidates.  After the first we only accept additional          */
 /*      objects as bands if they match the size of the original.        */
 /*                                                                      */
-/*      Auto-recognision rules will presumably evolve over time to      */
-/*      recognise different common configurations and to support        */
+/*      Auto-recognition rules will presumably evolve over time to      */
+/*      recognize different common configurations and to support        */
 /*      more variations.                                                */
 /************************************************************************/
 
@@ -469,7 +440,7 @@ char **DODSDataset::CollectBandsFromDDS()
     for( v_i = poDDS->var_begin(); v_i != poDDS->var_end(); v_i++ )
     {
         BaseType *poVar = *v_i;
-        papszResultList = CollectBandsFromDDSVar( poVar->name(), 
+        papszResultList = CollectBandsFromDDSVar( poVar->name(),
                                                   papszResultList );
     }
 
@@ -486,18 +457,20 @@ char **DODSDataset::CollectBandsFromDDS()
 /*      needs a default constraint expression generated.                */
 /************************************************************************/
 
-char **DODSDataset::CollectBandsFromDDSVar( string oVarName, 
+char **DODSDataset::CollectBandsFromDDSVar( string oVarName,
                                             char **papszResultList )
 
 {
-    Array *poArray;
+    Array *poArray = NULL;
     Grid *poGrid = NULL;
-    
+
 /* -------------------------------------------------------------------- */
 /*      Is this a grid or array?                                        */
 /* -------------------------------------------------------------------- */
     BaseType *poVar = get_variable( GetDDS(), oVarName );
 
+    if( poVar == NULL )
+        return papszResultList;
     if( poVar->type() == dods_array_c )
     {
         poGrid = NULL;
@@ -515,7 +488,7 @@ char **DODSDataset::CollectBandsFromDDSVar( string oVarName,
 /*      Eventually we will want to support arrays with more than two    */
 /*      dimensions ... but not quite yet.                               */
 /* -------------------------------------------------------------------- */
-    if( poArray->dimensions() != 2 )
+    if( poArray == NULL || poArray->dimensions() != 2 )
         return papszResultList;
 
 /* -------------------------------------------------------------------- */
@@ -523,10 +496,10 @@ char **DODSDataset::CollectBandsFromDDSVar( string oVarName,
 /* -------------------------------------------------------------------- */
     Array::Dim_iter dim1 = poArray->dim_begin() + 0;
     Array::Dim_iter dim2 = poArray->dim_begin() + 1;
-    
+
     int nDim1Size = poArray->dimension_size( dim1 );
     int nDim2Size = poArray->dimension_size( dim2 );
-    
+
     if( nDim1Size == 1 || nDim2Size == 1 )
         return papszResultList;
 
@@ -535,31 +508,32 @@ char **DODSDataset::CollectBandsFromDDSVar( string oVarName,
 /* -------------------------------------------------------------------- */
     string dim1_name = poArray->dimension_name( dim1 );
     string dim2_name = poArray->dimension_name( dim2 );
-    int iXDim=-1, iYDim=-1;
+    int iXDim = -1;
+    int iYDim = -1;
 
     if( dim1_name == "easting" && dim2_name == "northing" )
     {
         iXDim = 0;
         iYDim = 1;
     }
-    else if( dim1_name == "easting" && dim2_name == "northing" )
+    else if( dim1_name == "northing" && dim2_name == "easting" )
     {
         iXDim = 1;
         iYDim = 0;
     }
-    else if( EQUALN(dim1_name.c_str(),"lat",3) 
-             && EQUALN(dim2_name.c_str(),"lon",3) )
+    else if( STARTS_WITH_CI(dim1_name.c_str(), "lat")
+             && STARTS_WITH_CI(dim2_name.c_str(), "lon") )
     {
         iXDim = 0;
         iYDim = 1;
     }
-    else if( EQUALN(dim1_name.c_str(),"lon",3) 
-             && EQUALN(dim2_name.c_str(),"lat",3) )
+    else if( STARTS_WITH_CI(dim1_name.c_str(), "lon")
+             && STARTS_WITH_CI(dim2_name.c_str(), "lat") )
     {
         iXDim = 1;
         iYDim = 0;
     }
-    else 
+    else
     {
         iYDim = 0;
         iXDim = 1;
@@ -593,9 +567,9 @@ char **DODSDataset::CollectBandsFromDDSVar( string oVarName,
     else
         return papszResultList;
 
-    papszResultList = CSLAddString( papszResultList, 
+    papszResultList = CSLAddString( papszResultList,
                                     poVar->name().c_str() );
-    papszResultList = CSLAddString( papszResultList, 
+    papszResultList = CSLAddString( papszResultList,
                                     oConstraint.c_str() );
 
     return papszResultList;
@@ -629,7 +603,7 @@ char **DODSDataset::ParseBandsFromURL( string oVarList )
         {
             oVarName = papszVars[i];
 
-            papszResultList = 
+            papszResultList =
                 CollectBandsFromDDSVar( oVarName, papszResultList );
         }
         else
@@ -640,11 +614,11 @@ char **DODSDataset::ParseBandsFromURL( string oVarList )
 
             // Eventually we should consider supporting a [band] keyword
             // to select a constraint variable that should be used to
-            // identify a band dimension ... but not for now. 
+            // identify a band dimension ... but not for now.
 
             papszResultList = CSLAddString( papszResultList,
                                             oVarName.c_str() );
-            papszResultList = CSLAddString( papszResultList, 
+            papszResultList = CSLAddString( papszResultList,
                                             oCE.c_str() );
         }
     }
@@ -661,7 +635,7 @@ char **DODSDataset::ParseBandsFromURL( string oVarList )
 /*      metadata to the target object.                                  */
 /************************************************************************/
 
-void DODSDataset::HarvestMetadata( GDALMajorObject *poTarget, 
+void DODSDataset::HarvestMetadata( GDALMajorObject *poTarget,
                                    AttrTable *poSrcTable )
 
 {
@@ -672,7 +646,7 @@ void DODSDataset::HarvestMetadata( GDALMajorObject *poTarget,
 /*      Find Metadata container.                                        */
 /* -------------------------------------------------------------------- */
     AttrTable *poMDTable = poSrcTable->find_container("Metadata");
-    
+
     if( poMDTable == NULL )
         return;
 
@@ -686,8 +660,8 @@ void DODSDataset::HarvestMetadata( GDALMajorObject *poTarget,
         if( poMDTable->get_attr_type( dv_i ) != Attr_string )
             continue;
 
-        poTarget->SetMetadataItem( 
-            poMDTable->get_name( dv_i ).c_str(), 
+        poTarget->SetMetadataItem(
+            poMDTable->get_name( dv_i ).c_str(),
             StripQuotes( poMDTable->get_attr(dv_i) ).c_str() );
     }
 }
@@ -709,16 +683,16 @@ void DODSDataset::HarvestDAS()
     {
         poFileInfo = oDAS.get_table( "NC_GLOBAL" );
 
-	if( poFileInfo == NULL )
-	{
-	    poFileInfo = oDAS.get_table( "HDF_GLOBAL" );
+        if( poFileInfo == NULL )
+        {
+            poFileInfo = oDAS.get_table( "HDF_GLOBAL" );
 
-	    if( poFileInfo == NULL )
-	    {
-	        CPLDebug( "DODS", "No GLOBAL DAS info." );
-	        return;
-	    }
-	}
+            if( poFileInfo == NULL )
+            {
+                CPLDebug( "DODS", "No GLOBAL DAS info." );
+                return;
+            }
+        }
     }
 #else
     AttrTable *poFileInfo = oDAS.find_container( "GLOBAL" );
@@ -727,16 +701,16 @@ void DODSDataset::HarvestDAS()
     {
         poFileInfo = oDAS.find_container( "NC_GLOBAL" );
 
-	if( poFileInfo == NULL )
-	{
-	    poFileInfo = oDAS.find_container( "HDF_GLOBAL" );
+        if( poFileInfo == NULL )
+        {
+            poFileInfo = oDAS.find_container( "HDF_GLOBAL" );
 
-	    if( poFileInfo == NULL )
-	    {
-	        CPLDebug( "DODS", "No GLOBAL DAS info." );
-	        return;
-	    }
-	}
+            if( poFileInfo == NULL )
+            {
+                CPLDebug( "DODS", "No GLOBAL DAS info." );
+                return;
+            }
+        }
     }
 #endif
 
@@ -752,14 +726,14 @@ void DODSDataset::HarvestDAS()
 
     if( oNorth != "" && oSouth != "" && oEast != "" && oWest != "" )
     {
-        adfGeoTransform[0] = atof(oWest.c_str());
-        adfGeoTransform[1] = 
-            (atof(oEast.c_str()) - atof(oWest.c_str())) / nRasterXSize;
+        adfGeoTransform[0] = CPLAtof(oWest.c_str());
+        adfGeoTransform[1] =
+            (CPLAtof(oEast.c_str()) - CPLAtof(oWest.c_str())) / nRasterXSize;
         adfGeoTransform[2] = 0.0;
-        adfGeoTransform[3] = atof(oNorth.c_str());
+        adfGeoTransform[3] = CPLAtof(oNorth.c_str());
         adfGeoTransform[4] = 0.0;
-        adfGeoTransform[5] = 
-            (atof(oSouth.c_str()) - atof(oNorth.c_str())) / nRasterYSize;
+        adfGeoTransform[5] =
+            (CPLAtof(oSouth.c_str()) - CPLAtof(oNorth.c_str())) / nRasterYSize;
 
         bGotGeoTransform = TRUE;
     }
@@ -777,17 +751,17 @@ void DODSDataset::HarvestDAS()
         char **papszItems = CSLTokenizeString( oValue.c_str() );
         if( CSLCount(papszItems) == 6 )
         {
-            adfGeoTransform[0] = atof(papszItems[0]);
-            adfGeoTransform[1] = atof(papszItems[1]);
-            adfGeoTransform[2] = atof(papszItems[2]);
-            adfGeoTransform[3] = atof(papszItems[3]);
-            adfGeoTransform[4] = atof(papszItems[4]);
-            adfGeoTransform[5] = atof(papszItems[5]);
+            adfGeoTransform[0] = CPLAtof(papszItems[0]);
+            adfGeoTransform[1] = CPLAtof(papszItems[1]);
+            adfGeoTransform[2] = CPLAtof(papszItems[2]);
+            adfGeoTransform[3] = CPLAtof(papszItems[3]);
+            adfGeoTransform[4] = CPLAtof(papszItems[4]);
+            adfGeoTransform[5] = CPLAtof(papszItems[5]);
             bGotGeoTransform = TRUE;
         }
         else
         {
-            CPLError( CE_Warning, CPLE_AppDefined, 
+            CPLError( CE_Warning, CPLE_AppDefined,
                       "Failed to parse GeoTransform DAS value: %s",
                       oValue.c_str() );
         }
@@ -802,17 +776,17 @@ void DODSDataset::HarvestDAS()
     oWKT = StripQuotes(poFileInfo->get_attr( "spatial_ref" ));
     // strip remaining backslashes (2007-04-26, gaffigan@sfos.uaf.edu)
     oWKT.erase(std::remove(oWKT.begin(), oWKT.end(), '\\'), oWKT.end());
-    if( oWKT.length() > 0 
-        && !EQUALN(oWKT.c_str(),"GEOGCS",6)
-        && !EQUALN(oWKT.c_str(),"PROJCS",6)
-        && !EQUALN(oWKT.c_str(),"LOCAL_CS",8) )
+    if( oWKT.length() > 0
+        && !STARTS_WITH_CI(oWKT.c_str(), "GEOGCS")
+        && !STARTS_WITH_CI(oWKT.c_str(), "PROJCS")
+        && !STARTS_WITH_CI(oWKT.c_str(), "LOCAL_CS") )
     {
         OGRSpatialReference oSRS;
 
         if( oSRS.SetFromUserInput( oWKT.c_str() ) != OGRERR_NONE )
         {
-            CPLError( CE_Warning, CPLE_AppDefined, 
-                      "Failed to recognise 'spatial_ref' value of: %s", 
+            CPLError( CE_Warning, CPLE_AppDefined,
+                      "Failed to recognise 'spatial_ref' value of: %s",
                       oWKT.c_str() );
             oWKT = "";
         }
@@ -851,14 +825,15 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
 /* -------------------------------------------------------------------- */
 /*      Get the map arrays for x and y.                                 */
 /* -------------------------------------------------------------------- */
-    Array *poXMap = NULL, *poYMap = NULL;
+    Array *poXMap = NULL;
+    Array *poYMap = NULL;
     int iXDim = GetDimension( oCE, "x", NULL );
     int iYDim = GetDimension( oCE, "y", NULL );
     int iMap;
     Grid::Map_iter iterMap;
-    
+
     for( iterMap = poGrid->map_begin(), iMap = 0;
-         iterMap != poGrid->map_end(); 
+         iterMap != poGrid->map_end();
          iterMap++, iMap++ )
     {
         if( iMap == iXDim )
@@ -870,11 +845,11 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
     if( poXMap == NULL || poYMap == NULL )
         return;
 
-    if( poXMap->var()->type() != dods_float64_c 
+    if( poXMap->var()->type() != dods_float64_c
         || poYMap->var()->type() != dods_float64_c )
     {
         CPLDebug( "DODS", "Ignoring Grid Map - not a supported data type." );
-        return;							       
+        return;
     }
 
 /* -------------------------------------------------------------------- */
@@ -882,11 +857,11 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
 /*      expected size.                                                  */
 /* -------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------- 
- *  Fetch maps.  We need to construct a seperate request like:     
+/* --------------------------------------------------------------------
+ *  Fetch maps.  We need to construct a separate request like:
  *    http://dods.gso.uri.edu/cgi-bin/nph-dods/MCSST/Northwest_Atlantic/5km/raw/1982/9/m82258070000.pvu.Z?dsp_band_1.lat,dsp_band_1.lon
  *
- *  to fetch just the maps, and not the actual dataset. 
+ *  to fetch just the maps, and not the actual dataset.
  * -------------------------------------------------------------------- */
 /* -------------------------------------------------------------------- */
 /*      Build constraint expression.                                    */
@@ -894,16 +869,15 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
     string constraint;
     string xdimname = "lon";
     string ydimname = "lat";
-    
 
-    constraint = oVarName + "." + xdimname + "," 
+    constraint = oVarName + "." + xdimname + ","
         + oVarName + "." + ydimname;
 
 /* -------------------------------------------------------------------- */
 /*      Request data from server.                                       */
 /* -------------------------------------------------------------------- */
     DataDDS data( poBaseTypeFactory );
-    
+
     GetConnect()->request_data(data, constraint );
 
 /* -------------------------------------------------------------------- */
@@ -911,8 +885,8 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
 /* -------------------------------------------------------------------- */
     BaseType *poBtX = get_variable(data, oVarName + "." + xdimname );
     BaseType *poBtY = get_variable(data, oVarName + "." + ydimname );
-    if (!poBtX || !poBtY 
-        || poBtX->type() != dods_array_c 
+    if (!poBtX || !poBtY
+        || poBtX->type() != dods_array_c
         || poBtY->type() != dods_array_c )
         return;
 
@@ -950,17 +924,17 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
 /* -------------------------------------------------------------------- */
     bGotGeoTransform = TRUE;
 
-    // pixel size. 
+    // pixel size.
     adfGeoTransform[1] = (padfXMap[nRasterXSize-1] - padfXMap[0])
         / (nRasterXSize-1);
     adfGeoTransform[5] = (padfYMap[nRasterYSize-1] - padfYMap[0])
         / (nRasterYSize-1);
 
-    // rotational coefficients. 
+    // rotational coefficients.
     adfGeoTransform[2] = 0.0;
     adfGeoTransform[4] = 0.0;
 
-    // origin/ 
+    // origin/
     adfGeoTransform[0] = padfXMap[0] - adfGeoTransform[1] * 0.5;
     adfGeoTransform[3] = padfYMap[0] - adfGeoTransform[5] * 0.5;
 }
@@ -972,11 +946,10 @@ void DODSDataset::HarvestMaps( string oVarName, string oCE )
 GDALDataset *
 DODSDataset::Open(GDALOpenInfo *poOpenInfo)
 {
-    if( !EQUALN(poOpenInfo->pszFilename,"http://",7) 
-        && !EQUALN(poOpenInfo->pszFilename,"https://",8) )
+    if( !STARTS_WITH_CI(poOpenInfo->pszFilename, "http://")
+        && !STARTS_WITH_CI(poOpenInfo->pszFilename, "https://") )
         return NULL;
 
-    
     DODSDataset *poDS = new DODSDataset();
     char **papszVarConstraintList = NULL;
 
@@ -1007,9 +980,9 @@ DODSDataset::Open(GDALOpenInfo *poOpenInfo)
 /*      Get the AISConnect instance and the DAS and DDS for this        */
 /*      server.                                                         */
 /* -------------------------------------------------------------------- */
-	poDS->poConnect = poDS->connect_to_server();
-	poDS->poConnect->request_das(poDS->oDAS);
-	poDS->poConnect->request_dds(*(poDS->poDDS));
+        poDS->poConnect = poDS->connect_to_server();
+        poDS->poConnect->request_das(poDS->oDAS);
+        poDS->poConnect->request_dds(*(poDS->poDDS));
 
 /* -------------------------------------------------------------------- */
 /*      If we are given a constraint/projection list, then parse it     */
@@ -1027,28 +1000,32 @@ DODSDataset::Open(GDALOpenInfo *poOpenInfo)
 /*      Did we get any target variables?                                */
 /* -------------------------------------------------------------------- */
         if( CSLCount(papszVarConstraintList) == 0 )
-            throw Error( "No apparent raster grids or arrays found in DDS.");
+        {
+            CPLDebug( "DODS", "No apparent raster grids or arrays found in DDS.");
+            delete poDS;
+            return NULL;
+        }
 
 /* -------------------------------------------------------------------- */
 /*      For now we support only a single band.                          */
 /* -------------------------------------------------------------------- */
-        DODSRasterBand *poBaseBand = 
-            new DODSRasterBand(poDS, 
+        DODSRasterBand *poBaseBand =
+            new DODSRasterBand(poDS,
                                string(papszVarConstraintList[0]),
-                               string(papszVarConstraintList[1]), 
+                               string(papszVarConstraintList[1]),
                                1 );
 
         poDS->nRasterXSize = poBaseBand->GetXSize();
         poDS->nRasterYSize = poBaseBand->GetYSize();
-            
-	poDS->SetBand(1, poBaseBand );
+
+        poDS->SetBand(1, poBaseBand );
 
         for( int iBand = 1; papszVarConstraintList[iBand*2] != NULL; iBand++ )
         {
-            poDS->SetBand( iBand+1, 
-                           new DODSRasterBand(poDS, 
+            poDS->SetBand( iBand+1,
+                           new DODSRasterBand(poDS,
                                    string(papszVarConstraintList[iBand*2+0]),
-                                   string(papszVarConstraintList[iBand*2+1]), 
+                                   string(papszVarConstraintList[iBand*2+1]),
                                               1 ) );
         }
 
@@ -1079,19 +1056,19 @@ DODSDataset::Open(GDALOpenInfo *poOpenInfo)
     }
 
     CSLDestroy(papszVarConstraintList);
-    
+
 /* -------------------------------------------------------------------- */
 /*      Confirm the requested access is supported.                      */
 /* -------------------------------------------------------------------- */
     if( poDS != NULL && poOpenInfo->eAccess == GA_Update )
     {
         delete poDS;
-        CPLError( CE_Failure, CPLE_NotSupported, 
+        CPLError( CE_Failure, CPLE_NotSupported,
                   "The DODS driver does not support update access to existing"
                   " datasets.\n" );
         return NULL;
     }
-    
+
     return poDS;
 }
 
@@ -1099,7 +1076,7 @@ DODSDataset::Open(GDALOpenInfo *poOpenInfo)
 /*                          GetGeoTransform()                           */
 /************************************************************************/
 
-CPLErr 
+CPLErr
 DODSDataset::GetGeoTransform( double * padfTransform )
 {
     memcpy( padfTransform, adfGeoTransform, sizeof(double) * 6 );
@@ -1127,23 +1104,22 @@ DODSDataset::GetProjectionRef()
 /*                           DODSRasterBand()                           */
 /************************************************************************/
 
-DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn, 
-                               string oCEIn, int nOverviewFactorIn )
+DODSRasterBand::DODSRasterBand( DODSDataset *poDSIn, string oVarNameIn,
+                                string oCEIn, int nOverviewFactorIn ) :
+    oVarName(oVarNameIn),
+    oCE(oCEIn),
+    eColorInterp(GCI_Undefined),
+    poCT(NULL),
+    nOverviewCount(0),
+    papoOverviewBand(NULL),
+    nOverviewFactor(nOverviewFactorIn),
+    bTranspose(FALSE),
+    bFlipX(FALSE),
+    bFlipY(FALSE),
+    bNoDataSet(FALSE),
+    dfNoDataValue(0.0)
 {
     poDS = poDSIn;
-
-    bTranspose = FALSE;
-    bFlipX = FALSE;
-    bFlipY = FALSE;
-
-    oVarName = oVarNameIn;
-    oCE = oCEIn;
-    nOverviewFactor = nOverviewFactorIn;
-    eColorInterp = GCI_Undefined;
-    poCT = NULL;
-
-    nOverviewCount = 0;
-    papoOverviewBand = NULL;
 
 /* -------------------------------------------------------------------- */
 /*      Fetch the DDS definition, and isolate the Array.                */
@@ -1152,8 +1128,9 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
     if( poDDSDef == NULL )
     {
         throw InternalErr(
-            CPLSPrintf( "Could not find DDS definition for variable %s.", 
+            CPLSPrintf( "Could not find DDS definition for variable %s.",
                         oVarNameIn.c_str() ) );
+        // cppcheck-suppress duplicateBreak
         return;
     }
 
@@ -1179,7 +1156,7 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
 /* -------------------------------------------------------------------- */
 /*      Determine the datatype.                                         */
 /* -------------------------------------------------------------------- */
-    
+
     // Now grab the data type of the variable.
     switch (poArray->var()->type()) {
       case dods_byte_c: eDataType = GDT_Byte; break;
@@ -1190,7 +1167,7 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
       case dods_float32_c: eDataType = GDT_Float32; break;
       case dods_float64_c: eDataType = GDT_Float64; break;
       default:
-	throw Error("The DODS GDAL driver supports only numeric data types.");
+        throw Error("The DODS GDAL driver supports only numeric data types.");
     }
 
 /* -------------------------------------------------------------------- */
@@ -1202,7 +1179,8 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
         throw Error("Variable does not have even 2 dimensions.  For now this is required." );
     }
 
-    int nXDir = 1, nYDir = 1;
+    int nXDir = 1;
+    int nYDir = 1;
     int iXDim = GetDimension( oCE, "x", &nXDir );
     int iYDim = GetDimension( oCE, "y", &nYDir );
 
@@ -1233,27 +1211,27 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
     if( nBytesPerPixel == 1 )
     {
         nBlockXSize = 1024;
-        nBlockYSize= 256;
+        nBlockYSize = 256;
     }
     else if( nBytesPerPixel == 2 )
     {
         nBlockXSize = 512;
-        nBlockYSize= 256;
+        nBlockYSize = 256;
     }
     else if( nBytesPerPixel == 4 )
     {
         nBlockXSize = 512;
-        nBlockYSize= 128;
+        nBlockYSize = 128;
     }
     else
     {
         nBlockXSize = 256;
-        nBlockYSize= 128;
+        nBlockYSize = 128;
     }
 
     if( nRasterXSize < nBlockXSize * 2 )
         nBlockXSize = nRasterXSize;
-    
+
     if( nRasterYSize < nBlockYSize * 2 )
         nBlockYSize = nRasterYSize;
 
@@ -1268,22 +1246,20 @@ DODSRasterBand::DODSRasterBand(DODSDataset *poDSIn, string oVarNameIn,
 /* -------------------------------------------------------------------- */
     if( nOverviewFactorIn == 1 )
     {
-        int iOverview;
-
         nOverviewCount = 0;
-        papoOverviewBand = (DODSRasterBand **) 
+        papoOverviewBand = (DODSRasterBand **)
             CPLCalloc( sizeof(void*), 8 );
 
-        for( iOverview = 1; iOverview < 8; iOverview++ )
+        for( int iOverview = 1; iOverview < 8; iOverview++ )
         {
-            int nThisFactor = 1 << iOverview;
-            
+            const int nThisFactor = 1 << iOverview;
+
             if( nRasterXSize / nThisFactor < 128
                 && nRasterYSize / nThisFactor < 128 )
                 break;
 
-            papoOverviewBand[nOverviewCount++] = 
-                new DODSRasterBand( poDSIn, oVarNameIn, oCEIn, 
+            papoOverviewBand[nOverviewCount++] =
+                new DODSRasterBand( poDSIn, oVarNameIn, oCEIn,
                                     nThisFactor );
 
             papoOverviewBand[nOverviewCount-1]->bFlipX = bFlipX;
@@ -1315,7 +1291,9 @@ void DODSRasterBand::HarvestDAS()
 
 {
     DODSDataset *poDODS = dynamic_cast<DODSDataset *>(poDS);
-    
+    if( poDODS == NULL )
+        return;
+
 /* -------------------------------------------------------------------- */
 /*      Try and fetch the corresponding DAS subtree if it exists.       */
 /* -------------------------------------------------------------------- */
@@ -1345,11 +1323,11 @@ void DODSRasterBand::HarvestDAS()
     oValue = StripQuotes(poBandInfo->get_attr( "PhotometricInterpretation" ));
     for( iInterp = 0; iInterp < (int) GCI_Max; iInterp++ )
     {
-        if( oValue == GDALGetColorInterpretationName( 
+        if( oValue == GDALGetColorInterpretationName(
                 (GDALColorInterp) iInterp ) )
             eColorInterp = (GDALColorInterp) iInterp;
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Get band description.                                           */
 /* -------------------------------------------------------------------- */
@@ -1363,19 +1341,17 @@ void DODSRasterBand::HarvestDAS()
     oValue = poBandInfo->get_attr( "missing_value" );
     bNoDataSet=FALSE;
     if( oValue != "" ) {
-        SetNoDataValue( atof(oValue.c_str()) );
+        SetNoDataValue( CPLAtof(oValue.c_str()) );
     } else {
 
 /* -------------------------------------------------------------------- */
 /* Try _FillValue                                                       */
 /* -------------------------------------------------------------------- */
-	oValue = poBandInfo->get_attr( "_FillValue" );
-	if( oValue != "" ) {
-	    SetNoDataValue( atof(oValue.c_str()) );
-	}
+        oValue = poBandInfo->get_attr( "_FillValue" );
+        if( oValue != "" ) {
+            SetNoDataValue( CPLAtof(oValue.c_str()) );
+        }
     }
-
-
 
 /* -------------------------------------------------------------------- */
 /*      Collect color table                                             */
@@ -1387,8 +1363,8 @@ void DODSRasterBand::HarvestDAS()
 
         poCT = new GDALColorTable();
 
-        for( dv_i = poCTable->attr_begin(); 
-             dv_i != poCTable->attr_end(); 
+        for( dv_i = poCTable->attr_begin();
+             dv_i != poCTable->attr_end();
              dv_i++ )
         {
             if( !poCTable->is_container( dv_i ) )
@@ -1407,7 +1383,7 @@ void DODSRasterBand::HarvestDAS()
                 sEntry.c4 = 255;
             else
                 sEntry.c4 = atoi(poColor->get_attr( "alpha" ).c_str());
-            
+
             poCT->SetColorEntry( poCT->GetColorEntryCount(), &sEntry );
         }
     }
@@ -1428,7 +1404,7 @@ void DODSRasterBand::HarvestDAS()
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr 
+CPLErr
 DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 {
     DODSDataset *poDODS = dynamic_cast<DODSDataset *>(poDS);
@@ -1465,21 +1441,21 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 /* -------------------------------------------------------------------- */
     string x_constraint, y_constraint, raw_constraint, final_constraint;
 
-    x_constraint = 
-        CPLSPrintf( "[%d:%d:%d]", 
-                    nXOff * nOverviewFactor, 
-                    nOverviewFactor, 
+    x_constraint =
+        CPLSPrintf( "[%d:%d:%d]",
+                    nXOff * nOverviewFactor,
+                    nOverviewFactor,
                     (nXOff + nXSize - 1) * nOverviewFactor );
-    y_constraint = 
-        CPLSPrintf( "[%d:%d:%d]", 
+    y_constraint =
+        CPLSPrintf( "[%d:%d:%d]",
                     nYOff * nOverviewFactor,
                     nOverviewFactor,
                     (nYOff + nYSize - 1) * nOverviewFactor );
 
     raw_constraint = oVarName + oCE;
 
-    final_constraint = poDODS->SubConstraint( raw_constraint, 
-                                              x_constraint, 
+    final_constraint = poDODS->SubConstraint( raw_constraint,
+                                              x_constraint,
                                               y_constraint );
 
     CPLDebug( "DODS", "constraint = %s", final_constraint.c_str() );
@@ -1497,20 +1473,21 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 /* -------------------------------------------------------------------- */
         BaseType *poBt = get_variable(data, oVarName );
         if (!poBt)
-            throw Error(string("I could not read the variable '")
-		    + oVarName		    + string("' from the data source at:\n")
-		    + poDODS->GetUrl() );
+            throw Error(
+                string("I could not read the variable '")
+                + oVarName + string("' from the data source at:\n")
+                + poDODS->GetUrl() );
 
-        Array *poA;
+        Array *poA = NULL;
         switch (poBt->type()) {
           case dods_grid_c:
             poA = dynamic_cast<Array*>(dynamic_cast<Grid*>(poBt)->array_var());
             break;
-            
+
           case dods_array_c:
             poA = dynamic_cast<Array *>(poBt);
             break;
-            
+
           default:
             throw InternalErr("Expected an Array or Grid variable!");
         }
@@ -1519,15 +1496,15 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 /*      Pre-initialize the output buffer to zero.                       */
 /* -------------------------------------------------------------------- */
         if( nXSize < nBlockXSize || nYSize < nBlockYSize )
-            memset( pImage, 0, 
-                    nBlockXSize * nBlockYSize 
+            memset( pImage, 0,
+                    nBlockXSize * nBlockYSize
                     * GDALGetDataTypeSize(eDataType) / 8 );
 
 /* -------------------------------------------------------------------- */
 /*      Dump the contents of the Array data into our output image buffer.*/
 /*                                                                      */
 /* -------------------------------------------------------------------- */
-        poA->buf2val(&pImage);	// !Suck the data out of the Array!
+        poA->buf2val(&pImage);  // !Suck the data out of the Array!
 
 /* -------------------------------------------------------------------- */
 /*      If the [x] dimension comes before [y], we need to transpose     */
@@ -1535,53 +1512,51 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 /* -------------------------------------------------------------------- */
         if( bTranspose )
         {
-            GByte *pabyDataCopy;
             int iY;
-            
+
             CPLDebug( "DODS", "Applying transposition" );
-            
+
             // make a copy of the original
-            pabyDataCopy = (GByte *) 
+            GByte *pabyDataCopy = (GByte *)
                 CPLMalloc(nBytesPerPixel * nXSize * nYSize);
             memcpy( pabyDataCopy, pImage, nBytesPerPixel * nXSize * nYSize );
             memset( pImage, 0, nBytesPerPixel * nXSize * nYSize );
-            
+
             for( iY = 0; iY < nYSize; iY++ )
             {
-                GDALCopyWords( pabyDataCopy + iY * nBytesPerPixel, 
+                GDALCopyWords( pabyDataCopy + iY * nBytesPerPixel,
                                eDataType, nBytesPerPixel * nYSize,
-                               ((GByte *) pImage) + iY * nXSize * nBytesPerPixel, 
+                               ((GByte *) pImage) + iY * nXSize * nBytesPerPixel,
                                eDataType, nBytesPerPixel, nXSize );
             }
-            
+
             // cleanup
             CPLFree( pabyDataCopy );
         }
-        
+
 /* -------------------------------------------------------------------- */
 /*      Do we need "x" flipping?                                        */
 /* -------------------------------------------------------------------- */
         if( bFlipX )
         {
-            GByte *pabyDataCopy;
             int iY;
-            
+
             CPLDebug( "DODS", "Applying X flip." );
-            
+
             // make a copy of the original
-            pabyDataCopy = (GByte *) 
+            GByte *pabyDataCopy = (GByte *)
                 CPLMalloc(nBytesPerPixel * nXSize * nYSize);
             memcpy( pabyDataCopy, pImage, nBytesPerPixel * nXSize * nYSize );
             memset( pImage, 0, nBytesPerPixel * nXSize * nYSize );
-            
+
             for( iY = 0; iY < nYSize; iY++ )
             {
                 GDALCopyWords( pabyDataCopy + iY*nXSize*nBytesPerPixel,
                                eDataType, nBytesPerPixel,
-                               ((GByte *) pImage) + ((iY+1)*nXSize-1)*nBytesPerPixel, 
+                               ((GByte *) pImage) + ((iY+1)*nXSize-1)*nBytesPerPixel,
                                eDataType, -nBytesPerPixel, nXSize );
             }
-            
+
             // cleanup
             CPLFree( pabyDataCopy );
         }
@@ -1591,16 +1566,15 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
 /* -------------------------------------------------------------------- */
         if( bFlipY )
         {
-            GByte *pabyDataCopy;
             int iY;
-            
+
             CPLDebug( "DODS", "Applying Y flip." );
-            
+
             // make a copy of the original
-            pabyDataCopy = (GByte *) 
+            GByte *pabyDataCopy = (GByte *)
                 CPLMalloc(nBytesPerPixel * nXSize * nYSize);
             memcpy( pabyDataCopy, pImage, nBytesPerPixel * nXSize * nYSize );
-            
+
             for( iY = 0; iY < nYSize; iY++ )
             {
                 GDALCopyWords( pabyDataCopy + iY*nXSize*nBytesPerPixel,
@@ -1609,7 +1583,7 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
                                eDataType, nBytesPerPixel,
                                nXSize );
             }
-            
+
             // cleanup
             CPLFree( pabyDataCopy );
         }
@@ -1627,7 +1601,7 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
                 memmove( ((GByte *) pImage) + iLine*nBlockXSize*nBytesPerPixel,
                          ((GByte *) pImage) + iLine * nXSize * nBytesPerPixel,
                          nBytesPerPixel * nXSize );
-                memset( ((GByte *) pImage) 
+                memset( ((GByte *) pImage)
                         + (iLine*nBlockXSize + nXSize)*nBytesPerPixel,
                         0, nBytesPerPixel * (nBlockXSize - nXSize) );
             }
@@ -1641,7 +1615,7 @@ DODSRasterBand::IReadBlock(int nBlockXOff, int nBlockYOff, void *pImage)
         CPLError(CE_Failure, CPLE_AppDefined, "%s", e.get_error_message().c_str());
         return CE_Failure;
     }
-    
+
     return CE_None;
 }
 
@@ -1718,25 +1692,23 @@ double DODSRasterBand::GetNoDataValue( int * pbSuccess )
 /*                         GDALRegister_DODS()                          */
 /************************************************************************/
 
-void 
-GDALRegister_DODS()
+void GDALRegister_DODS()
+
 {
-    GDALDriver *poDriver;
-    
-    if (! GDAL_CHECK_VERSION("GDAL/DODS driver"))
+    if( !GDAL_CHECK_VERSION("GDAL/DODS driver") )
         return;
 
-    if( GDALGetDriverByName( "DODS" ) == NULL ) {
-        poDriver = new GDALDriver();
-        
-        poDriver->SetDescription( "DODS" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "DAP 3.x servers" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
-                                   "frmt_various.html#DODS" );
+    if( GDALGetDriverByName( "DODS" ) != NULL )
+        return;
 
-        poDriver->pfnOpen = DODSDataset::Open;
+    GDALDriver *poDriver = new GDALDriver();
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->SetDescription( "DODS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "DAP 3.x servers" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "frmt_various.html#DODS" );
+
+    poDriver->pfnOpen = DODSDataset::Open;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-

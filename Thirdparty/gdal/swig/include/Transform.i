@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: Transform.i 10967 2007-03-15 20:04:37Z warmerdam $
+ * $Id: Transform.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Project:  GDAL SWIG Interfaces.
  * Purpose:  GDAL transformer related declarations.
@@ -29,7 +29,7 @@
 
 void *GDALCreateGCPTransformer( int nGCPs, GDAL_GCP const * pGCPs,
                                      int nOrder, int bApproxOK);
- 
+
 int GDALGCPTransform    (
         void *pTransformArg,
         int     bDstToSrc,
@@ -39,5 +39,5 @@ int GDALGCPTransform    (
         double *    z,
         int *   optional_int
     );
- 
+
 void GDALDestroyGCPTransformer (void *pTransformArg);

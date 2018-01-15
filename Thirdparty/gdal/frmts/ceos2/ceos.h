@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ceos.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: ceos.h 37040 2016-12-30 15:31:43Z rouault $
  *
  * Project:  ASI CEOS Translator
  * Purpose:  CEOS library prototypes
@@ -27,9 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-
-#ifndef __CEOS_H
-#define __CEOS_H
+#ifndef CEOS_H
+#define CEOS_H
 
 #include "cpl_conv.h"
 
@@ -39,10 +38,10 @@ CPL_C_START
 #define TBool int
 #define uchar unsigned char
 
-typedef struct Link_t_struct 
+typedef struct Link_t_struct
 {
-  struct Link_t_struct	*next;
-  void		*object;
+  struct Link_t_struct *next;
+  void          *object;
 } Link_t;
 
 #define HMalloc CPLMalloc
@@ -56,92 +55,91 @@ Link_t *AddLink( Link_t *psList, Link_t *psLink );
 
 /* Basic CEOS header defs */
 
-#define __SEQUENCE_OFF 0
-#define __TYPE_OFF 4
-#define __LENGTH_OFF 8
-#define __CEOS_HEADER_LENGTH 12
+#define SEQUENCE_OFF 0
+#define TYPE_OFF 4
+#define LENGTH_OFF 8
+#define CEOS_HEADER_LENGTH 12
 
 /* Defines for CEOS banding type */
 
-#define __CEOS_IL_PIXEL 1
-#define __CEOS_IL_LINE  2
-#define __CEOS_IL_BAND  3
+#define CEOS_IL_PIXEL 1
+#define CEOS_IL_LINE  2
+#define CEOS_IL_BAND  3
 
 /* Defines for CEOS data types */
 
-#define __CEOS_TYP_CHAR 1
-#define __CEOS_TYP_UCHAR 2
-#define __CEOS_TYP_SHORT 3
-#define __CEOS_TYP_USHORT 4
-#define __CEOS_TYP_LONG 5
-#define __CEOS_TYP_ULONG 6
-#define __CEOS_TYP_FLOAT 7
-#define __CEOS_TYP_DOUBLE 8
-#define __CEOS_TYP_COMPLEX_CHAR 9
-#define __CEOS_TYP_COMPLEX_UCHAR 10
-#define __CEOS_TYP_COMPLEX_SHORT 11
-#define __CEOS_TYP_COMPLEX_USHORT 12
-#define __CEOS_TYP_COMPLEX_LONG 13
-#define __CEOS_TYP_COMPLEX_ULONG 14
-#define __CEOS_TYP_COMPLEX_FLOAT 15
-#define __CEOS_TYP_CCP_COMPLEX_FLOAT 16 /* COMPRESSED CROSS PRODUCT */
-#define __CEOS_TYP_PALSAR_COMPLEX_SHORT 17 /* PALSAR - treat as COMPLEX SHORT*/
+#define CEOS_TYP_CHAR 1
+#define CEOS_TYP_UCHAR 2
+#define CEOS_TYP_SHORT 3
+#define CEOS_TYP_USHORT 4
+#define CEOS_TYP_LONG 5
+#define CEOS_TYP_ULONG 6
+#define CEOS_TYP_FLOAT 7
+#define CEOS_TYP_DOUBLE 8
+#define CEOS_TYP_COMPLEX_CHAR 9
+#define CEOS_TYP_COMPLEX_UCHAR 10
+#define CEOS_TYP_COMPLEX_SHORT 11
+#define CEOS_TYP_COMPLEX_USHORT 12
+#define CEOS_TYP_COMPLEX_LONG 13
+#define CEOS_TYP_COMPLEX_ULONG 14
+#define CEOS_TYP_COMPLEX_FLOAT 15
+#define CEOS_TYP_CCP_COMPLEX_FLOAT 16 /* COMPRESSED CROSS PRODUCT */
+#define CEOS_TYP_PALSAR_COMPLEX_SHORT 17 /* PALSAR - treat as COMPLEX SHORT*/
 
 /* Defines for CEOS file names */
 
-#define __CEOS_VOLUME_DIR_FILE 0
-#define __CEOS_LEADER_FILE    1
-#define __CEOS_IMAGRY_OPT_FILE 2
-#define __CEOS_TRAILER_FILE    3
-#define __CEOS_NULL_VOL_FILE   4
-#define __CEOS_ANY_FILE -1
+#define CEOS_VOLUME_DIR_FILE 0
+#define CEOS_LEADER_FILE    1
+#define CEOS_IMAGRY_OPT_FILE 2
+#define CEOS_TRAILER_FILE    3
+#define CEOS_NULL_VOL_FILE   4
+#define CEOS_ANY_FILE -1
 
 /* Defines for Recipe values */
 
-#define __CEOS_REC_NUMCHANS 1
-#define __CEOS_REC_INTERLEAVE 2
-#define __CEOS_REC_DATATYPE 3
-#define __CEOS_REC_BPR 4
-#define __CEOS_REC_LINES 5
-#define __CEOS_REC_TBP 6
-#define __CEOS_REC_BBP 7
-#define __CEOS_REC_PPL 8
-#define __CEOS_REC_LBP 9
-#define __CEOS_REC_RBP 10
-#define __CEOS_REC_BPP 11
-#define __CEOS_REC_RPL 12
-#define __CEOS_REC_PPR 13
-#define __CEOS_REC_IDS 14
-#define __CEOS_REC_FDL 15
-#define __CEOS_REC_PIXORD 16
-#define __CEOS_REC_LINORD 17
-#define __CEOS_REC_PRODTYPE 18
-#define __CEOS_REC_RECORDSIZE 19
-#define __CEOS_REC_SUFFIX_SIZE 20
-#define __CEOS_REC_PDBPR 21
+#define CEOS_REC_NUMCHANS 1
+#define CEOS_REC_INTERLEAVE 2
+#define CEOS_REC_DATATYPE 3
+#define CEOS_REC_BPR 4
+#define CEOS_REC_LINES 5
+#define CEOS_REC_TBP 6
+#define CEOS_REC_BBP 7
+#define CEOS_REC_PPL 8
+#define CEOS_REC_LBP 9
+#define CEOS_REC_RBP 10
+#define CEOS_REC_BPP 11
+#define CEOS_REC_RPL 12
+#define CEOS_REC_PPR 13
+#define CEOS_REC_IDS 14
+#define CEOS_REC_FDL 15
+#define CEOS_REC_PIXORD 16
+#define CEOS_REC_LINORD 17
+#define CEOS_REC_PRODTYPE 18
+#define CEOS_REC_RECORDSIZE 19
+#define CEOS_REC_SUFFIX_SIZE 20
+#define CEOS_REC_PDBPR 21
 
 /* Defines for Recipe Types */
 
-#define __CEOS_REC_TYP_A  1
-#define __CEOS_REC_TYP_B  2
-#define __CEOS_REC_TYP_I  3
+#define CEOS_REC_TYP_A  1
+#define CEOS_REC_TYP_B  2
+#define CEOS_REC_TYP_I  3
 
 /* Defines for SAR Embedded info */
 
-#define __CEOS_SAR_ACQ_YEAR 1
-#define __CEOS_SAR_ACQ_DAY  2
-#define __CEOS_SAR_ACQ_MSEC 4
-#define __CEOS_SAR_TRANS_POL 8
-#define __CEOS_SAR_PULSE_REP 16
-#define __CEOS_SAR_SLANT_FIRST 32
-#define __CEOS_SAR_SLANT_MID 64
-#define __CEOS_SAR_SLANT_LAST 128
+#define CEOS_SAR_ACQ_YEAR 1
+#define CEOS_SAR_ACQ_DAY  2
+#define CEOS_SAR_ACQ_MSEC 4
+#define CEOS_SAR_TRANS_POL 8
+#define CEOS_SAR_PULSE_REP 16
+#define CEOS_SAR_SLANT_FIRST 32
+#define CEOS_SAR_SLANT_MID 64
+#define CEOS_SAR_SLANT_LAST 128
 
 /* Maximum size of LUT for Calibration records */
-#define __CEOS_RADAR_MAX_LUT 512
-#define __CEOS_RADAR_FLIP_DATE 19980101
-#define __CEOS_RADAR_FACILITY "CDPF-RSAT"
-
+#define CEOS_RADAR_MAX_LUT 512
+#define CEOS_RADAR_FLIP_DATE 19980101
+#define CEOS_RADAR_FACILITY "CDPF-RSAT"
 
 typedef union
 {
@@ -160,7 +158,7 @@ typedef struct
     int32          Sequence;
     CeosTypeCode_t TypeCode;
     int32          Length;
-    int32          Flavour;
+    int32          Flavor;
     int32          Subsequence;
     int32          FileId;
     uchar *        Buffer;
@@ -192,7 +190,7 @@ struct CeosSARImageDesc
 
 typedef struct
 {
-    int32          Flavour;
+    int32          Flavor;
     int32          Sensor;
     int32          ProductType;
     int32          FileNamingConvention;
@@ -207,7 +205,7 @@ typedef struct
     Link_t *       RecordList;
 } CeosSARVolume_t;
 
-typedef struct 
+typedef struct
 {
     int            ImageDescValue;
     int            Override;
@@ -222,12 +220,10 @@ typedef struct
     int            Type;
 } CeosRecipeType_t;
 
-
 typedef struct
 {
     CeosRecipeType_t *Recipe;
 } CeosSARImageDescRecipe_t;
-
 
 typedef struct
 {
@@ -254,9 +250,7 @@ typedef struct
     int NumberOfSamples;
     int Increment;
     TBool PossiblyFlipped;
-    
 } CeosRadarCalibration_t;
-
 
 /* Function prototypes */
 
@@ -280,7 +274,7 @@ void SetCeosField(CeosRecord_t *record, int32 start_byte, char *format, void *va
 
 void SetIntCeosField(CeosRecord_t *record, int32 start_byte, int32 length, int32 value);
 
-CeosRecord_t *FindCeosRecord(Link_t *record_list, CeosTypeCode_t typecode, int32 fileid, int32 flavour, int32 subsequence);
+CeosRecord_t *FindCeosRecord(Link_t *record_list, CeosTypeCode_t typecode, int32 fileid, int32 flavor, int32 subsequence);
 
 void SerializeCeosRecordsToFile(Link_t *record_list, VSILFILE *fp);
 
@@ -303,13 +297,13 @@ void GetCeosSAREmbeddedInfo(CeosSARVolume_t *volume, CeosRecord_t *processed_dat
 void DeleteCeosSARVolume(CeosSARVolume_t *volume);
 
 void RegisterRecipes(void);
-void FreeRecipes();
+void FreeRecipes(void);
 
-void AddRecipe( int ( *function )( CeosSARVolume_t *volume, void *token ),
-		void *token, const char *name );
+void AddRecipe( int ( *function )( CeosSARVolume_t *volume, const void *token ),
+                const void *token, const char *name );
 
-int CeosDefaultRecipe( CeosSARVolume_t *volume, void *token );
-int ScanSARRecipeFCN( CeosSARVolume_t *volume, void *token );
+int CeosDefaultRecipe( CeosSARVolume_t *volume, const void *token );
+int ScanSARRecipeFCN( CeosSARVolume_t *volume, const void *token );
 
 /* ceoscalib.c function declarations */
 

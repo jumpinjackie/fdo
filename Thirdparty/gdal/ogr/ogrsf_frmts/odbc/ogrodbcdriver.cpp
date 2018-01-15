@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrodbcdriver.cpp 24957 2012-09-23 17:03:30Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRODBCDriver class.
@@ -30,7 +29,7 @@
 #include "ogr_odbc.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrodbcdriver.cpp 24957 2012-09-23 17:03:30Z rouault $");
+CPL_CVSID("$Id: ogrodbcdriver.cpp 35145 2016-08-18 14:47:27Z goatbar $");
 
 /************************************************************************/
 /*                            ~OGRODBCDriver()                            */
@@ -59,16 +58,14 @@ OGRDataSource *OGRODBCDriver::Open( const char * pszFilename,
                                      int bUpdate )
 
 {
-    OGRODBCDataSource     *poDS;
-
-    if( !EQUALN(pszFilename,"ODBC:",5) 
+    if( !STARTS_WITH_CI(pszFilename, "ODBC:")
 #ifdef WIN32
         && !EQUAL(CPLGetExtension(pszFilename), "MDB")
 #endif
         )
         return NULL;
 
-    poDS = new OGRODBCDataSource();
+    OGRODBCDataSource *poDS = new OGRODBCDataSource();
 
     if( !poDS->Open( pszFilename, bUpdate, TRUE ) )
     {
@@ -87,18 +84,15 @@ OGRDataSource *OGRODBCDriver::CreateDataSource( const char * pszName,
                                               char ** /* papszOptions */ )
 
 {
-    OGRODBCDataSource     *poDS;
-
-    if( !EQUALN(pszName,"ODBC:",5) )
+    if( !STARTS_WITH_CI(pszName, "ODBC:") )
         return NULL;
 
-    poDS = new OGRODBCDataSource();
-
+    OGRODBCDataSource *poDS = new OGRODBCDataSource();
 
     if( !poDS->Open( pszName, TRUE, TRUE ) )
     {
         delete poDS;
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
          "ODBC driver doesn't currently support database creation.\n"
                   "Please create database with the `createdb' command." );
         return NULL;
@@ -129,4 +123,3 @@ void RegisterOGRODBC()
 {
     OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRODBCDriver );
 }
-

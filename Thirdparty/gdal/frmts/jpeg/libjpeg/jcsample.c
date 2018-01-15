@@ -29,7 +29,7 @@
  *   Pub. by IEEE Computer Society Press, Los Alamitos, CA. ISBN 0-8186-8944-7.
  *
  * The downsampling algorithm used here is a simple average of the source
- * pixels covered by the output pixel.  The hi-falutin sampling literature
+ * pixels covered by the output pixel.  The highfalutin sampling literature
  * refers to this as a "box filter".  In general the characteristics of a box
  * filter are not very good, but for the specific cases we normally use (1:1
  * and 2:1 ratios) the box is equivalent to a "triangle filter" which is not
@@ -49,6 +49,7 @@
 #include "jinclude.h"
 #include "jpeglib.h"
 
+#include "cpl_port.h"
 
 /* Pointer to routine to downsample a single component */
 typedef JMETHOD(void, downsample1_ptr,
@@ -72,7 +73,7 @@ typedef my_downsampler * my_downsample_ptr;
  */
 
 METHODDEF(void)
-start_pass_downsample (j_compress_ptr cinfo)
+start_pass_downsample (CPL_UNUSED j_compress_ptr cinfo)
 {
   /* no work for now */
 }

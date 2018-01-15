@@ -397,7 +397,7 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
    size_t j;            /* Counter over the length of the current group. */
    char *buffer;        /* Used to store the current "ugly" string. */
    int buffLen;         /* Length of current "ugly" string. */
-   int len;             /* length of current english phrases during creation
+   int len;             /* length of current English phrases during creation
                          * of the maxEng[] data. */
    int i;               /* assists in traversing the maxEng[] array. */
 
@@ -476,7 +476,7 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
       Wx->data = (char **) realloc ((void *) Wx->data,
                                     Wx->dataLen * sizeof (char *));
       /* Assert: buffLen is 1 more than strlen(buffer). -- FALSE -- */
-      buffLen = strlen (buffer) + 1;
+      buffLen = static_cast<int>(strlen (buffer)) + 1;
 
       Wx->data[Wx->dataLen - 1] = (char *) malloc (buffLen * sizeof (char));
       if (Wx->maxLen < buffLen) {
@@ -490,13 +490,13 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
    for (j = 0; j < Wx->dataLen; j++) {
       ParseUglyString (&(Wx->ugly[j]), Wx->data[j], simpVer);
    }
-   /* We want to know how many bytes we need for each english phrase column,
+   /* We want to know how many bytes we need for each English phrase column,
     * so we walk through each column calculating that value. */
    for (i = 0; i < NUM_UGLY_WORD; i++) {
       /* Assert: Already initialized Wx->maxEng[i]. */
       for (j = 0; j < Wx->dataLen; j++) {
          if (Wx->ugly[j].english[i] != NULL) {
-            len = strlen (Wx->ugly[j].english[i]);
+            len = static_cast<int>(strlen (Wx->ugly[j].english[i]));
             if (len > Wx->maxEng[i]) {
                Wx->maxEng[i] = len;
             }
@@ -659,7 +659,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
                          * lat/lon. See GRIB2 Regulation 92.1.6 */
    sInt4 angle;         /* For Lat/Lon, 92.1.6 may not hold, in which case,
                          * angle != 0, and unit = angle/subdivision. */
-   sInt4 subdivision;   /* see angle explaination. */
+   sInt4 subdivision;   /* see angle explanation. */
 
    if (ns3 < 14) {
       return -1;
@@ -682,8 +682,9 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
    }
    meta->gds.projType = (uChar) is3[12];
 
-	 // Don't refuse to convert the GRIB file if only the projection is unknown to us
-	 /*
+   // Do not refuse to convert the GRIB file if only the projection is unknown.
+
+   /*
    if ((is3[12] != GS3_LATLON) && (is3[12] != GS3_MERCATOR) &&
        (is3[12] != GS3_POLAR) && (is3[12] != GS3_LAMBERT)) {
       errSprintf ("Un-supported Map Projection %ld\n", is3[12]);
@@ -725,7 +726,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             errSprintf ("Missing info on radius of Earth.\n");
             return -2;
          }
-         /* Check if our m assumption was valid. If it wasn't, they give us
+         /* Check if our m assumption was valid. If it was not, they give us
           * 6371 km, which we convert to 6.371 < 6.4 */
          if (meta->gds.majEarth < 6.4) {
             meta->gds.majEarth = meta->gds.majEarth * 1000.;
@@ -763,7 +764,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             errSprintf ("Missing info on major / minor axis of Earth.\n");
             return -2;
          }
-         /* Check if our km assumption was valid. If it wasn't, they give us
+         /* Check if our km assumption was valid. If it was not, they give us
           * 6371000 m, which is > 6400. */
          if (meta->gds.majEarth > 6400) {
             meta->gds.majEarth = meta->gds.majEarth / 1000.;
@@ -788,7 +789,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             errSprintf ("Missing info on major / minor axis of Earth.\n");
             return -2;
          }
-         /* Check if our m assumption was valid. If it wasn't, they give us
+         /* Check if our m assumption was valid. If it was not, they give us
           * 6371 km, which we convert to 6.371 < 6.4 */
          if (meta->gds.majEarth < 6.4) {
             meta->gds.majEarth = meta->gds.majEarth * 1000.;
@@ -988,14 +989,14 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
    }
    if (meta->gds.scan != GRIB2BIT_2) {
 #ifdef DEBUG
-      printf ("Scan mode is expected to be 0100 (ie %d) not %d\n",
+      printf ("Scan mode is expected to be 0100 (i.e. %d) not %u\n",
               GRIB2BIT_2, meta->gds.scan);
       printf ("The merged GRIB2 Library should return it in 0100\n");
       printf ("The merged library swaps both NCEP and MDL data to scan "
               "mode 0100\n");
 #endif
 /*
-      errSprintf ("Scan mode is expected to be 0100 (ie %d) not %d",
+      errSprintf ("Scan mode is expected to be 0100 (i.e. %d) not %d",
                   GRIB2BIT_2, meta->gds.scan);
       return -2;
 */
@@ -1034,14 +1035,14 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
 int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
 {
    /* Following is a lookup table for unit conversion (see code table 4.4). */
-   static sInt4 unit2sec[] = {
+   static const sInt4 unit2sec[] = {
       60, 3600, 86400L, 0, 0,
       0, 0, 0, 0, 0,
       10800, 21600L, 43200L
    };
    if ((unit >= 0) && (unit < 13)) {
       if (unit2sec[unit] != 0) {
-         *ans = (double) (time * unit2sec[unit]);
+         *ans = (double) (time) * unit2sec[unit];
          return 0;
       }
    } else if (unit == 254) {
@@ -1083,14 +1084,14 @@ int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
 int ParseSect4Time2sec (sInt4 time, int unit, double *ans)
 {
    /* Following is a lookup table for unit conversion (see code table 4.4). */
-   static sInt4 unit2sec[] = {
+   static const sInt4 unit2sec[] = {
       60, 3600, 86400L, 0, 0,
       0, 0, 0, 0, 0,
       10800, 21600L, 43200L, 1
    };
    if ((unit >= 0) && (unit < 14)) {
       if (unit2sec[unit] != 0) {
-         *ans = (double) (time * unit2sec[unit]);
+         *ans = (double) (time) * unit2sec[unit];
          return 0;
       }
    }
@@ -1165,7 +1166,8 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
        (is4[7] != GS4_DERIVED) && (is4[7] != GS4_PROBABIL_PNT) &&
        (is4[7] != GS4_STATISTIC) && (is4[7] != GS4_PROBABIL_TIME) &&
        (is4[7] != GS4_PERCENTILE) && (is4[7] != GS4_ENSEMBLE_STAT) &&
-       (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL)) {
+       (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL) &&
+       (is4[7] != GS4_STATISTIC_SPATIAL_AREA)) {
 #ifdef DEBUG
       printf ("Un-supported Template. %d\n", is4[7]);
 #endif
@@ -1174,7 +1176,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    }
    meta->pds2.sect4.templat = (unsigned short int) is4[7];
 
-   /* 
+   /*
     * Handle variables common to the supported templates.
     */
    if (ns4 < 34) {
@@ -1563,6 +1565,12 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
             meta->pds2.sect4.Interval[i].timeIncr = (uChar) is4[67 + i * 12];
          }
          break;
+      case GS4_STATISTIC_SPATIAL_AREA: /* 4.15 */
+            // TODO. Need to fetch
+            // 35 Statistical process used within the spatial area defined by octet 36 (see Code Table 4.10)
+            // 36 Type of spatial processing used to arrive at given data value from source data (see Code Table 4.15)
+            // 37 Number of data points used in spatial processing defined in octet 36
+            break;
       default:
          errSprintf ("Un-supported Template. %ld\n", is4[7]);
          return -4;
@@ -1724,6 +1732,16 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    double upperProb;    /* The upper limit on probability forecast if
                          * template 4.5 or 4.9 */
    sInt4 lenTime;       /* Length of time for element (see 4.8 and 4.9) */
+   uChar timeRangeUnit = 1;
+   uChar incrType;
+   uChar fstSurfType;   /* Type of the first fixed surface. */
+   sInt4 value;         /* The scaled value from GRIB2 file. */
+   sChar scale;         /* Surface scale as opposed to probility factor. */
+   double fstSurfValue; /* Value of first fixed surface. */
+   sChar f_fstValue;    /* flag if FstValue is valid. */
+   uChar sndSurfType;   /* Type of the second fixed surface. */
+   double sndSurfValue; /* Value of second fixed surface. */
+   sChar f_sndValue;    /* flag if SndValue is valid. */
 
    if ((ierr = ParseSect0 (is0, ns0, grib_len, meta)) != 0) {
       preErrSprintf ("Parse error Section 0\n");
@@ -1822,22 +1840,54 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       if (lenTime == GRIB2MISSING_s4) {
          lenTime = 0;
       }
-      ParseElemName (meta->center, meta->subcenter,
-                     meta->pds2.prodType, meta->pds2.sect4.templat,
-                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat,
-                     lenTime, meta->pds2.sect4.Interval[0].incrType,
-                     meta->pds2.sect4.genID, probType, lowerProb,
-                     upperProb, &(meta->element), &(meta->comment),
-                     &(meta->unitName), &(meta->convert),
-                     meta->pds2.sect4.percentile);
+      incrType = meta->pds2.sect4.Interval[0].incrType;
    } else {
-      ParseElemName (meta->center, meta->subcenter,
-                     meta->pds2.prodType, meta->pds2.sect4.templat,
-                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat, 0, 255,
-                     meta->pds2.sect4.genID, probType, lowerProb, upperProb,
-                     &(meta->element), &(meta->comment), &(meta->unitName),
-                     &(meta->convert), meta->pds2.sect4.percentile);
+      lenTime = 0;
+      timeRangeUnit = 1;
+      incrType = 255;
    }
+
+   if ((meta->pds2.sect4.templat == GS4_RADAR) || (meta->pds2.sect4.templat == GS4_SATELLITE)
+       || (meta->pds2.sect4.templat == 254) || (meta->pds2.sect4.templat == 1000) || (meta->pds2.sect4.templat == 1001)
+       || (meta->pds2.sect4.templat == 1002)) {
+      fstSurfValue = 0;
+      f_fstValue = 0;
+      fstSurfType = 0;
+      sndSurfValue = 0;
+      f_sndValue = 0;
+   } else {
+      fstSurfType = meta->pds2.sect4.fstSurfType;
+      scale = meta->pds2.sect4.fstSurfScale;
+      value = static_cast<int>(meta->pds2.sect4.fstSurfValue);
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (fstSurfType == GRIB2MISSING_u1)) {
+         fstSurfValue = 0;
+         f_fstValue = 1;
+      } else {
+         fstSurfValue = value * pow (10.0, -1 * scale);
+         f_fstValue = 1;
+      }
+      sndSurfType = meta->pds2.sect4.sndSurfType;
+      scale = meta->pds2.sect4.sndSurfScale;
+      value = static_cast<int>(meta->pds2.sect4.sndSurfValue);
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (sndSurfType == GRIB2MISSING_u1)) {
+         sndSurfValue = 0;
+         f_sndValue = 0;
+      } else {
+         sndSurfValue = value * pow (10.0, -1 * scale);
+         f_sndValue = 1;
+      }
+   }
+
+   ParseElemName (meta->center, meta->subcenter, meta->pds2.prodType,
+                  meta->pds2.sect4.templat, meta->pds2.sect4.cat,
+                  meta->pds2.sect4.subcat, lenTime, timeRangeUnit, incrType,
+                  meta->pds2.sect4.genID, probType, lowerProb, upperProb,
+                  &(meta->element), &(meta->comment), &(meta->unitName),
+                  &(meta->convert), meta->pds2.sect4.percentile,
+                  meta->pds2.sect4.genProcess,
+                  f_fstValue, fstSurfValue, f_sndValue, sndSurfValue);
 #ifdef DEBUG
 /*
    printf ("Element: %s\nunitName: %s\ncomment: %s\n", meta->element,
@@ -1845,66 +1895,13 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
 */
 #endif
 
-/*
-   if (strcmp (element, "") == 0) {
-      meta->element = (char *) realloc ((void *) (meta->element),
-                                        (1 + strlen ("unknown")) *
-                                        sizeof (char));
-      strcpy (meta->element, "unknown");
+   if (! f_fstValue) {
+      reallocSprintf (&(meta->shortFstLevel), "0 undefined");
+      reallocSprintf (&(meta->longFstLevel), "0.000[-] undefined ()");
    } else {
-      if (IsData_MOS (meta->pds2.center, meta->pds2.subcenter)) {
-         * See : http://www.nco.ncep.noaa.gov/pmb/docs/on388/tablea.html *
-         if (meta->pds2.sect4.genID == 96) {
-            meta->element = (char *) realloc ((void *) (meta->element),
-                                              (1 + 7 + strlen (element)) *
-                                              sizeof (char));
-            sprintf (meta->element, "MOSGFS-%s", element);
-         } else {
-            meta->element = (char *) realloc ((void *) (meta->element),
-                                              (1 + 4 + strlen (element)) *
-                                              sizeof (char));
-            sprintf (meta->element, "MOS-%s", element);
-         }
-      } else {
-         meta->element = (char *) realloc ((void *) (meta->element),
-                                           (1 + strlen (element)) *
-                                           sizeof (char));
-         strcpy (meta->element, element);
-      }
-   }
-   meta->unitName = (char *) realloc ((void *) (meta->unitName),
-                                      (1 + 2 + strlen (unitName)) *
-                                      sizeof (char));
-   sprintf (meta->unitName, "[%s]", unitName);
-   meta->comment = (char *) realloc ((void *) (meta->comment),
-                                     (1 + strlen (comment) +
-                                      strlen (unitName)
-                                      + 2 + 1) * sizeof (char));
-   sprintf (meta->comment, "%s [%s]", comment, unitName);
-*/
-   if ((meta->pds2.sect4.sndSurfScale == GRIB2MISSING_s1) ||
-       (meta->pds2.sect4.sndSurfType == GRIB2MISSING_u1)) {
-/*
-      if ((meta->pds2.sect4.fstSurfScale == GRIB2MISSING_s1) ||
-          (meta->pds2.sect4.fstSurfType == GRIB2MISSING_u1)) {
-         ParseLevelName (meta->center, meta->subcenter,
-                         meta->pds2.sect4.fstSurfType, 0, 0, 0,
-                         &(meta->shortFstLevel), &(meta->longFstLevel));
-      } else {
-*/
-         ParseLevelName (meta->center, meta->subcenter,
-                         meta->pds2.sect4.fstSurfType,
-                         meta->pds2.sect4.fstSurfValue, 0, 0,
-                         &(meta->shortFstLevel), &(meta->longFstLevel));
-/*
-      }
-*/
-   } else {
-      ParseLevelName (meta->center, meta->subcenter,
-                      meta->pds2.sect4.fstSurfType,
-                      meta->pds2.sect4.fstSurfValue, 1,
-                      meta->pds2.sect4.sndSurfValue, &(meta->shortFstLevel),
-                      &(meta->longFstLevel));
+      ParseLevelName (meta->center, meta->subcenter, fstSurfType,
+                      fstSurfValue, f_sndValue, sndSurfValue,
+                      &(meta->shortFstLevel), &(meta->longFstLevel));
    }
 
    /* Continue parsing section 2 data. */
@@ -1957,8 +1954,8 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
  *    WxType = table to look up values in. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
- *     subNx = The Nx dimmension of the subgrid (Input)
- *     subNy = The Ny dimmension of the subgrid (Input)
+ *     subNx = The Nx dimension of the subgrid (Input)
+ *     subNy = The Ny dimension of the subgrid (Input)
  *
  * FILES/DATABASES: None
  *
@@ -2078,8 +2075,8 @@ static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
  *    WxType = table to look up values in. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
- *     subNx = The Nx dimmension of the subgrid (Input)
- *     subNy = The Ny dimmension of the subgrid (Input)
+ *     subNx = The Nx dimension of the subgrid (Input)
+ *     subNy = The Ny dimension of the subgrid (Input)
  *
  * FILES/DATABASES: None
  *
@@ -2155,7 +2152,7 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
                         if (WxType->ugly[index].f_valid) {
                            WxType->ugly[index].f_valid = 2;
                         } else {
-                           /* Table is not valid here so set value to missPri 
+                           /* Table is not valid here so set value to missPri
                             */
                            value = attrib->missPri;
                            (*missCnt)++;
@@ -2206,8 +2203,8 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
  *    WxType = table to look up values in. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
- *     subNx = The Nx dimmension of the subgrid (Input)
- *     subNy = The Ny dimmension of the subgrid (Input)
+ *     subNx = The Nx dimension of the subgrid (Input)
+ *     subNy = The Ny dimension of the subgrid (Input)
  *
  * FILES/DATABASES: None
  *
@@ -2283,7 +2280,7 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
                         if (WxType->ugly[index].f_valid) {
                            WxType->ugly[index].f_valid = 2;
                         } else {
-                           /* Table is not valid here so set value to missPri 
+                           /* Table is not valid here so set value to missPri
                             */
                            value = attrib->missPri;
                            (*missCnt)++;
@@ -2368,7 +2365,8 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
                 uInt4 *grib_DataLen, uInt4 Nx, uInt4 Ny, int scan,
                 sInt4 *iain, sInt4 ibitmap, sInt4 *ib, double unitM,
                 double unitB, uChar f_wxType, sect2_WxType *WxType,
-                uChar f_subGrid, int startX, int startY, int stopX, int stopY)
+                CPL_UNUSED uChar f_subGrid,
+                int startX, int startY, int stopX, int stopY)
 {
    double xmissp;       /* computed missing value needed for ibitmap = 1,
                          * Also used if unit conversion causes confusion
@@ -2381,12 +2379,13 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
    sInt4 x, y;          /* Where we are in a grid of scan value 0100 */
    sInt4 newIndex;      /* x,y in a 1 dimensional array. */
    double value;        /* The data in the new units. */
-   double *grib_Data;   /* A pointer to Grib_Data for ease of manipulation. */
+   /* A pointer to Grib_Data for ease of manipulation. */
+   double *grib_Data = NULL;
    sInt4 missCnt = 0;   /* Number of detected missing values. */
    uInt4 index;         /* Current index into Wx table. */
    float *ain = (float *) iain;
-   uInt4 subNx;         /* The Nx dimmension of the subgrid. */
-   uInt4 subNy;         /* The Ny dimmension of the subgrid. */
+   uInt4 subNx;         /* The Nx dimension of the subgrid. */
+   uInt4 subNy;         /* The Ny dimension of the subgrid. */
 
    subNx = stopX - startX + 1;
    subNy = stopY - startY + 1;
@@ -2429,7 +2428,7 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
          } else {
             value = ain[scanIndex];
          }
-         /* Make sure value is not a missing value when converting units, and 
+         /* Make sure value is not a missing value when converting units, and
           * while computing max/min. */
          if ((attrib->f_miss == 0) ||
              ((attrib->f_miss == 1) && (value != attrib->missPri)) ||
@@ -2583,7 +2582,7 @@ typedef struct {
    int cnt;
 } freqType;
 
-int freqCompare (const void *A, const void *B)
+static int freqCompare (const void *A, const void *B)
 {
    const freqType *a = (freqType *) A;
    const freqType *b = (freqType *) B;
@@ -2599,7 +2598,7 @@ void FreqPrint (char **ans, double *Data, sInt4 DataLen, sInt4 Nx,
                 sInt4 Ny, sChar decimal, char *comment)
 {
    int x, y, i;
-   double *ptr;
+   double *ptr = NULL;
    double value;
    freqType *freq = NULL;
    int numFreq = 0;
@@ -2633,10 +2632,11 @@ void FreqPrint (char **ans, double *Data, sInt4 DataLen, sInt4 Nx,
       }
    }
 
-   qsort (freq, numFreq, sizeof (freq[0]), freqCompare);
+   if( freq )
+     qsort (freq, numFreq, sizeof (freq[0]), freqCompare);
 
    mallocSprintf (ans, "%s | count\n", comment);
-   sprintf (format, "%%.%df | %%d\n", decimal);
+   snprintf (format, sizeof(format), "%%.%df | %%d\n", decimal);
    for (i = 0; i < numFreq; i++) {
       reallocSprintf (ans, format, myRound (freq[i].value, decimal),
                       freq[i].cnt);

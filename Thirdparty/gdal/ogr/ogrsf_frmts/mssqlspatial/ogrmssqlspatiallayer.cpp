@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrmssqlspatiallayer.cpp 25860 2013-04-05 07:20:37Z tamas $
  *
  * Project:  MSSQL Spatial driver
  * Purpose:  Definition of classes for OGR MSSQL Spatial driver.
@@ -29,7 +28,7 @@
 
 #include "ogr_mssqlspatial.h"
 
-CPL_CVSID("$Id: ogrmssqlspatiallayer.cpp 25860 2013-04-05 07:20:37Z tamas $");
+CPL_CVSID("$Id: ogrmssqlspatiallayer.cpp 37371 2017-02-13 11:41:59Z rouault $");
 /************************************************************************/
 /*                        OGRMSSQLSpatialLayer()                        */
 /************************************************************************/
@@ -39,6 +38,7 @@ OGRMSSQLSpatialLayer::OGRMSSQLSpatialLayer()
 {
     poDS = NULL;
 
+    poFeatureDefn = NULL;
     nGeomColumnType = -1;
     pszGeomColumn = NULL;
     pszFIDColumn = NULL;
@@ -50,7 +50,12 @@ OGRMSSQLSpatialLayer::OGRMSSQLSpatialLayer()
     iNextShapeId = 0;
 
     poSRS = NULL;
-    nSRSId = -1; // we haven't even queried the database for it yet. 
+    nSRSId = -1; // we haven't even queried the database for it yet.
+    nLayerStatus = MSSQLLAYERSTATUS_ORIGINAL;
+
+    nGeomColumnIndex = -1;
+    nFIDColumnIndex = -1;
+    nRawColumns = 0;
 }
 
 /************************************************************************/
@@ -63,7 +68,7 @@ OGRMSSQLSpatialLayer::~OGRMSSQLSpatialLayer()
     if( m_nFeaturesRead > 0 && poFeatureDefn != NULL )
     {
         CPLDebug( "OGR_MSSQLSpatial", "%d features read on layer '%s'.",
-                  (int) m_nFeaturesRead, 
+                  (int) m_nFeaturesRead,
                   poFeatureDefn->GetName() );
     }
 
@@ -94,12 +99,12 @@ OGRMSSQLSpatialLayer::~OGRMSSQLSpatialLayer()
 /*      set on a statement.  Sift out geometry and FID fields.          */
 /************************************************************************/
 
-CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName, 
-                                    CPLODBCStatement *poStmt )
+CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName,
+                                    CPLODBCStatement *poStmtIn )
 
 {
     poFeatureDefn = new OGRFeatureDefn( pszLayerName );
-    int    nRawColumns = poStmt->GetColCount();
+    nRawColumns = poStmtIn->GetColCount();
 
     poFeatureDefn->Reference();
 
@@ -111,46 +116,98 @@ CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName,
         if ( pszGeomColumn == NULL )
         {
             /* need to identify the geometry column */
-            if ( EQUAL(poStmt->GetColTypeName( iCol ), "geometry") )
+            if ( EQUAL(poStmtIn->GetColTypeName( iCol ), "geometry") )
             {
                 nGeomColumnType = MSSQLCOLTYPE_GEOMETRY;
-                pszGeomColumn = CPLStrdup( poStmt->GetColName(iCol) );
+                pszGeomColumn = CPLStrdup( poStmtIn->GetColName(iCol) );
+                if (poFeatureDefn->GetGeomFieldCount() == 1)
+                    poFeatureDefn->GetGeomFieldDefn(0)->SetNullable( poStmtIn->GetColNullable(iCol) );
+                nGeomColumnIndex = iCol;
                 continue;
             }
-            else if ( EQUAL(poStmt->GetColTypeName( iCol ), "geography") )
+            else if ( EQUAL(poStmtIn->GetColTypeName( iCol ), "geography") )
             {
                 nGeomColumnType = MSSQLCOLTYPE_GEOGRAPHY;
-                pszGeomColumn = CPLStrdup( poStmt->GetColName(iCol) );
-                continue;
-            }
-            else if ( EQUAL(poStmt->GetColTypeName( iCol ), "image") )
-            {
-                /* for the select layers we get image type */
-                nGeomColumnType = MSSQLCOLTYPE_BINARY;
-                pszGeomColumn = CPLStrdup( poStmt->GetColName(iCol) );
+                pszGeomColumn = CPLStrdup( poStmtIn->GetColName(iCol) );
+                if (poFeatureDefn->GetGeomFieldCount() == 1)
+                    poFeatureDefn->GetGeomFieldDefn(0)->SetNullable( poStmtIn->GetColNullable(iCol) );
+                nGeomColumnIndex = iCol;
                 continue;
             }
         }
         else
         {
-            if( EQUAL(poStmt->GetColName(iCol),pszGeomColumn) )
+            if( EQUAL(poStmtIn->GetColName(iCol),pszGeomColumn) )
+            {
+                if (poFeatureDefn->GetGeomFieldCount() == 1)
+                    poFeatureDefn->GetGeomFieldDefn(0)->SetNullable( poStmtIn->GetColNullable(iCol) );
+                nGeomColumnIndex = iCol;
                 continue;
+            }
         }
 
-        if( pszFIDColumn != NULL &&
-		    EQUAL(poStmt->GetColName(iCol), pszFIDColumn) )
+        if( pszFIDColumn != NULL)
         {
-            if ( EQUAL(poStmt->GetColTypeName( iCol ), "int identity") ||
-                 EQUAL(poStmt->GetColTypeName( iCol ), "bigint identity"))
+            if (EQUAL(poStmtIn->GetColName(iCol), pszFIDColumn) )
+            {
+                bool bIntegerFID = false;
+                switch( CPLODBCStatement::GetTypeMapping(poStmtIn->GetColType(iCol)) )
+                {
+                    case SQL_C_SSHORT:
+                    case SQL_C_USHORT:
+                    case SQL_C_SLONG:
+                    case SQL_C_ULONG:
+                    case SQL_C_SBIGINT:
+                    case SQL_C_UBIGINT:
+                        bIntegerFID = true;
+                        break;
+                    default:
+                        break;
+                }
+                if( !bIntegerFID )
+                {
+                    CPLDebug("MSSQL", "Ignoring FID column %s as it is of non integer type",
+                             pszFIDColumn);
+                    CPLFree(pszFIDColumn);
+                    pszFIDColumn = NULL;
+                }
+                else
+                {
+                    if (STARTS_WITH_CI(poStmtIn->GetColTypeName( iCol ), "bigint"))
+                        SetMetadataItem(OLMD_FID64, "YES");
+
+                    if ( EQUAL(poStmtIn->GetColTypeName( iCol ), "int identity") ||
+                        EQUAL(poStmtIn->GetColTypeName( iCol ), "bigint identity"))
+                        bIsIdentityFid = TRUE;
+
+                    nFIDColumnIndex = iCol;
+                    continue;
+                }
+            }
+        }
+        else
+        {
+            if (EQUAL(poStmtIn->GetColTypeName( iCol ), "int identity"))
+            {
+                pszFIDColumn = CPLStrdup( poStmtIn->GetColName(iCol) );
                 bIsIdentityFid = TRUE;
-            /* skip FID */
-            continue;
+                nFIDColumnIndex = iCol;
+                continue;
+            }
+            else if (EQUAL(poStmtIn->GetColTypeName( iCol ), "bigint identity"))
+            {
+                pszFIDColumn = CPLStrdup( poStmtIn->GetColName(iCol) );
+                bIsIdentityFid = TRUE;
+                SetMetadataItem(OLMD_FID64, "YES");
+                nFIDColumnIndex = iCol;
+                continue;
+            }
         }
 
-        OGRFieldDefn    oField( poStmt->GetColName(iCol), OFTString );
-        oField.SetWidth( MAX(0,poStmt->GetColSize( iCol )) );
+        OGRFieldDefn    oField( poStmtIn->GetColName(iCol), OFTString );
+        oField.SetWidth( MAX(0,poStmtIn->GetColSize( iCol )) );
 
-        switch( CPLODBCStatement::GetTypeMapping(poStmt->GetColType(iCol)) )
+        switch( CPLODBCStatement::GetTypeMapping(poStmtIn->GetColType(iCol)) )
         {
             case SQL_C_SSHORT:
             case SQL_C_USHORT:
@@ -159,13 +216,18 @@ CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName,
                 oField.SetType( OFTInteger );
                 break;
 
+            case SQL_C_SBIGINT:
+            case SQL_C_UBIGINT:
+                oField.SetType( OFTInteger64 );
+                break;
+
             case SQL_C_BINARY:
                 oField.SetType( OFTBinary );
                 break;
 
             case SQL_C_NUMERIC:
                 oField.SetType( OFTReal );
-                oField.SetPrecision( poStmt->GetColPrecision(iCol) );
+                oField.SetPrecision( poStmtIn->GetColPrecision(iCol) );
                 break;
 
             case SQL_C_FLOAT:
@@ -188,6 +250,44 @@ CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName,
 
             default:
                 /* leave it as OFTString */;
+        }
+
+        oField.SetNullable( poStmtIn->GetColNullable(iCol) );
+
+        if ( poStmtIn->GetColColumnDef(iCol) )
+        {
+            /* process default value specification */
+            if ( EQUAL(poStmtIn->GetColColumnDef(iCol), "(getdate())") )
+                oField.SetDefault( "CURRENT_TIMESTAMP" );
+            else if ( STARTS_WITH_CI(poStmtIn->GetColColumnDef(iCol), "(CONVERT([time],getdate()") )
+                oField.SetDefault( "CURRENT_TIME" );
+            else if ( STARTS_WITH_CI(poStmtIn->GetColColumnDef(iCol), "(CONVERT([date],getdate()") )
+                oField.SetDefault( "CURRENT_DATE" );
+            else
+            {
+                char* pszDefault = CPLStrdup(poStmtIn->GetColColumnDef(iCol));
+                int nLen = static_cast<int>(strlen(pszDefault));
+                if (nLen >= 1 && pszDefault[0] == '(' && pszDefault[nLen-1] == ')')
+                {
+                    // All default values are encapsulated in brackets
+                    // by MSSQL server.
+                    if (nLen >= 4 && pszDefault[1] == '(' && pszDefault[nLen-2] == ')')
+                    {
+                        /* for numeric values double brackets are used */
+                        pszDefault[nLen-2] = '\0';
+                        oField.SetDefault(pszDefault + 2);
+                    }
+                    else
+                    {
+                        pszDefault[nLen-1] = '\0';
+                        oField.SetDefault(pszDefault + 1);
+                    }
+                }
+                else
+                    oField.SetDefault( pszDefault );
+
+                CPLFree(pszDefault);
+            }
         }
 
         poFeatureDefn->AddFieldDefn( &oField );
@@ -215,7 +315,6 @@ CPLErr OGRMSSQLSpatialLayer::BuildFeatureDefn( const char *pszLayerName,
     return CE_None;
 }
 
-
 /************************************************************************/
 /*                            ResetReading()                            */
 /************************************************************************/
@@ -233,7 +332,7 @@ void OGRMSSQLSpatialLayer::ResetReading()
 OGRFeature *OGRMSSQLSpatialLayer::GetNextFeature()
 
 {
-    while( TRUE )
+    while( true )
     {
         OGRFeature      *poFeature;
 
@@ -274,12 +373,12 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
 /* -------------------------------------------------------------------- */
 /*      Create a feature from the current result.                       */
 /* -------------------------------------------------------------------- */
-    int         iField;
     OGRFeature *poFeature = new OGRFeature( poFeatureDefn );
 
-    if( pszFIDColumn != NULL && poStmt->GetColId(pszFIDColumn) > -1 )
-        poFeature->SetFID( 
-            atoi(poStmt->GetColData(poStmt->GetColId(pszFIDColumn))) );
+    const char* pszFID;
+    if( pszFIDColumn != NULL && poStmt->GetColId(pszFIDColumn) > -1 &&
+        (pszFID = poStmt->GetColData(poStmt->GetColId(pszFIDColumn))) != NULL )
+        poFeature->SetFID( CPLAtoGIntBig(pszFID) );
     else
         poFeature->SetFID( iNextShapeId );
 
@@ -289,18 +388,18 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
 /* -------------------------------------------------------------------- */
 /*      Set the fields.                                                 */
 /* -------------------------------------------------------------------- */
-    for( iField = 0; iField < poFeatureDefn->GetFieldCount(); iField++ )
+    for( int iField = 0; iField < poFeatureDefn->GetFieldCount(); iField++ )
     {
         if ( poFeatureDefn->GetFieldDefn(iField)->IsIgnored() )
             continue;
-        
+
         int iSrcField = panFieldOrdinals[iField];
         const char *pszValue = poStmt->GetColData( iSrcField );
 
         if( pszValue == NULL )
-            /* no value */;
+            poFeature->SetFieldNull( iField );
         else if( poFeature->GetFieldDefnRef(iField)->GetType() == OFTBinary )
-            poFeature->SetField( iField, 
+            poFeature->SetField( iField,
                                  poStmt->GetColDataLength(iSrcField),
                                  (GByte *) pszValue );
         else
@@ -321,7 +420,7 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
         {
             int nLength = poStmt->GetColDataLength( iField );
 
-            if ( nGeomColumnType == MSSQLCOLTYPE_GEOMETRY || 
+            if ( nGeomColumnType == MSSQLCOLTYPE_GEOMETRY ||
                  nGeomColumnType == MSSQLCOLTYPE_GEOGRAPHY ||
                  nGeomColumnType == MSSQLCOLTYPE_BINARY)
             {
@@ -329,8 +428,8 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
                 {
                 case MSSQLGEOMETRY_NATIVE:
                     {
-                        OGRMSSQLGeometryParser oParser( nGeomColumnType ); 
-                        eErr = oParser.ParseSqlGeometry( 
+                        OGRMSSQLGeometryParser oParser( nGeomColumnType );
+                        eErr = oParser.ParseSqlGeometry(
                             (unsigned char *) pszGeomText, nLength, &poGeom );
                         nSRSId = oParser.GetSRSId();
                     }
@@ -344,15 +443,15 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
                     eErr = OGRGeometryFactory::createFromWkt((char **) &pszGeomText,
                                                       NULL, &poGeom);
                     break;
-                } 
+                }
             }
             else if (nGeomColumnType == MSSQLCOLTYPE_TEXT)
             {
                 eErr = OGRGeometryFactory::createFromWkt((char **) &pszGeomText,
                                                       NULL, &poGeom);
-            }    
+            }
         }
-        
+
         if ( eErr != OGRERR_NONE )
         {
             const char *pszMessage;
@@ -391,7 +490,7 @@ OGRFeature *OGRMSSQLSpatialLayer::GetNextRawFeature()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRMSSQLSpatialLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRMSSQLSpatialLayer::GetFeature( GIntBig nFeatureId )
 
 {
     /* This should be implemented directly! */
@@ -403,8 +502,7 @@ OGRFeature *OGRMSSQLSpatialLayer::GetFeature( long nFeatureId )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRMSSQLSpatialLayer::TestCapability( const char * pszCap )
-
+int OGRMSSQLSpatialLayer::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -416,7 +514,12 @@ int OGRMSSQLSpatialLayer::TestCapability( const char * pszCap )
 OGRErr OGRMSSQLSpatialLayer::StartTransaction()
 
 {
-    poDS->GetSession()->BeginTransaction();
+    if (!poDS->GetSession()->BeginTransaction())
+    {
+        CPLError( CE_Failure, CPLE_AppDefined,
+                    "Failed to start transaction: %s", poDS->GetSession()->GetLastError() );
+        return OGRERR_FAILURE;
+    }
     return OGRERR_NONE;
 }
 
@@ -427,7 +530,12 @@ OGRErr OGRMSSQLSpatialLayer::StartTransaction()
 OGRErr OGRMSSQLSpatialLayer::CommitTransaction()
 
 {
-    poDS->GetSession()->CommitTransaction();
+    if (!poDS->GetSession()->CommitTransaction())
+    {
+        CPLError( CE_Failure, CPLE_AppDefined,
+                    "Failed to commit transaction: %s", poDS->GetSession()->GetLastError() );
+        return OGRERR_FAILURE;
+    }
     return OGRERR_NONE;
 }
 
@@ -438,7 +546,12 @@ OGRErr OGRMSSQLSpatialLayer::CommitTransaction()
 OGRErr OGRMSSQLSpatialLayer::RollbackTransaction()
 
 {
-    poDS->GetSession()->RollbackTransaction();
+    if (!poDS->GetSession()->RollbackTransaction())
+    {
+        CPLError( CE_Failure, CPLE_AppDefined,
+                    "Failed to roll back transaction: %s", poDS->GetSession()->GetLastError() );
+        return OGRERR_FAILURE;
+    }
     return OGRERR_NONE;
 }
 
@@ -465,7 +578,7 @@ OGRSpatialReference *OGRMSSQLSpatialLayer::GetSpatialRef()
 /*                            GetFIDColumn()                            */
 /************************************************************************/
 
-const char *OGRMSSQLSpatialLayer::GetFIDColumn() 
+const char *OGRMSSQLSpatialLayer::GetFIDColumn()
 
 {
     GetLayerDefn();
@@ -480,7 +593,7 @@ const char *OGRMSSQLSpatialLayer::GetFIDColumn()
 /*                         GetGeometryColumn()                          */
 /************************************************************************/
 
-const char *OGRMSSQLSpatialLayer::GetGeometryColumn() 
+const char *OGRMSSQLSpatialLayer::GetGeometryColumn()
 
 {
     GetLayerDefn();
@@ -499,7 +612,8 @@ char* OGRMSSQLSpatialLayer::GByteArrayToHexString( const GByte* pabyData, int nL
 {
     char* pszTextBuf;
 
-    pszTextBuf = (char *) CPLMalloc(nLen*2+3);
+    const size_t nTextBufLen = nLen*2+3;
+    pszTextBuf = (char *) CPLMalloc(nTextBufLen);
 
     int  iSrc, iDst=0;
 
@@ -507,12 +621,12 @@ char* OGRMSSQLSpatialLayer::GByteArrayToHexString( const GByte* pabyData, int nL
     {
         if( iSrc == 0 )
         {
-            sprintf( pszTextBuf+iDst, "0x%02x", pabyData[iSrc] );
+            snprintf( pszTextBuf+iDst, nTextBufLen-iDst, "0x%02x", pabyData[iSrc] );
             iDst += 4;
         }
         else
         {
-            sprintf( pszTextBuf+iDst, "%02x", pabyData[iSrc] );
+            snprintf( pszTextBuf+iDst, nTextBufLen-iDst, "%02x", pabyData[iSrc] );
             iDst += 2;
         }
     }
@@ -520,4 +634,3 @@ char* OGRMSSQLSpatialLayer::GByteArrayToHexString( const GByte* pabyData, int nL
 
     return pszTextBuf;
 }
-

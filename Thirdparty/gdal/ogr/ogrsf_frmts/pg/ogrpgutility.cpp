@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrpgutility.cpp 22919 2011-08-10 18:12:05Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Utility methods
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2009, Even Rouault
+ * Copyright (c) 2009-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,36 +29,29 @@
 #include "ogr_pg.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrpgutility.cpp 22919 2011-08-10 18:12:05Z rouault $");
+CPL_CVSID("$Id: ogrpgutility.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                         OGRPG_PQexec()                               */
 /************************************************************************/
 
-PGresult *OGRPG_PQexec(PGconn *conn, const char *query, int bMultipleCommandAllowed)
+PGresult *OGRPG_PQexec(PGconn *conn, const char *query, int bMultipleCommandAllowed,
+                       int bErrorAsDebug)
 {
-    PGresult* hResult;
-#if defined(PG_PRE74)
-    /* PQexecParams introduced in PG >= 7.4 */
-    hResult = PQexec(conn, query);
-#else
-    if (bMultipleCommandAllowed)
-        hResult = PQexec(conn, query);
-    else
-        hResult = PQexecParams(conn, query, 0, NULL, NULL, NULL, NULL, 0);
-#endif
+    PGresult* hResult = bMultipleCommandAllowed
+        ? PQexec(conn, query)
+        : PQexecParams(conn, query, 0, NULL, NULL, NULL, NULL, 0);
 
 #ifdef DEBUG
     const char* pszRetCode = "UNKNOWN";
-    char szNTuples[32];
-    szNTuples[0] = '\0';
+    char szNTuples[32] = {};
     if (hResult)
     {
         switch(PQresultStatus(hResult))
         {
             case PGRES_TUPLES_OK:
                 pszRetCode = "PGRES_TUPLES_OK";
-                sprintf(szNTuples, ", ntuples = %d", PQntuples(hResult));
+                snprintf(szNTuples, sizeof(szNTuples), ", ntuples = %d", PQntuples(hResult));
                 break;
             case PGRES_COMMAND_OK:
                 pszRetCode = "PGRES_COMMAND_OK";
@@ -77,16 +69,36 @@ PGresult *OGRPG_PQexec(PGconn *conn, const char *query, int bMultipleCommandAllo
         CPLDebug("PG", "PQexec(%s) = %s%s", query, pszRetCode, szNTuples);
     else
         CPLDebug("PG", "PQexecParams(%s) = %s%s", query, pszRetCode, szNTuples);
+#endif
 
 /* -------------------------------------------------------------------- */
-/*      Generate an error report if an error occured.                   */
+/*      Generate an error report if an error occurred.                  */
 /* -------------------------------------------------------------------- */
     if ( !hResult || (PQresultStatus(hResult) == PGRES_NONFATAL_ERROR ||
                       PQresultStatus(hResult) == PGRES_FATAL_ERROR ) )
     {
-        CPLDebug( "PG", "%s", PQerrorMessage( conn ) );
+        if( bErrorAsDebug )
+            CPLDebug("PG", "%s", PQerrorMessage( conn ) );
+        else
+            CPLError( CE_Failure, CPLE_AppDefined, "%s", PQerrorMessage( conn ) );
     }
-#endif
 
     return hResult;
+}
+
+/************************************************************************/
+/*                       OGRPG_Check_Table_Exists()                     */
+/************************************************************************/
+
+bool OGRPG_Check_Table_Exists(PGconn *hPGConn, const char * pszTableName)
+{
+    CPLString osSQL;
+    osSQL.Printf("SELECT 1 FROM information_schema.tables WHERE table_name = %s LIMIT 1",
+                 OGRPGEscapeString(hPGConn, pszTableName).c_str());
+    PGresult* hResult = OGRPG_PQexec(hPGConn, osSQL);
+    bool bRet = ( hResult && PQntuples(hResult) == 1 );
+    if( !bRet )
+        CPLDebug("PG", "Does not have %s table", pszTableName);
+    OGRPGClearResult( hResult );
+    return bRet;
 }

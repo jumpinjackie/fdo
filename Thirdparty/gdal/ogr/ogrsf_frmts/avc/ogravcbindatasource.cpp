@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogravcbindatasource.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  OGR
  * Purpose:  Implements OGRAVCBinDataSource class.
@@ -31,18 +30,18 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogravcbindatasource.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogravcbindatasource.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /*                        OGRAVCBinDataSource()                         */
 /************************************************************************/
 
-OGRAVCBinDataSource::OGRAVCBinDataSource()
-
+OGRAVCBinDataSource::OGRAVCBinDataSource() :
+    papoLayers(NULL),
+    nLayers(0),
+    pszName(NULL),
+    psAVC(NULL)
 {
-    pszName = NULL;
-    papoLayers = NULL;
-    nLayers = 0;
     poSRS = NULL;
 }
 
@@ -63,7 +62,7 @@ OGRAVCBinDataSource::~OGRAVCBinDataSource()
 
     for( int i = 0; i < nLayers; i++ )
         delete papoLayers[i];
-    
+
     CPLFree( papoLayers );
 }
 
@@ -75,7 +74,7 @@ int OGRAVCBinDataSource::Open( const char * pszNewName, int bTestOpen )
 
 {
 /* -------------------------------------------------------------------- */
-/*      Open the source file.  Supress error reporting if we are in     */
+/*      Open the source file.  Suppress error reporting if we are in    */
 /*      TestOpen mode.                                                  */
 /* -------------------------------------------------------------------- */
     if( bTestOpen )
@@ -98,13 +97,12 @@ int OGRAVCBinDataSource::Open( const char * pszNewName, int bTestOpen )
 /* -------------------------------------------------------------------- */
 /*      Create layers for the "interesting" sections of the coverage.   */
 /* -------------------------------------------------------------------- */
-    int		iSection;
 
-    papoLayers = (OGRLayer **)
-        CPLCalloc( sizeof(OGRLayer *), psAVC->numSections );
+    papoLayers = static_cast<OGRLayer **>(
+        CPLCalloc( sizeof(OGRLayer *), psAVC->numSections ) );
     nLayers = 0;
 
-    for( iSection = 0; iSection < psAVC->numSections; iSection++ )
+    for( int iSection = 0; iSection < psAVC->numSections; iSection++ )
     {
         AVCE00Section *psSec = psAVC->pasSections + iSection;
 
@@ -122,26 +120,26 @@ int OGRAVCBinDataSource::Open( const char * pszNewName, int bTestOpen )
 
           case AVCFilePRJ:
           {
-              char 	**papszPRJ;
-              AVCBinFile *hFile;
-              
-              hFile = AVCBinReadOpen(psAVC->pszCoverPath, 
-                                     psSec->pszFilename, 
-                                     psAVC->eCoverType, 
-                                     psSec->eType,
-                                     psAVC->psDBCSInfo);
+              AVCBinFile *hFile = AVCBinReadOpen(psAVC->pszCoverPath,
+                                                 psSec->pszFilename,
+                                                 psAVC->eCoverType,
+                                                 psSec->eType,
+                                                 psAVC->psDBCSInfo);
               if( hFile && poSRS == NULL )
               {
-                  papszPRJ = AVCBinReadNextPrj( hFile );
+                  char **papszPRJ = AVCBinReadNextPrj( hFile );
 
                   poSRS = new OGRSpatialReference();
                   if( poSRS->importFromESRI( papszPRJ ) != OGRERR_NONE )
                   {
-                      CPLError( CE_Warning, CPLE_AppDefined, 
+                      CPLError( CE_Warning, CPLE_AppDefined,
                                 "Failed to parse PRJ section, ignoring." );
                       delete poSRS;
                       poSRS = NULL;
                   }
+              }
+              if( hFile )
+              {
                   AVCBinReadClose( hFile );
               }
           }
@@ -151,7 +149,7 @@ int OGRAVCBinDataSource::Open( const char * pszNewName, int bTestOpen )
             ;
         }
     }
-    
+
     return nLayers > 0;
 }
 
@@ -159,8 +157,7 @@ int OGRAVCBinDataSource::Open( const char * pszNewName, int bTestOpen )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRAVCBinDataSource::TestCapability( const char * pszCap )
-
+int OGRAVCBinDataSource::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -174,6 +171,6 @@ OGRLayer *OGRAVCBinDataSource::GetLayer( int iLayer )
 {
     if( iLayer < 0 || iLayer >= nLayers )
         return NULL;
-    else
-        return papoLayers[iLayer];
+
+    return papoLayers[iLayer];
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_attrind.h 20101 2010-07-18 15:20:35Z tamas $
+ * $Id: ogr_attrind.h 34921 2016-08-04 22:26:31Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Classes related to generic implementation of attribute indexing.
@@ -27,10 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_ATTRIND_H_INCLUDED
-#define _OGR_ATTRIND_H_INCLUDED
+#ifndef OGR_ATTRIND_H_INCLUDED
+#define OGR_ATTRIND_H_INCLUDED
 
 #include "ogrsf_frmts.h"
+
+//! @cond Doxygen_Suppress
 
 /************************************************************************/
 /*                             OGRAttrIndex                             */
@@ -46,12 +48,12 @@ protected:
 public:
     virtual     ~OGRAttrIndex();
 
-    virtual long   GetFirstMatch( OGRField *psKey ) = 0;
-    virtual long  *GetAllMatches( OGRField *psKey ) = 0;
-    virtual long  *GetAllMatches( OGRField *psKey, long* panFIDList, int* nFIDCount, int* nLength ) = 0;
-    
-    virtual OGRErr AddEntry( OGRField *psKey, long nFID ) = 0;
-    virtual OGRErr RemoveEntry( OGRField *psKey, long nFID ) = 0;
+    virtual GIntBig   GetFirstMatch( OGRField *psKey ) = 0;
+    virtual GIntBig  *GetAllMatches( OGRField *psKey ) = 0;
+    virtual GIntBig  *GetAllMatches( OGRField *psKey, GIntBig* panFIDList, int* nFIDCount, int* nLength ) = 0;
+
+    virtual OGRErr AddEntry( OGRField *psKey, GIntBig nFID ) = 0;
+    virtual OGRErr RemoveEntry( OGRField *psKey, GIntBig nFID ) = 0;
 
     virtual OGRErr Clear() = 0;
 };
@@ -88,6 +90,7 @@ public:
 
 OGRLayerAttrIndex CPL_DLL *OGRCreateDefaultLayerIndex();
 
+//! @endcond
 
-#endif /* ndef _OGR_ATTRIND_H_INCLUDED */
+#endif /* ndef OGR_ATTRIND_H_INCLUDED */
 

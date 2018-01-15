@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_nas.h 24105 2012-03-10 12:08:04Z rouault $
+ * $Id: ogr_nas.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  NAS Reader
  * Purpose:  Declarations for OGR wrapper classes for NAS, and NAS<->OGR
@@ -15,21 +15,21 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_NAS_H_INCLUDED
-#define _OGR_NAS_H_INCLUDED
+#ifndef OGR_NAS_H_INCLUDED
+#define OGR_NAS_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include "nasreaderp.h"
@@ -48,31 +48,30 @@ class OGRNASLayer : public OGRLayer
     OGRFeatureDefn     *poFeatureDefn;
 
     int                 iNextNASId;
-    int                 nTotalNASCount;
 
     OGRNASDataSource    *poDS;
 
     GMLFeatureClass     *poFClass;
 
   public:
-                        OGRNASLayer( const char * pszName, 
-                                     OGRSpatialReference *poSRS, 
+                        OGRNASLayer( const char * pszName,
+                                     OGRSpatialReference *poSRS,
                                      OGRwkbGeometryType eType,
                                      OGRNASDataSource *poDS );
 
-                        ~OGRNASLayer();
+                        virtual ~OGRNASLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    int                 GetFeatureCount( int bForce = TRUE );
-    OGRErr              GetExtent(OGREnvelope *psExtent, int bForce = TRUE);
+    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
+    OGRErr              GetExtent(OGREnvelope *psExtent, int bForce = TRUE) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
+                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
 
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRSpatialReference *GetSpatialRef();
-    
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -84,26 +83,26 @@ class OGRNASRelationLayer : public OGRLayer
     OGRFeatureDefn     *poFeatureDefn;
     OGRNASDataSource    *poDS;
 
-    int                  bPopulated;
+    bool                 bPopulated;
     int                  iNextFeature;
     std::vector<CPLString> aoRelationCollection;
 
   public:
-                        OGRNASRelationLayer( OGRNASDataSource *poDS );
+    explicit             OGRNASRelationLayer( OGRNASDataSource *poDS );
                         ~OGRNASRelationLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    int                 GetFeatureCount( int bForce = TRUE );
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
-    int                 TestCapability( const char * );
+    GIntBig             GetFeatureCount( int bForce = TRUE ) override;
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
+    int                 TestCapability( const char * ) override;
 
     // For use populating.
-    void                AddRelation( const char *pszFromID, 
-                                     const char *pszType, 
+    void                AddRelation( const char *pszFromID,
+                                     const char *pszType,
                                      const char *pszToID );
-    void                MarkRelationsPopulated() { bPopulated = TRUE; }
+    void                MarkRelationsPopulated() { bPopulated = true; }
 };
 
 /************************************************************************/
@@ -114,11 +113,11 @@ class OGRNASDataSource : public OGRDataSource
 {
     OGRLayer          **papoLayers;
     int                 nLayers;
-    
+
     OGRNASRelationLayer *poRelationLayer;
 
     char                *pszName;
-    
+
     OGRNASLayer         *TranslateNASSchema( GMLFeatureClass * );
 
     // input related parameters.
@@ -130,14 +129,14 @@ class OGRNASDataSource : public OGRDataSource
                         OGRNASDataSource();
                         ~OGRNASDataSource();
 
-    int                 Open( const char *, int bTestOpen );
+    int                 Open( const char * );
     int                 Create( const char *pszFile, char **papszOptions );
 
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     IGMLReader          *GetReader() { return poReader; }
 
@@ -146,19 +145,4 @@ class OGRNASDataSource : public OGRDataSource
     void                PopulateRelations();
 };
 
-/************************************************************************/
-/*                             OGRNASDriver                             */
-/************************************************************************/
-
-class OGRNASDriver : public OGRSFDriver
-{
-  public:
-                ~OGRNASDriver();
-                
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-
-    int                 TestCapability( const char * );
-};
-
-#endif /* _OGR_NAS_H_INCLUDED */
+#endif /* OGR_NAS_H_INCLUDED */

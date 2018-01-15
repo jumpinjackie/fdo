@@ -1,5 +1,7 @@
-#ifndef _GVGCPFIT_H_INCLUDED
-#define _GVGCPFIT_H_INCLUDED
+/* $Id: gvgcpfit.h 35882 2016-10-24 04:10:14Z goatbar $ */
+
+#ifndef GVGCPFIT_H_INCLUDED
+#define GVGCPFIT_H_INCLUDED
 
 #include "cpl_port.h"
 #include "cpl_conv.h"
@@ -10,7 +12,6 @@
 
 #define SUCCESS 0
 #define ABORT -1
-
 
 /*------------------------ Start of file CURVEFIT.H -----------------------*/
 
@@ -23,7 +24,6 @@
 *   This file contains the function prototype for CURVEFIT.C.                *
 ******************************************************************************
 */
-
 
 #ifndef CURVEFIT_H
 #define CURVEFIT_H
@@ -41,18 +41,13 @@ EXTERNAL void svdvar(double **v, int ma, double w[], double **cvm);
 
 EXTERNAL int svdcmp(double **a, int m, int n, double *w, double **v);
 
-
 #endif
-
 
 /*-------------------------- End of file CURVEFIT.H -----------------------*/
 
-
-
-
 /*----------------------------- FILE polyfit.h ----------------------------*/
-#ifndef __POLYFIT_H
-#define __POLYFIT_H
+#ifndef POLYFIT_H
+#define POLYFIT_H
 
 EXTERNAL int OneDPolyFit( double *rms_err, double *coeffs_array,
     int fit_order, int no_samples, double *f_array, double *x_array );
@@ -84,10 +79,7 @@ EXTERNAL int ThreeDPolyFit( double *rms_err, double *coeffs_array,
 
 EXTERNAL double ThreeDPolyEval( double *coeff, int order, double x, double y, double z );
 
-
-
-#endif /* __POLYFIT_H */
-
+#endif /* POLYFIT_H */
 
 /*---------------------- End of FILE polyfit.h ----------------------------*/
 

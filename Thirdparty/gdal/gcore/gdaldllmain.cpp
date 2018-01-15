@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id$
  *
  * Project:  GDAL Core
  * Purpose:  The library set-up/clean-up routines.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2010, Mateusz Loskot <mateusz@loskot.net>
+ * Copyright (c) 2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,11 +27,67 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "gdal.h"
-#include "ogr_api.h"
-#include "cpl_multiproc.h"
+
 #include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_multiproc.h"
 #include "cpl_string.h"
+#include "ogr_api.h"
+
+
+static bool bInGDALGlobalDestructor = false;
+extern "C" int CPL_DLL GDALIsInGlobalDestructor();
+
+int GDALIsInGlobalDestructor()
+{
+    return bInGDALGlobalDestructor;
+}
+
+void CPLFinalizeTLS();
+
+/************************************************************************/
+/*                           GDALDestroy()                              */
+/************************************************************************/
+
+/** Finalize GDAL/OGR library.
+ *
+ * This function calls GDALDestroyDriverManager() and OGRCleanupAll() and
+ * finalize Thread Local Storage variables.
+ *
+ * This function should *not* usually be explicitly called by application code
+ * if GDAL is dynamically linked, since it is automatically called through
+ * the unregistration mechanisms of dynamic library loading.
+ *
+ * Note: no GDAL/OGR code should be called after this call!
+ *
+ * @since GDAL 2.0
+ */
+
+static bool bGDALDestroyAlreadyCalled = FALSE;
+void GDALDestroy(void)
+{
+    if( bGDALDestroyAlreadyCalled )
+        return;
+    bGDALDestroyAlreadyCalled = true;
+
+    CPLDebug("GDAL", "In GDALDestroy - unloading GDAL shared library.");
+    bInGDALGlobalDestructor = true;
+    GDALDestroyDriverManager();
+
+    OGRCleanupAll();
+    bInGDALGlobalDestructor = false;
+
+    /* See corresponding bug reports: */
+    /* https://trac.osgeo.org/gdal/ticket/6139 */
+    /* https://trac.osgeo.org/gdal/ticket/6868 */
+    /* Needed in case no driver manager has been instantiated. */
+    CPLFreeConfig();
+    CPLFinalizeTLS();
+    CPLCleanupErrorMutex();
+    CPLCleanupMasterMutex();
+}
 
 /************************************************************************/
 /*  The library set-up/clean-up routines implemented with               */
@@ -41,7 +97,7 @@
 #ifdef __GNUC__
 
 static void GDALInitialize(void) __attribute__ ((constructor)) ;
-static void GDALDestroy(void)    __attribute__ ((destructor)) ;
+static void GDALDestructor(void) __attribute__ ((destructor)) ;
 
 /************************************************************************/
 /* Called when GDAL is loaded by loader or by dlopen(),                 */
@@ -52,6 +108,11 @@ static void GDALInitialize(void)
 {
     // nothing to do
     //CPLDebug("GDAL", "Library loaded");
+#ifdef DEBUG
+    const char* pszLocale = CPLGetConfigOption("GDAL_LOCALE", NULL);
+    if( pszLocale )
+        CPLsetlocale( LC_ALL, pszLocale );
+#endif
 }
 
 /************************************************************************/
@@ -59,26 +120,16 @@ static void GDALInitialize(void)
 /* and before dlclose() returns.                                        */
 /************************************************************************/
 
-static void GDALDestroy(void)
+static void GDALDestructor(void)
 {
-    // TODO: Confirm if calling CPLCleanupTLS here is safe
-    //CPLCleanupTLS();
-    
-    if( !CSLTestBoolean(CPLGetConfigOption("GDAL_DESTROY", "YES")) )
+    if( bGDALDestroyAlreadyCalled )
         return;
-
-    CPLDebug("GDAL", "In GDALDestroy - unloading GDAL shared library.");
-    CPLSetConfigOption("GDAL_CLOSE_JP2ECW_RESOURCE", "NO");
-    GDALDestroyDriverManager();
-    CPLSetConfigOption("GDAL_CLOSE_JP2ECW_RESOURCE", NULL);
-
-#ifdef OGR_ENABLED
-    OGRCleanupAll();
-#endif
+    if( !CPLTestBool(CPLGetConfigOption("GDAL_DESTROY", "YES")) )
+        return;
+    GDALDestroy();
 }
 
 #endif // __GNUC__
-
 
 /************************************************************************/
 /*  The library set-up/clean-up routine implemented as DllMain entry    */
@@ -88,11 +139,10 @@ static void GDALDestroy(void)
 
 #include <windows.h>
 
-extern "C" int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
+extern "C" int WINAPI DllMain( HINSTANCE /* hInstance */,
+                               DWORD dwReason,
+                               LPVOID /* lpReserved */ )
 {
-    UNREFERENCED_PARAMETER(hInstance);
-    UNREFERENCED_PARAMETER(lpReserved);
-
     if (dwReason == DLL_PROCESS_ATTACH)
     {
         // nothing to do
@@ -107,15 +157,10 @@ extern "C" int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpRese
     }
     else if (dwReason == DLL_PROCESS_DETACH)
     {
-        ::GDALDestroyDriverManager();
-
-#ifdef OGR_ENABLED
-        ::OGRCleanupAll();
-#endif
+        GDALDestroy();
     }
 
-	return 1; // ignroed for all reasons but DLL_PROCESS_ATTACH
+    return 1; // ignored for all reasons but DLL_PROCESS_ATTACH
 }
 
 #endif // _MSC_VER
-

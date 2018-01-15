@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrsegukooadatasource.cpp 23259 2011-10-20 21:11:42Z rouault $
  *
  * Project:  SEG-P1 / UKOOA P1-90 Translator
  * Purpose:  Implements OGRSEGUKOOADataSource class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,20 +30,17 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrsegukooadatasource.cpp 23259 2011-10-20 21:11:42Z rouault $");
+CPL_CVSID("$Id: ogrsegukooadatasource.cpp 35199 2016-08-24 21:14:08Z goatbar $");
 
 /************************************************************************/
 /*                        OGRSEGUKOOADataSource()                       */
 /************************************************************************/
 
-OGRSEGUKOOADataSource::OGRSEGUKOOADataSource()
-
-{
-    papoLayers = NULL;
-    nLayers = 0;
-
-    pszName = NULL;
-}
+OGRSEGUKOOADataSource::OGRSEGUKOOADataSource() :
+    pszName(NULL),
+    papoLayers(NULL),
+    nLayers(0)
+{}
 
 /************************************************************************/
 /*                       ~OGRSEGUKOOADataSource()                       */
@@ -64,8 +60,7 @@ OGRSEGUKOOADataSource::~OGRSEGUKOOADataSource()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRSEGUKOOADataSource::TestCapability( const char * pszCap )
-
+int OGRSEGUKOOADataSource::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -87,23 +82,17 @@ OGRLayer *OGRSEGUKOOADataSource::GetLayer( int iLayer )
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRSEGUKOOADataSource::Open( const char * pszFilename, int bUpdateIn)
+int OGRSEGUKOOADataSource::Open( const char * pszFilename )
 
 {
-    if (bUpdateIn)
-    {
-        return FALSE;
-    }
-
     pszName = CPLStrdup( pszFilename );
 
     VSILFILE* fp = VSIFOpenL(pszFilename, "rb");
     if (fp == NULL)
         return FALSE;
 
-    const char* pszLine;
     CPLPushErrorHandler(CPLQuietErrorHandler);
-    pszLine = CPLReadLine2L(fp,81,NULL);
+    const char* pszLine = CPLReadLine2L(fp,81,NULL);
     CPLPopErrorHandler();
     CPLErrorReset();
 
@@ -118,7 +107,7 @@ int OGRSEGUKOOADataSource::Open( const char * pszFilename, int bUpdateIn)
 //      Does this appear to be a UKOOA P1/90 file?
 // --------------------------------------------------------------------
 
-    if (strncmp(pszLine, "H0100 ", 6) == 0)
+    if (STARTS_WITH(pszLine, "H0100 "))
     {
         VSIFSeekL( fp, 0, SEEK_SET );
 

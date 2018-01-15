@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: kmlnode.h 24175 2012-03-30 20:41:29Z rouault $
+ * $Id: kmlnode.h 38371 2017-05-15 10:59:39Z rouault $
  *
  * Project:  KML Driver
  * Purpose:  Class for building up the node structure of the kml file.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Jens Oberender
+ * Copyright (c) 2009-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -40,6 +41,7 @@ std::string Nodetype2String(Nodetype const& type);
 
 class KMLNode
 {
+    CPL_DISALLOW_COPY_ASSIGN( KMLNode );
 public:
 
     KMLNode();
@@ -49,31 +51,31 @@ public:
     int classify(KML* poKML, int nRecLevel = 0);
     void eliminateEmpty(KML* poKML);
     bool hasOnlyEmpty() const;
-    
+
     void setType(Nodetype type);
     Nodetype getType() const;
-    
+
     void setName(std::string const& name);
     const std::string& getName() const;
-    
+
     void setLevel(std::size_t level);
     std::size_t getLevel() const;
-    
+
     void addAttribute(Attribute* poAttr);
-    
+
     void setParent(KMLNode* poNode);
     KMLNode* getParent() const;
-    
+
     void addChildren(KMLNode* poNode);
-    std::size_t countChildren();
-    
+    std::size_t countChildren() const;
+
     KMLNode* getChild(std::size_t index) const;
 
     void addContent(std::string const& text);
     void appendContent(std::string const& text);
     std::string getContent(std::size_t index) const;
     void deleteContent(std::size_t index);
-    std::size_t numContent();
+    std::size_t numContent() const;
 
     void setLayerNumber(int nNum);
     int getLayerNumber() const;
@@ -83,10 +85,10 @@ public:
 
     std::size_t getNumFeatures();
     Feature* getFeature(std::size_t nNum, int& nLastAsked, int &nLastCount);
-    
+
     OGRGeometry* getGeometry(Nodetype eType = Unknown);
 
-    int is25D() { return b25D_; }
+    bool is25D() const { return b25D_; }
 
 private:
 
@@ -104,11 +106,12 @@ private:
     std::string sName_;
 
     Nodetype eType_;
-    int b25D_;
+    bool b25D_;
 
     int nLayerNumber_;
     int nNumFeatures_;
+
+    void unregisterLayerIfMatchingThisNode(KML* poKML);
 };
 
 #endif /* KMLNODE_H_INCLUDED */
-

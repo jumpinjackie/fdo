@@ -1,13 +1,14 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ###############################################################################
-# $Id: gdal_ls.py 22993 2011-08-27 23:44:06Z rouault $
+# $Id: gdal_ls.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 #  Project:  GDAL samples
 #  Purpose:  Display the list of files in a virtual directory, like /vsicurl or /vsizip
 #  Author:   Even Rouault <even dot rouault at mines dash paris dot org>
 #
 ###############################################################################
-#  Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+#  Copyright (c) 2011-2014, Even Rouault <even dot rouault at mines-paris dot org>
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
@@ -28,9 +29,10 @@
 #  DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-from osgeo import gdal
-import sys
 import os
+import sys
+
+from osgeo import gdal
 
 def needsVSICurl(filename):
     return filename.startswith('http://') or filename.startswith('https://') or filename.startswith('ftp://')
@@ -80,7 +82,10 @@ def display_file(fout, dirname, prefix, filename, longformat, check_open = False
     else:
         line = filename_displayed + "\n"
 
-    fout.write(line)
+    try:
+        fout.write(line.encode('utf-8'))
+    except:
+        fout.write(line)
 
 def readDir(fout, dirname, prefix, longformat, recurse, depth, recurseInZip, recurseInTGZ, first = False):
 

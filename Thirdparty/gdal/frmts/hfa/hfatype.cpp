@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: hfatype.cpp 23495 2011-12-08 00:16:33Z rouault $
  *
  * Project:  Erdas Imagine (.img) Translator
  * Purpose:  Implementation of the HFAType class, for managing one type
@@ -8,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 1999, Intergraph Corporation
+ * Copyright (c) 2009-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,13 +28,23 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "hfa_p.h"
 
-CPL_CVSID("$Id: hfatype.cpp 23495 2011-12-08 00:16:33Z rouault $");
+#include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_vsi.h"
+
+CPL_CVSID("$Id: hfatype.cpp 37885 2017-04-01 21:08:40Z goatbar $");
 
 /************************************************************************/
 /* ==================================================================== */
-/*      		       HFAType					*/
+/*                             HFAType                                  */
 /* ==================================================================== */
 /************************************************************************/
 
@@ -42,15 +52,13 @@ CPL_CVSID("$Id: hfatype.cpp 23495 2011-12-08 00:16:33Z rouault $");
 /*                              HFAType()                               */
 /************************************************************************/
 
-HFAType::HFAType()
-
-{
-    nBytes = 0;
-    nFields = 0;
-    papoFields = NULL;
-    pszTypeName = NULL;
-    bInCompleteDefn = FALSE;
-}
+HFAType::HFAType() :
+    bInCompleteDefn(false),
+    nBytes(0),
+    nFields(0),
+    papoFields(NULL),
+    pszTypeName(NULL)
+{}
 
 /************************************************************************/
 /*                              ~HFAType()                              */
@@ -59,33 +67,28 @@ HFAType::HFAType()
 HFAType::~HFAType()
 
 {
-    int		i;
-
-    for( i = 0; i < nFields; i++ )
+    for( int i = 0; i < nFields; i++ )
     {
         delete papoFields[i];
     }
 
-    CPLFree( papoFields );
+    CPLFree(papoFields);
 
-    CPLFree( pszTypeName );
+    CPLFree(pszTypeName);
 }
 
 /************************************************************************/
 /*                             Initialize()                             */
 /************************************************************************/
 
-const char *HFAType::Initialize( const char * pszInput )
+const char *HFAType::Initialize( const char *pszInput )
 
 {
-    int		i;
-    
-    
     if( *pszInput != '{' )
     {
         if( *pszInput != '\0' )
-            CPLDebug( "HFAType", "Initialize(%60.60s) - unexpected input.",
-                      pszInput );
+            CPLDebug("HFAType", "Initialize(%60.60s) - unexpected input.",
+                     pszInput);
 
         while( *pszInput != '{' && *pszInput != '\0' )
             pszInput++;
@@ -96,43 +99,41 @@ const char *HFAType::Initialize( const char * pszInput )
 
     pszInput++;
 
-/* -------------------------------------------------------------------- */
-/*      Read the field definitions.                                     */
-/* -------------------------------------------------------------------- */
+    // Read the field definitions.
     while( pszInput != NULL && *pszInput != '}' )
     {
-        HFAField	*poNewField = new HFAField();
+        HFAField *poNewField = new HFAField();
 
-        pszInput = poNewField->Initialize( pszInput );
+        pszInput = poNewField->Initialize(pszInput);
         if( pszInput != NULL )
         {
-            papoFields = (HFAField **)
-                CPLRealloc(papoFields, sizeof(void*) * (nFields+1) );
+            papoFields = static_cast<HFAField **>(
+                CPLRealloc(papoFields, sizeof(void *) * (nFields + 1)));
             papoFields[nFields++] = poNewField;
         }
         else
+        {
             delete poNewField;
+        }
     }
 
     if( pszInput == NULL )
         return NULL;
 
-/* -------------------------------------------------------------------- */
-/*      Collect the name.                                               */
-/* -------------------------------------------------------------------- */
-    pszInput++; /* skip `}' */
-
-    for( i = 0; pszInput[i] != '\0' && pszInput[i] != ','; i++ ) {}
-    if (pszInput[i] == '\0')
+    // Collect the name.
+    pszInput++;  // Skip `}'
+    int i = 0;  // Used after for.
+    for( ; pszInput[i] != '\0' && pszInput[i] != ','; i++ ) {}
+    if( pszInput[i] == '\0' )
         return NULL;
 
-    pszTypeName = (char *) CPLMalloc(i+1);
-    strncpy( pszTypeName, pszInput, i );
+    pszTypeName = static_cast<char *>(CPLMalloc(i + 1));
+    strncpy(pszTypeName, pszInput, i);
     pszTypeName[i] = '\0';
-    
-    pszInput += i+1;
 
-    return( pszInput );
+    pszInput += i + 1;
+
+    return pszInput;
 }
 
 /************************************************************************/
@@ -142,16 +143,10 @@ const char *HFAType::Initialize( const char * pszInput )
 void HFAType::CompleteDefn( HFADictionary * poDict )
 
 {
-    int		i;
-
-/* -------------------------------------------------------------------- */
-/*      This may already be done, if an earlier object required this    */
-/*      object (as a field), and forced an early computation of the     */
-/*      size.                                                           */
-/* -------------------------------------------------------------------- */
+    // This may already be done, if an earlier object required this
+    // object (as a field), and forced an early computation of the size.
     if( nBytes != 0 )
         return;
-
 
     if( bInCompleteDefn )
     {
@@ -159,23 +154,22 @@ void HFAType::CompleteDefn( HFADictionary * poDict )
                  "Recursion detected in HFAType::CompleteDefn()");
         return;
     }
-    bInCompleteDefn = TRUE;
+    bInCompleteDefn = true;
 
-/* -------------------------------------------------------------------- */
-/*      Complete each of the fields, totaling up the sizes.  This       */
-/*      isn't really accurate for object with variable sized            */
-/*      subobjects.                                                     */
-/* -------------------------------------------------------------------- */
-    for( i = 0; i < nFields; i++ )
+    // Complete each of the fields, totaling up the sizes.  This
+    // isn't really accurate for object with variable sized subobjects.
+    for( int i = 0; i < nFields; i++ )
     {
-        papoFields[i]->CompleteDefn( poDict );
+        papoFields[i]->CompleteDefn(poDict);
         if( papoFields[i]->nBytes < 0 || nBytes == -1 )
             nBytes = -1;
-        else
+        else if( nBytes < INT_MAX - papoFields[i]->nBytes )
             nBytes += papoFields[i]->nBytes;
+        else
+            nBytes = -1;
     }
 
-    bInCompleteDefn = FALSE;
+    bInCompleteDefn = false;
 }
 
 /************************************************************************/
@@ -185,78 +179,74 @@ void HFAType::CompleteDefn( HFADictionary * poDict )
 void HFAType::Dump( FILE * fp )
 
 {
-    int		i;
-    
-    VSIFPrintf( fp, "HFAType %s/%d bytes\n", pszTypeName, nBytes );
+    CPL_IGNORE_RET_VAL(
+        VSIFPrintf(fp, "HFAType %s/%d bytes\n", pszTypeName, nBytes));
 
-    for( i = 0; i < nFields; i++ )
+    for( int i = 0; i < nFields; i++ )
     {
-        papoFields[i]->Dump( fp );
+        papoFields[i]->Dump(fp);
     }
 
-    VSIFPrintf( fp, "\n" );
+    CPL_IGNORE_RET_VAL(VSIFPrintf(fp, "\n"));
 }
 
 /************************************************************************/
 /*                            SetInstValue()                            */
 /************************************************************************/
 
-CPLErr 
-HFAType::SetInstValue( const char * pszFieldPath,
+CPLErr
+HFAType::SetInstValue( const char *pszFieldPath,
                        GByte *pabyData, GUInt32 nDataOffset, int nDataSize,
                        char chReqType, void *pValue )
 
 {
-    int		nArrayIndex = 0, nNameLen, iField, nByteOffset;
-    const char	*pszRemainder;
+    int nArrayIndex = 0;
+    int nNameLen = 0;
+    const char *pszRemainder = NULL;
 
-/* -------------------------------------------------------------------- */
-/*      Parse end of field name, possible index value and               */
-/*      establish where the remaining fields (if any) would start.      */
-/* -------------------------------------------------------------------- */
-    if( strchr(pszFieldPath,'[') != NULL )
+    // Parse end of field name, possible index value and
+    // establish where the remaining fields (if any) would start.
+    if( strchr(pszFieldPath, '[') != NULL )
     {
-        const char	*pszEnd = strchr(pszFieldPath,'[');
-        
-        nArrayIndex = atoi(pszEnd+1);
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = strchr(pszFieldPath, '[');
 
-        pszRemainder = strchr(pszFieldPath,'.');
+        nArrayIndex = atoi(pszEnd + 1);
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
+
+        pszRemainder = strchr(pszFieldPath, '.');
         if( pszRemainder != NULL )
             pszRemainder++;
     }
-
-    else if( strchr(pszFieldPath,'.') != NULL )
+    else if( strchr(pszFieldPath, '.') != NULL )
     {
-        const char	*pszEnd = strchr(pszFieldPath,'.');
-        
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = strchr(pszFieldPath, '.');
+
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
 
         pszRemainder = pszEnd + 1;
     }
-
     else
     {
-        nNameLen = strlen(pszFieldPath);
-        pszRemainder = pszFieldPath/*NULL*/;
+        nNameLen = static_cast<int>(strlen(pszFieldPath));
+        pszRemainder = pszFieldPath /* NULL */;
     }
-    
-/* -------------------------------------------------------------------- */
-/*      Find this field within this type, if possible.                  */
-/* -------------------------------------------------------------------- */
-    nByteOffset = 0;
-    for( iField = 0; iField < nFields && nByteOffset < nDataSize; iField++ )
+
+    // Find this field within this type, if possible.
+    int nByteOffset = 0;
+    int iField = 0;
+    for( ; iField < nFields && nByteOffset < nDataSize; iField++ )
     {
-        if( EQUALN(pszFieldPath,papoFields[iField]->pszFieldName,nNameLen)
+        if( EQUALN(pszFieldPath, papoFields[iField]->pszFieldName, nNameLen)
             && papoFields[iField]->pszFieldName[nNameLen] == '\0' )
         {
             break;
         }
 
-        int nInc = papoFields[iField]->GetInstBytes( pabyData+nByteOffset,
-                                              nDataSize - nByteOffset );
+        const int nInc = papoFields[iField]->GetInstBytes(
+            pabyData + nByteOffset, nDataSize - nByteOffset);
 
-        if (nInc < 0 || nByteOffset > INT_MAX - nInc)
+        if( nInc < 0 ||
+            nByteOffset > INT_MAX - nInc )
         {
             CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
             return CE_Failure;
@@ -268,14 +258,12 @@ HFAType::SetInstValue( const char * pszFieldPath,
     if( iField == nFields || nByteOffset >= nDataSize )
         return CE_Failure;
 
-/* -------------------------------------------------------------------- */
-/*      Extract this field value, and return.                           */
-/* -------------------------------------------------------------------- */
-    return( papoFields[iField]->SetInstValue( pszRemainder, nArrayIndex,
-                                              pabyData + nByteOffset,
-                                              nDataOffset + nByteOffset,
-                                              nDataSize - nByteOffset,
-                                              chReqType, pValue ) );
+    // Extract this field value, and return.
+    return papoFields[iField]->SetInstValue(pszRemainder, nArrayIndex,
+                                            pabyData + nByteOffset,
+                                            nDataOffset + nByteOffset,
+                                            nDataSize - nByteOffset,
+                                            chReqType, pValue);
 }
 
 /************************************************************************/
@@ -283,60 +271,57 @@ HFAType::SetInstValue( const char * pszFieldPath,
 /************************************************************************/
 
 int
-HFAType::GetInstCount( const char * pszFieldPath,
-                       GByte *pabyData, GUInt32 nDataOffset, int nDataSize )
-
+HFAType::GetInstCount( const char *pszFieldPath,
+                       GByte *pabyData,
+                       GUInt32 /* nDataOffset */,
+                       int nDataSize )
 {
-    int		nArrayIndex = 0, nNameLen, iField, nByteOffset;
-    const char	*pszRemainder;
+    // int nArrayIndex = 0;
+    int nNameLen = 0;
+    // const char *pszRemainder;
 
-/* -------------------------------------------------------------------- */
-/*      Parse end of field name, possible index value and               */
-/*      establish where the remaining fields (if any) would start.      */
-/* -------------------------------------------------------------------- */
-    if( strchr(pszFieldPath,'[') != NULL )
+    // Parse end of field name, possible index value and
+    // establish where the remaining fields (if any) would start.
+    if( strchr(pszFieldPath, '[') != NULL )
     {
-        const char	*pszEnd = strchr(pszFieldPath,'[');
-        
-        nArrayIndex = atoi(pszEnd+1);
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = strchr(pszFieldPath, '[');
 
-        pszRemainder = strchr(pszFieldPath,'.');
-        if( pszRemainder != NULL )
-            pszRemainder++;
+        // nArrayIndex = atoi(pszEnd+1);
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
+
+        // pszRemainder = strchr(pszFieldPath, '.');
+        // if( pszRemainder != NULL )
+        //    pszRemainder++;
     }
-
-    else if( strchr(pszFieldPath,'.') != NULL )
+    else if( strchr(pszFieldPath, '.') != NULL )
     {
-        const char	*pszEnd = strchr(pszFieldPath,'.');
-        
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = strchr(pszFieldPath, '.');
 
-        pszRemainder = pszEnd + 1;
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
+
+        // pszRemainder = pszEnd + 1;
     }
-
     else
     {
-        nNameLen = strlen(pszFieldPath);
-        pszRemainder = NULL;
+        nNameLen = static_cast<int>(strlen(pszFieldPath));
+        // pszRemainder = NULL;
     }
-    
-/* -------------------------------------------------------------------- */
-/*      Find this field within this type, if possible.                  */
-/* -------------------------------------------------------------------- */
-    nByteOffset = 0;
-    for( iField = 0; iField < nFields && nByteOffset < nDataSize; iField++ )
+
+    // Find this field within this type, if possible.
+    int nByteOffset = 0;
+    int iField = 0;
+    for( ; iField < nFields && nByteOffset < nDataSize; iField++ )
     {
-        if( EQUALN(pszFieldPath,papoFields[iField]->pszFieldName,nNameLen)
+        if( EQUALN(pszFieldPath, papoFields[iField]->pszFieldName,nNameLen)
             && papoFields[iField]->pszFieldName[nNameLen] == '\0' )
         {
             break;
         }
 
-        int nInc = papoFields[iField]->GetInstBytes( pabyData+nByteOffset,
-                                              nDataSize - nByteOffset );
+        const int nInc = papoFields[iField]->GetInstBytes(
+            pabyData + nByteOffset, nDataSize - nByteOffset);
 
-        if (nInc < 0 || nByteOffset > INT_MAX - nInc)
+        if( nInc < 0 || nByteOffset > INT_MAX - nInc )
         {
             CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
             return -1;
@@ -348,11 +333,9 @@ HFAType::GetInstCount( const char * pszFieldPath,
     if( iField == nFields || nByteOffset >= nDataSize )
         return -1;
 
-/* -------------------------------------------------------------------- */
-/*      Extract this field value, and return.                           */
-/* -------------------------------------------------------------------- */
-    return( papoFields[iField]->GetInstCount( pabyData + nByteOffset,
-                                              nDataSize - nByteOffset ) );
+    // Extract this field value, and return.
+    return papoFields[iField]->GetInstCount(pabyData + nByteOffset,
+                                            nDataSize - nByteOffset);
 }
 
 /************************************************************************/
@@ -360,7 +343,7 @@ HFAType::GetInstCount( const char * pszFieldPath,
 /*                                                                      */
 /*      Extract the value of a field instance within this type.         */
 /*      Most of the work is done by the ExtractInstValue() for the      */
-/*      HFAField, but this methond does the field name parsing.         */
+/*      HFAField, but this method does the field name parsing.          */
 /*                                                                      */
 /*      field names have the form:                                      */
 /*                                                                      */
@@ -373,112 +356,103 @@ HFAType::GetInstCount( const char * pszFieldPath,
 /*                                                the third abc struct. */
 /************************************************************************/
 
-int
-HFAType::ExtractInstValue( const char * pszFieldPath,
+bool
+HFAType::ExtractInstValue( const char *pszFieldPath,
                            GByte *pabyData, GUInt32 nDataOffset, int nDataSize,
-                           char chReqType, void *pReqReturn, int *pnRemainingDataSize )
+                           char chReqType, void *pReqReturn,
+                           int *pnRemainingDataSize )
 
 {
-    int		nArrayIndex = 0, nNameLen, iField, nByteOffset;
-    const char	*pszRemainder;
+    int nArrayIndex = 0;
+    int nNameLen = 0;
+    const char *pszRemainder = NULL;
 
-/* -------------------------------------------------------------------- */
-/*      Parse end of field name, possible index value and               */
-/*      establish where the remaining fields (if any) would start.      */
-/* -------------------------------------------------------------------- */
-    const char *pszFirstArray = strchr(pszFieldPath,'[');
-    const char *pszFirstDot = strchr(pszFieldPath,'.');
+    // Parse end of field name, possible index value and
+    // establish where the remaining fields (if any) would start.
+    const char *pszFirstArray = strchr(pszFieldPath, '[');
+    const char *pszFirstDot = strchr(pszFieldPath, '.');
 
     if( pszFirstArray != NULL
         && (pszFirstDot == NULL
             || pszFirstDot > pszFirstArray) )
     {
-        const char	*pszEnd = pszFirstArray;
-        
-        nArrayIndex = atoi(pszEnd+1);
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = pszFirstArray;
 
-        pszRemainder = strchr(pszFieldPath,'.');
+        nArrayIndex = atoi(pszEnd + 1);
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
+
+        pszRemainder = strchr(pszFieldPath, '.');
         if( pszRemainder != NULL )
             pszRemainder++;
     }
-
     else if( pszFirstDot != NULL )
     {
-        const char	*pszEnd = pszFirstDot;
-        
-        nNameLen = pszEnd - pszFieldPath;
+        const char *pszEnd = pszFirstDot;
+
+        nNameLen = static_cast<int>(pszEnd - pszFieldPath);
 
         pszRemainder = pszEnd + 1;
     }
-
     else
     {
-        nNameLen = strlen(pszFieldPath);
+        nNameLen = static_cast<int>(strlen(pszFieldPath));
         pszRemainder = NULL;
     }
-    
-/* -------------------------------------------------------------------- */
-/*      Find this field within this type, if possible.                  */
-/* -------------------------------------------------------------------- */
-    nByteOffset = 0;
-    for( iField = 0; iField < nFields && nByteOffset < nDataSize; iField++ )
+
+    // Find this field within this type, if possible.
+    int nByteOffset = 0;
+    int iField = 0;
+    for( ; iField < nFields && nByteOffset < nDataSize; iField++ )
     {
-        if( EQUALN(pszFieldPath,papoFields[iField]->pszFieldName,nNameLen)
+        if( EQUALN(pszFieldPath, papoFields[iField]->pszFieldName, nNameLen)
             && papoFields[iField]->pszFieldName[nNameLen] == '\0' )
         {
             break;
         }
 
-        int nInc = papoFields[iField]->GetInstBytes( pabyData+nByteOffset,
-                                              nDataSize - nByteOffset );
+        const int nInc = papoFields[iField]->GetInstBytes(
+            pabyData + nByteOffset, nDataSize - nByteOffset);
 
-        if (nInc < 0 || nByteOffset > INT_MAX - nInc)
+        if( nInc < 0 || nByteOffset > INT_MAX - nInc )
         {
             CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
-            return FALSE;
+            return false;
         }
 
         nByteOffset += nInc;
     }
 
     if( iField == nFields || nByteOffset >= nDataSize )
-        return FALSE;
+        return false;
 
-/* -------------------------------------------------------------------- */
-/*      Extract this field value, and return.                           */
-/* -------------------------------------------------------------------- */
-    return( papoFields[iField]->
-            ExtractInstValue( pszRemainder, nArrayIndex,
-                              pabyData + nByteOffset,
-                              nDataOffset + nByteOffset,
-                              nDataSize - nByteOffset,
-                              chReqType, pReqReturn,
-                              pnRemainingDataSize) );
+    // Extract this field value, and return.
+    return papoFields[iField]->
+        ExtractInstValue(pszRemainder, nArrayIndex,
+                         pabyData + nByteOffset,
+                         nDataOffset + nByteOffset,
+                         nDataSize - nByteOffset,
+                         chReqType, pReqReturn,
+                         pnRemainingDataSize);
 }
-
 
 /************************************************************************/
 /*                           DumpInstValue()                            */
 /************************************************************************/
 
-void HFAType::DumpInstValue( FILE * fpOut,
+void HFAType::DumpInstValue( FILE *fpOut,
                              GByte *pabyData, GUInt32 nDataOffset,
-                             int nDataSize, const char * pszPrefix )
+                             int nDataSize, const char *pszPrefix )
 
 {
-    int		iField;
-    
-    for ( iField = 0; iField < nFields && nDataSize > 0; iField++ )
+    for( int iField = 0; iField < nFields && nDataSize > 0; iField++ )
     {
-        HFAField	*poField = papoFields[iField];
-        int		nInstBytes;
-        
-        poField->DumpInstValue( fpOut, pabyData, nDataOffset,
-                                nDataSize, pszPrefix );
+        HFAField *poField = papoFields[iField];
 
-        nInstBytes = poField->GetInstBytes( pabyData, nDataSize );
-        if (nInstBytes < 0 || nDataOffset > UINT_MAX - nInstBytes)
+        poField->DumpInstValue(fpOut, pabyData, nDataOffset,
+                               nDataSize, pszPrefix);
+
+        const int nInstBytes = poField->GetInstBytes(pabyData, nDataSize);
+        if( nInstBytes < 0 || nDataOffset > UINT_MAX - nInstBytes )
         {
             CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
             return;
@@ -487,7 +461,7 @@ void HFAType::DumpInstValue( FILE * fpOut,
         pabyData += nInstBytes;
         nDataOffset += nInstBytes;
         nDataSize -= nInstBytes;
-    }    
+    }
 }
 
 /************************************************************************/
@@ -500,28 +474,25 @@ int HFAType::GetInstBytes( GByte *pabyData, int nDataSize )
 
 {
     if( nBytes >= 0 )
-        return( nBytes );
-    else
+        return nBytes;
+
+    int nTotal = 0;
+
+    for( int iField = 0; iField < nFields && nTotal < nDataSize; iField++ )
     {
-        int	nTotal = 0;
-        int	iField;
-    
-        for( iField = 0; iField < nFields && nTotal < nDataSize; iField++ )
+        HFAField *poField = papoFields[iField];
+
+        const int nInstBytes =
+            poField->GetInstBytes(pabyData, nDataSize - nTotal);
+        if( nInstBytes < 0 || nTotal > INT_MAX - nInstBytes )
         {
-            HFAField	*poField = papoFields[iField];
-
-            int nInstBytes = poField->GetInstBytes( pabyData,
-                                                    nDataSize - nTotal );
-            if (nInstBytes < 0 || nTotal > INT_MAX - nInstBytes)
-            {
-                CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
-                return -1;
-            }
-
-            pabyData += nInstBytes;
-            nTotal += nInstBytes;
+            CPLError(CE_Failure, CPLE_AppDefined, "Invalid return value");
+            return -1;
         }
 
-        return( nTotal );
+        pabyData += nInstBytes;
+        nTotal += nInstBytes;
     }
+
+    return nTotal;
 }

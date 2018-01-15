@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrocisession.cpp 22346 2011-05-10 03:02:15Z warmerdam $
  *
  * Project:  Oracle Spatial Driver
  * Purpose:  Implementation of OGROCISession, which encapsulates much of the
@@ -31,13 +30,13 @@
 #include "ogr_oci.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrocisession.cpp 22346 2011-05-10 03:02:15Z warmerdam $");
+CPL_CVSID("$Id: ogrocisession.cpp 40697 2017-11-13 13:26:12Z rouault $");
 
 /************************************************************************/
 /*                          OGRGetOCISession()                          */
 /************************************************************************/
 
-OGROCISession * OGRGetOCISession( const char *pszUserid, 
+OGROCISession * OGRGetOCISession( const char *pszUserid,
                                   const char *pszPassword,
                                   const char *pszDatabase )
 
@@ -73,6 +72,9 @@ OGROCISession::OGROCISession()
     pszUserid = NULL;
     pszPassword = NULL;
     pszDatabase = NULL;
+    nServerVersion = 10;
+    nServerRelease = 1;
+    nMaxNameLength = 30;
 }
 
 /************************************************************************/
@@ -103,6 +105,9 @@ OGROCISession::~OGROCISession()
 
         if( hSession )
             OCIHandleFree((dvoid *) hSession, (ub4) OCI_HTYPE_SESSION);
+
+        if( hEnv )
+            OCIHandleFree((dvoid *) hEnv, (ub4) OCI_HTYPE_ENV);
     }
 
     CPLFree( pszUserid );
@@ -114,9 +119,9 @@ OGROCISession::~OGROCISession()
 /*                          EstablishSession()                          */
 /************************************************************************/
 
-int OGROCISession::EstablishSession( const char *pszUserid, 
-                                     const char *pszPassword,
-                                     const char *pszDatabase )
+int OGROCISession::EstablishSession( const char *pszUseridIn,
+                                     const char *pszPasswordIn,
+                                     const char *pszDatabaseIn )
 
 {
 /* -------------------------------------------------------------------- */
@@ -125,9 +130,9 @@ int OGROCISession::EstablishSession( const char *pszUserid,
 
     ub4 eCred = OCI_CRED_RDBMS;
 
-    if( EQUAL(pszDatabase, "") &&
-        EQUAL(pszPassword, "") &&
-        EQUAL(pszUserid, "/") )
+    if( EQUAL(pszDatabaseIn, "") &&
+        EQUAL(pszPasswordIn, "") &&
+        EQUAL(pszUseridIn, "/") )
     {
         eCred = OCI_CRED_EXT;
     }
@@ -136,16 +141,13 @@ int OGROCISession::EstablishSession( const char *pszUserid,
 /*      Initialize Environment handler                                  */
 /* -------------------------------------------------------------------- */
 
-    if( Failed( OCIInitialize((ub4) (OCI_DEFAULT | OCI_OBJECT), (dvoid *)0,
-                (dvoid * (*)(dvoid *, size_t)) 0,
-                (dvoid * (*)(dvoid *, dvoid *, size_t))0,
-                (void (*)(dvoid *, dvoid *)) 0 ) ) )
-    {
-        return FALSE;
-    }
-
-    if( Failed( OCIEnvInit( (OCIEnv **) &hEnv, OCI_DEFAULT, (size_t) 0,
-                (dvoid **) 0 ) ) )
+    if( Failed( OCIEnvCreate( (OCIEnv **) &hEnv, OCI_THREADED | OCI_OBJECT,
+                              NULL,
+                              NULL,
+                              NULL,
+                              NULL,
+                              0,
+                              NULL ) ) )
     {
         return FALSE;
     }
@@ -172,8 +174,8 @@ int OGROCISession::EstablishSession( const char *pszUserid,
         return FALSE;
     }
 
-    if( Failed( OCIServerAttach( hServer, hError, (text*) pszDatabase,
-                strlen((char*) pszDatabase), 0) ) )
+    if( Failed( OCIServerAttach( hServer, hError, (text*) pszDatabaseIn,
+                static_cast<int>(strlen((char*) pszDatabaseIn)), 0) ) )
     {
         return FALSE;
     }
@@ -195,14 +197,14 @@ int OGROCISession::EstablishSession( const char *pszUserid,
     }
 
     if( Failed( OCIAttrSet((dvoid *) hSession, (ub4) OCI_HTYPE_SESSION,
-                (dvoid *) pszUserid, (ub4) strlen((char *) pszUserid),
+                (dvoid *) pszUseridIn, (ub4) strlen((char *) pszUseridIn),
                 (ub4) OCI_ATTR_USERNAME, hError) ) )
     {
         return FALSE;
     }
 
     if( Failed( OCIAttrSet((dvoid *) hSession, (ub4) OCI_HTYPE_SESSION,
-                (dvoid *) pszPassword, (ub4) strlen((char *) pszPassword),
+                (dvoid *) pszPasswordIn, (ub4) strlen((char *) pszPasswordIn),
                 (ub4) OCI_ATTR_PASSWORD, hError) ) )
     {
         return FALSE;
@@ -215,7 +217,7 @@ int OGROCISession::EstablishSession( const char *pszUserid,
     if( Failed( OCISessionBegin(hSvcCtx, hError, hSession, eCred,
                 (ub4) OCI_DEFAULT) ) )
     {
-        CPLDebug("OCI", "OCISessionBegin() failed to intialize session");
+        CPLDebug("OCI", "OCISessionBegin() failed to initialize session");
         return FALSE;
     }
 
@@ -234,9 +236,9 @@ int OGROCISession::EstablishSession( const char *pszUserid,
 /*      Create a describe handle.                                       */
 /* -------------------------------------------------------------------- */
 
-    if( Failed( 
-        OCIHandleAlloc( hEnv, (dvoid **) &hDescribe, (ub4)OCI_HTYPE_DESCRIBE, 
-                        (size_t)0, (dvoid **)0 ), 
+    if( Failed(
+        OCIHandleAlloc( hEnv, (dvoid **) &hDescribe, (ub4)OCI_HTYPE_DESCRIBE,
+                        (size_t)0, (dvoid **)0 ),
         "OCIHandleAlloc(Describe)" ) )
         return FALSE;
 
@@ -246,8 +248,8 @@ int OGROCISession::EstablishSession( const char *pszUserid,
     /* If we have no MDSYS.SDO_GEOMETRY then we consider we are
         working along with the VRT driver and access non spatial tables.
         See #2202 for more details (Tamas Szekeres)*/
-    if (OCIDescribeAny(hSvcCtx, hError, 
-                       (text *) SDO_GEOMETRY, (ub4) strlen(SDO_GEOMETRY), 
+    if (OCIDescribeAny(hSvcCtx, hError,
+                       (text *) SDO_GEOMETRY, (ub4) strlen(SDO_GEOMETRY),
                        OCI_OTYPE_NAME, (ub1) OCI_DEFAULT, (ub1)OCI_PTYPE_TYPE,
                        hDescribe ) != OCI_ERROR)
     {
@@ -272,18 +274,64 @@ int OGROCISession::EstablishSession( const char *pszUserid,
 /* -------------------------------------------------------------------- */
 /*      Record information about the session.                           */
 /* -------------------------------------------------------------------- */
-    this->pszUserid = CPLStrdup(pszUserid);
-    this->pszPassword = CPLStrdup(pszPassword);
-    this->pszDatabase = CPLStrdup(pszDatabase);
+    pszUserid = CPLStrdup(pszUseridIn);
+    pszPassword = CPLStrdup(pszPasswordIn);
+    pszDatabase = CPLStrdup(pszDatabaseIn);
 
 /* -------------------------------------------------------------------- */
-/*      Setting upt the OGR compatible time formating rules.            */
+/*      Get server version information                                  */
 /* -------------------------------------------------------------------- */
-    OGROCIStatement     oSetNLSTimeFormat( this );
+
+    char szVersionTxt[256];
+
+    OCIServerVersion( hSvcCtx, hError, (text*) szVersionTxt, 
+                    (ub4) sizeof(szVersionTxt), (ub1) OCI_HTYPE_SVCCTX );
+
+    char** papszNameValue = CSLTokenizeString2( szVersionTxt, " .", 
+                                                CSLT_STRIPLEADSPACES );
+
+    int count = CSLCount( papszNameValue);
+
+    for( int i = 0; i < count; i++)
+    {
+        if( EQUAL(papszNameValue[i], "Release") )
+        {
+            if( i + 1 < count )
+            {
+                nServerVersion = atoi(papszNameValue[i + 1]);
+            }
+            if( i + 2 < count )
+            {
+                nServerRelease = atoi(papszNameValue[i + 2]);
+            }
+            break;
+        }
+    }
+
+    CPLDebug("OCI", "From '%s' :", szVersionTxt);
+    CPLDebug("OCI", "Version:%d", nServerVersion);
+    CPLDebug("OCI", "Release:%d", nServerRelease);
+
+/* -------------------------------------------------------------------- */
+/*      Set maximun name length (before 12.2 ? 30 : 128)                */
+/* -------------------------------------------------------------------- */
+
+    if( nServerVersion >= 12 && nServerRelease >= 2 )
+    {
+        nMaxNameLength = 128;
+    }
+
+    CSLDestroy( papszNameValue );
+
+/* -------------------------------------------------------------------- */
+/*      Setting up the OGR compatible time formatting rules.            */
+/* -------------------------------------------------------------------- */
+    OGROCIStatement oSetNLSTimeFormat( this );
     if( oSetNLSTimeFormat.Execute( "ALTER SESSION SET NLS_DATE_FORMAT='YYYY/MM/DD' \
         NLS_TIME_FORMAT='HH24:MI:SS' NLS_TIME_TZ_FORMAT='HH24:MI:SS TZHTZM' \
         NLS_TIMESTAMP_FORMAT='YYYY/MM/DD HH24:MI:SS' \
-        NLS_TIMESTAMP_TZ_FORMAT='YYYY/MM/DD HH24:MI:SS TZHTZM'" ) != CE_None )
+        NLS_TIMESTAMP_TZ_FORMAT='YYYY/MM/DD HH24:MI:SS TZHTZM' \
+        NLS_NUMERIC_CHARACTERS = '. '" ) != CE_None )
         return OGRERR_FAILURE;
 
     return TRUE;
@@ -306,37 +354,37 @@ int OGROCISession::Failed( sword nStatus, const char *pszFunction )
         szErrorMsg[0] = '\0';
         if( hError != NULL )
         {
-            OCIErrorGet( (dvoid *) hError, (ub4) 1, NULL, &nErrCode, 
-                         (text *) szErrorMsg, (ub4) sizeof(szErrorMsg), 
+            OCIErrorGet( (dvoid *) hError, (ub4) 1, NULL, &nErrCode,
+                         (text *) szErrorMsg, (ub4) sizeof(szErrorMsg),
                          OCI_HTYPE_ERROR );
         }
         szErrorMsg[sizeof(szErrorMsg)-1] = '\0';
 
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "%s in %s", szErrorMsg, pszFunction );
         return TRUE;
     }
     else if( nStatus == OCI_NEED_DATA )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "OCI_NEED_DATA" );
         return TRUE;
     }
     else if( nStatus == OCI_INVALID_HANDLE )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "OCI_INVALID_HANDLE in %s", pszFunction );
         return TRUE;
     }
     else if( nStatus == OCI_STILL_EXECUTING )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "OCI_STILL_EXECUTING in %s", pszFunction );
         return TRUE;
     }
     else if( nStatus == OCI_CONTINUE )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "OCI_CONTINUE in %s", pszFunction );
         return TRUE;
     }
@@ -348,50 +396,58 @@ int OGROCISession::Failed( sword nStatus, const char *pszFunction )
 /*                            GetParmInfo()                             */
 /************************************************************************/
 
-CPLErr 
+CPLErr
 OGROCISession::GetParmInfo( OCIParam *hParmDesc, OGRFieldDefn *poOGRDefn,
                             ub2 *pnOCIType, ub4 *pnOCILen )
 
 {
     ub2 nOCIType, nOCILen;
     ub4 nColLen;
+    ub1 bOCINull;
     char *pszColName;
     char szTermColName[128];
-    
+
 /* -------------------------------------------------------------------- */
 /*      Get basic parameter details.                                    */
 /* -------------------------------------------------------------------- */
-    if( Failed( 
-        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, 
-                    (dvoid **)&nOCIType, 0, OCI_ATTR_DATA_TYPE, hError ),
+    if( Failed(
+        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM,
+                    &nOCIType, 0, OCI_ATTR_DATA_TYPE, hError ),
         "OCIAttrGet(Type)" ) )
         return CE_Failure;
 
-    if( Failed( 
-        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, 
-                    (dvoid **)&nOCILen, 0, OCI_ATTR_DATA_SIZE, hError ),
+    if( Failed(
+        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM,
+                    &nOCILen, 0, OCI_ATTR_DATA_SIZE, hError ),
         "OCIAttrGet(Size)" ) )
         return CE_Failure;
 
     if( Failed(
-        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, (dvoid **)&pszColName,
-                    &nColLen, OCI_ATTR_NAME, hError ), 
+        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, &pszColName,
+                    &nColLen, OCI_ATTR_NAME, hError ),
         "OCIAttrGet(Name)") )
         return CE_Failure;
-    
-    if( nColLen >= sizeof(szTermColName) )                              
+
+    if( Failed(
+        OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, &bOCINull,
+                    0, OCI_ATTR_IS_NULL, hError ),
+        "OCIAttrGet(Null)") )
+        return CE_Failure;
+
+    if( nColLen >= sizeof(szTermColName) )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "Column length (%d) longer than column name buffer (%d) in\n"
-                  "OGROCISession::GetParmInfo()", 
+                  "OGROCISession::GetParmInfo()",
                   nColLen, (int) sizeof(szTermColName) );
         return CE_Failure;
     }
 
     strncpy( szTermColName, pszColName, nColLen );
     szTermColName[nColLen] = '\0';
-    
+
     poOGRDefn->SetName( szTermColName );
+    poOGRDefn->SetNullable( bOCINull );
 
 /* -------------------------------------------------------------------- */
 /*      Attempt to classify as an OGRType.                              */
@@ -410,22 +466,22 @@ OGROCISession::GetParmInfo( OCIParam *hParmDesc, OGRFieldDefn *poOGRDefn,
             // NOTE: OCI docs say this should be ub1 type, but we have
             // determined that oracle is actually returning a short so we
             // use that type and try to compensate for possible problems by
-            // initializing, and dividing by 256 if it is large. 
+            // initializing, and dividing by 256 if it is large.
             unsigned short byPrecision = 0;
             sb1  nScale;
 
             if( Failed(
-                OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, (dvoid **)&byPrecision,
-                            0, OCI_ATTR_PRECISION, hError ), 
+                OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, &byPrecision,
+                            0, OCI_ATTR_PRECISION, hError ),
                 "OCIAttrGet(Precision)" ) )
                 return CE_Failure;
             if( Failed(
-                OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, (dvoid **)&nScale,
-                            0, OCI_ATTR_SCALE, hError ), 
+                OCIAttrGet( hParmDesc, OCI_DTYPE_PARAM, &nScale,
+                            0, OCI_ATTR_SCALE, hError ),
                 "OCIAttrGet(Scale)") )
                 return CE_Failure;
 #ifdef notdef
-            CPLDebug( "OCI", "%s: Scale=%d, Precision=%d", 
+            CPLDebug( "OCI", "%s: Scale=%d, Precision=%d",
                       szTermColName, nScale, byPrecision );
 #endif
             if( byPrecision > 255 )
@@ -441,12 +497,12 @@ OGROCISession::GetParmInfo( OCIParam *hParmDesc, OGRFieldDefn *poOGRDefn,
             }
             else if( byPrecision < 38 )
             {
-                poOGRDefn->SetType( OFTInteger );
+                poOGRDefn->SetType( (byPrecision < 10) ? OFTInteger : OFTInteger64 );
                 poOGRDefn->SetWidth( byPrecision );
             }
             else
             {
-                poOGRDefn->SetType( OFTInteger );
+                poOGRDefn->SetType( OFTInteger64 );
             }
         }
         break;
@@ -499,13 +555,13 @@ void OGROCISession::CleanName( char * pszName )
 {
     int   i;
 
-    if( strlen(pszName) > 30 )
-        pszName[30] = '\0';
+    if( strlen(pszName) > nMaxNameLength )
+        pszName[nMaxNameLength] = '\0';
 
     for( i = 0; pszName[i] != '\0'; i++ )
     {
-        pszName[i] = toupper(pszName[i]);
-        
+        pszName[i] = static_cast<char>(toupper(pszName[i]));
+
         if( (pszName[i] < '0' || pszName[i] > '9')
             && (pszName[i] < 'A' || pszName[i] > 'Z')
             && pszName[i] != '_' )
@@ -526,29 +582,29 @@ OCIType *OGROCISession::PinTDO( const char *pszType )
     OCIRef *hGeomTypeRef = NULL;
     OCIType *hPinnedTDO = NULL;
 
-    if( Failed( 
-        OCIDescribeAny(hSvcCtx, hError, 
-                       (text *) pszType, (ub4) strlen(pszType), 
-                       OCI_OTYPE_NAME, (ub1)1, (ub1)OCI_PTYPE_TYPE, 
-                       hDescribe ), 
+    if( Failed(
+        OCIDescribeAny(hSvcCtx, hError,
+                       (text *) pszType, (ub4) strlen(pszType),
+                       OCI_OTYPE_NAME, (ub1)1, (ub1)OCI_PTYPE_TYPE,
+                       hDescribe ),
         "GetTDO()->OCIDescribeAny()" ) )
         return NULL;
 
-    if( Failed( 
+    if( Failed(
         OCIAttrGet((dvoid *)hDescribe, (ub4)OCI_HTYPE_DESCRIBE,
-                   (dvoid *)&hGeomParam, (ub4 *)0, (ub4)OCI_ATTR_PARAM, 
+                   (dvoid *)&hGeomParam, (ub4 *)0, (ub4)OCI_ATTR_PARAM,
                    hError), "GetTDO()->OCIGetAttr(ATTR_PARAM)") )
         return NULL;
 
-    if( Failed( 
+    if( Failed(
         OCIAttrGet((dvoid *)hGeomParam, (ub4)OCI_DTYPE_PARAM,
-                   (dvoid *)&hGeomTypeRef, (ub4 *)0, (ub4)OCI_ATTR_REF_TDO, 
+                   (dvoid *)&hGeomTypeRef, (ub4 *)0, (ub4)OCI_ATTR_REF_TDO,
                    hError), "GetTDO()->OCIAttrGet(ATTR_REF_TDO)" ) )
         return NULL;
 
-    if( Failed( 
-        OCIObjectPin(hEnv, hError, hGeomTypeRef, (OCIComplexObject *)0, 
-                     OCI_PIN_ANY, OCI_DURATION_SESSION, 
+    if( Failed(
+        OCIObjectPin(hEnv, hError, hGeomTypeRef, (OCIComplexObject *)0,
+                     OCI_PIN_ANY, OCI_DURATION_SESSION,
                      OCI_LOCK_NONE, (dvoid **)&hPinnedTDO ),
         "GetTDO()->OCIObjectPin()" ) )
         return NULL;

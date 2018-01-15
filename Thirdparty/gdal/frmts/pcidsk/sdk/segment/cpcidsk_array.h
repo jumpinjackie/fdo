@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_SEGMENT_PCIDSK_ARRAY_H
-#define __INCLUDE_SEGMENT_PCIDSK_ARRAY_H
+#ifndef INCLUDE_SEGMENT_PCIDSK_ARRAY_H
+#define INCLUDE_SEGMENT_PCIDSK_ARRAY_H
 
 #include "pcidsk_config.h"
 #include "pcidsk_types.h"
@@ -52,15 +52,15 @@ namespace PCIDSK
         virtual     ~CPCIDSK_ARRAY();
 
         // CPCIDSK_ARRAY
-        unsigned char GetDimensionCount() const ;
-        void SetDimensionCount(unsigned char nDim) ;
-        const std::vector<unsigned int>& GetSizes() const ;
-        void SetSizes(const std::vector<unsigned int>& oSizes) ;
-        const std::vector<double>& GetArray() const ;
-        void SetArray(const std::vector<double>& oArray) ;
+        unsigned char GetDimensionCount() const override ;
+        void SetDimensionCount(unsigned char nDim) override ;
+        const std::vector<unsigned int>& GetSizes() const override ;
+        void SetSizes(const std::vector<unsigned int>& oSizes) override ;
+        const std::vector<double>& GetArray() const override ;
+        void SetArray(const std::vector<double>& oArray) override ;
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
 
         //Headers are not supported by PCIDSK, we keep the function
@@ -87,4 +87,4 @@ namespace PCIDSK
     };
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_SEGMENT_PCIDSK_ARRAY_H
+#endif // INCLUDE_SEGMENT_PCIDSK_ARRAY_H

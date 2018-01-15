@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
-#define __INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
+#ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
+#define INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
  
 #include "pcidsk_binary.h"
 #include "segment/cpcidsksegment.h"
@@ -41,20 +41,20 @@ namespace PCIDSK {
             const char *segment_pointer, bool bLoad=true);
         ~CPCIDSKBinarySegment();
 
-        const char* GetBuffer(void) const
+        const char* GetBuffer(void) const override
         {
             return seg_data.buffer;
         }
 
-        unsigned int GetBufferSize(void) const
+        unsigned int GetBufferSize(void) const override
         {
             return seg_data.buffer_size;
         }
         void SetBuffer(const char* pabyBuf, 
-            unsigned int nBufSize);
+            unsigned int nBufSize) override;
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
         
         // Helper housekeeping functions
@@ -70,4 +70,4 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H
+#endif // INCLUDE_PCIDSK_SEGMENT_PCIDSKBINARY_SEG_H

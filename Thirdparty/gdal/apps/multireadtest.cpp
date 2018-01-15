@@ -1,8 +1,7 @@
 /******************************************************************************
- * $Id: multireadtest.cpp 17754 2009-10-04 20:48:03Z rouault $
  *
  * Project:  GDAL Utilities
- * Purpose:  Multithreading test application.
+ * Purpose:  Multi-threading test application.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
@@ -32,7 +31,7 @@
 #include "cpl_multiproc.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: multireadtest.cpp 17754 2009-10-04 20:48:03Z rouault $");
+CPL_CVSID("$Id: multireadtest.cpp 35884 2016-10-24 05:56:50Z goatbar $");
 
 static int nThreadCount = 4, nIterations = 1, bLockOnOpen = TRUE;
 static int nOpenIterations = 1;
@@ -40,7 +39,7 @@ static volatile int nPendingThreads = 0;
 static const char *pszFilename = NULL;
 static int nChecksum = 0;
 
-static void *pGlobalMutex = NULL;
+static CPLMutex *pGlobalMutex = NULL;
 
 static void WorkerFunc( void * );
 
@@ -55,7 +54,6 @@ static void Usage()
             "              filename\n" );
     exit( 1 );
 }
-
 
 /************************************************************************/
 /*                                main()                                */
@@ -87,7 +85,7 @@ int main( int argc, char ** argv )
             pszFilename = argv[iArg];
         else
         {
-            printf( "Unrecognised argument: %s\n", argv[iArg] );
+            printf( "Unrecognized argument: %s\n", argv[iArg] );
             Usage();
         }
     }
@@ -108,18 +106,21 @@ int main( int argc, char ** argv )
     GDALDatasetH hDS;
 
     GDALAllRegister();
+    for( int i = 0; i < 2; i++ )
+    {
     hDS = GDALOpen( pszFilename, GA_ReadOnly );
     if( hDS == NULL )
         exit( 1 );
 
-    nChecksum = GDALChecksumImage( GDALGetRasterBand( hDS, 1 ), 
-                                   0, 0, 
-                                   GDALGetRasterXSize( hDS ), 
+    nChecksum = GDALChecksumImage( GDALGetRasterBand( hDS, 1 ),
+                                   0, 0,
+                                   GDALGetRasterXSize( hDS ),
                                    GDALGetRasterYSize( hDS ) );
-    
-    GDALClose( hDS );
 
-    printf( "Got checksum %d, launching %d worker threads on %s, %d iterations.\n", 
+    GDALClose( hDS );
+    }
+
+    printf( "Got checksum %d, launching %d worker threads on %s, %d iterations.\n",
             nChecksum, nThreadCount, pszFilename, nIterations );
 
 /* -------------------------------------------------------------------- */
@@ -147,14 +148,13 @@ int main( int argc, char ** argv )
     CPLReleaseMutex( pGlobalMutex );
 
     printf( "All threads complete.\n" );
-    
+
     CSLDestroy( argv );
-    
+
     GDALDestroyDriverManager();
-    
+
     return 0;
 }
-
 
 /************************************************************************/
 /*                             WorkerFunc()                             */
@@ -179,10 +179,10 @@ static void WorkerFunc( void * )
         for( iIter = 0; iIter < nIterations && hDS != NULL; iIter++ )
         {
             int nMyChecksum;
-        
-            nMyChecksum = GDALChecksumImage( GDALGetRasterBand( hDS, 1 ), 
-                                             0, 0, 
-                                             GDALGetRasterXSize( hDS ), 
+
+            nMyChecksum = GDALChecksumImage( GDALGetRasterBand( hDS, 1 ),
+                                             0, 0,
+                                             GDALGetRasterXSize( hDS ),
                                              GDALGetRasterYSize( hDS ) );
 
             if( nMyChecksum != nChecksum )

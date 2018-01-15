@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_dxf.h 22008 2011-03-22 19:45:20Z warmerdam $
+ * $Id: ogr_dwg.h 37969 2017-04-12 07:56:18Z rouault $
  *
  * Project:  DWG Translator
  * Purpose:  Definition of classes for OGR .dwg driver.
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_DWG_H_INCLUDED
-#define _OGR_DWG_H_INCLUDED
+#ifndef OGR_DWG_H_INCLUDED
+#define OGR_DWG_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include "cpl_conv.h"
@@ -38,25 +38,7 @@
 #include <queue>
 
 #include "ogr_autocad_services.h"
-
-#include "OdaCommon.h"
-#include "diagnostics.h"
-#include "DbDatabase.h"
-#include "DbEntity.h"
-#include "DbDimAssoc.h"
-#include "DbObjectIterator.h"
-#include "DbBlockTable.h"
-#include "DbBlockTableRecord.h"
-#include "DbSymbolTable.h"
-
-#include "OdCharMapper.h"
-#include "RxObjectImpl.h"
-
-#include "ExSystemServices.h"
-#include "ExHostAppServices.h"
-#include "OdFileBuf.h"
-#include "RxDynamicModule.h"
-#include "FdField.h"
+#include "dwg_headers.h"
 
 class OGRDWGDataSource;
 class OGRDWGServices;
@@ -86,22 +68,22 @@ class OGRDWGBlocksLayer : public OGRLayer
     OGRDWGDataSource   *poDS;
 
     OGRFeatureDefn     *poFeatureDefn;
-    
+
     int                 iNextFID;
     unsigned int        iNextSubFeature;
 
     std::map<CPLString,DWGBlockDefinition>::iterator oIt;
 
   public:
-    OGRDWGBlocksLayer( OGRDWGDataSource *poDS );
+    explicit OGRDWGBlocksLayer( OGRDWGDataSource *poDS );
     ~OGRDWGBlocksLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     OGRFeature *        GetNextUnfilteredFeature();
 };
@@ -122,8 +104,8 @@ class OGRDWGLayer : public OGRLayer
     void                ClearPendingFeatures();
 
     std::map<CPLString,CPLString> oStyleProperties;
-    
-    void                TranslateGenericProperties( OGRFeature *poFeature, 
+
+    void                TranslateGenericProperties( OGRFeature *poFeature,
                                                     OdDbEntityPtr poEntity );
     void                PrepareLineStyle( OGRFeature *poFeature );
 //    void                ApplyOCSTransformer( OGRGeometry * );
@@ -132,6 +114,7 @@ class OGRDWGLayer : public OGRLayer
     OGRFeature *        TranslateLINE( OdDbEntityPtr poEntity );
     OGRFeature *        TranslateLWPOLYLINE( OdDbEntityPtr poEntity );
     OGRFeature *        Translate2DPOLYLINE( OdDbEntityPtr poEntity );
+    OGRFeature *        Translate3DPOLYLINE( OdDbEntityPtr poEntity );
     OGRFeature *        TranslateELLIPSE( OdDbEntityPtr poEntity );
     OGRFeature *        TranslateARC( OdDbEntityPtr poEntity );
     OGRFeature *        TranslateMTEXT( OdDbEntityPtr poEntity );
@@ -146,19 +129,19 @@ class OGRDWGLayer : public OGRLayer
 
     CPLString           TextUnescape( OdString oString);
 
-    OdDbBlockTableRecordPtr poBlock;
+    OdDbBlockTableRecordPtr m_poBlock;
     OdDbObjectIteratorPtr   poEntIter;
 
   public:
-    OGRDWGLayer( OGRDWGDataSource *poDS );
+    explicit OGRDWGLayer( OGRDWGDataSource *poDS );
     ~OGRDWGLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     OGRFeature *        GetNextUnfilteredFeature();
 
@@ -175,7 +158,7 @@ class OGRDWGDataSource : public OGRDataSource
 {
     VSILFILE           *fp;
 
-    CPLString           osName;
+    CPLString           m_osName;
     std::vector<OGRLayer*> apoLayers;
 
     int                 iEntitiesSectionOffset;
@@ -186,7 +169,7 @@ class OGRDWGDataSource : public OGRDataSource
     CPLString           osEncoding;
 
     // indexed by layer name, then by property name.
-    std::map< CPLString, std::map<CPLString,CPLString> > 
+    std::map< CPLString, std::map<CPLString,CPLString> >
                         oLayerTable;
 
     std::map<CPLString,CPLString> oLineTypeTable;
@@ -205,12 +188,12 @@ class OGRDWGDataSource : public OGRDataSource
     int                 Open( OGRDWGServices *poServices,
                               const char * pszFilename, int bHeaderOnly=FALSE );
 
-    const char          *GetName() { return osName; }
+    const char          *GetName() override { return m_osName; }
 
-    int                 GetLayerCount() { return apoLayers.size(); }
-    OGRLayer            *GetLayer( int );
+    int                 GetLayerCount() override { return static_cast<int>(apoLayers.size()); }
+    OGRLayer            *GetLayer( int ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     // The following is only used by OGRDWGLayer
 
@@ -226,13 +209,13 @@ class OGRDWGDataSource : public OGRDataSource
     // Layer and other Table Handling (ogrdatasource.cpp)
     void                ReadLayerDefinitions();
     void                ReadLineTypeDefinitions();
-    const char         *LookupLayerProperty( const char *pszLayer, 
+    const char         *LookupLayerProperty( const char *pszLayer,
                                              const char *pszProperty );
     const char         *LookupLineType( const char *pszName );
 
-    // Header variables. 
+    // Header variables.
     void                ReadHeaderSection();
-    const char         *GetVariable(const char *pszName, 
+    const char         *GetVariable(const char *pszName,
                                     const char *pszDefault=NULL );
 
     const char         *GetEncoding() { return osEncoding; }
@@ -256,23 +239,17 @@ protected:
 
 class OGRDWGDriver : public OGRSFDriver
 {
-    int     bInitialized;
-    void    Initialize();
-    
-    OdStaticRxObject<OGRDWGServices> oServices;
-
-    static void ErrorHandler( OdResult oRes );
+    OGRDWGServices *poServices;
 
   public:
     OGRDWGDriver();
     ~OGRDWGDriver();
 
-    OGRDWGServices *GetServices() { return &oServices; }
+    OGRDWGServices *GetServices() { return poServices; }
 
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-    int         TestCapability( const char * );
+    const char *GetName() override;
+    OGRDataSource *Open( const char *, int ) override;
+    int         TestCapability( const char * ) override;
 };
 
-
-#endif /* ndef _OGR_DWG_H_INCLUDED */
+#endif /* ndef OGR_DWG_H_INCLUDED */

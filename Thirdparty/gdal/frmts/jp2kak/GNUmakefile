@@ -19,7 +19,7 @@ INSTOBJ = $(foreach d,$(APPOBJ),../o/$(notdir $(d)))
 
 #CXXFLAGS :=	$(CXXFLAGS) -DFILEIO_DEBUG
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(KAKINC) -I. $(CPPFLAGS)
+CPPFLAGS	:=	 $(KAKINC) -I. $(CPPFLAGS) -DKDU_X86_INTRINSICS
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 
@@ -30,4 +30,4 @@ clean:
 install-obj:	$(O_OBJ:.o=.$(OBJ_EXT))
 	cp $(APPOBJ) ../o
 
-$(OBJ) $(O_OBJ):	subfile_source.h
+$(OBJ) $(O_OBJ): jp2kakdataset.h subfile_source.h

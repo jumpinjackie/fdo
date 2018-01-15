@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogrpgeogeometry.h 22525 2011-06-11 02:18:49Z rburhum $
+ * $Id: ogrpgeogeometry.h 36883 2016-12-15 13:31:12Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements decoder of shapebin geometry for PGeo
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2011-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,13 +28,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_PGEOGEOMETRY_H_INCLUDED
-#define _OGR_PGEOGEOMETRY_H_INCLUDED
+#ifndef OGR_PGEOGEOMETRY_H_INCLUDED
+#define OGR_PGEOGEOMETRY_H_INCLUDED
 
 #include "ogr_geometry.h"
 
 #define SHPT_NULL          0
 
+#ifndef SHPT_POINT
 #define SHPT_POINT         1
 #define SHPT_POINTM       21
 #define SHPT_POINTZM      11
@@ -56,6 +58,7 @@
 
 #define SHPT_MULTIPATCHM  31
 #define SHPT_MULTIPATCH   32
+#endif // SHPT_POINT
 
 #define SHPT_GENERALPOLYLINE    50
 #define SHPT_GENERALPOLYGON     51
@@ -72,14 +75,33 @@
 #define ESRI_LAYERGEOMTYPE_POLYGON       4
 #define ESRI_LAYERGEOMTYPE_MULTIPATCH    9
 
+OGRGeometry* OGRCreateFromMultiPatch( int nParts,
+                                      const GInt32* panPartStart,
+                                      const GInt32* panPartType,
+                                      int nPoints,
+                                      const double* padfX,
+                                      const double* padfY,
+                                      const double* padfZ );
 
 OGRErr CPL_DLL OGRCreateFromShapeBin( GByte *pabyShape,
                               OGRGeometry **ppoGeom,
                               int nBytes );
 
-OGRErr CPL_DLL OGRWriteToShapeBin( OGRGeometry *poGeom, 
+OGRErr CPL_DLL OGRWriteToShapeBin( OGRGeometry *poGeom,
                            GByte **ppabyShape,
                            int *pnBytes );
 
+OGRErr OGRCreateMultiPatch( OGRGeometry *poGeom,
+                            int bAllowSHPTTriangle,
+                            int& nParts,
+                            int*& panPartStart,
+                            int*& panPartType,
+                            int& nPoints,
+                            OGRRawPoint*& poPoints,
+                            double*& padfZ );
+
+OGRErr CPL_DLL OGRWriteMultiPatchToShapeBin( OGRGeometry *poGeom,
+                           GByte **ppabyShape,
+                           int *pnBytes );
 
 #endif

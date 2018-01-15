@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogravce00layer.cpp 23907 2012-02-04 23:04:59Z rouault $
  *
  * Project:  OGR
  * Purpose:  Implements OGRAVCE00Layer class.
@@ -34,31 +33,33 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogravce00layer.cpp 23907 2012-02-04 23:04:59Z rouault $");
+#include <cstdlib>
+
+CPL_CVSID("$Id: ogravce00layer.cpp 35952 2016-10-26 17:31:27Z goatbar $");
 
 /************************************************************************/
 /*                           OGRAVCE00Layer()                           */
 /************************************************************************/
 
 OGRAVCE00Layer::OGRAVCE00Layer( OGRAVCDataSource *poDSIn,
-                                AVCE00Section *psSectionIn )
-        : OGRAVCLayer( psSectionIn->eType, poDSIn ),
-          psSection(psSectionIn),
-          psRead(NULL),
-          poArcLayer(NULL),
-          nFeatureCount(-1),
-          bNeedReset(0),
-          nNextFID(1),
-		  psTableSection(NULL),
-          psTableRead(NULL),
-          pszTableFilename(NULL),
-          nTablePos(0),
-		  nTableBaseField(0),
-          nTableAttrIndex(-1)
+                                AVCE00Section *psSectionIn ) :
+    OGRAVCLayer( psSectionIn->eType, poDSIn ),
+    psSection(psSectionIn),
+    psRead(NULL),
+    poArcLayer(NULL),
+    nFeatureCount(-1),
+    bNeedReset(false),
+    nNextFID(1),
+    psTableSection(NULL),
+    psTableRead(NULL),
+    pszTableFilename(NULL),
+    nTablePos(0),
+    nTableBaseField(0),
+    nTableAttrIndex(-1)
 {
     SetupFeatureDefinition( psSection->pszName );
     /* psRead = AVCE00ReadOpenE00(psSection->pszFilename); */
-    
+
 #if 0
     szTableName[0] = '\0';
     if( psSection->eType == AVCFilePAL )
@@ -127,7 +128,7 @@ void OGRAVCE00Layer::ResetReading()
         AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0);
     }
 
-    bNeedReset = FALSE;
+    bNeedReset = false;
     nNextFID = 1;
 }
 
@@ -135,7 +136,7 @@ void OGRAVCE00Layer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRAVCE00Layer::GetFeature( long nFID )
+OGRFeature *OGRAVCE00Layer::GetFeature( GIntBig nFID )
 
 {
 /* -------------------------------------------------------------------- */
@@ -156,7 +157,7 @@ OGRFeature *OGRAVCE00Layer::GetFeature( long nFID )
 /*      Read the raw feature - the -3 fid is a special flag             */
 /*      indicating serial access.                                       */
 /* -------------------------------------------------------------------- */
-    void *pFeature;
+    void *pFeature = NULL;
 
     if( nFID == -3 )
     {
@@ -169,7 +170,7 @@ OGRFeature *OGRAVCE00Layer::GetFeature( long nFID )
     }
     else
     {
-        bNeedReset = TRUE;
+        bNeedReset = true;
 
         if (nNextFID > nFID)
         {
@@ -185,16 +186,14 @@ OGRFeature *OGRAVCE00Layer::GetFeature( long nFID )
         }
         while (NULL != pFeature && nNextFID <= nFID);
     }
-        
+
     if( pFeature == NULL )
         return NULL;
 
 /* -------------------------------------------------------------------- */
 /*      Translate the feature.                                          */
 /* -------------------------------------------------------------------- */
-    OGRFeature *poFeature;
-
-    poFeature = TranslateFeature( pFeature );
+    OGRFeature *poFeature = TranslateFeature( pFeature );
     if( poFeature == NULL )
         return NULL;
 
@@ -214,10 +213,10 @@ OGRFeature *OGRAVCE00Layer::GetFeature( long nFID )
 /*      If this is a polygon layer, try to assemble the arcs to form    */
 /*      the whole polygon geometry.                                     */
 /* -------------------------------------------------------------------- */
-    if( psSection->eType == AVCFilePAL 
+    if( psSection->eType == AVCFilePAL
         || psSection->eType == AVCFileRPL )
     {
-        FormPolygonGeometry( poFeature, (AVCPal *) pFeature );
+        FormPolygonGeometry( poFeature, static_cast<AVCPal *>( pFeature ) );
     }
 
 /* -------------------------------------------------------------------- */
@@ -241,14 +240,14 @@ OGRFeature *OGRAVCE00Layer::GetNextFeature()
     OGRFeature *poFeature = GetFeature( -3 );
 
     // Skip universe polygon.
-    if( poFeature != NULL && poFeature->GetFID() == 1 
+    if( poFeature != NULL && poFeature->GetFID() == 1
         && psSection->eType == AVCFilePAL )
     {
         OGRFeature::DestroyFeature( poFeature );
         poFeature = GetFeature( -3 );
     }
 
-    while( poFeature != NULL 
+    while( poFeature != NULL
            && ((m_poAttrQuery != NULL
                 && !m_poAttrQuery->Evaluate( poFeature ) )
                || !FilterGeometry( poFeature->GetGeometryRef() ) ) )
@@ -273,8 +272,8 @@ int OGRAVCE00Layer::TestCapability( const char * pszCap )
 {
     if( eSectionType == AVCFileARC && EQUAL(pszCap,OLCRandomRead) )
         return TRUE;
-    else 
-        return OGRAVCLayer::TestCapability( pszCap );
+
+    return OGRAVCLayer::TestCapability( pszCap );
 }
 #endif
 
@@ -285,8 +284,8 @@ int OGRAVCE00Layer::TestCapability( const char * pszCap )
 /*      them into the appropriate OGR geometry on the target feature.   */
 /************************************************************************/
 
-int OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature, 
-                                         AVCPal *psPAL )
+bool OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature,
+                                          AVCPal *psPAL )
 {
 /* -------------------------------------------------------------------- */
 /*      Try to find the corresponding ARC layer if not already          */
@@ -294,18 +293,17 @@ int OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature,
 /* -------------------------------------------------------------------- */
     if( poArcLayer == NULL )
     {
-        int i;
-
-        for( i = 0; i < poDS->GetLayerCount(); i++ )
+        for( int i = 0; i < poDS->GetLayerCount(); i++ )
         {
-            OGRAVCE00Layer *poLayer = (OGRAVCE00Layer *) poDS->GetLayer(i);
+            OGRAVCE00Layer *poLayer
+                = static_cast<OGRAVCE00Layer *>( poDS->GetLayer(i) );
 
             if( poLayer->eSectionType == AVCFileARC )
                 poArcLayer = poLayer;
         }
 
         if( poArcLayer == NULL )
-            return FALSE;
+            return false;
     }
 
 /* -------------------------------------------------------------------- */
@@ -313,12 +311,9 @@ int OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature,
 /*  copy of them since the one returned by AVC is temporary.            */
 /* -------------------------------------------------------------------- */
     OGRGeometryCollection oArcs;
-    int iArc;
 
-    for( iArc = 0; iArc < psPAL->numArcs; iArc++ )
+    for( int iArc = 0; iArc < psPAL->numArcs; iArc++ )
     {
-        OGRFeature *poArc;
-
         if( psPAL->pasArcs[iArc].nArcId == 0 )
             continue;
 
@@ -326,28 +321,27 @@ int OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature,
         // arc is a "bridge" arc and can be discarded.  If we don't discard
         // it, then we should double it as bridge arcs seem to only appear
         // once.  But by discarding it we ensure a multi-ring polygon will be
-        // properly formed. 
+        // properly formed.
         if( psPAL->pasArcs[iArc].nAdjPoly == psPAL->nPolyId )
             continue;
 
-        poArc = poArcLayer->GetFeature( ABS(psPAL->pasArcs[iArc].nArcId) );
+        OGRFeature *poArc
+            = poArcLayer->GetFeature( std::abs(psPAL->pasArcs[iArc].nArcId) );
 
         if( poArc == NULL )
-            return FALSE;
+            return false;
 
         if( poArc->GetGeometryRef() == NULL )
-            return FALSE;
+            return false;
 
         oArcs.addGeometry( poArc->GetGeometryRef() );
         OGRFeature::DestroyFeature( poArc );
     }
 
-    OGRErr  eErr;
-    OGRPolygon *poPolygon;
-
-    poPolygon = (OGRPolygon *) 
-        OGRBuildPolygonFromEdges( (OGRGeometryH) &oArcs, TRUE, FALSE,  
-                                  0.0, &eErr );
+    OGRErr eErr;
+    OGRPolygon *poPolygon = reinterpret_cast<OGRPolygon *>(
+        OGRBuildPolygonFromEdges( reinterpret_cast<OGRGeometryH>( &oArcs ),
+                                  TRUE, FALSE, 0.0, &eErr ) );
     if( poPolygon != NULL )
         poFeature->SetGeometryDirectly( poPolygon );
 
@@ -362,10 +356,10 @@ int OGRAVCE00Layer::FormPolygonGeometry( OGRFeature *poFeature,
 /*      definition.                                                     */
 /************************************************************************/
 
-int OGRAVCE00Layer::CheckSetupTable(AVCE00Section *psTblSectionIn)
+bool OGRAVCE00Layer::CheckSetupTable(AVCE00Section *psTblSectionIn)
 {
     if (psTableRead)
-        return FALSE;
+        return false;
 
     const char *pszTableType = NULL;
     switch (eSectionType)
@@ -388,20 +382,20 @@ int OGRAVCE00Layer::CheckSetupTable(AVCE00Section *psTblSectionIn)
 /*      a case insensitive check.                                       */
 /* -------------------------------------------------------------------- */
     if( pszTableType == NULL )
-        return FALSE;
-    
-    int iCheckOff;
-    for( iCheckOff = 0; 
-         psTblSectionIn->pszName[iCheckOff] != '\0'; 
+        return false;
+
+    int iCheckOff = 0;
+    for( ;
+         psTblSectionIn->pszName[iCheckOff] != '\0';
          iCheckOff++ )
     {
-        if( EQUALN(psTblSectionIn->pszName + iCheckOff, 
-                   pszTableType, strlen(pszTableType) ) )
+        if( EQUALN( psTblSectionIn->pszName + iCheckOff,
+                    pszTableType, strlen(pszTableType) ) )
             break;
     }
 
     if( psTblSectionIn->pszName[iCheckOff] == '\0' )
-        return FALSE;
+        return false;
 
     psTableSection = psTblSectionIn;
 
@@ -410,31 +404,32 @@ int OGRAVCE00Layer::CheckSetupTable(AVCE00Section *psTblSectionIn)
 /* -------------------------------------------------------------------- */
     psTableRead = AVCE00ReadOpenE00(psTblSectionIn->pszFilename);
     if (psTableRead == NULL)
-        return FALSE;
+        return false;
 
     /* advance to the specified line number */
     if (AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0) != 0)
     {
         AVCE00ReadCloseE00(psTableRead);
         psTableRead = NULL;
-        return FALSE;
+        return false;
     }
-    
+
     AVCE00ReadNextObjectE00(psTableRead);
-    bNeedReset = 1;
+    bNeedReset = true;
 
     pszTableFilename = CPLStrdup(psTblSectionIn->pszFilename);
     nTableBaseField = poFeatureDefn->GetFieldCount();
 
-	if (eSectionType == AVCFileLAB)
-	{
-        AVCE00ReadE00Ptr psInfo = ((OGRAVCE00DataSource *) poDS)->GetInfo();
+    if (eSectionType == AVCFileLAB)
+    {
+        AVCE00ReadE00Ptr psInfo
+            = static_cast<OGRAVCE00DataSource *>( poDS )->GetInfo();
         for( int iSection = 0; iSection < psInfo->numSections; iSection++ )
         {
             if( psInfo->pasSections[iSection].eType == AVCFilePAL )
                 nTableAttrIndex = poFeatureDefn->GetFieldIndex( "PolyId" );
         }
-	}
+    }
 
 /* -------------------------------------------------------------------- */
 /*      Setup attributes.                                               */
@@ -446,18 +441,18 @@ int OGRAVCE00Layer::CheckSetupTable(AVCE00Section *psTblSectionIn)
 /* -------------------------------------------------------------------- */
     /* AVCE00ReadCloseE00( psTableRead ); */
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
 /*                         AppendTableFields()                          */
 /************************************************************************/
 
-int OGRAVCE00Layer::AppendTableFields( OGRFeature *poFeature )
+bool OGRAVCE00Layer::AppendTableFields( OGRFeature *poFeature )
 
 {
     if (psTableRead == NULL)
-        return FALSE;
+        return false;
 
 /* -------------------------------------------------------------------- */
 /*      Open the table if it is currently closed.                       */
@@ -466,14 +461,14 @@ int OGRAVCE00Layer::AppendTableFields( OGRFeature *poFeature )
     {
         psTableRead = AVCE00ReadOpenE00(pszTableFilename);
         if (psTableRead == NULL)
-            return FALSE;
+            return false;
 
-        /* advance to the specified line number */
-    	if (AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0) != 0)
+        /* Advance to the specified line number */
+        if (AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0) != 0)
         {
             AVCE00ReadCloseE00(psTableRead);
             psTableRead = NULL;
-            return FALSE;
+            return false;
         }
         nTablePos = 0;
     }
@@ -487,21 +482,18 @@ int OGRAVCE00Layer::AppendTableFields( OGRFeature *poFeature )
 /*      nTableAttrIndex will already be setup to refer to the           */
 /*      PolyId field.                                                   */
 /* -------------------------------------------------------------------- */
-    int nRecordId;
-    void *hRecord;
-
-    if( nTableAttrIndex == -1 )
-        nRecordId = poFeature->GetFID();
-    else
-        nRecordId = poFeature->GetFieldAsInteger( nTableAttrIndex );
+    const int nRecordId = nTableAttrIndex == -1
+        ? static_cast<int>( poFeature->GetFID() )
+        : poFeature->GetFieldAsInteger( nTableAttrIndex );
 
     if (nRecordId <= nTablePos)
     {
-    	if (AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0) != 0)
-			return FALSE;
+        if( AVCE00ReadGotoSectionE00(psTableRead, psTableSection, 0) != 0 )
+            return false;
         nTablePos = 0;
     }
 
+    void *hRecord = NULL;
     do
     {
         hRecord = AVCE00ReadNextObjectE00(psTableRead);
@@ -510,19 +502,17 @@ int OGRAVCE00Layer::AppendTableFields( OGRFeature *poFeature )
     while (NULL != hRecord && nTablePos < nRecordId);
 
     if( hRecord == NULL )
-        return FALSE;
-
+        return false;
 
 /* -------------------------------------------------------------------- */
 /*      Translate it.                                                   */
 /* -------------------------------------------------------------------- */
-    return TranslateTableFields( poFeature, nTableBaseField, 
-                                 psTableRead->hParseInfo->hdr.psTableDef, 
-                                 (AVCField *) hRecord );
+    return TranslateTableFields( poFeature, nTableBaseField,
+                                 psTableRead->hParseInfo->hdr.psTableDef,
+                                 static_cast<AVCField *>( hRecord ) );
 }
 
-
-int OGRAVCE00Layer::GetFeatureCount(int bForce)
+GIntBig OGRAVCE00Layer::GetFeatureCount(int bForce)
 {
     if (m_poAttrQuery != NULL || m_poFilterGeom != NULL)
         return OGRAVCLayer::GetFeatureCount(bForce);
@@ -531,7 +521,7 @@ int OGRAVCE00Layer::GetFeatureCount(int bForce)
     {
         if (psSection->nFeatureCount < 0)
         {
-            nFeatureCount = OGRLayer::GetFeatureCount(bForce);
+            nFeatureCount = (int) OGRLayer::GetFeatureCount(bForce);
         }
         else
         {

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrvfkdriver.cpp 25340 2012-12-21 20:30:21Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRVFKDriver class.
@@ -33,43 +32,48 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrvfkdriver.cpp 25340 2012-12-21 20:30:21Z rouault $");
+CPL_CVSID("$Id: ogrvfkdriver.cpp 37757 2017-03-18 14:03:33Z rouault $");
 
-/************************************************************************/
-/*                          ~OGRVFKDriver()                             */
-/************************************************************************/
-OGRVFKDriver::~OGRVFKDriver()
+static int OGRVFKDriverIdentify(GDALOpenInfo* poOpenInfo)
 {
-}
+    if( poOpenInfo->fpL == NULL )
+        return FALSE;
 
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-const char *OGRVFKDriver::GetName()
-{
-    return "VFK";
+    if( poOpenInfo->nHeaderBytes >= 2 &&
+        STARTS_WITH((const char*)poOpenInfo->pabyHeader, "&H") )
+        return TRUE;
+
+    /* valid datasource can be also SQLite DB previously created by
+       VFK driver, the real check is done by VFKReaderSQLite */
+    if ( poOpenInfo->nHeaderBytes >= 100 &&
+         STARTS_WITH((const char*)poOpenInfo->pabyHeader, "SQLite format 3") )
+    {
+        VSIStatBuf sStat;
+        if (CPLStat(poOpenInfo->pszFilename, &sStat) == 0 &&
+            VSI_ISREG(sStat.st_mode))
+        {
+            return GDAL_IDENTIFY_UNKNOWN;
+        }
+    }
+
+    return FALSE;
 }
 
 /*
   \brief Open existing data source
-  
-  \param pszFilename data source name to be open
-  \param pUpdate non-zero for update, zero for read-only
-
-  \return pointer to OGRDataSource instance
   \return NULL on failure
 */
-OGRDataSource *OGRVFKDriver::Open(const char * pszFilename,
-                                  int bUpdate)
+static GDALDataset *OGRVFKDriverOpen(GDALOpenInfo* poOpenInfo)
 {
-    OGRVFKDataSource *poDS;
-
-    if (bUpdate)
+    if( poOpenInfo->eAccess == GA_Update ||
+        !OGRVFKDriverIdentify(poOpenInfo) )
         return NULL;
-    
-    poDS = new OGRVFKDataSource();
 
-    if(!poDS->Open(pszFilename, TRUE) || poDS->GetLayerCount() == 0) {
+    OGRVFKDataSource *poDS = new OGRVFKDataSource();
+
+    if( !poDS->Open(poOpenInfo) ||
+        poDS->GetLayerCount() == 0 )
+    {
         delete poDS;
         return NULL;
     }
@@ -78,23 +82,27 @@ OGRDataSource *OGRVFKDriver::Open(const char * pszFilename,
 }
 
 /*!
-  \brief Test driver capability
-
-  \param pszCap capability
-
-  \return TRUE on success or FALSE on failure
-*/
-int OGRVFKDriver::TestCapability(const char *pszCap)
-{
-    return FALSE;
-}
-
-/*!
   \brief Register VFK driver
 */
 void RegisterOGRVFK()
 {
-    if (!GDAL_CHECK_VERSION("OGR/VFK driver"))
+    if( !GDAL_CHECK_VERSION("OGR/VFK driver") )
         return;
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver(new OGRVFKDriver);
+
+    if( GDALGetDriverByName( "VFK" ) != NULL )
+        return;
+
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "VFK" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "Czech Cadastral Exchange Data Format" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "vfk" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_vfk.html" );
+
+    poDriver->pfnOpen = OGRVFKDriverOpen;
+    poDriver->pfnIdentify = OGRVFKDriverIdentify;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_mem.h 25311 2012-12-15 12:48:14Z rouault $
+ * $Id: ogr_mem.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private definitions within the OGR Memory driver.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2003, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,65 +28,88 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGRMEM_H_INCLUDED
-#define _OGRMEM_H_INCLUDED
+#ifndef OGRMEM_H_INCLUDED
+#define OGRMEM_H_INCLUDED
 
 #include "ogrsf_frmts.h"
+
+#include <map>
 
 /************************************************************************/
 /*                             OGRMemLayer                              */
 /************************************************************************/
+class OGRMemDataSource;
+
+class IOGRMemLayerFeatureIterator;
 
 class OGRMemLayer : public OGRLayer
 {
-    OGRSpatialReference *poSRS;
-    OGRFeatureDefn     *poFeatureDefn;
-    
-    int                 nFeatureCount;
-    int                 nMaxFeatureCount;
-    OGRFeature        **papoFeatures;
+    typedef std::map<GIntBig, OGRFeature*>           FeatureMap;
+    typedef std::map<GIntBig, OGRFeature*>::iterator FeatureIterator;
 
-    int                 iNextReadFID;
-    int                 iNextCreateFID;
+    OGRFeatureDefn     *m_poFeatureDefn;
 
-    int                 bUpdatable;
-    int                 bAdvertizeUTF8;
+    GIntBig             m_nFeatureCount;
 
-    int                 bHasHoles;
+    GIntBig             m_iNextReadFID;
+    GIntBig             m_nMaxFeatureCount;  // Max size of papoFeatures.
+    OGRFeature        **m_papoFeatures;
+    bool                m_bHasHoles;
+
+    FeatureMap          m_oMapFeatures;
+    FeatureIterator     m_oMapFeaturesIter;
+
+    GIntBig             m_iNextCreateFID;
+
+    bool                m_bUpdatable;
+    bool                m_bAdvertizeUTF8;
+
+    bool                m_bUpdated;
+
+    // Only use it in the lifetime of a function where the list of features
+    // doesn't change.
+    IOGRMemLayerFeatureIterator* GetIterator();
 
   public:
                         OGRMemLayer( const char * pszName,
                                      OGRSpatialReference *poSRS,
                                      OGRwkbGeometryType eGeomType );
-                        ~OGRMemLayer();
+    virtual            ~OGRMemLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
-    virtual OGRErr      SetNextByIndex( long nIndex );
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
+    virtual OGRErr      SetNextByIndex( GIntBig nIndex ) override;
 
-    OGRFeature         *GetFeature( long nFeatureId );
-    OGRErr              SetFeature( OGRFeature *poFeature );
-    OGRErr              CreateFeature( OGRFeature *poFeature );
-    virtual OGRErr      DeleteFeature( long nFID );
-    
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeature         *GetFeature( GIntBig nFeatureId ) override;
+    OGRErr              ISetFeature( OGRFeature *poFeature ) override;
+    OGRErr              ICreateFeature( OGRFeature *poFeature ) override;
+    virtual OGRErr      DeleteFeature( GIntBig nFID ) override;
 
-    int                 GetFeatureCount( int );
+    OGRFeatureDefn *    GetLayerDefn() override { return m_poFeatureDefn; }
+
+    GIntBig             GetFeatureCount( int ) override;
 
     virtual OGRErr      CreateField( OGRFieldDefn *poField,
-                                     int bApproxOK = TRUE );
-    virtual OGRErr      DeleteField( int iField );
-    virtual OGRErr      ReorderFields( int* panMap );
-    virtual OGRErr      AlterFieldDefn( int iField, OGRFieldDefn* poNewFieldDefn, int nFlags );
+                                     int bApproxOK = TRUE ) override;
+    virtual OGRErr      DeleteField( int iField ) override;
+    virtual OGRErr      ReorderFields( int* panMap ) override;
+    virtual OGRErr      AlterFieldDefn( int iField,
+                                        OGRFieldDefn* poNewFieldDefn,
+                                        int nFlags ) override;
+    virtual OGRErr      CreateGeomField( OGRGeomFieldDefn *poGeomField,
+                                         int bApproxOK = TRUE ) override;
 
-    virtual OGRSpatialReference *GetSpatialRef();
-    
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
-    void                SetUpdatable(int bUpdatableIn) { bUpdatable = bUpdatableIn; }
-    void                SetAdvertizeUTF8(int bAdvertizeUTF8In) { bAdvertizeUTF8 = bAdvertizeUTF8In; }
+    void                SetUpdatable( bool bUpdatableIn )
+        { m_bUpdatable = bUpdatableIn; }
+    void                SetAdvertizeUTF8( bool bAdvertizeUTF8In )
+        { m_bAdvertizeUTF8 = bAdvertizeUTF8In; }
 
-    int                 GetNextReadFID() { return iNextReadFID; }
+    bool                HasBeenUpdated() const { return m_bUpdated; }
+    void                SetUpdated(bool bUpdated) { m_bUpdated = bUpdated; }
+
+    GIntBig             GetNextReadFID() { return m_iNextReadFID; }
 };
 
 /************************************************************************/
@@ -94,26 +118,26 @@ class OGRMemLayer : public OGRLayer
 
 class OGRMemDataSource : public OGRDataSource
 {
-    OGRMemLayer     **papoLayers;
+    OGRMemLayer       **papoLayers;
     int                 nLayers;
-    
+
     char                *pszName;
 
   public:
                         OGRMemDataSource( const char *, char ** );
-                        ~OGRMemDataSource();
+                        virtual ~OGRMemDataSource();
 
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
 
-    virtual OGRLayer    *CreateLayer( const char *, 
-                                      OGRSpatialReference * = NULL,
-                                      OGRwkbGeometryType = wkbUnknown,
-                                      char ** = NULL );
-    OGRErr              DeleteLayer( int iLayer );
+    virtual OGRLayer    *ICreateLayer( const char *,
+                                       OGRSpatialReference * = NULL,
+                                       OGRwkbGeometryType = wkbUnknown,
+                                       char ** = NULL ) override;
+    OGRErr              DeleteLayer( int iLayer ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -123,16 +147,15 @@ class OGRMemDataSource : public OGRDataSource
 class OGRMemDriver : public OGRSFDriver
 {
   public:
-                ~OGRMemDriver();
-                
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
+    virtual ~OGRMemDriver();
+
+    const char *GetName() override;
+    OGRDataSource *Open( const char *, int ) override;
 
     virtual OGRDataSource *CreateDataSource( const char *pszName,
-                                             char ** = NULL );
-    
-    int                 TestCapability( const char * );
+                                             char ** = NULL ) override;
+
+    int TestCapability( const char * ) override;
 };
 
-
-#endif /* ndef _OGRMEM_H_INCLUDED */
+#endif  // ndef OGRMEM_H_INCLUDED

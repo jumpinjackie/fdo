@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: dgnstroke.cpp 18382 2009-12-24 05:17:27Z warmerdam $
  *
  * Project:  Microstation DGN Access Library
  * Purpose:  Code to stroke Arcs/Ellipses into polylines.
@@ -28,26 +27,26 @@
  ****************************************************************************/
 
 #include "dgnlibp.h"
-#include <math.h>
+#include <cmath>
 
-CPL_CVSID("$Id: dgnstroke.cpp 18382 2009-12-24 05:17:27Z warmerdam $");
+CPL_CVSID("$Id: dgnstroke.cpp 36889 2016-12-15 20:20:24Z goatbar $");
 
-#define DEG_TO_RAD (PI/180.0)
+static const double DEG_TO_RAD = M_PI / 180.0;
 
 /************************************************************************/
 /*                         ComputePointOnArc()                          */
 /************************************************************************/
 
-static void ComputePointOnArc2D( double dfPrimary, double dfSecondary, 
+static void ComputePointOnArc2D( double dfPrimary, double dfSecondary,
                                  double dfAxisRotation, double dfAngle,
                                  double *pdfX, double *pdfY )
 
 {
-    //dfAxisRotation and dfAngle are suposed to be in Radians
-    double      dfCosRotation = cos(dfAxisRotation);
-    double      dfSinRotation = sin(dfAxisRotation);
-    double      dfEllipseX = dfPrimary * cos(dfAngle);
-    double      dfEllipseY = dfSecondary * sin(dfAngle);
+    // dfAxisRotation and dfAngle are supposed to be in Radians
+    const double dfCosRotation = cos(dfAxisRotation);
+    const double dfSinRotation = sin(dfAxisRotation);
+    const double dfEllipseX = dfPrimary * cos(dfAngle);
+    const double dfEllipseY = dfSecondary * sin(dfAngle);
 
     *pdfX = dfEllipseX * dfCosRotation - dfEllipseY * dfSinRotation;
     *pdfY = dfEllipseX * dfSinRotation + dfEllipseY * dfCosRotation;
@@ -61,40 +60,37 @@ static void ComputePointOnArc2D( double dfPrimary, double dfSecondary,
  * Generate a polyline approximation of an arc.
  *
  * Produce a series of equidistant (actually equi-angle) points along
- * an arc.  Currently this only works for 2D arcs (and ellipses). 
+ * an arc.  Currently this only works for 2D arcs (and ellipses).
  *
  * @param hFile the DGN file to which the arc belongs (currently not used).
  * @param psArc the arc to be approximated.
  * @param nPoints the number of points to use to approximate the arc.
- * @param pasPoints the array of points into which to put the results. 
+ * @param pasPoints the array of points into which to put the results.
  * There must be room for at least nPoints points.
  *
  * @return TRUE on success or FALSE on failure.
  */
 
-int DGNStrokeArc( DGNHandle hFile, DGNElemArc *psArc, 
+int DGNStrokeArc( CPL_UNUSED DGNHandle hFile,
+                  DGNElemArc *psArc,
                   int nPoints, DGNPoint * pasPoints )
-
 {
-    double      dfAngleStep, dfAngle;
-    int         i;
-
     if( nPoints < 2 )
         return FALSE;
 
     if( psArc->primary_axis == 0.0 || psArc->secondary_axis == 0.0 )
     {
-        CPLError( CE_Warning, CPLE_AppDefined, 
+        CPLError( CE_Warning, CPLE_AppDefined,
                   "Zero primary or secondary axis in DGNStrokeArc()." );
         return FALSE;
     }
 
-    dfAngleStep = psArc->sweepang / (nPoints - 1);
-    for( i = 0; i < nPoints; i++ )
+    const double dfAngleStep = psArc->sweepang / (nPoints - 1);
+    for( int i = 0; i < nPoints; i++ )
     {
-        dfAngle = (psArc->startang + dfAngleStep * i) * DEG_TO_RAD;
-        
-        ComputePointOnArc2D( psArc->primary_axis, 
+        const double dfAngle = (psArc->startang + dfAngleStep * i) * DEG_TO_RAD;
+
+        ComputePointOnArc2D( psArc->primary_axis,
                              psArc->secondary_axis,
                              psArc->rotation * DEG_TO_RAD,
                              dfAngle,
@@ -121,22 +117,17 @@ int DGNStrokeArc( DGNHandle hFile, DGNElemArc *psArc,
  * @param hFile the DGN file to which the arc belongs (currently not used).
  * @param psCurve the curve to be approximated.
  * @param nPoints the number of points to use to approximate the curve.
- * @param pasPoints the array of points into which to put the results. 
+ * @param pasPoints the array of points into which to put the results.
  * There must be room for at least nPoints points.
  *
  * @return TRUE on success or FALSE on failure.
  */
 
-int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve, 
+int DGNStrokeCurve( CPL_UNUSED DGNHandle hFile,
+                    DGNElemMultiPoint *psCurve,
                     int nPoints, DGNPoint * pasPoints )
-
 {
-    int         k, nDGNPoints, iOutPoint;
-    double      *padfMx, *padfMy, *padfD, dfTotalD = 0, dfStepSize, dfD;
-    double      *padfTx, *padfTy;
-    DGNPoint    *pasDGNPoints = psCurve->vertices;
-
-    nDGNPoints = psCurve->num_vertices;
+    const int nDGNPoints = psCurve->num_vertices;
 
     if( nDGNPoints < 6 )
         return FALSE;
@@ -147,14 +138,24 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
 /* -------------------------------------------------------------------- */
 /*      Compute the Compute the slopes/distances of the segments.       */
 /* -------------------------------------------------------------------- */
-    padfMx = (double *) CPLMalloc(sizeof(double) * nDGNPoints);
-    padfMy = (double *) CPLMalloc(sizeof(double) * nDGNPoints);
-    padfD  = (double *) CPLMalloc(sizeof(double) * nDGNPoints);
-    padfTx = (double *) CPLMalloc(sizeof(double) * nDGNPoints);
-    padfTy = (double *) CPLMalloc(sizeof(double) * nDGNPoints);
+    double *padfMx = static_cast<double *>(
+        CPLMalloc(sizeof(double) * nDGNPoints));
+    double *padfMy = static_cast<double *>(
+        CPLMalloc(sizeof(double) * nDGNPoints));
+    double *padfD  = static_cast<double *>(
+        CPLMalloc(sizeof(double) * nDGNPoints));
+    double *padfTx = static_cast<double *>(
+        CPLMalloc(sizeof(double) * nDGNPoints));
+    double *padfTy = static_cast<double *>(
+        CPLMalloc(sizeof(double) * nDGNPoints));
 
-    for( k = 0; k < nDGNPoints-1; k++ )
+    double dfTotalD = 0.0;
+
+    DGNPoint *pasDGNPoints = psCurve->vertices;
+
+    for( int k = 0; k < nDGNPoints-1; k++ )
     {
+        /* coverity[overrun-local] */
         padfD[k] = sqrt( (pasDGNPoints[k+1].x-pasDGNPoints[k].x)
                            * (pasDGNPoints[k+1].x-pasDGNPoints[k].x)
                          + (pasDGNPoints[k+1].y-pasDGNPoints[k].y)
@@ -178,7 +179,7 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
 /* -------------------------------------------------------------------- */
 /*      Compute the Tx, and Ty coefficients for each segment.           */
 /* -------------------------------------------------------------------- */
-    for( k = 2; k < nDGNPoints - 2; k++ )
+    for( int k = 2; k < nDGNPoints - 2; k++ )
     {
         if( fabs(padfMx[k+1] - padfMx[k]) == 0.0
             && fabs(padfMx[k-1] - padfMx[k-2]) == 0.0 )
@@ -189,7 +190,8 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
         {
             padfTx[k] = (padfMx[k-1] * fabs( padfMx[k+1] - padfMx[k])
                     + padfMx[k] * fabs( padfMx[k-1] - padfMx[k-2] ))
-           / (ABS(padfMx[k+1] - padfMx[k]) + ABS(padfMx[k-1] - padfMx[k-2]));
+           / (std::abs(padfMx[k+1] - padfMx[k]) +
+              std::abs(padfMx[k-1] - padfMx[k-2]));
         }
 
         if( fabs(padfMy[k+1] - padfMy[k]) == 0.0
@@ -201,7 +203,8 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
         {
             padfTy[k] = (padfMy[k-1] * fabs( padfMy[k+1] - padfMy[k])
                     + padfMy[k] * fabs( padfMy[k-1] - padfMy[k-2] ))
-            / (ABS(padfMy[k+1] - padfMy[k]) + ABS(padfMy[k-1] - padfMy[k-2]));
+            / (std::abs(padfMy[k+1] - padfMy[k]) +
+               std::abs(padfMy[k-1] - padfMy[k-2]));
         }
     }
 
@@ -210,35 +213,33 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
 /*      roughly equidistant steps in D, but assume we also want to      */
 /*      include every node along the way.                               */
 /* -------------------------------------------------------------------- */
-    dfStepSize = dfTotalD / (nPoints - (nDGNPoints - 4) - 1);
+    double dfStepSize = dfTotalD / (nPoints - (nDGNPoints - 4) - 1);
 
 /* ==================================================================== */
 /*      Process each of the segments.                                   */
 /* ==================================================================== */
-    dfD = dfStepSize;
-    iOutPoint = 0;
+    double dfD = dfStepSize;
+    int iOutPoint = 0;
 
-    for( k = 2; k < nDGNPoints - 3; k++ )
+    for( int k = 2; k < nDGNPoints - 3; k++ )
     {
-        double  dfAx, dfAy, dfBx, dfBy, dfCx, dfCy;
-
 /* -------------------------------------------------------------------- */
 /*      Compute the "x" coefficients for this segment.                  */
 /* -------------------------------------------------------------------- */
-        dfCx = padfTx[k];
-        dfBx = (3.0 * (pasDGNPoints[k+1].x - pasDGNPoints[k].x) / padfD[k]
+        const double dfCx = padfTx[k];
+        const double dfBx = (3.0 * (pasDGNPoints[k+1].x - pasDGNPoints[k].x) / padfD[k]
                 - 2.0 * padfTx[k] - padfTx[k+1]) / padfD[k];
-        dfAx = (padfTx[k] + padfTx[k+1] 
+        const double dfAx = (padfTx[k] + padfTx[k+1]
                 - 2 * (pasDGNPoints[k+1].x - pasDGNPoints[k].x) / padfD[k])
             / (padfD[k] * padfD[k]);
 
 /* -------------------------------------------------------------------- */
 /*      Compute the Y coefficients for this segment.                    */
 /* -------------------------------------------------------------------- */
-        dfCy = padfTy[k];
-        dfBy = (3.0 * (pasDGNPoints[k+1].y - pasDGNPoints[k].y) / padfD[k]
+        const double dfCy = padfTy[k];
+        const double dfBy = (3.0 * (pasDGNPoints[k+1].y - pasDGNPoints[k].y) / padfD[k]
                 - 2.0 * padfTy[k] - padfTy[k+1]) / padfD[k];
-        dfAy = (padfTy[k] + padfTy[k+1] 
+        const double dfAy = (padfTy[k] + padfTy[k+1]
                 - 2 * (pasDGNPoints[k+1].y - pasDGNPoints[k].y) / padfD[k])
             / (padfD[k] * padfD[k]);
 
@@ -257,11 +258,11 @@ int DGNStrokeCurve( DGNHandle hFile, DGNElemMultiPoint *psCurve,
         {
             pasPoints[iOutPoint].x = dfAx * dfD * dfD * dfD
                                    + dfBx * dfD * dfD
-                                   + dfCx * dfD 
+                                   + dfCx * dfD
                                    + pasDGNPoints[k].x;
             pasPoints[iOutPoint].y = dfAy * dfD * dfD * dfD
                                    + dfBy * dfD * dfD
-                                   + dfCy * dfD 
+                                   + dfCy * dfD
                                    + pasDGNPoints[k].y;
             pasPoints[iOutPoint].z = 0.0;
             iOutPoint++;
@@ -306,24 +307,24 @@ int main( int argc, char ** argv )
 {
     if( argc != 5 )
     {
-        printf( "Usage: stroke primary_axis secondary_axis axis_rotation angle\n" );
+        printf(  // ok
+            "Usage: stroke primary_axis secondary_axis axis_rotation angle\n");
         exit( 1 );
     }
 
-    double      dfX, dfY, dfPrimary, dfSecondary, dfAxisRotation, dfAngle;
+    const double dfPrimary = CPLAtof(argv[1]);
+    const double dfSecondary = CPLAtof(argv[2]);
+    const double dfAxisRotation = CPLAtof(argv[3]) / 180 * M_PI;
+    const double dfAngle = CPLAtof(argv[4]) / 180 * M_PI;
 
-    dfPrimary = atof(argv[1]);
-    dfSecondary = atof(argv[2]);
-    dfAxisRotation = atof(argv[3]) / 180 * PI;
-    dfAngle = atof(argv[4]) / 180 * PI;
-
-    ComputePointOnArc2D( dfPrimary, dfSecondary, dfAxisRotation, dfAngle, 
+    double dfX = 0.0;
+    double dfY = 0.0;
+    ComputePointOnArc2D( dfPrimary, dfSecondary, dfAxisRotation, dfAngle,
                          &dfX, &dfY );
 
-    printf( "X=%.2f, Y=%.2f\n", dfX, dfY );
+    printf( "X=%.2f, Y=%.2f\n", dfX, dfY );  // ok
 
-    exit( 0 );
+    return 0;
 }
 
 #endif
-

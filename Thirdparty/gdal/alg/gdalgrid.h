@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalgrid.h 25079 2012-10-07 21:31:36Z rouault $
+ * $Id: gdalgrid.h 34931 2016-08-05 17:13:05Z rouault $
  *
  * Project:  GDAL Gridding API.
  * Purpose:  Prototypes, and definitions for of GDAL scattered data gridder.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Andrey Kiselev <dron@ak4719.spb.edu>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -43,6 +44,7 @@
  */
 
 static const char szAlgNameInvDist[] = "invdist";
+static const char szAlgNameInvDistNearestNeighbor[] = "invdistnn";
 static const char szAlgNameAverage[] = "average";
 static const char szAlgNameNearest[] = "nearest";
 static const char szAlgNameMinimum[] = "minimum";
@@ -51,16 +53,26 @@ static const char szAlgNameRange[] = "range";
 static const char szAlgNameCount[] = "count";
 static const char szAlgNameAverageDistance[] = "average_distance";
 static const char szAlgNameAverageDistancePts[] = "average_distance_pts";
+static const char szAlgNameLinear[] = "linear";
 
 CPL_C_START
 
+/*! @cond Doxygen_Suppress */
 typedef CPLErr (*GDALGridFunction)( const void *, GUInt32,
                                     const double *, const double *,
                                     const double *,
                                     double, double, double *,
                                     void* );
+/*! @endcond */
+
 CPLErr
 GDALGridInverseDistanceToAPower( const void *, GUInt32,
+                                 const double *, const double *,
+                                 const double *,
+                                 double, double, double *,
+                                 void* );
+CPLErr
+GDALGridInverseDistanceToAPowerNearestNeighbor( const void *, GUInt32,
                                  const double *, const double *,
                                  const double *,
                                  double, double, double *,
@@ -112,6 +124,13 @@ GDALGridDataMetricAverageDistancePts( const void *, GUInt32,
                                       const double *, double, double,
                                       double *,
                                       void*  );
+CPLErr
+GDALGridLinear( const void *, GUInt32,
+                                 const double *, const double *,
+                                 const double *,
+                                 double, double, double *,
+                                 void* );
+
 CPLErr CPL_DLL
 ParseAlgorithmAndOptions( const char *,
                           GDALGridAlgorithm *,

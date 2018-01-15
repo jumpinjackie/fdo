@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H
-#define __INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H
+#ifndef INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H
+#define INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H
  
 #include "pcidsk_ads40.h"
 #include "segment/cpcidsksegment.h"
@@ -41,12 +41,12 @@ namespace PCIDSK {
         ~CPCIDSKADS40ModelSegment();
         
         // Get path
-        std::string GetPath(void) const;
+        std::string GetPath(void) const override;
         // Set path
-        void SetPath(const std::string& oPath);
+        void SetPath(const std::string& oPath) override;
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
         // Helper housekeeping functions
         void Load();
@@ -59,4 +59,4 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H
+#endif // INCLUDE_PCIDSK_SEGMENT_PCIDSKADS40MODEL_H

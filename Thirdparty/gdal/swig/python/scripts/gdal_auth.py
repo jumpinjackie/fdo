@@ -2,24 +2,24 @@
 # -*- coding: utf-8 -*-
 #******************************************************************************
 #  $Id$
-# 
+#
 #  Project:  GDAL
 #  Purpose:  Application for Google web service authentication.
 #  Author:   Frank Warmerdam, warmerdam@pobox.com
-# 
+#
 #******************************************************************************
 #  Copyright (c) 2013, Frank Warmerdam <warmerdam@pobox.com>
-# 
+#
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
 #  to deal in the Software without restriction, including without limitation
 #  the rights to use, copy, modify, merge, publish, distribute, sublicense,
 #  and/or sell copies of the Software, and to permit persons to whom the
 #  Software is furnished to do so, subject to the following conditions:
-# 
+#
 #  The above copyright notice and this permission notice shall be included
 #  in all copies or substantial portions of the Software.
-# 
+#
 #  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 #  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 #  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -28,20 +28,23 @@
 #  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 #  DEALINGS IN THE SOFTWARE.
 #******************************************************************************
-#
+
+
+import sys
+import time
+import webbrowser
 
 from osgeo import gdal
 
-import sys
-import stat
-import os
-import time
-import webbrowser
+SCOPES = {
+    'ft' : 'https://www.googleapis.com/auth/fusiontables',
+    }
 
 # =============================================================================
 # 	Usage()
 # =============================================================================
 def Usage():
+    print('')
     print('Usage: gdal_auth_py [-s scope]' )
     print('       - interactive use.')
     print('')
@@ -49,13 +52,16 @@ def Usage():
     print('Usage: gdal_auth.py login [-s scope] ')
     print('Usage: gdal_auth.py auth2refresh [-s scope] auth_token')
     print('Usage: gdal_auth.py refresh2access [-s scope] refresh_token')
+    print('')
+    print('scopes: ft/full_url')
+    print('')
     sys.exit(1)
 
 # =============================================================================
 # 	Mainline
 # =============================================================================
 
-scope = 'https://www.googleapis.com/auth/fusiontables'
+scope = SCOPES['ft']
 token_in = None
 command = None
 
@@ -69,7 +75,14 @@ while i < len(argv):
     arg = argv[i]
 
     if arg == '-s' and i < len(argv)-1:
-        scope = argv[i+1]
+        if argv[i+1] in SCOPES:
+            scope = SCOPES[argv[i+1]]
+        elif argv[i+1].startswith('http'):
+            scope = argv[i+1]
+        else:
+            print('Scope %s not recognised.' % argv[i+1])
+            Usage()
+            sys.exit(1)
         i = i + 1
 
     elif arg[0] == '-':
@@ -111,14 +124,10 @@ else:
     print('')
     print('Enter authorization token:')
     auth_token = sys.stdin.readline()
-    
+
     refresh_token = gdal.GOA2GetRefreshToken(auth_token, scope)
-    
+
     print('Refresh Token:'+refresh_token)
     print('')
     print('Consider setting a configuration option like:')
     print('GFT_REFRESH_TOKEN='+refresh_token)
-
-
-
-

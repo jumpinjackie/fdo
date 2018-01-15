@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrsurface.cpp 19399 2010-04-13 18:35:24Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  The OGRSurface class.
@@ -27,8 +26,11 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "ogr_geometry.h"
 #include "ogr_p.h"
+
+CPL_CVSID("$Id: ogrsurface.cpp 36324 2016-11-20 02:28:41Z goatbar $");
 
 /**
  * \fn double OGRSurface::get_Area() const;
@@ -36,7 +38,7 @@
  * \brief Get the area of the surface object.
  *
  * For polygons the area is computed as the area of the outer ring less
- * the area of all internal rings. 
+ * the area of all internal rings.
  *
  * This method relates to the SFCOM ISurface::get_Area() method.
  *
@@ -47,11 +49,54 @@
 /**
  * \fn OGRErr OGRSurface::PointOnSurface( OGRPoint * poPoint ) const;
  *
- * \brief This method relates to the SFCOM ISurface::get_PointOnSurface() method.
+ * \brief This method relates to the SFCOM
+ * ISurface::get_PointOnSurface() method.
  *
  * NOTE: Only implemented when GEOS included in build.
  *
- * @param poPoint point to be set with an internal point. 
+ * @param poPoint point to be set with an internal point.
  *
- * @return OGRERR_NONE if it succeeds or OGRERR_FAILURE otherwise. 
+ * @return OGRERR_NONE if it succeeds or OGRERR_FAILURE otherwise.
  */
+
+/************************************************************************/
+/*                          CastToPolygon()                             */
+/************************************************************************/
+
+/*! @cond Doxygen_Suppress */
+/**
+ * \brief Cast to polygon
+ *
+ * The passed in geometry is consumed and a new one returned (or NULL in case
+ * of failure)
+ *
+ * @param poSurface the input geometry - ownership is passed to the method.
+ * @return new geometry.
+ */
+
+OGRPolygon* OGRSurface::CastToPolygon( OGRSurface* poSurface )
+{
+    OGRSurfaceCasterToPolygon pfn = poSurface->GetCasterToPolygon();
+    return pfn(poSurface);
+}
+
+/************************************************************************/
+/*                          CastToCurvePolygon()                        */
+/************************************************************************/
+
+/**
+ * \brief Cast to curve polygon
+ *
+ * The passed in geometry is consumed and a new one returned (or NULL in case
+ * of failure)
+ *
+ * @param poSurface the input geometry - ownership is passed to the method.
+ * @return new geometry.
+ */
+
+OGRCurvePolygon* OGRSurface::CastToCurvePolygon( OGRSurface* poSurface )
+{
+    OGRSurfaceCasterToCurvePolygon pfn = poSurface->GetCasterToCurvePolygon();
+    return pfn(poSurface);
+}
+/*! @endcond */

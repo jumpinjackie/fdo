@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ograeronavfaalayer.cpp 21376 2011-01-02 18:28:40Z rouault $
  *
  * Project:  AeronavFAA Translator
  * Purpose:  Implements OGRAeronavFAALayer class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,25 +32,26 @@
 #include "ogr_p.h"
 #include "ogr_srs_api.h"
 
-CPL_CVSID("$Id: ograeronavfaalayer.cpp 21376 2011-01-02 18:28:40Z rouault $");
+#include <algorithm>
+
+CPL_CVSID("$Id: ograeronavfaalayer.cpp 36981 2016-12-20 19:46:41Z rouault $");
 
 /************************************************************************/
 /*                        OGRAeronavFAALayer()                          */
 /************************************************************************/
 
-OGRAeronavFAALayer::OGRAeronavFAALayer( VSILFILE* fp, const char* pszLayerName )
-
+OGRAeronavFAALayer::OGRAeronavFAALayer( VSILFILE* fp,
+                                        const char* pszLayerName ) :
+    poFeatureDefn(new OGRFeatureDefn(pszLayerName)),
+    poSRS(new OGRSpatialReference(SRS_WKT_WGS84)),
+    fpAeronavFAA(fp),
+    bEOF(false),
+    nNextFID(0),
+    psRecordDesc(NULL)
 {
-    fpAeronavFAA = fp;
-    nNextFID = 0;
-    bEOF = FALSE;
-
-    psRecordDesc = NULL;
-
-    poSRS = new OGRSpatialReference(SRS_WKT_WGS84);
-
-    poFeatureDefn = new OGRFeatureDefn( pszLayerName );
     poFeatureDefn->Reference();
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
+    SetDescription( poFeatureDefn->GetName() );
 }
 
 /************************************************************************/
@@ -69,7 +69,6 @@ OGRAeronavFAALayer::~OGRAeronavFAALayer()
     VSIFCloseL( fpAeronavFAA );
 }
 
-
 /************************************************************************/
 /*                            ResetReading()                            */
 /************************************************************************/
@@ -78,10 +77,9 @@ void OGRAeronavFAALayer::ResetReading()
 
 {
     nNextFID = 0;
-    bEOF = FALSE;
+    bEOF = false;
     VSIFSeekL( fpAeronavFAA, 0, SEEK_SET );
 }
-
 
 /************************************************************************/
 /*                           GetNextFeature()                           */
@@ -89,14 +87,12 @@ void OGRAeronavFAALayer::ResetReading()
 
 OGRFeature *OGRAeronavFAALayer::GetNextFeature()
 {
-    OGRFeature  *poFeature;
-
-    while(TRUE)
+    while( true )
     {
-        if (bEOF)
+        if( bEOF )
             return NULL;
 
-        poFeature = GetNextRawFeature();
+        OGRFeature  *poFeature = GetNextRawFeature();
         if (poFeature == NULL)
             return NULL;
 
@@ -116,13 +112,10 @@ OGRFeature *OGRAeronavFAALayer::GetNextFeature()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRAeronavFAALayer::TestCapability( const char * pszCap )
-
+int OGRAeronavFAALayer::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
-
-
 
 static const RecordFieldDesc DOFFields [] =
 {
@@ -147,23 +140,24 @@ static const RecordFieldDesc DOFFields [] =
 
 static const RecordDesc DOF = { sizeof(DOFFields)/sizeof(DOFFields[0]), DOFFields, 36, 49 };
 
-
 /************************************************************************/
 /*                       OGRAeronavFAADOFLayer()                        */
 /************************************************************************/
 
-OGRAeronavFAADOFLayer::OGRAeronavFAADOFLayer( VSILFILE* fp, const char* pszLayerName ) :
-                                            OGRAeronavFAALayer(fp, pszLayerName)
+OGRAeronavFAADOFLayer::OGRAeronavFAADOFLayer( VSILFILE* fp,
+                                              const char* pszLayerName ) :
+    OGRAeronavFAALayer(fp, pszLayerName)
 {
     poFeatureDefn->SetGeomType( wkbPoint );
 
     psRecordDesc = &DOF;
 
-    int i;
-    for(i=0;i<psRecordDesc->nFields;i++)
+    for( int i = 0; i < psRecordDesc->nFields; i++ )
     {
-        OGRFieldDefn oField( psRecordDesc->pasFields[i].pszFieldName, psRecordDesc->pasFields[i].eType );
-        oField.SetWidth(psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1);
+        OGRFieldDefn oField( psRecordDesc->pasFields[i].pszFieldName,
+                             psRecordDesc->pasFields[i].eType );
+        oField.SetWidth(psRecordDesc->pasFields[i].nLastCol
+                        - psRecordDesc->pasFields[i].nStartCol + 1);
         poFeatureDefn->AddFieldDefn( &oField );
     }
 }
@@ -179,17 +173,13 @@ static int GetLatLon(const char* pszLat,
                      int         nSecLen,
                      double& dfLat, double& dfLon)
 {
-    char szDeg[4], szMin[3], szSec[10];
-    szDeg[0] = pszLat[0];
-    szDeg[1] = pszLat[1];
-    szDeg[2] = 0;
-    szMin[0] = pszLat[3];
-    szMin[1] = pszLat[4];
-    szMin[2] = 0;
-    memcpy(szSec, pszLat + 6, MAX((int)sizeof(szSec) - 1, nSecLen));
-    szSec[MAX((int)sizeof(szSec) - 1, nSecLen)] = 0;
+    char szDeg[4] = { pszLat[0], pszLat[1], 0 };
+    char szMin[3] = { pszLat[3], pszLat[4], 0 };
+    char szSec[10];
+    memcpy(szSec, pszLat + 6, std::max((int)sizeof(szSec) - 1, nSecLen));
+    szSec[std::max((int)sizeof(szSec) - 1, nSecLen)] = 0;
 
-    dfLat = atoi(szDeg) + atoi(szMin) / 60. + atof(szSec) / 3600.;
+    dfLat = atoi(szDeg) + atoi(szMin) / 60. + CPLAtof(szSec) / 3600.;
     if (chLatHemisphere == 'S')
         dfLat = -dfLat;
 
@@ -200,16 +190,15 @@ static int GetLatLon(const char* pszLat,
     szMin[0] = pszLon[4];
     szMin[1] = pszLon[5];
     szMin[2] = 0;
-    memcpy(szSec, pszLon + 7, MAX((int)sizeof(szSec) - 1, nSecLen));
-    szSec[MAX((int)sizeof(szSec) - 1, nSecLen)] = 0;
+    memcpy(szSec, pszLon + 7, std::max((int)sizeof(szSec) - 1, nSecLen));
+    szSec[std::max((int)sizeof(szSec) - 1, nSecLen)] = 0;
 
-    dfLon = atoi(szDeg) + atoi(szMin) / 60. + atof(szSec) / 3600.;
+    dfLon = atoi(szDeg) + atoi(szMin) / 60. + CPLAtof(szSec) / 3600.;
     if (chLonHemisphere == ' ' || chLonHemisphere == 'W')
         dfLon = -dfLon;
 
     return TRUE;
 }
-
 
 /************************************************************************/
 /*                              GetLatLon()                             */
@@ -226,15 +215,14 @@ int OGRAeronavFAADOFLayer::GetLatLon(const char* pszLat, const char* pszLon, dou
 
 OGRFeature *OGRAeronavFAADOFLayer::GetNextRawFeature()
 {
-    const char* pszLine;
     char szBuffer[130];
 
-    while(TRUE)
+    while( true )
     {
-        pszLine = CPLReadLine2L(fpAeronavFAA, 130, NULL);
+        const char* pszLine = CPLReadLine2L(fpAeronavFAA, 130, NULL);
         if (pszLine == NULL)
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
         if (strlen(pszLine) != 128)
@@ -246,8 +234,7 @@ OGRFeature *OGRAeronavFAADOFLayer::GetNextRawFeature()
         OGRFeature* poFeature = new OGRFeature(poFeatureDefn);
         poFeature->SetFID(nNextFID ++);
 
-        int i;
-        for(i=0;i<psRecordDesc->nFields;i++)
+        for( int i=0; i < psRecordDesc->nFields; i++ )
         {
             int nWidth = psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1;
             strncpy(szBuffer, pszLine + psRecordDesc->pasFields[i].nStartCol - 1, nWidth);
@@ -261,7 +248,8 @@ OGRFeature *OGRAeronavFAADOFLayer::GetNextRawFeature()
                 poFeature->SetField(i, szBuffer);
         }
 
-        double dfLat, dfLon;
+        double dfLat = 0.0;
+        double dfLon = 0.0;
         GetLatLon(pszLine + psRecordDesc->nLatStartCol - 1,
                   pszLine + psRecordDesc->nLonStartCol - 1,
                   dfLat,
@@ -273,8 +261,6 @@ OGRFeature *OGRAeronavFAADOFLayer::GetNextRawFeature()
         return poFeature;
     }
 }
-
-
 
 static const RecordFieldDesc NAVAIDFields [] =
 {
@@ -294,27 +280,27 @@ static const RecordFieldDesc NAVAIDFields [] =
 
 static const RecordDesc NAVAID = { sizeof(NAVAIDFields)/sizeof(NAVAIDFields[0]), NAVAIDFields, 17, 30 };
 
-
 /************************************************************************/
 /*                    OGRAeronavFAANAVAIDLayer()                        */
 /************************************************************************/
 
-OGRAeronavFAANAVAIDLayer::OGRAeronavFAANAVAIDLayer( VSILFILE* fp, const char* pszLayerName ) :
-                                            OGRAeronavFAALayer(fp, pszLayerName)
+OGRAeronavFAANAVAIDLayer::OGRAeronavFAANAVAIDLayer( VSILFILE* fp,
+                                                    const char* pszLayerName ) :
+    OGRAeronavFAALayer(fp, pszLayerName)
 {
     poFeatureDefn->SetGeomType( wkbPoint );
 
     psRecordDesc = &NAVAID;
 
-    int i;
-    for(i=0;i<psRecordDesc->nFields;i++)
+    for( int i=0; i < psRecordDesc->nFields; i++ )
     {
-        OGRFieldDefn oField( psRecordDesc->pasFields[i].pszFieldName, psRecordDesc->pasFields[i].eType );
-        oField.SetWidth(psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1);
+        OGRFieldDefn oField( psRecordDesc->pasFields[i].pszFieldName,
+                             psRecordDesc->pasFields[i].eType );
+        oField.SetWidth( psRecordDesc->pasFields[i].nLastCol
+                         - psRecordDesc->pasFields[i].nStartCol + 1 );
         poFeatureDefn->AddFieldDefn( &oField );
     }
 }
-
 
 /************************************************************************/
 /*                              GetLatLon()                             */
@@ -331,15 +317,14 @@ int OGRAeronavFAANAVAIDLayer::GetLatLon(const char* pszLat, const char* pszLon, 
 
 OGRFeature *OGRAeronavFAANAVAIDLayer::GetNextRawFeature()
 {
-    const char* pszLine;
     char szBuffer[134];
 
-    while(TRUE)
+    while( true )
     {
-        pszLine = CPLReadLine2L(fpAeronavFAA, 134, NULL);
+        const char* pszLine = CPLReadLine2L(fpAeronavFAA, 134, NULL);
         if (pszLine == NULL)
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
         if (strlen(pszLine) != 132)
@@ -354,8 +339,7 @@ OGRFeature *OGRAeronavFAANAVAIDLayer::GetNextRawFeature()
         OGRFeature* poFeature = new OGRFeature(poFeatureDefn);
         poFeature->SetFID(nNextFID ++);
 
-        int i;
-        for(i=0;i<psRecordDesc->nFields;i++)
+        for( int i=0; i < psRecordDesc->nFields; i++ )
         {
             int nWidth = psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1;
             strncpy(szBuffer, pszLine + psRecordDesc->pasFields[i].nStartCol - 1, nWidth);
@@ -369,7 +353,8 @@ OGRFeature *OGRAeronavFAANAVAIDLayer::GetNextRawFeature()
                 poFeature->SetField(i, szBuffer);
         }
 
-        double dfLat, dfLon;
+        double dfLat = 0.0;
+        double dfLon = 0.0;
         GetLatLon(pszLine + psRecordDesc->nLatStartCol - 1,
                   pszLine + psRecordDesc->nLonStartCol - 1,
                   dfLat,
@@ -382,16 +367,16 @@ OGRFeature *OGRAeronavFAANAVAIDLayer::GetNextRawFeature()
     }
 }
 
-
-
 /************************************************************************/
 /*                    OGRAeronavFAARouteLayer()                        */
 /************************************************************************/
 
-OGRAeronavFAARouteLayer::OGRAeronavFAARouteLayer( VSILFILE* fp, const char* pszLayerName, int bIsDPOrSTARS ) :
-                        OGRAeronavFAALayer(fp, pszLayerName)
+OGRAeronavFAARouteLayer::OGRAeronavFAARouteLayer( VSILFILE* fp,
+                                                  const char* pszLayerName,
+                                                  int bIsDPOrSTARSIn ) :
+    OGRAeronavFAALayer(fp, pszLayerName)
 {
-    this->bIsDPOrSTARS = bIsDPOrSTARS;
+    bIsDPOrSTARS = bIsDPOrSTARSIn;
 
     poFeatureDefn->SetGeomType( wkbLineString );
 
@@ -412,9 +397,7 @@ OGRAeronavFAARouteLayer::OGRAeronavFAARouteLayer( VSILFILE* fp, const char* pszL
         OGRFieldDefn oField( "NAME", OFTString );
         poFeatureDefn->AddFieldDefn( &oField );
     }
-    
 }
-
 
 /************************************************************************/
 /*                              GetLatLon()                             */
@@ -431,13 +414,13 @@ int OGRAeronavFAARouteLayer::GetLatLon(const char* pszLat, const char* pszLon, d
 
 OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
 {
-    const char* pszLine;
     OGRFeature* poFeature = NULL;
     OGRLineString* poLS = NULL;
 
-    while(TRUE)
+    while( true )
     {
-        if (osLastReadLine.size() != 0)
+        const char* pszLine = NULL;
+        if (!osLastReadLine.empty())
             pszLine = osLastReadLine.c_str();
         else
             pszLine = CPLReadLine2L(fpAeronavFAA, 87, NULL);
@@ -445,13 +428,13 @@ OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
 
         if (pszLine == NULL)
         {
-            bEOF = TRUE;
-            return poFeature;
+            bEOF = true;
+            break;
         }
         if (strlen(pszLine) != 85)
             continue;
 
-        if (bIsDPOrSTARS && strncmp(pszLine, "===", 3) == 0 && pszLine[3] != '=')
+        if (bIsDPOrSTARS && STARTS_WITH(pszLine, "===") && pszLine[3] != '=')
         {
             osAPTName = pszLine + 3;
             const char* pszComma = strchr(pszLine + 3, ',');
@@ -472,15 +455,15 @@ OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
             }
         }
 
-        if (strncmp(pszLine + 2, "FACILITY OR", strlen("FACILITY OR")) == 0)
+        if (STARTS_WITH(pszLine + 2, "FACILITY OR"))
             continue;
-        if (strncmp(pszLine + 2, "INTERSECTION", strlen("INTERSECTION")) == 0)
+        if (STARTS_WITH(pszLine + 2, "INTERSECTION"))
             continue;
 
         if (strcmp(pszLine, "================================DELETIONS LIST=================================198326") == 0)
         {
-            bEOF = TRUE;
-            return poFeature;
+            bEOF = true;
+            break;
         }
 
         if (poFeature == NULL)
@@ -490,19 +473,19 @@ OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
                 continue;
             }
 
-            if (strncmp(pszLine + 29, "                    ", 20) == 0 ||
+            if (STARTS_WITH(pszLine + 29, "                    ") ||
                 strchr(pszLine, '(') != NULL)
             {
                 CPLString osName = pszLine + 2;
                 osName.resize(60);
-                while(osName.size() > 0 && osName[osName.size()-1] == ' ')
+                while(!osName.empty() && osName.back() == ' ')
                 {
                     osName.resize(osName.size()-1);
                 }
 
                 if (strcmp(osName.c_str(), "(DELETIONS LIST)") == 0)
                 {
-                    bEOF = TRUE;
+                    bEOF = true;
                     return NULL;
                 }
 
@@ -517,17 +500,16 @@ OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
                 else
                     poFeature->SetField(0, osName);
                 poLS = new OGRLineString();
-                poFeature->SetGeometryDirectly(poLS);
             }
             continue;
         }
 
-        if (strncmp(pszLine, "                                                                                    0", 85) == 0)
+        if (STARTS_WITH(pszLine, "                                                                                    0"))
         {
             if (poLS->getNumPoints() == 0)
                 continue;
             else
-                return poFeature;
+                break;
         }
 
         if (pszLine[29 - 1] == ' ' && pszLine[42 - 1] == ' ')
@@ -535,16 +517,21 @@ OGRFeature *OGRAeronavFAARouteLayer::GetNextRawFeature()
         if (strstr(pszLine, "RWY") || strchr(pszLine, '('))
         {
             osLastReadLine = pszLine;
-            return poFeature;
+            break;
         }
 
-        double dfLat, dfLon;
+        double dfLat = 0.0;
+        double dfLon = 0.0;
         GetLatLon(pszLine + 29 - 1,
                   pszLine + 42 - 1,
                   dfLat,
                   dfLon);
         poLS->addPoint(dfLon, dfLat);
     }
+
+    if( poFeature != NULL )
+        poFeature->SetGeometryDirectly(poLS);
+    return poFeature;
 }
 
 /************************************************************************/
@@ -560,25 +547,23 @@ void OGRAeronavFAARouteLayer::ResetReading()
     osStateName = "";
 }
 
-
 static const RecordFieldDesc IAPFields [] =
 {
     { "LOC_ID",  4, 8, OFTString },
     { "MAG_VAR"  ,  52, 54, OFTInteger, },
     { "ELEVATION", 62, 67, OFTInteger },
     { "TYPE", 71, 77, OFTString  },
-
 };
 
 static const RecordDesc IAP = { sizeof(IAPFields)/sizeof(IAPFields[0]), IAPFields, -1, -1 };
-
 
 /************************************************************************/
 /*                     OGRAeronavFAAIAPLayer()                          */
 /************************************************************************/
 
-OGRAeronavFAAIAPLayer::OGRAeronavFAAIAPLayer( VSILFILE* fp, const char* pszLayerName ) :
-                        OGRAeronavFAALayer(fp, pszLayerName)
+OGRAeronavFAAIAPLayer::OGRAeronavFAAIAPLayer( VSILFILE* fp,
+                                              const char* pszLayerName ) :
+    OGRAeronavFAALayer(fp, pszLayerName)
 {
     poFeatureDefn->SetGeomType( wkbPoint );
 
@@ -599,19 +584,15 @@ OGRAeronavFAAIAPLayer::OGRAeronavFAAIAPLayer( VSILFILE* fp, const char* pszLayer
         poFeatureDefn->AddFieldDefn( &oField );
     }
 
-
     psRecordDesc = &IAP;
 
-    int i;
-    for(i=0;i<psRecordDesc->nFields;i++)
+    for( int i=0; i < psRecordDesc->nFields; i++ )
     {
         OGRFieldDefn oField( psRecordDesc->pasFields[i].pszFieldName, psRecordDesc->pasFields[i].eType );
         oField.SetWidth(psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1);
         poFeatureDefn->AddFieldDefn( &oField );
     }
-
 }
-
 
 /************************************************************************/
 /*                              GetLatLon()                             */
@@ -628,24 +609,23 @@ int OGRAeronavFAAIAPLayer::GetLatLon(const char* pszLat, const char* pszLon, dou
 
 OGRFeature *OGRAeronavFAAIAPLayer::GetNextRawFeature()
 {
-    const char* pszLine;
     char szBuffer[87];
     int nCountUnderscoreLines = 0;
 
-    while(TRUE)
+    while( true )
     {
-        pszLine = CPLReadLine2L(fpAeronavFAA, 87, NULL);
+        const char* pszLine = CPLReadLine2L(fpAeronavFAA, 87, NULL);
         if (pszLine == NULL)
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
         if (strlen(pszLine) != 85)
             continue;
 
-        if (strncmp(pszLine, "DELETIONS", strlen("DELETIONS")) == 0)
+        if (STARTS_WITH(pszLine, "DELETIONS"))
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
 
@@ -658,7 +638,7 @@ OGRFeature *OGRAeronavFAAIAPLayer::GetNextRawFeature()
 
         if (pszLine[1] != ' ')
             continue;
-        if (strncmp(pszLine, "                                                                               ", 79) == 0)
+        if (STARTS_WITH(pszLine, "                                                                               "))
             continue;
         if (strstr(pszLine, "NAVIGATIONAL AIDS") != NULL)
             continue;
@@ -675,7 +655,7 @@ OGRFeature *OGRAeronavFAAIAPLayer::GetNextRawFeature()
             osCityName.resize(pszComma - pszBegin);
             osStateName = pszComma + 2;
             osStateName.resize(78 - (pszComma + 2 - pszLine));
-            while(osStateName.size() > 0 && osStateName[osStateName.size()-1] == ' ')
+            while(!osStateName.empty() && osStateName.back() == ' ')
             {
                 osStateName.resize(osStateName.size()-1);
             }
@@ -709,8 +689,7 @@ OGRFeature *OGRAeronavFAAIAPLayer::GetNextRawFeature()
         poFeature->SetField(2, osAPTName);
         poFeature->SetField(3, osAPTId);
 
-        int i;
-        for(i=0;i<psRecordDesc->nFields;i++)
+        for( int i=0; i<psRecordDesc->nFields; i++)
         {
             int nWidth = psRecordDesc->pasFields[i].nLastCol - psRecordDesc->pasFields[i].nStartCol + 1;
             strncpy(szBuffer, pszLine + psRecordDesc->pasFields[i].nStartCol - 1, nWidth);
@@ -724,7 +703,8 @@ OGRFeature *OGRAeronavFAAIAPLayer::GetNextRawFeature()
                 poFeature->SetField(i + 4, szBuffer);
         }
 
-        double dfLat, dfLon;
+        double dfLat = 0.0;
+        double dfLon = 0.0;
         GetLatLon(pszLine + 16 - 1,
                   (pszLine[34 - 1] != ' ') ? pszLine + 34 - 1 : pszLine + 35 - 1,
                   dfLat,
@@ -750,4 +730,3 @@ void OGRAeronavFAAIAPLayer::ResetReading()
     osAPTName = "";
     osAPTId = "";
 }
-

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: generate_encoding_table.c 24982 2012-09-26 19:41:33Z rouault $
+ * $Id: generate_encoding_table.c 36456 2016-11-22 23:34:00Z rouault $
  *
  * Project:  OGR
  * Purpose:  Generate a mapping table from a 1-byte encoding to unicode,
@@ -7,7 +7,7 @@
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,10 +28,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include <errno.h>
 #include <iconv.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <string.h>
 
 static unsigned utf8decode(const char* p, const char* end, int* len)
@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
 
     if ( sConv == (iconv_t)-1 )
     {
-        fprintf(stderr, 
-                  "Recode from %s to %s failed with the error: \"%s\".", 
+        fprintf(stderr,
+                  "Recode from %s to %s failed with the error: \"%s\".",
                   pszSrcEncoding, pszDstEncoding, strerror(errno) );
         return 1;
     }
@@ -213,7 +213,6 @@ int main(int argc, char* argv[])
             printf("for(i = 0x%02X; i < 0x%02X; i++)\n", nLastIdentical, i);
             printf("    info->map[i] = i;\n");
         }
-        nLastIdentical = -1;
     }
 
     iconv_close( sConv );

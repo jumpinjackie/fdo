@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: hugefileresolver.cpp 23675 2012-01-01 16:09:45Z rouault $
  *
  * Project:  GML Reader
  * Purpose:  Implementation of GMLReader::HugeFileResolver() method.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2011, Alessandro Furieri
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -14,64 +14,64 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *
  ******************************************************************************
  * Contributor: Alessandro Furieri, a.furieri@lqt.it
- * This module implents GML_SKIP_RESOLVE_ELEMS HUGE
- * Developed for Faunalia ( http://www.faunalia.it) with funding from 
+ * This module implements GML_SKIP_RESOLVE_ELEMS HUGE
+ * Developed for Faunalia ( http://www.faunalia.it) with funding from
  * Regione Toscana - Settore SISTEMA INFORMATIVO TERRITORIALE ED AMBIENTALE
  *
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "gmlreader.h"
-#include "cpl_error.h"
-
 #include "gmlreaderp.h"
-#include "gmlutils.h"
+
+#include <algorithm>
+
 #include "cpl_conv.h"
-#include "ogr_p.h"
-#include "cpl_string.h"
+#include "cpl_error.h"
 #include "cpl_http.h"
+#include "cpl_string.h"
+#include "gmlutils.h"
+#include "ogr_p.h"
 
-#include <stack>
+#ifdef HAVE_SQLITE
+#include <sqlite3.h>
+#endif
 
-CPL_CVSID("$Id: hugefileresolver.cpp 23675 2012-01-01 16:09:45Z rouault $");
+CPL_CVSID("$Id: hugefileresolver.cpp 37240 2017-01-29 21:35:59Z goatbar $");
 
 /****************************************************/
 /*      SQLite is absolutely required in order to   */
 /*      support the HUGE xlink:href resolver        */
 /****************************************************/
 
-#ifdef HAVE_SQLITE
-#include <sqlite3.h>
-#endif
-
-/* sqlite3_clear_bindings() isn't available in old versions of */
-/* sqlite3 */
+// sqlite3_clear_bindings() isn't available in old versions of sqlite3.
 #if defined(HAVE_SQLITE) && SQLITE_VERSION_NUMBER >= 3006000
 
-/* an internal helper struct supporting GML tags <Edge> */
+// Internal helper struct supporting GML tags <Edge>.
 struct huge_tag
 {
     CPLString           *gmlTagValue;
     CPLString           *gmlId;
     CPLString           *gmlNodeFrom;
     CPLString           *gmlNodeTo;
-    int	                bIsNodeFromHref;
-    int                 bIsNodeToHref;
-    int                 bHasCoords;
-    int                 bHasZ;
+    bool                bIsNodeFromHref;
+    bool                bIsNodeToHref;
+    bool                bHasCoords;
+    bool                bHasZ;
     double              xNodeFrom;
     double              yNodeFrom;
     double              zNodeFrom;
@@ -81,19 +81,19 @@ struct huge_tag
     struct huge_tag     *pNext;
 };
 
-/* an internal helper struct supporting GML tags xlink:href */
+// Internal helper struct supporting GML tags xlink:href.
 struct huge_href
 {
     CPLString           *gmlId;
     CPLString           *gmlText;
     const CPLXMLNode    *psParent;
     const CPLXMLNode    *psNode;
-    int                 bIsDirectedEdge;
+    bool                bIsDirectedEdge;
     char                cOrientation;
     struct huge_href    *pNext;
 };
 
-/* an internal helper struct supporying GML rewriting */
+// Internal struct supporting GML rewriting.
 struct huge_child
 {
     CPLXMLNode          *psChild;
@@ -101,7 +101,7 @@ struct huge_child
     struct huge_child   *pNext;
 };
 
-/* an internal helper struct supporting GML rewriting */
+// Internal struct supporting GML rewriting.
 struct huge_parent
 {
     CPLXMLNode          *psParent;
@@ -110,12 +110,22 @@ struct huge_parent
     struct huge_parent  *pNext;
 };
 
-/*
-/ an internal helper struct supporting GML 
-/ resolver for Huge Files (based on SQLite)
-*/
-struct huge_helper
+// Internal class supporting GML resolver for Huge Files (based on SQLite).
+class huge_helper
 {
+  public:
+    huge_helper() :
+        hDB(NULL),
+        hNodes(NULL),
+        hEdges(NULL),
+        nodeSrs(NULL),
+        pFirst(NULL),
+        pLast(NULL),
+        pFirstHref(NULL),
+        pLastHref(NULL),
+        pFirstParent(NULL),
+        pLastParent(NULL)
+    {}
     sqlite3             *hDB;
     sqlite3_stmt        *hNodes;
     sqlite3_stmt        *hEdges;
@@ -128,119 +138,123 @@ struct huge_helper
     struct huge_parent  *pLastParent;
 };
 
-static int gmlHugeFileSQLiteInit( struct huge_helper *helper )
+static bool gmlHugeFileSQLiteInit( huge_helper *helper )
 {
-/* attempting to create SQLite tables */
-    const char          *osCommand;
-    char                *pszErrMsg = NULL;
-    int                 rc;
-    sqlite3             *hDB = helper->hDB;
-    sqlite3_stmt        *hStmt;
+    // Attempting to create SQLite tables.
+    char *pszErrMsg = NULL;
+    sqlite3 *hDB = helper->hDB;
 
-    /* DB table: NODES */
-    osCommand = "CREATE TABLE nodes ("
-                "     gml_id VARCHAR PRIMARY KEY, "
-                "     x DOUBLE, "
-                "     y DOUBLE, "
-                "     z DOUBLE)";
-    rc = sqlite3_exec( hDB, osCommand, NULL, NULL, &pszErrMsg );
+    // DB table: NODES.
+    const char *osCommand =
+        "CREATE TABLE nodes ("
+        "     gml_id VARCHAR PRIMARY KEY, "
+        "     x DOUBLE, "
+        "     y DOUBLE, "
+        "     z DOUBLE)";
+    int rc = sqlite3_exec(hDB, osCommand, NULL, NULL, &pszErrMsg);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create table nodes: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create table nodes: %s",
+                 pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        return false;
     }
 
-    /* DB table: GML_EDGES */
+    // DB table: GML_EDGES.
     osCommand = "CREATE TABLE gml_edges ("
                 "     gml_id VARCHAR PRIMARY KEY, "
                 "     gml_string BLOB, "
                 "     gml_resolved BLOB, "
-				"     node_from_id TEXT, "
+                "     node_from_id TEXT, "
                 "     node_from_x DOUBLE, "
                 "     node_from_y DOUBLE, "
                 "     node_from_z DOUBLE, "
-				"     node_to_id TEXT, "
+                "     node_to_id TEXT, "
                 "     node_to_x DOUBLE, "
                 "     node_to_y DOUBLE, "
                 "     node_to_z DOUBLE)";
-    rc = sqlite3_exec( hDB, osCommand, NULL, NULL, &pszErrMsg );
+    rc = sqlite3_exec(hDB, osCommand, NULL, NULL, &pszErrMsg);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create table gml_edges: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create table gml_edges: %s",
+                 pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        return false;
     }
 
-    /* DB table: NODES / Insert cursor */
+    // DB table: NODES / Insert cursor.
     osCommand = "INSERT OR IGNORE INTO nodes (gml_id, x, y, z) "
                 "VALUES (?, ?, ?, ?)";
-    rc = sqlite3_prepare( hDB, osCommand, -1, &hStmt, NULL );
+    sqlite3_stmt *hStmt = NULL;
+    rc = sqlite3_prepare_v2(hDB, osCommand, -1, &hStmt, NULL);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create INSERT stmt for: nodes" );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create INSERT stmt for: nodes");
+        return false;
     }
     helper->hNodes = hStmt;
 
-    /* DB table: GML_EDGES / Insert cursor */
+    // DB table: GML_EDGES / Insert cursor.
     osCommand = "INSERT INTO gml_edges "
                 "(gml_id, gml_string, gml_resolved, "
                 "node_from_id, node_from_x, node_from_y, "
                 "node_from_z, node_to_id, node_to_x, "
                 "node_to_y, node_to_z) "
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    rc = sqlite3_prepare( hDB, osCommand, -1, &hStmt, NULL );
+    rc = sqlite3_prepare_v2(hDB, osCommand, -1, &hStmt, NULL);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create INSERT stmt for: gml_edges" );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create INSERT stmt for: gml_edges");
+        return false;
     }
     helper->hEdges = hStmt;
 
-    /* starting a TRANSACTION */
-    rc = sqlite3_exec( hDB, "BEGIN", NULL, NULL, &pszErrMsg );
+    // Starting a TRANSACTION.
+    rc = sqlite3_exec(hDB, "BEGIN", NULL, NULL, &pszErrMsg);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to perform BEGIN TRANSACTION: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        return FALSE;
-    }	
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to perform BEGIN TRANSACTION: %s",
+                 pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        return false;
+    }
 
-    return TRUE;
+    return true;
 }
 
-static int gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
-                                    const char *pszFromId,
-                                    const char *pszToId )
+static bool gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
+                                     const char *pszFromId,
+                                     const char *pszToId )
 {
-/* resolves an Edge definition */
-    CPLXMLNode      *psDirNode_1 = NULL;
-    CPLXMLNode      *psDirNode_2 = NULL;
-    CPLXMLNode      *psOldNode_1 = NULL;
-    CPLXMLNode      *psOldNode_2 = NULL;
-    CPLXMLNode      *psNewNode_1 = NULL;
-    CPLXMLNode      *psNewNode_2 = NULL;
-    int             iToBeReplaced = 0;
-    int             iReplaced = 0;
-    if( psNode->eType == CXT_Element && EQUAL( psNode->pszValue, "Edge" ) )
+    if( psNode->eType == CXT_Element && EQUAL(psNode->pszValue, "Edge") )
+    {
         ;
+    }
     else
-        return FALSE;
+    {
+        return false;
+    }
+
+    // Resolves an Edge definition.
+    CPLXMLNode *psDirNode_1 = NULL;
+    CPLXMLNode *psDirNode_2 = NULL;
+    CPLXMLNode *psOldNode_1 = NULL;
+    CPLXMLNode *psOldNode_2 = NULL;
+    CPLXMLNode *psNewNode_1 = NULL;
+    CPLXMLNode *psNewNode_2 = NULL;
+    int iToBeReplaced = 0;
+    int iReplaced = 0;
 
     CPLXMLNode *psChild = psNode->psChild;
     while( psChild != NULL )
     {
         if( psChild->eType == CXT_Element &&
-            EQUAL( psChild->pszValue, "directedNode" ) )
+            EQUAL(psChild->pszValue, "directedNode") )
         {
             char cOrientation = '+';
             CPLXMLNode *psOldNode = NULL;
@@ -248,10 +262,10 @@ static int gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
             while( psAttr != NULL )
             {
                 if( psAttr->eType == CXT_Attribute &&
-                    EQUAL( psAttr->pszValue, "xlink:href" ) )
+                    EQUAL(psAttr->pszValue, "xlink:href") )
                     psOldNode = psAttr;
                 if( psAttr->eType == CXT_Attribute &&
-                    EQUAL( psAttr->pszValue, "orientation" ) )
+                    EQUAL(psAttr->pszValue, "orientation") )
                 {
                     const CPLXMLNode *psOrientation = psAttr->psChild;
                     if( psOrientation != NULL )
@@ -264,8 +278,10 @@ static int gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
             }
             if( psOldNode != NULL )
             {
-                CPLXMLNode *psNewNode = CPLCreateXMLNode(NULL, CXT_Element, "Node");
-                CPLXMLNode *psGMLIdNode = CPLCreateXMLNode(psNewNode, CXT_Attribute, "gml:id");
+                CPLXMLNode *psNewNode =
+                    CPLCreateXMLNode(NULL, CXT_Element, "Node");
+                CPLXMLNode *psGMLIdNode =
+                    CPLCreateXMLNode(psNewNode, CXT_Attribute, "gml:id");
                 if( cOrientation == '-' )
                     CPLCreateXMLNode(psGMLIdNode, CXT_Text, pszFromId);
                 else
@@ -288,16 +304,16 @@ static int gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
         psChild = psChild->psNext;
     }
 
-    /* rewriting the Edge GML definition */
+    // Rewriting the Edge GML definition.
     if( psDirNode_1 != NULL)
     {
         if( psOldNode_1 != NULL )
         {
-            CPLRemoveXMLChild( psDirNode_1, psOldNode_1 );
-            CPLDestroyXMLNode( psOldNode_1 );
+            CPLRemoveXMLChild(psDirNode_1, psOldNode_1);
+            CPLDestroyXMLNode(psOldNode_1);
             if( psNewNode_1 != NULL )
             {
-                CPLAddXMLChild( psDirNode_1, psNewNode_1 );
+                CPLAddXMLChild(psDirNode_1, psNewNode_1);
                 iReplaced++;
             }
         }
@@ -306,568 +322,626 @@ static int gmlHugeResolveEdgeNodes( const CPLXMLNode *psNode,
     {
         if( psOldNode_2 != NULL )
         {
-            CPLRemoveXMLChild( psDirNode_2, psOldNode_2 );
-            CPLDestroyXMLNode( psOldNode_2 );
+            CPLRemoveXMLChild(psDirNode_2, psOldNode_2);
+            CPLDestroyXMLNode(psOldNode_2);
             if( psNewNode_2 != NULL )
             {
-                CPLAddXMLChild( psDirNode_2, psNewNode_2 );
+                CPLAddXMLChild(psDirNode_2, psNewNode_2);
                 iReplaced++;
             }
         }
     }
-    if( iToBeReplaced != iReplaced )
-        return FALSE;
-return TRUE;
+
+    return iToBeReplaced == iReplaced;
 }
 
-static int gmlHugeFileResolveEdges( struct huge_helper *helper )
+static bool gmlHugeFileResolveEdges( huge_helper *helper )
 {
-/* identifying any not yet resolved <Edge> GML string */
-    const char          *osCommand;
-    char                *pszErrMsg = NULL;
-    int rc;
-    sqlite3             *hDB = helper->hDB;
-    sqlite3_stmt        *hQueryStmt;
-    sqlite3_stmt        *hUpdateStmt;
-    int                 iCount = 0;
-    int                 bError = FALSE;
+    // Identifying any not yet resolved <Edge> GML string.
+    sqlite3 *hDB = helper->hDB;
 
-    /* query cursor */
-    osCommand = "SELECT e.gml_id, e.gml_string, e.node_from_id, "
-                "e.node_from_x, e.node_from_y, e.node_from_z, "
-                "n1.gml_id, n1.x, n1.y, n1.z, e.node_to_id, "
-                "e.node_to_x, e.node_to_y, e.node_to_z, "
-                "n2.gml_id, n2.x, n2.y, n2.z "
-                "FROM gml_edges AS e "
-                "LEFT JOIN nodes AS n1 ON (n1.gml_id = e.node_from_id) "
-                "LEFT JOIN nodes AS n2 ON (n2.gml_id = e.node_to_id)";
-    rc = sqlite3_prepare( hDB, osCommand, -1, &hQueryStmt, NULL );
+    // Query cursor.
+    const char *osCommand =
+        "SELECT e.gml_id, e.gml_string, e.node_from_id, "
+        "e.node_from_x, e.node_from_y, e.node_from_z, "
+        "n1.gml_id, n1.x, n1.y, n1.z, e.node_to_id, "
+        "e.node_to_x, e.node_to_y, e.node_to_z, "
+        "n2.gml_id, n2.x, n2.y, n2.z "
+        "FROM gml_edges AS e "
+        "LEFT JOIN nodes AS n1 ON (n1.gml_id = e.node_from_id) "
+        "LEFT JOIN nodes AS n2 ON (n2.gml_id = e.node_to_id)";
+    sqlite3_stmt *hQueryStmt = NULL;
+    int rc = sqlite3_prepare_v2( hDB, osCommand, -1, &hQueryStmt, NULL );
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create QUERY stmt for Edge resolver" );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create QUERY stmt for Edge resolver");
+        return false;
     }
 
-    /* update cursor */
+    // Update cursor.
     osCommand = "UPDATE gml_edges "
                 "SET gml_resolved = ?, "
                 "gml_string = NULL "
                 "WHERE gml_id = ?";
-    rc = sqlite3_prepare( hDB, osCommand, -1, &hUpdateStmt, NULL );
+    sqlite3_stmt *hUpdateStmt = NULL;
+    rc = sqlite3_prepare_v2(hDB, osCommand, -1, &hUpdateStmt, NULL);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create UPDATE stmt for resolved Edges" );
-        sqlite3_finalize ( hQueryStmt );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create UPDATE stmt for resolved Edges");
+        sqlite3_finalize(hQueryStmt);
+        return false;
     }
 
-    /* starting a TRANSACTION */
+    // Starting a TRANSACTION.
+    char *pszErrMsg = NULL;
     rc = sqlite3_exec( hDB, "BEGIN", NULL, NULL, &pszErrMsg );
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to perform BEGIN TRANSACTION: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        sqlite3_finalize ( hQueryStmt );
-        sqlite3_finalize ( hUpdateStmt );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to perform BEGIN TRANSACTION: %s", pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        sqlite3_finalize(hQueryStmt);
+        sqlite3_finalize(hUpdateStmt);
+        return false;
     }
-    
-    /* looping on the QUERY result-set */
-    while ( TRUE )
-    {
-        const char      *pszGmlId;
-        const char      *pszGmlString = NULL;
-        int             bIsGmlStringNull;
-        const char      *pszFromId = NULL;
-        int             bIsFromIdNull;
-        double          xFrom = 0.0;
-        int             bIsXFromNull;
-        double          yFrom = 0.0;
-        int             bIsYFromNull;
-        double          zFrom = 0.0;
-        int             bIsZFromNull;
-        const char      *pszNodeFromId = NULL;
-        int             bIsNodeFromIdNull;
-        double          xNodeFrom = 0.0;
-        int             bIsXNodeFromNull;
-        double          yNodeFrom = 0.0;
-        int             bIsYNodeFromNull;
-        double          zNodeFrom = 0.0;
-        int             bIsZNodeFromNull;
-        const char      *pszToId = NULL;
-        int             bIsToIdNull;
-        double          xTo = 0.0;
-        int             bIsXToNull;
-        double          yTo = 0.0;
-        int             bIsYToNull;
-        double          zTo = 0.0;
-        int             bIsZToNull;
-        const char      *pszNodeToId = NULL;
-        int             bIsNodeToIdNull;
-        double          xNodeTo = 0.0;
-        int             bIsXNodeToNull;
-        double          yNodeTo = 0.0;
-        int             bIsYNodeToNull;
-        double          zNodeTo = 0.0;
-        int             bIsZNodeToNull;
 
-        rc = sqlite3_step( hQueryStmt );
+    int iCount = 0;
+    bool bError = false;
+
+    // Looping on the QUERY result-set.
+    while( true )
+    {
+        const char *pszGmlId = NULL;
+        const char *pszGmlString = NULL;
+        bool bIsGmlStringNull = false;
+        const char *pszFromId = NULL;
+        bool bIsFromIdNull = false;
+        double xFrom = 0.0;
+        bool bIsXFromNull = false;
+        double yFrom = 0.0;
+        bool bIsYFromNull = false;
+        double zFrom = 0.0;
+        bool bIsZFromNull = false;
+        // const char *pszNodeFromId = NULL;
+        bool bIsNodeFromIdNull = false;
+        double xNodeFrom = 0.0;
+        bool bIsXNodeFromNull = false;
+        double yNodeFrom = 0.0;
+        bool bIsYNodeFromNull = false;
+        double zNodeFrom = 0.0;
+        bool bIsZNodeFromNull = false;
+        const char *pszToId = NULL;
+        bool bIsToIdNull = false;
+        double xTo = 0.0;
+        bool bIsXToNull = false;
+        double yTo = 0.0;
+        bool bIsYToNull = false;
+        double zTo = 0.0;
+        bool bIsZToNull = false;
+        // const char *pszNodeToId = NULL;
+        bool bIsNodeToIdNull = false;
+        double xNodeTo = 0.0;
+        bool bIsXNodeToNull = false;
+        double yNodeTo = 0.0;
+        bool bIsYNodeToNull = false;
+        double zNodeTo = 0.0;
+        bool bIsZNodeToNull = false;
+
+        rc = sqlite3_step(hQueryStmt);
         if( rc == SQLITE_DONE )
             break;
-        else if( rc == SQLITE_ROW )
+
+        if( rc == SQLITE_ROW )
         {
-            bError = FALSE;
-            pszGmlId = (const char *) sqlite3_column_text( hQueryStmt, 0 );
-            if( sqlite3_column_type( hQueryStmt, 1 ) == SQLITE_NULL )
-                bIsGmlStringNull = TRUE;
-            else
+            bError = false;
+            pszGmlId = reinterpret_cast<const char *>(
+                sqlite3_column_text(hQueryStmt, 0));
+            if( sqlite3_column_type(hQueryStmt, 1) == SQLITE_NULL )
             {
-                pszGmlString = (const char *) sqlite3_column_blob( hQueryStmt, 1 );
-                bIsGmlStringNull = FALSE;
+                bIsGmlStringNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 2 ) == SQLITE_NULL )
-                bIsFromIdNull = TRUE;
             else
             {
-                pszFromId = (const char *) sqlite3_column_text( hQueryStmt, 2 );
-                bIsFromIdNull = FALSE;
+                pszGmlString = static_cast<const char *>(
+                    sqlite3_column_blob(hQueryStmt, 1));
+                bIsGmlStringNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 3 ) == SQLITE_NULL )
-                bIsXFromNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 2) == SQLITE_NULL )
             {
-                xFrom = sqlite3_column_double( hQueryStmt, 3 );
-                bIsXFromNull = FALSE;
+                bIsFromIdNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 4 ) == SQLITE_NULL )
-                bIsYFromNull = TRUE;
             else
             {
-                yFrom = sqlite3_column_double( hQueryStmt, 4 );
-                bIsYFromNull = FALSE;
+                pszFromId = reinterpret_cast<const char *>(
+                    sqlite3_column_text(hQueryStmt, 2));
+                bIsFromIdNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 5 ) == SQLITE_NULL )
-                bIsZFromNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 3) == SQLITE_NULL )
             {
-                zFrom = sqlite3_column_double( hQueryStmt, 5 );
-                bIsZFromNull = FALSE;
+                bIsXFromNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 6 ) == SQLITE_NULL )
-                bIsNodeFromIdNull = TRUE;
             else
             {
-                pszNodeFromId = (const char *) sqlite3_column_text( hQueryStmt, 6 );
-                bIsNodeFromIdNull = FALSE;
+                xFrom = sqlite3_column_double(hQueryStmt, 3);
+                bIsXFromNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 7 ) == SQLITE_NULL )
-                bIsXNodeFromNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 4) == SQLITE_NULL )
             {
-                xNodeFrom = sqlite3_column_double( hQueryStmt, 7 );
-                bIsXNodeFromNull = FALSE;
+                bIsYFromNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 8 ) == SQLITE_NULL )
-                bIsYNodeFromNull = TRUE;
             else
             {
-                yNodeFrom = sqlite3_column_double( hQueryStmt, 8 );
-                bIsYNodeFromNull = FALSE;
+                yFrom = sqlite3_column_double(hQueryStmt, 4);
+                bIsYFromNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 9 ) == SQLITE_NULL )
-                bIsZNodeFromNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 5) == SQLITE_NULL )
             {
-                zNodeFrom = sqlite3_column_double( hQueryStmt, 9 );
-                bIsZNodeFromNull = FALSE;
+                bIsZFromNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 10 ) == SQLITE_NULL )
-                bIsToIdNull = TRUE;
             else
             {
-                pszToId = (const char *) sqlite3_column_text( hQueryStmt, 10 );
-                bIsToIdNull = FALSE;
+                zFrom = sqlite3_column_double(hQueryStmt, 5);
+                bIsZFromNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 11 ) == SQLITE_NULL )
-                bIsXToNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 6) == SQLITE_NULL )
             {
-                xTo = sqlite3_column_double( hQueryStmt, 11 );
-                bIsXToNull = FALSE;
+                bIsNodeFromIdNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 12 ) == SQLITE_NULL )
-                bIsYToNull = TRUE;
             else
             {
-                yTo = sqlite3_column_double( hQueryStmt, 12 );
-                bIsYToNull = FALSE;
+                // TODO: Can sqlite3_column_text be removed?
+                // pszNodeFromId = (const char *)
+                sqlite3_column_text(hQueryStmt, 6);
+                bIsNodeFromIdNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 13 ) == SQLITE_NULL )
-                bIsZToNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 7) == SQLITE_NULL )
             {
-                zTo = sqlite3_column_double( hQueryStmt, 13 );
-                bIsZToNull = FALSE;
+                bIsXNodeFromNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 14 ) == SQLITE_NULL )
-                bIsNodeToIdNull = TRUE;
             else
             {
-                pszNodeToId = (const char *) sqlite3_column_text( hQueryStmt, 14 );
-                bIsNodeToIdNull = FALSE;
+                xNodeFrom = sqlite3_column_double(hQueryStmt, 7);
+                bIsXNodeFromNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 15 ) == SQLITE_NULL )
-                bIsXNodeToNull = TRUE;
-            else
+            if( sqlite3_column_type(hQueryStmt, 8) == SQLITE_NULL )
             {
-                xNodeTo = sqlite3_column_double( hQueryStmt, 15 );
-                bIsXNodeToNull = FALSE;
+                bIsYNodeFromNull = true;
             }
-            if( sqlite3_column_type( hQueryStmt, 16 ) == SQLITE_NULL )
-                bIsYNodeToNull = TRUE;
             else
             {
-                yNodeTo = sqlite3_column_double( hQueryStmt, 16 );
-                bIsYNodeToNull = FALSE;
+                yNodeFrom = sqlite3_column_double(hQueryStmt, 8);
+                bIsYNodeFromNull = false;
             }
-            if( sqlite3_column_type( hQueryStmt, 17 ) == SQLITE_NULL )
-                bIsZNodeToNull = TRUE;
+            if( sqlite3_column_type(hQueryStmt, 9) == SQLITE_NULL )
+            {
+                bIsZNodeFromNull = true;
+            }
             else
             {
-                zNodeTo = sqlite3_column_double( hQueryStmt, 17 );
-                bIsZNodeToNull = FALSE;
+                zNodeFrom = sqlite3_column_double(hQueryStmt, 9);
+                bIsZNodeFromNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 10) == SQLITE_NULL )
+            {
+                bIsToIdNull = true;
+            }
+            else
+            {
+                pszToId = reinterpret_cast<const char *>(
+                    sqlite3_column_text(hQueryStmt, 10));
+                bIsToIdNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 11) == SQLITE_NULL )
+            {
+                bIsXToNull = true;
+            }
+            else
+            {
+                xTo = sqlite3_column_double(hQueryStmt, 11);
+                bIsXToNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 12) == SQLITE_NULL )
+            {
+                bIsYToNull = true;
+            }
+            else
+            {
+                yTo = sqlite3_column_double(hQueryStmt, 12);
+                bIsYToNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 13) == SQLITE_NULL )
+            {
+                bIsZToNull = true;
+            }
+            else
+            {
+                zTo = sqlite3_column_double(hQueryStmt, 13);
+                bIsZToNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 14) == SQLITE_NULL )
+            {
+                bIsNodeToIdNull = true;
+            }
+            else
+            {
+                // TODO: Can sqlite3_column_text be removed?
+                // pszNodeToId = (const char *)
+                sqlite3_column_text(hQueryStmt, 14);
+                bIsNodeToIdNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 15) == SQLITE_NULL )
+            {
+                bIsXNodeToNull = true;
+            }
+            else
+            {
+                xNodeTo = sqlite3_column_double(hQueryStmt, 15);
+                bIsXNodeToNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 16) == SQLITE_NULL )
+            {
+                bIsYNodeToNull = true;
+            }
+            else
+            {
+                yNodeTo = sqlite3_column_double(hQueryStmt, 16);
+                bIsYNodeToNull = false;
+            }
+            if( sqlite3_column_type(hQueryStmt, 17) == SQLITE_NULL )
+            {
+                bIsZNodeToNull = true;
+            }
+            else
+            {
+                zNodeTo = sqlite3_column_double(hQueryStmt, 17);
+                bIsZNodeToNull = false;
             }
 
-            /* checking for consistency */
-            if( bIsFromIdNull == TRUE || bIsXFromNull == TRUE ||
-                bIsYFromNull == TRUE )
+            // Checking for consistency.
+            if( bIsFromIdNull || bIsXFromNull || bIsYFromNull )
             {
-                bError = TRUE;
-                CPLError( CE_Failure, CPLE_AppDefined, 
-                          "Edge gml:id=\"%s\": invalid Node-from", 
-                          pszGmlId );
+                bError = true;
+                CPLError(CE_Failure, CPLE_AppDefined,
+                         "Edge gml:id=\"%s\": invalid Node-from",
+                         pszGmlId);
             }
             else
             {
-                if( bIsNodeFromIdNull == TRUE )
+                if( bIsNodeFromIdNull )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": undeclared Node gml:id=\"%s\"", 
-                              pszGmlId, pszFromId );
+                    bError = true;
+                    CPLError(
+                        CE_Failure, CPLE_AppDefined,
+                        "Edge gml:id=\"%s\": undeclared Node gml:id=\"%s\"",
+                        pszGmlId, pszFromId);
                 }
-                else if( bIsXNodeFromNull == TRUE || bIsYNodeFromNull == TRUE )
+                else if( bIsXNodeFromNull || bIsYNodeFromNull )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": unknown coords for Node gml:id=\"%s\"", 
-                              pszGmlId, pszFromId );
+                    bError = true;
+                    CPLError(
+                        CE_Failure, CPLE_AppDefined,
+                        "Edge gml:id=\"%s\": "
+                        "unknown coords for Node gml:id=\"%s\"",
+                        pszGmlId, pszFromId);
                 }
                 else if( xFrom != xNodeFrom || yFrom != yNodeFrom )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": mismatching coords for Node gml:id=\"%s\"", 
-                              pszGmlId, pszFromId );
+                    bError = true;
+                    CPLError(CE_Failure, CPLE_AppDefined,
+                             "Edge gml:id=\"%s\": mismatching coords for Node "
+                             "gml:id=\"%s\"",
+                             pszGmlId, pszFromId);
                 }
                 else
                 {
-                    if( bIsZFromNull == TRUE && bIsZNodeFromNull == TRUE )
-;
-                    else if(  bIsZFromNull == TRUE || bIsZNodeFromNull == TRUE )
+                    if( bIsZFromNull && bIsZNodeFromNull )
                     {
-                        bError = TRUE;
-                        CPLError( CE_Failure, CPLE_AppDefined, 
-                                  "Edge gml:id=\"%s\": mismatching 2D/3D for Node gml:id=\"%s\"", 
-                                  pszGmlId, pszFromId );
+                        ;
                     }
-                    else if( zFrom != zNodeFrom ) 
+                    else if( bIsZFromNull || bIsZNodeFromNull )
                     {
-                        bError = TRUE;
-                        CPLError( CE_Failure, CPLE_AppDefined, 
-                                  "Edge gml:id=\"%s\": mismatching Z coord for Node gml:id=\"%s\"", 
-                                  pszGmlId, pszFromId );
+                        bError = true;
+                        CPLError(CE_Failure, CPLE_AppDefined,
+                                 "Edge gml:id=\"%s\": mismatching 2D/3D for "
+                                 "Node gml:id=\"%s\"",
+                                 pszGmlId, pszFromId);
+                    }
+                    else if( zFrom != zNodeFrom )
+                    {
+                        bError = true;
+                        CPLError(CE_Failure, CPLE_AppDefined,
+                                 "Edge gml:id=\"%s\": mismatching Z coord for "
+                                 "Node gml:id=\"%s\"",
+                                 pszGmlId, pszFromId);
                     }
                 }
             }
-            if( bIsToIdNull == TRUE || bIsXToNull == TRUE ||
-                bIsYToNull == TRUE )
+            if( bIsToIdNull || bIsXToNull || bIsYToNull )
             {
-                bError = TRUE;
-                CPLError( CE_Failure, CPLE_AppDefined, 
-                          "Edge gml:id=\"%s\": invalid Node-to", 
-                          pszGmlId );
+                bError = true;
+                CPLError(CE_Failure, CPLE_AppDefined,
+                         "Edge gml:id=\"%s\": invalid Node-to",
+                         pszGmlId);
             }
             else
             {
-                if( bIsNodeToIdNull == TRUE )
+                if( bIsNodeToIdNull )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": undeclared Node gml:id=\"%s\"", 
-                              pszGmlId, pszToId );
+                    bError = true;
+                    CPLError(
+                        CE_Failure, CPLE_AppDefined,
+                        "Edge gml:id=\"%s\": undeclared Node gml:id=\"%s\"",
+                        pszGmlId, pszToId);
                 }
-                else if( bIsXNodeToNull == TRUE || bIsYNodeToNull == TRUE )
+                else if( bIsXNodeToNull  || bIsYNodeToNull )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": unknown coords for Node gml:id=\"%s\"", 
-                              pszGmlId, pszToId );
+                    bError = true;
+                    CPLError(CE_Failure, CPLE_AppDefined,
+                             "Edge gml:id=\"%s\": "
+                             "unknown coords for Node gml:id=\"%s\"",
+                             pszGmlId, pszToId);
                 }
                 else if( xTo != xNodeTo || yTo != yNodeTo )
                 {
-                    bError = TRUE;
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "Edge gml:id=\"%s\": mismatching coords for Node gml:id=\"%s\"", 
-                              pszGmlId, pszToId );
+                    bError = true;
+                    CPLError(CE_Failure, CPLE_AppDefined,
+                             "Edge gml:id=\"%s\": mismatching coords for Node "
+                             "gml:id=\"%s\"",
+                             pszGmlId, pszToId);
                 }
                 else
                 {
-                    if( bIsZToNull == TRUE && bIsZNodeToNull == TRUE )
-;
-                    else if(  bIsZToNull == TRUE || bIsZNodeToNull == TRUE )
+                    if( bIsZToNull && bIsZNodeToNull )
                     {
-                        bError = TRUE;
-                        CPLError( CE_Failure, CPLE_AppDefined, 
-                                  "Edge gml:id=\"%s\": mismatching 2D/3D for Node gml:id=\"%s\"", 
-                                  pszGmlId, pszToId );
+                        ;
                     }
-                    else if( zTo != zNodeTo ) 
+                    else if( bIsZToNull || bIsZNodeToNull )
                     {
-                        bError = TRUE;
-                        CPLError( CE_Failure, CPLE_AppDefined, 
-                                  "Edge gml:id=\"%s\": mismatching Z coord for Node gml:id=\"%s\"", 
-                                  pszGmlId, pszToId );
+                        bError = true;
+                        CPLError(CE_Failure, CPLE_AppDefined,
+                                 "Edge gml:id=\"%s\": mismatching 2D/3D for "
+                                 "Node gml:id=\"%s\"",
+                                 pszGmlId, pszToId);
+                    }
+                    else if( zTo != zNodeTo )
+                    {
+                        bError = true;
+                        CPLError(CE_Failure, CPLE_AppDefined,
+                                 "Edge gml:id=\"%s\": mismatching Z coord for "
+                                 "Node gml:id=\"%s\"",
+                                 pszGmlId, pszToId);
                     }
                 }
             }
 
-            /* updating the resolved Node */
-            if( bError == FALSE && bIsGmlStringNull == FALSE &&
-                bIsFromIdNull == FALSE && bIsToIdNull == FALSE )
+            // Updating the resolved Node.
+            if( bError == false && bIsGmlStringNull == false &&
+                bIsFromIdNull == false && bIsToIdNull == false )
             {
-                CPLXMLNode *psNode = CPLParseXMLString( pszGmlString );
+                CPLXMLNode *psNode = CPLParseXMLString(pszGmlString);
                 if( psNode != NULL )
                 {
-                    if( gmlHugeResolveEdgeNodes( psNode, pszFromId,
-                                                 pszToId ) == TRUE )
+                    if( gmlHugeResolveEdgeNodes(psNode, pszFromId, pszToId) )
                     {
-                        char * gmlText = CPLSerializeXMLTree(psNode);
-                        sqlite3_reset ( hUpdateStmt );
-                        sqlite3_clear_bindings ( hUpdateStmt );
-                        sqlite3_bind_blob( hUpdateStmt, 1, gmlText,
-                                           strlen(gmlText), SQLITE_STATIC );
-                        sqlite3_bind_text( hUpdateStmt, 2, pszGmlId, -1,
-                                           SQLITE_STATIC );
-                        rc = sqlite3_step( hUpdateStmt );
+                        char *gmlText = CPLSerializeXMLTree(psNode);
+                        sqlite3_reset(hUpdateStmt);
+                        sqlite3_clear_bindings(hUpdateStmt);
+                        sqlite3_bind_blob(hUpdateStmt, 1, gmlText,
+                                          static_cast<int>(strlen(gmlText)),
+                                          SQLITE_STATIC);
+                        sqlite3_bind_text(hUpdateStmt, 2, pszGmlId, -1,
+                                          SQLITE_STATIC);
+                        rc = sqlite3_step(hUpdateStmt);
                         if( rc != SQLITE_OK && rc != SQLITE_DONE )
                         {
-                            CPLError( CE_Failure, CPLE_AppDefined,
-                                      "UPDATE resoved Edge \"%s\" sqlite3_step() failed:\n  %s",
-                                      pszGmlId, sqlite3_errmsg(hDB) );
+                            CPLError(CE_Failure, CPLE_AppDefined,
+                                     "UPDATE resolved Edge \"%s\" "
+                                     "sqlite3_step() failed:\n  %s",
+                                     pszGmlId, sqlite3_errmsg(hDB));
                         }
-                        CPLFree( gmlText );
+                        CPLFree(gmlText);
                         iCount++;
                         if( (iCount % 1024) == 1023 )
                         {
-                            /* committing the current TRANSACTION */
-                            rc = sqlite3_exec( hDB, "COMMIT", NULL, NULL,
-                                               &pszErrMsg );
+                            // Committing the current TRANSACTION.
+                            rc = sqlite3_exec(hDB, "COMMIT", NULL, NULL,
+                                              &pszErrMsg);
                             if( rc != SQLITE_OK )
                             {
-                                CPLError( CE_Failure, CPLE_AppDefined, 
-                                          "Unable to perform COMMIT TRANSACTION: %s",
-                                          pszErrMsg );
-                                sqlite3_free( pszErrMsg );
-                                return FALSE;
+                                CPLError(
+                                    CE_Failure, CPLE_AppDefined,
+                                    "Unable to perform COMMIT TRANSACTION: %s",
+                                    pszErrMsg);
+                                sqlite3_free(pszErrMsg);
+                                return false;
                             }
-                            /* restarting a new TRANSACTION */
-                            rc = sqlite3_exec( hDB, "BEGIN", NULL, NULL, &pszErrMsg );
+                            // Restarting a new TRANSACTION.
+                            rc = sqlite3_exec(hDB, "BEGIN", NULL, NULL,
+                                              &pszErrMsg);
                             if( rc != SQLITE_OK )
                             {
-                                CPLError( CE_Failure, CPLE_AppDefined, 
-                                          "Unable to perform BEGIN TRANSACTION: %s",
-                                          pszErrMsg );
-                                sqlite3_free( pszErrMsg );
-                                sqlite3_finalize ( hQueryStmt );
-                                sqlite3_finalize ( hUpdateStmt );
-                                return FALSE;
+                                CPLError(
+                                    CE_Failure, CPLE_AppDefined,
+                                    "Unable to perform BEGIN TRANSACTION: %s",
+                                    pszErrMsg);
+                                sqlite3_free(pszErrMsg);
+                                sqlite3_finalize(hQueryStmt);
+                                sqlite3_finalize(hUpdateStmt);
+                                return false;
                             }
                         }
                     }
-                    CPLDestroyXMLNode( psNode );
+                    CPLDestroyXMLNode(psNode);
                 }
             }
         }
         else
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "Edge resolver QUERY: sqlite3_step(%s)", 
-                      sqlite3_errmsg(hDB) );
-            sqlite3_finalize ( hQueryStmt );
-            sqlite3_finalize ( hUpdateStmt );
-            return FALSE;
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Edge resolver QUERY: sqlite3_step(%s)",
+                     sqlite3_errmsg(hDB));
+            sqlite3_finalize(hQueryStmt);
+            sqlite3_finalize(hUpdateStmt);
+            return false;
         }
     }
-    sqlite3_finalize ( hQueryStmt );
-    sqlite3_finalize ( hUpdateStmt );
+    sqlite3_finalize(hQueryStmt);
+    sqlite3_finalize(hUpdateStmt);
 
-    /* committing the current TRANSACTION */
-    rc = sqlite3_exec( hDB, "COMMIT", NULL, NULL, &pszErrMsg );
+    // Committing the current TRANSACTION.
+    rc = sqlite3_exec(hDB, "COMMIT", NULL, NULL, &pszErrMsg);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to perform COMMIT TRANSACTION: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to perform COMMIT TRANSACTION: %s",
+                 pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        return false;
     }
-    if( bError == TRUE )
-        return FALSE;
-    return TRUE;
+
+    return !bError;
 }
 
-static int gmlHugeFileSQLiteInsert( struct huge_helper *helper )
+static bool gmlHugeFileSQLiteInsert( huge_helper *helper )
 {
-/* inserting any appropriate row into the SQLite DB */
-    int rc;
-    struct huge_tag *pItem;
+    // Inserting any appropriate row into the SQLite DB.
 
-    /* looping on GML tags */
-    pItem = helper->pFirst;
+    // Looping on GML tags.
+    struct huge_tag *pItem = helper->pFirst;
     while ( pItem != NULL )
     {
-        if( pItem->bHasCoords == TRUE )
+        if( pItem->bHasCoords )
         {
             if( pItem->gmlNodeFrom != NULL )
             {
-                sqlite3_reset ( helper->hNodes );
-                sqlite3_clear_bindings ( helper->hNodes );
-                sqlite3_bind_text( helper->hNodes, 1,
-                                   pItem->gmlNodeFrom->c_str(), -1,
-                                   SQLITE_STATIC );
-                sqlite3_bind_double ( helper->hNodes, 2, pItem->xNodeFrom );
-                sqlite3_bind_double ( helper->hNodes, 3, pItem->yNodeFrom );
-                if( pItem->bHasZ == TRUE )
-                    sqlite3_bind_double ( helper->hNodes, 4, pItem->zNodeFrom );
-                sqlite3_bind_null ( helper->hNodes, 5 );
-                rc = sqlite3_step( helper->hNodes );
+                sqlite3_reset(helper->hNodes);
+                sqlite3_clear_bindings(helper->hNodes);
+                sqlite3_bind_text(helper->hNodes, 1,
+                                  pItem->gmlNodeFrom->c_str(), -1,
+                                  SQLITE_STATIC);
+                sqlite3_bind_double(helper->hNodes, 2, pItem->xNodeFrom);
+                sqlite3_bind_double(helper->hNodes, 3, pItem->yNodeFrom);
+                if(pItem->bHasZ)
+                    sqlite3_bind_double(helper->hNodes, 4, pItem->zNodeFrom);
+                sqlite3_bind_null(helper->hNodes, 5);
+                const int rc = sqlite3_step(helper->hNodes);
                 if( rc != SQLITE_OK && rc != SQLITE_DONE )
                 {
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "sqlite3_step() failed:\n  %s", 
-                              sqlite3_errmsg(helper->hDB) );
-                              return FALSE;
+                    CPLError(CE_Failure, CPLE_AppDefined,
+                             "sqlite3_step() failed:\n  %s (gmlNodeFrom id=%s)",
+                             sqlite3_errmsg(helper->hDB),
+                             pItem->gmlNodeFrom->c_str());
+                    return false;
                 }
             }
             if( pItem->gmlNodeTo != NULL )
             {
-                sqlite3_reset ( helper->hNodes );
-                sqlite3_clear_bindings ( helper->hNodes );
-                sqlite3_bind_text( helper->hNodes, 1, pItem->gmlNodeTo->c_str(),
-                                   -1, SQLITE_STATIC );
-                sqlite3_bind_double ( helper->hNodes, 2, pItem->xNodeTo );
-                sqlite3_bind_double ( helper->hNodes, 3, pItem->yNodeTo );
-                if ( pItem->bHasZ == TRUE )
-                    sqlite3_bind_double ( helper->hNodes, 4, pItem->zNodeTo );
-                sqlite3_bind_null ( helper->hNodes, 5 );
-                rc = sqlite3_step( helper->hNodes );
+                sqlite3_reset(helper->hNodes);
+                sqlite3_clear_bindings(helper->hNodes);
+                sqlite3_bind_text(helper->hNodes, 1, pItem->gmlNodeTo->c_str(),
+                                  -1, SQLITE_STATIC);
+                sqlite3_bind_double(helper->hNodes, 2, pItem->xNodeTo);
+                sqlite3_bind_double(helper->hNodes, 3, pItem->yNodeTo);
+                if(pItem->bHasZ)
+                    sqlite3_bind_double(helper->hNodes, 4, pItem->zNodeTo);
+                sqlite3_bind_null(helper->hNodes, 5);
+                const int rc = sqlite3_step(helper->hNodes);
                 if( rc != SQLITE_OK && rc != SQLITE_DONE )
                 {
-                    CPLError( CE_Failure, CPLE_AppDefined, 
-                              "sqlite3_step() failed:\n  %s", 
-                              sqlite3_errmsg(helper->hDB) );
-                              return FALSE;
+                    CPLError(CE_Failure, CPLE_AppDefined,
+                             "sqlite3_step() failed:\n  %s (gmlNodeTo id=%s)",
+                             sqlite3_errmsg(helper->hDB),
+                             pItem->gmlNodeTo->c_str());
+                    return false;
                 }
             }
         }
 
-        /* gml:id */
-        sqlite3_reset( helper->hEdges );
-        sqlite3_clear_bindings( helper->hEdges );
-        sqlite3_bind_text( helper->hEdges, 1, pItem->gmlId->c_str(), -1,
-                           SQLITE_STATIC );
-        if( pItem->bIsNodeFromHref == FALSE && pItem->bIsNodeToHref == FALSE )
+        // gml:id
+        sqlite3_reset(helper->hEdges);
+        sqlite3_clear_bindings(helper->hEdges);
+        sqlite3_bind_text(helper->hEdges, 1, pItem->gmlId->c_str(), -1,
+                          SQLITE_STATIC);
+        if( pItem->bIsNodeFromHref == false && pItem->bIsNodeToHref == false )
         {
-            sqlite3_bind_null( helper->hEdges, 2 );
-            sqlite3_bind_blob( helper->hEdges, 3, pItem->gmlTagValue->c_str(),
-                               strlen( pItem->gmlTagValue->c_str() ),
-                               SQLITE_STATIC );
+            sqlite3_bind_null(helper->hEdges, 2);
+            sqlite3_bind_blob(
+                helper->hEdges, 3, pItem->gmlTagValue->c_str(),
+                static_cast<int>(strlen(pItem->gmlTagValue->c_str())),
+                SQLITE_STATIC);
         }
         else
         {
-            sqlite3_bind_blob( helper->hEdges, 2, pItem->gmlTagValue->c_str(),
-                               strlen( pItem->gmlTagValue->c_str() ),
-                               SQLITE_STATIC );
-            sqlite3_bind_null( helper->hEdges, 3 );
+            sqlite3_bind_blob(
+                helper->hEdges, 2, pItem->gmlTagValue->c_str(),
+                static_cast<int>(strlen(pItem->gmlTagValue->c_str())),
+                SQLITE_STATIC);
+            sqlite3_bind_null(helper->hEdges, 3);
         }
         if( pItem->gmlNodeFrom != NULL )
-            sqlite3_bind_text( helper->hEdges, 4, pItem->gmlNodeFrom->c_str(),
-                               -1, SQLITE_STATIC );
+            sqlite3_bind_text(helper->hEdges, 4, pItem->gmlNodeFrom->c_str(),
+                              -1, SQLITE_STATIC);
         else
-            sqlite3_bind_null( helper->hEdges, 4 );
-        if( pItem->bHasCoords == TRUE )
+            sqlite3_bind_null(helper->hEdges, 4);
+        if( pItem->bHasCoords )
         {
-            sqlite3_bind_double( helper->hEdges, 5, pItem->xNodeFrom );
-            sqlite3_bind_double( helper->hEdges, 6, pItem->yNodeFrom );
-            if( pItem->bHasZ == TRUE )
-                sqlite3_bind_double( helper->hEdges, 7, pItem->zNodeFrom );
+            sqlite3_bind_double(helper->hEdges, 5, pItem->xNodeFrom);
+            sqlite3_bind_double(helper->hEdges, 6, pItem->yNodeFrom);
+            if( pItem->bHasZ )
+                sqlite3_bind_double(helper->hEdges, 7, pItem->zNodeFrom);
             else
-                sqlite3_bind_null( helper->hEdges, 7 );
+                sqlite3_bind_null(helper->hEdges, 7);
         }
         else
         {
-            sqlite3_bind_null( helper->hEdges, 5 );
-            sqlite3_bind_null( helper->hEdges, 6 );
-            sqlite3_bind_null( helper->hEdges, 7 );
+            sqlite3_bind_null(helper->hEdges, 5);
+            sqlite3_bind_null(helper->hEdges, 6);
+            sqlite3_bind_null(helper->hEdges, 7);
         }
         if( pItem->gmlNodeTo != NULL )
-            sqlite3_bind_text( helper->hEdges, 8, pItem->gmlNodeTo->c_str(),
-                               -1, SQLITE_STATIC );
+            sqlite3_bind_text(helper->hEdges, 8, pItem->gmlNodeTo->c_str(), -1,
+                              SQLITE_STATIC);
         else
-            sqlite3_bind_null( helper->hEdges, 8 );
-        if( pItem->bHasCoords == TRUE )
+            sqlite3_bind_null(helper->hEdges, 8);
+        if( pItem->bHasCoords )
         {
-            sqlite3_bind_double( helper->hEdges, 9, pItem->xNodeTo );
-            sqlite3_bind_double( helper->hEdges, 10, pItem->yNodeTo );
-            if( pItem->bHasZ == TRUE )
-                sqlite3_bind_double( helper->hEdges, 11, pItem->zNodeTo );
+            sqlite3_bind_double(helper->hEdges, 9, pItem->xNodeTo);
+            sqlite3_bind_double(helper->hEdges, 10, pItem->yNodeTo);
+            if( pItem->bHasZ )
+                sqlite3_bind_double(helper->hEdges, 11, pItem->zNodeTo);
             else
-                sqlite3_bind_null( helper->hEdges, 11 );
+                sqlite3_bind_null(helper->hEdges, 11);
         }
         else
         {
-            sqlite3_bind_null( helper->hEdges, 9 );
-            sqlite3_bind_null( helper->hEdges, 10 );
-            sqlite3_bind_null( helper->hEdges, 11 );
+            sqlite3_bind_null(helper->hEdges, 9);
+            sqlite3_bind_null(helper->hEdges, 10);
+            sqlite3_bind_null(helper->hEdges, 11);
         }
-        rc = sqlite3_step( helper->hEdges );
+        const int rc = sqlite3_step(helper->hEdges);
         if( rc != SQLITE_OK && rc != SQLITE_DONE )
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "sqlite3_step() failed:\n  %s", 
-                      sqlite3_errmsg(helper->hDB) );
-            return FALSE;
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "sqlite3_step() failed:\n  %s (edge gml:id=%s)",
+                     sqlite3_errmsg(helper->hDB), pItem->gmlId->c_str());
+            return false;
         }
         pItem = pItem->pNext;
     }
-    return TRUE;
+    return true;
 }
 
-static void gmlHugeFileReset( struct huge_helper *helper )
+static void gmlHugeFileReset( huge_helper *helper )
 {
-/* resetting an empty helper struct */
-    struct huge_tag *pNext;
+    // Resetting an empty helper struct.
     struct huge_tag *p = helper->pFirst;
 
-    /* cleaning any previous item */
+    // Cleaning any previous item.
     while( p != NULL )
     {
-        pNext = p->pNext;
+        struct huge_tag *pNext = p->pNext;
         if( p->gmlTagValue != NULL )
             delete p->gmlTagValue;
         if( p->gmlId != NULL )
@@ -883,16 +957,15 @@ static void gmlHugeFileReset( struct huge_helper *helper )
     helper->pLast = NULL;
 }
 
-static void gmlHugeFileHrefReset( struct huge_helper *helper )
+static void gmlHugeFileHrefReset( huge_helper *helper )
 {
-/* resetting an empty helper struct */
-    struct huge_href *pNext;
+    // Resetting an empty helper struct.
     struct huge_href *p = helper->pFirstHref;
 
-    /* cleaning any previous item */
+    // Cleaning any previous item.
     while( p != NULL )
     {
-        pNext = p->pNext;
+        struct huge_href *pNext = p->pNext;
         if( p->gmlId != NULL )
             delete p->gmlId;
         if( p->gmlText != NULL )
@@ -904,42 +977,39 @@ static void gmlHugeFileHrefReset( struct huge_helper *helper )
     helper->pLastHref = NULL;
 }
 
-static int gmlHugeFileHrefCheck( struct huge_helper *helper )
+static int gmlHugeFileHrefCheck( huge_helper *helper )
 {
-/* testing for unresolved items */
-    int bError = FALSE;
-	struct huge_href *p = helper->pFirstHref;
-	while( p != NULL )
-    {
-		if( p->gmlText == NULL)
-		{
-			bError = TRUE;
-			CPLError( CE_Failure, CPLE_AppDefined, 
-                      "Edge xlink:href\"%s\": unresolved match", 
-                      p->gmlId->c_str() );
-		}
-        p = p->pNext;
-    }
-	if( bError == TRUE )
-		return FALSE;
-	return TRUE;
-}
-
-static void gmlHugeFileRewiterReset( struct huge_helper *helper )
-{
-/* resetting an empty helper struct */
-    struct huge_parent *pNext;
-    struct huge_parent *p = helper->pFirstParent;
-
-    /* cleaning any previous item */
+    // Testing for unresolved items.
+    bool bError = false;
+    struct huge_href *p = helper->pFirstHref;
     while( p != NULL )
     {
-        pNext = p->pNext;
-        struct huge_child *pChildNext;
+        if( p->gmlText == NULL)
+        {
+            bError = true;
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Edge xlink:href\"%s\": unresolved match",
+                     p->gmlId->c_str());
+        }
+        p = p->pNext;
+    }
+
+    return !bError;
+}
+
+static void gmlHugeFileRewiterReset( huge_helper *helper )
+{
+    // Resetting an empty helper struct.
+    struct huge_parent *p = helper->pFirstParent;
+
+    // Cleaning any previous item.
+    while( p != NULL )
+    {
+        struct huge_parent *pNext = p->pNext;
         struct huge_child *pChild = p->pFirst;
         while( pChild != NULL )
         {
-            pChildNext = pChild->pNext;
+            struct huge_child *pChildNext = pChild->pNext;
             delete pChild;
             pChild = pChildNext;
         }
@@ -950,32 +1020,33 @@ static void gmlHugeFileRewiterReset( struct huge_helper *helper )
     helper->pLastParent = NULL;
 }
 
-static struct huge_tag *gmlHugeAddToHelper( struct huge_helper *helper,
+static struct huge_tag *gmlHugeAddToHelper( huge_helper *helper,
                                             CPLString *gmlId,
                                             CPLString *gmlFragment )
 {
-/* adding an item  into the linked list */
-    struct huge_tag *pItem;
+    // Adding an item into the linked list.
 
-    /* checking against duplicates */
-    pItem = helper->pFirst;
+    // Checking against duplicates.
+    struct huge_tag *pItem = helper->pFirst;
     while( pItem != NULL )
     {
-        if( EQUAL( pItem->gmlId->c_str(), gmlId->c_str() ) )
+        if( EQUAL(pItem->gmlId->c_str(), gmlId->c_str()) )
             return NULL;
         pItem = pItem->pNext;
-    }	
+    }
 
     pItem = new struct huge_tag;
     pItem->gmlId = gmlId;
     pItem->gmlTagValue = gmlFragment;
     pItem->gmlNodeFrom = NULL;
     pItem->gmlNodeTo = NULL;
-    pItem->bHasCoords = FALSE;
-    pItem->bHasZ = FALSE;
+    pItem->bIsNodeFromHref = false;
+    pItem->bIsNodeToHref = false;
+    pItem->bHasCoords = false;
+    pItem->bHasZ = false;
     pItem->pNext = NULL;
 
-    /* appending the item to the linked list */
+    // Appending the item to the linked list.
     if ( helper->pFirst == NULL )
         helper->pFirst = pItem;
     if ( helper->pLast != NULL )
@@ -984,31 +1055,30 @@ static struct huge_tag *gmlHugeAddToHelper( struct huge_helper *helper,
     return pItem;
 }
 
-static void gmlHugeAddPendingToHelper( struct huge_helper *helper,
+static void gmlHugeAddPendingToHelper( huge_helper *helper,
                                        CPLString *gmlId,
                                        const CPLXMLNode *psParent,
                                        const CPLXMLNode *psNode,
-                                       int bIsDirectedEdge,
+                                       bool bIsDirectedEdge,
                                        char cOrientation )
 {
-/* inserting an item into the linked list */
-    struct huge_href *pItem;
+    // Inserting an item into the linked list.
 
-    /* checking against duplicates */
-    pItem = helper->pFirstHref;
+    // Checking against duplicates.
+    struct huge_href *pItem = helper->pFirstHref;
     while( pItem != NULL )
     {
-        if( EQUAL( pItem->gmlId->c_str(), gmlId->c_str() ) &&
-            pItem->psParent == psParent  && 
-            pItem->psNode == psNode && 
+        if( EQUAL(pItem->gmlId->c_str(), gmlId->c_str()) &&
+            pItem->psParent == psParent  &&
+            pItem->psNode == psNode &&
             pItem->cOrientation == cOrientation &&
             pItem->bIsDirectedEdge == bIsDirectedEdge )
-            {
-                delete gmlId;
-                return;
-            }
-            pItem = pItem->pNext;
-    }	
+        {
+            delete gmlId;
+            return;
+        }
+        pItem = pItem->pNext;
+    }
 
     pItem = new struct huge_href;
     pItem->gmlId = gmlId;
@@ -1019,7 +1089,7 @@ static void gmlHugeAddPendingToHelper( struct huge_helper *helper,
     pItem->cOrientation = cOrientation;
     pItem->pNext = NULL;
 
-    /* appending the item to the linked list */
+    // Appending the item to the linked list.
     if ( helper->pFirstHref == NULL )
         helper->pFirstHref = pItem;
     if ( helper->pLastHref != NULL )
@@ -1029,13 +1099,13 @@ static void gmlHugeAddPendingToHelper( struct huge_helper *helper,
 
 static int gmlHugeFindGmlId( const CPLXMLNode *psNode, CPLString **gmlId )
 {
-/* attempting to identify a gml:id value      */
+    // Attempting to identify a gml:id value.
     *gmlId = NULL;
     const CPLXMLNode *psChild = psNode->psChild;
     while( psChild != NULL )
     {
         if( psChild->eType == CXT_Attribute &&
-            EQUAL( psChild->pszValue, "gml:id" ) )
+            EQUAL(psChild->pszValue, "gml:id") )
         {
             const CPLXMLNode *psIdValue = psChild->psChild;
             if( psIdValue != NULL )
@@ -1043,74 +1113,75 @@ static int gmlHugeFindGmlId( const CPLXMLNode *psNode, CPLString **gmlId )
                 if( psIdValue->eType == CXT_Text )
                 {
                     *gmlId = new CPLString(psIdValue->pszValue);
-                    return TRUE;
+                    return true;
                 }
             }
         }
         psChild = psChild->psNext;
     }
-    return FALSE;
+    return false;
 }
 
 static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
-                                   const CPLXMLNode * psNode,
-                                   CPLString **nodeSrs )
+                                   const CPLXMLNode *psNode,
+                                   CPL_UNUSED CPLString **nodeSrs )
 {
-/* 
-/ this function attempts to set coordinates for <Node> items
-/ when required (an <Edge> is expected to be processed)
-*/
+    // This function attempts to set coordinates for <Node> items
+    // when required (an <Edge> is expected to be processed).
 
-/* attempting to fetch Node coordinates */
+    // Attempting to fetch Node coordinates.
     CPLXMLNode *psTopoCurve = CPLCreateXMLNode(NULL, CXT_Element, "TopoCurve");
-    CPLXMLNode *psDirEdge = CPLCreateXMLNode(psTopoCurve, CXT_Element, "directedEdge");
+    CPLXMLNode *psDirEdge =
+        CPLCreateXMLNode(psTopoCurve, CXT_Element, "directedEdge");
     CPLXMLNode *psEdge = CPLCloneXMLTree((CPLXMLNode *)psNode);
-    CPLAddXMLChild( psDirEdge, psEdge );
-    OGRGeometryCollection *poColl = (OGRGeometryCollection *)
-                                    GML2OGRGeometry_XMLNode( psTopoCurve, FALSE );
-    CPLDestroyXMLNode( psTopoCurve );
+    CPLAddXMLChild(psDirEdge, psEdge);
+    OGRGeometryCollection *poColl = static_cast<OGRGeometryCollection *>(
+        GML2OGRGeometry_XMLNode(psTopoCurve, FALSE));
+    CPLDestroyXMLNode(psTopoCurve);
     if( poColl != NULL )
     {
-        int iCount = poColl->getNumGeometries();
+        const int iCount = poColl->getNumGeometries();
         if( iCount == 1 )
         {
-            OGRGeometry * poChild = (OGRGeometry*)poColl->getGeometryRef(0);
-            int type = wkbFlatten( poChild->getGeometryType());
+            OGRGeometry *poChild = (OGRGeometry *)poColl->getGeometryRef(0);
+            int type = wkbFlatten(poChild->getGeometryType());
             if( type == wkbLineString )
             {
                 OGRLineString *poLine = (OGRLineString *)poChild;
-                int iPoints =  poLine->getNumPoints();
+                const int iPoints = poLine->getNumPoints();
                 if( iPoints >= 2 )
                 {
-                    pItem->bHasCoords = TRUE;
-                    pItem->xNodeFrom = poLine->getX( 0 );
-                    pItem->yNodeFrom = poLine->getY( 0 );
-                    pItem->xNodeTo = poLine->getX( iPoints - 1 );
-                    pItem->yNodeTo = poLine->getY( iPoints - 1 );
+                    pItem->bHasCoords = true;
+                    pItem->xNodeFrom = poLine->getX(0);
+                    pItem->yNodeFrom = poLine->getY(0);
+                    pItem->xNodeTo = poLine->getX(iPoints - 1);
+                    pItem->yNodeTo = poLine->getY(iPoints - 1);
                     if( poLine->getCoordinateDimension() == 3 )
                     {
-                        pItem->zNodeFrom = poLine->getZ( 0 );
-                        pItem->zNodeTo = poLine->getZ( iPoints - 1 );
-                        pItem->bHasZ = TRUE;
+                        pItem->zNodeFrom = poLine->getZ(0);
+                        pItem->zNodeTo = poLine->getZ(iPoints - 1);
+                        pItem->bHasZ = true;
                     }
                     else
-                        pItem->bHasZ = FALSE;
+                    {
+                        pItem->bHasZ = false;
+                    }
                 }
             }
         }
         delete poColl;
     }
-	
-    /* searching the <directedNode> sub-tags */
+
+    // Searching the <directedNode> sub-tags.
     const CPLXMLNode *psChild = psNode->psChild;
     while( psChild != NULL )
     {
         if( psChild->eType == CXT_Element &&
-            EQUAL( psChild->pszValue, "directedNode" ) )
+            EQUAL(psChild->pszValue, "directedNode") )
         {
             char cOrientation = '+';
             const char *pszGmlId = NULL;
-            int bIsHref = FALSE;
+            bool bIsHref = false;
             const CPLXMLNode *psAttr = psChild->psChild;
             while( psAttr != NULL )
             {
@@ -1123,12 +1194,12 @@ static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
                         if( psHref->eType == CXT_Text )
                         {
                             pszGmlId = psHref->pszValue;
-                            bIsHref = TRUE;
+                            bIsHref = true;
                         }
                     }
                 }
                 if( psAttr->eType == CXT_Attribute &&
-                    EQUAL( psAttr->pszValue, "orientation" ) )
+                    EQUAL(psAttr->pszValue, "orientation") )
                 {
                     const CPLXMLNode *psOrientation = psAttr->psChild;
                     if( psOrientation != NULL )
@@ -1140,13 +1211,13 @@ static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
                     }
                 }
                 if( psAttr->eType == CXT_Element &&
-                    EQUAL( psAttr->pszValue, "Node" ) )
+                    EQUAL(psAttr->pszValue, "Node") )
                 {
                     const CPLXMLNode *psId = psAttr->psChild;
                     while( psId != NULL )
-                    {		
+                    {
                         if( psId->eType == CXT_Attribute &&
-                            EQUAL( psId->pszValue, "gml:id" ) )
+                            EQUAL(psId->pszValue, "gml:id") )
                         {
                             const CPLXMLNode *psIdGml = psId->psChild;
                             if( psIdGml != NULL )
@@ -1154,7 +1225,7 @@ static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
                                 if( psIdGml->eType == CXT_Text )
                                 {
                                     pszGmlId = psIdGml->pszValue;
-                                    bIsHref = FALSE;
+                                    bIsHref = false;
                                 }
                             }
                         }
@@ -1165,22 +1236,26 @@ static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
             }
             if( pszGmlId != NULL )
             {
-                CPLString* posNode;
-                if( bIsHref == TRUE )
+                CPLString *posNode = NULL;
+                if( bIsHref )
                 {
                     if (pszGmlId[0] != '#')
                     {
                         CPLError(CE_Warning, CPLE_NotSupported,
-                                 "Only values of xlink:href element starting with '#' are supported, "
-                                 "so %s will not be properly recognized", pszGmlId);
+                                 "Only values of xlink:href element starting "
+                                 "with '#' are supported, "
+                                 "so %s will not be properly recognized",
+                                 pszGmlId);
                     }
-                    posNode = new CPLString(pszGmlId+1);
+                    posNode = new CPLString(pszGmlId + 1);
                 }
                 else
+                {
                     posNode = new CPLString(pszGmlId);
+                }
                 if( cOrientation == '-' )
                 {
-                     pItem->gmlNodeFrom = posNode;
+                    pItem->gmlNodeFrom = posNode;
                     pItem->bIsNodeFromHref = bIsHref;
                 }
                 else
@@ -1188,33 +1263,35 @@ static void gmlHugeFileNodeCoords( struct huge_tag *pItem,
                     pItem->gmlNodeTo = posNode;
                     pItem->bIsNodeToHref = bIsHref;
                 }
-                pszGmlId = NULL;
-                bIsHref = FALSE;
-                cOrientation = '+';
+                // pszGmlId = NULL;
+                // *bIsHref = false;
+                // cOrientation = '+';
             }
         }
         psChild = psChild->psNext;
     }
 }
 
-static void gmlHugeFileCheckXrefs( struct huge_helper *helper, 
+static void gmlHugeFileCheckXrefs( huge_helper *helper,
                                    const CPLXMLNode *psNode )
 {
-/* identifying <Edge> GML nodes */
+    // Identifying <Edge> GML nodes.
     if( psNode->eType == CXT_Element )
     {
-        if( EQUAL(psNode->pszValue, "Edge") == TRUE )
+        if( EQUAL(psNode->pszValue, "Edge") )
         {
             CPLString *gmlId = NULL;
-            if( gmlHugeFindGmlId( psNode, &gmlId ) == TRUE )
+            if( gmlHugeFindGmlId(psNode, &gmlId) )
             {
-                char * gmlText = CPLSerializeXMLTree((CPLXMLNode *)psNode);
+                char *gmlText = CPLSerializeXMLTree(psNode);
                 CPLString *gmlValue = new CPLString(gmlText);
-                CPLFree( gmlText );
-                struct huge_tag *pItem = gmlHugeAddToHelper( helper, gmlId,
-                                                             gmlValue );
+                CPLFree(gmlText);
+                struct huge_tag *pItem =
+                    gmlHugeAddToHelper(helper, gmlId, gmlValue);
                 if( pItem != NULL )
-                    gmlHugeFileNodeCoords( pItem, psNode, &(helper->nodeSrs) );
+                {
+                    gmlHugeFileNodeCoords(pItem, psNode, &(helper->nodeSrs));
+                }
                 else
                 {
                     delete gmlId;
@@ -1224,24 +1301,24 @@ static void gmlHugeFileCheckXrefs( struct huge_helper *helper,
         }
     }
 
-    /* recursively scanning each Child GML node */
+    // Recursively scanning each Child GML node.
     const CPLXMLNode *psChild = psNode->psChild;
     while( psChild != NULL )
     {
         if( psChild->eType == CXT_Element )
         {
-            if( EQUAL(psChild->pszValue, "Edge") == TRUE ||
-                EQUAL(psChild->pszValue, "directedEdge") == TRUE )
+            if( EQUAL(psChild->pszValue, "Edge") ||
+                EQUAL(psChild->pszValue, "directedEdge") )
             {
-                gmlHugeFileCheckXrefs( helper, psChild );
+                gmlHugeFileCheckXrefs(helper, psChild);
             }
-            if( EQUAL(psChild->pszValue, "directedFace") == TRUE )
+            if( EQUAL(psChild->pszValue, "directedFace") )
             {
                 const CPLXMLNode *psFace = psChild->psChild;
                 if( psFace != NULL )
                 {
                     if( psFace->eType == CXT_Element &&
-                        EQUAL(psFace->pszValue, "Face") == TRUE)
+                        EQUAL(psFace->pszValue, "Face") )
                     {
                         const CPLXMLNode *psDirEdge = psFace->psChild;
                         while (psDirEdge != NULL)
@@ -1250,8 +1327,8 @@ static void gmlHugeFileCheckXrefs( struct huge_helper *helper,
                             while( psEdge != NULL)
                             {
                                 if( psEdge->eType == CXT_Element &&
-                                    EQUAL(psEdge->pszValue, "Edge") == TRUE)
-                                    gmlHugeFileCheckXrefs( helper, psEdge );
+                                    EQUAL(psEdge->pszValue, "Edge") )
+                                    gmlHugeFileCheckXrefs(helper, psEdge);
                                 psEdge = psEdge->psNext;
                             }
                             psDirEdge = psDirEdge->psNext;
@@ -1263,50 +1340,50 @@ static void gmlHugeFileCheckXrefs( struct huge_helper *helper,
         psChild = psChild->psNext;
     }
 
-    /* recursively scanning each GML of the same level */
+    // Recursively scanning each GML of the same level.
     const CPLXMLNode *psNext = psNode->psNext;
     while( psNext != NULL )
     {
         if( psNext->eType == CXT_Element )
         {
-            if( EQUAL(psNext->pszValue, "Edge") == TRUE ||
-                EQUAL(psNext->pszValue, "directedEdge") == TRUE )
+            if( EQUAL(psNext->pszValue, "Edge") ||
+                EQUAL(psNext->pszValue, "directedEdge") )
             {
-                gmlHugeFileCheckXrefs( helper, psNext );
+                gmlHugeFileCheckXrefs(helper, psNext);
             }
         }
         psNext = psNext->psNext;
     }
 }
 
-static void gmlHugeFileCleanUp ( struct huge_helper *helper ) 
+static void gmlHugeFileCleanUp ( huge_helper *helper )
 {
-/* cleaning up any SQLite handle */
+    // Cleaning up any SQLite handle.
     if( helper->hNodes != NULL )
-        sqlite3_finalize ( helper->hNodes );
+        sqlite3_finalize(helper->hNodes);
     if( helper->hEdges != NULL )
-        sqlite3_finalize ( helper->hEdges );
+        sqlite3_finalize(helper->hEdges);
     if( helper->hDB != NULL )
-        sqlite3_close( helper->hDB );
+        sqlite3_close(helper->hDB);
     if( helper->nodeSrs != NULL )
         delete helper->nodeSrs;
 }
 
-static void gmlHugeFileCheckPendingHrefs( struct huge_helper *helper,
+static void gmlHugeFileCheckPendingHrefs( huge_helper *helper,
                                           const CPLXMLNode *psParent,
                                           const CPLXMLNode *psNode )
 {
-/* identifying any xlink:href to be replaced */
+    // Identifying any xlink:href to be replaced.
     if( psNode->eType == CXT_Element )
     {
-        if( EQUAL(psNode->pszValue, "directedEdge") == TRUE )
+        if( EQUAL(psNode->pszValue, "directedEdge") )
         {
             char cOrientation = '+';
             CPLXMLNode *psAttr = psNode->psChild;
             while( psAttr != NULL )
             {
                 if( psAttr->eType == CXT_Attribute &&
-                    EQUAL( psAttr->pszValue, "orientation" ) )
+                    EQUAL(psAttr->pszValue, "orientation") )
                 {
                     const CPLXMLNode *psOrientation = psAttr->psChild;
                     if( psOrientation != NULL )
@@ -1321,7 +1398,7 @@ static void gmlHugeFileCheckPendingHrefs( struct huge_helper *helper,
             while( psAttr != NULL )
             {
                 if( psAttr->eType == CXT_Attribute &&
-                    EQUAL( psAttr->pszValue, "xlink:href" ) )
+                    EQUAL(psAttr->pszValue, "xlink:href") )
                 {
                     const CPLXMLNode *pszHref = psAttr->psChild;
                     if( pszHref != NULL )
@@ -1330,13 +1407,18 @@ static void gmlHugeFileCheckPendingHrefs( struct huge_helper *helper,
                         {
                             if (pszHref->pszValue[0] != '#')
                             {
-                                CPLError(CE_Warning, CPLE_NotSupported,
-                                        "Only values of xlink:href element starting with '#' are supported, "
-                                        "so %s will not be properly recognized", pszHref->pszValue);
+                                CPLError(
+                                    CE_Warning, CPLE_NotSupported,
+                                    "Only values of xlink:href element "
+                                    "starting with '#' are supported, "
+                                    "so %s will not be properly recognized",
+                                    pszHref->pszValue);
                             }
-                            CPLString *gmlId = new CPLString(pszHref->pszValue+1);
-                            gmlHugeAddPendingToHelper( helper, gmlId, psParent,
-                                                       psNode, TRUE, cOrientation );
+                            CPLString *gmlId =
+                                new CPLString(pszHref->pszValue + 1);
+                            gmlHugeAddPendingToHelper(helper, gmlId, psParent,
+                                                      psNode, true,
+                                                      cOrientation);
                         }
                     }
                 }
@@ -1345,63 +1427,63 @@ static void gmlHugeFileCheckPendingHrefs( struct huge_helper *helper,
         }
     }
 
-    /* recursively scanning each Child GML node */
+    // Recursively scanning each Child GML node.
     const CPLXMLNode *psChild = psNode->psChild;
     while( psChild != NULL )
     {
         if( psChild->eType == CXT_Element )
         {
-            if( EQUAL(psChild->pszValue, "directedEdge") == TRUE ||
-                EQUAL(psChild->pszValue, "directedFace") == TRUE ||
-                EQUAL(psChild->pszValue, "Face") == TRUE)
+            if( EQUAL(psChild->pszValue, "directedEdge") ||
+                EQUAL(psChild->pszValue, "directedFace") ||
+                EQUAL(psChild->pszValue, "Face") )
             {
-                gmlHugeFileCheckPendingHrefs( helper, psNode, psChild );
+                gmlHugeFileCheckPendingHrefs(helper, psNode, psChild);
             }
         }
         psChild = psChild->psNext;
     }
 
-    /* recursively scanning each GML of the same level */
+    // Recursively scanning each GML of the same level.
     const CPLXMLNode *psNext = psNode->psNext;
     while( psNext != NULL )
     {
         if( psNext->eType == CXT_Element )
         {
-            if( EQUAL(psNext->pszValue, "Face") == TRUE )
+            if( EQUAL(psNext->pszValue, "Face") )
             {
-                gmlHugeFileCheckPendingHrefs( helper, psParent, psNext );
+                gmlHugeFileCheckPendingHrefs(helper, psParent, psNext);
             }
         }
         psNext = psNext->psNext;
     }
 }
 
-static void gmlHugeSetHrefGmlText( struct huge_helper *helper,
+static void gmlHugeSetHrefGmlText( huge_helper *helper,
                                    const char *pszGmlId,
                                    const char *pszGmlText )
 {
-/* setting the GML text for the corresponding gml:id */
+    // Setting the GML text for the corresponding gml:id.
     struct huge_href *pItem = helper->pFirstHref;
     while( pItem != NULL )
     {
-        if( EQUAL( pItem->gmlId->c_str(), pszGmlId ) == TRUE )
+        if( EQUAL(pItem->gmlId->c_str(), pszGmlId) )
         {
             if( pItem->gmlText != NULL)
                 delete pItem->gmlText;
-            pItem->gmlText = new CPLString( pszGmlText );
+            pItem->gmlText = new CPLString(pszGmlText);
             return;
         }
         pItem = pItem->pNext;
     }
 }
 
-static struct huge_parent *gmlHugeFindParent( struct huge_helper *helper,
+static struct huge_parent *gmlHugeFindParent( huge_helper *helper,
                                               CPLXMLNode *psParent )
 {
-/* inserting a GML Node (parent) to be rewritted */
+    // Inserting a GML Node (parent) to be rewritten.
     struct huge_parent *pItem = helper->pFirstParent;
 
-    /* checking if already exists */
+    // Checking if already exists.
     while( pItem != NULL )
     {
         if( pItem->psParent == psParent )
@@ -1409,7 +1491,7 @@ static struct huge_parent *gmlHugeFindParent( struct huge_helper *helper,
         pItem = pItem->pNext;
     }
 
-    /* creating a new Parent Node */
+    // Creating a new Parent Node.
     pItem = new struct huge_parent;
     pItem->psParent = psParent;
     pItem->pFirst = NULL;
@@ -1421,12 +1503,11 @@ static struct huge_parent *gmlHugeFindParent( struct huge_helper *helper,
         helper->pLastParent->pNext = pItem;
     helper->pLastParent = pItem;
 
-    /* inserting any Child node into the Parent */
+    // Inserting any Child node into the Parent.
     CPLXMLNode *psChild = psParent->psChild;
     while( psChild != NULL )
     {
-        struct huge_child *pChildItem;
-        pChildItem = new struct huge_child;
+        struct huge_child *pChildItem = new struct huge_child;
         pChildItem->psChild = psChild;
         pChildItem->pItem = NULL;
         pChildItem->pNext = NULL;
@@ -1443,143 +1524,151 @@ static struct huge_parent *gmlHugeFindParent( struct huge_helper *helper,
 static int gmlHugeSetChild( struct huge_parent *pParent,
                             struct huge_href *pItem )
 {
-/* setting a Child Node to be rewritted */
+    // Setting a Child Node to be rewritten.
     struct huge_child *pChild = pParent->pFirst;
     while( pChild != NULL )
     {
-         if( pChild->psChild == pItem->psNode )
-         {
+        if( pChild->psChild == pItem->psNode )
+        {
             pChild->pItem = pItem;
-            return TRUE;
-         }
-         pChild = pChild->pNext;
+            return true;
+        }
+        pChild = pChild->pNext;
     }
-    return FALSE;
+    return false;
 }
 
-static int gmlHugeResolveEdges( struct huge_helper *helper,
-                                CPLXMLNode *psNode, sqlite3 *hDB )
+static int gmlHugeResolveEdges( CPL_UNUSED huge_helper *helper,
+                                CPL_UNUSED CPLXMLNode *psNode,
+                                sqlite3 *hDB )
 {
-/* resolving GML <Edge> xlink:href */
-    CPLString      osCommand;
-    sqlite3_stmt   *hStmtEdges;
-    int            rc;
-    int            bIsComma = FALSE;
-    int            bError = FALSE;
-    struct huge_href *pItem;
-    struct huge_parent *pParent;
+    // Resolving GML <Edge> xlink:href.
+    CPLString osCommand;
+    bool bIsComma = false;
+    bool bError = false;
 
-    /* query cursor [Edges] */
+    // query cursor [Edges] */
     osCommand = "SELECT gml_id, gml_resolved "
                 "FROM gml_edges "
                 "WHERE gml_id IN (";
-    pItem = helper->pFirstHref;
+    struct huge_href *pItem = helper->pFirstHref;
     while( pItem != NULL )
     {
-        if( bIsComma == TRUE )
+        if( bIsComma )
             osCommand += ", ";
         else
-            bIsComma = TRUE;
+            bIsComma = true;
         osCommand += "'";
         osCommand += pItem->gmlId->c_str();
         osCommand += "'";
         pItem = pItem->pNext;
     }
     osCommand += ")";
-    rc = sqlite3_prepare( hDB, osCommand.c_str(), -1, &hStmtEdges, NULL );
-    if( rc != SQLITE_OK )
+    sqlite3_stmt *hStmtEdges = NULL;
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create QUERY stmt for EDGES" );
-        return FALSE;
+        const int rc =
+            sqlite3_prepare_v2(hDB, osCommand.c_str(), -1, &hStmtEdges, NULL);
+        if( rc != SQLITE_OK )
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Unable to create QUERY stmt for EDGES");
+            return false;
+        }
     }
-    while ( TRUE )
+    while( true )
     {
-        rc = sqlite3_step( hStmtEdges );
+        const int rc = sqlite3_step(hStmtEdges);
         if( rc == SQLITE_DONE )
             break;
         if ( rc == SQLITE_ROW )
         {
-            const char *pszGmlId;
-            const char *pszGmlText = NULL;
-            pszGmlId = (const char *)sqlite3_column_text ( hStmtEdges, 0 );
-            if( sqlite3_column_type( hStmtEdges, 1 ) != SQLITE_NULL )
-                pszGmlText = (const char *)sqlite3_column_text ( hStmtEdges, 1 );
-            gmlHugeSetHrefGmlText( helper, pszGmlId, pszGmlText );
+            const char *pszGmlId = reinterpret_cast<const char *>(
+                sqlite3_column_text(hStmtEdges, 0));
+            if( sqlite3_column_type(hStmtEdges, 1) != SQLITE_NULL )
+            {
+                const char *pszGmlText = reinterpret_cast<const char *>(
+                    sqlite3_column_text(hStmtEdges, 1));
+                gmlHugeSetHrefGmlText(helper, pszGmlId, pszGmlText);
+            }
         }
         else
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "Edge xlink:href QUERY: sqlite3_step(%s)", 
-                      sqlite3_errmsg(hDB) );
-            bError = TRUE;
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Edge xlink:href QUERY: sqlite3_step(%s)",
+                     sqlite3_errmsg(hDB));
+            bError = true;
             break;
         }
     }
-    sqlite3_finalize ( hStmtEdges );
-    if( bError == TRUE )
-        return FALSE;
+    sqlite3_finalize(hStmtEdges);
+    if( bError )
+        return false;
 
-    /* indentifying any GML node to be rewritten */
+    // Identifying any GML node to be rewritten.
     pItem = helper->pFirstHref;
+    struct huge_parent *pParent = NULL;
     while( pItem != NULL )
     {
         if( pItem->gmlText == NULL || pItem->psParent == NULL ||
             pItem->psNode == NULL )
         {
-            bError = TRUE;
+            bError = true;
             break;
         }
-        pParent = gmlHugeFindParent( helper, (CPLXMLNode *)pItem->psParent );
-        if( gmlHugeSetChild( pParent, pItem ) == FALSE )
+        pParent = gmlHugeFindParent(helper,
+                                    const_cast<CPLXMLNode *>(pItem->psParent));
+        if( gmlHugeSetChild(pParent, pItem) == false )
         {
-            bError = TRUE;
+            bError = true;
             break;
         }
         pItem = pItem->pNext;
     }
 
-    if( bError == FALSE )
+    if( bError == false )
     {
-    /* rewriting GML nodes */
+        // Rewriting GML nodes.
         pParent = helper->pFirstParent;
         while( pParent != NULL )
         {
-            struct huge_child *pChild;
 
-            /* removing any Child node from the Parent */
-            pChild = pParent->pFirst;
+            // Removing any Child node from the Parent.
+            struct huge_child *pChild = pParent->pFirst;
             while( pChild != NULL )
             {
-                CPLRemoveXMLChild( pParent->psParent, pChild->psChild );
+                CPLRemoveXMLChild(pParent->psParent, pChild->psChild);
 
-                /* destroyng any Child Node to be rewritten */
+                // Destroying any Child Node to be rewritten.
                 if( pChild->pItem != NULL )
-                    CPLDestroyXMLNode( pChild->psChild );
+                    CPLDestroyXMLNode(pChild->psChild);
                 pChild = pChild->pNext;
             }
 
-            /* rewriting the Parent Node */
+            // Rewriting the Parent Node.
             pChild = pParent->pFirst;
             while( pChild != NULL )
             {
                 if( pChild->pItem == NULL )
                 {
-                    /* reinserting any untouched Child Node */
-                    CPLAddXMLChild( pParent->psParent, pChild->psChild );
+                    // Reinserting any untouched Child Node.
+                    CPLAddXMLChild(pParent->psParent, pChild->psChild);
                 }
                 else
                 {
-                    /* rewriting a Child Node */
-                    CPLXMLNode *psNewNode = CPLCreateXMLNode(NULL, CXT_Element, "directedEdge");
+                    // Rewriting a Child Node.
+                    CPLXMLNode *psNewNode =
+                        CPLCreateXMLNode(NULL, CXT_Element, "directedEdge");
                     if( pChild->pItem->cOrientation == '-' )
                     {
-                        CPLXMLNode *psOrientationNode = CPLCreateXMLNode(psNewNode, CXT_Attribute, "orientation");
+                        CPLXMLNode *psOrientationNode = CPLCreateXMLNode(
+                            psNewNode, CXT_Attribute, "orientation");
                         CPLCreateXMLNode(psOrientationNode, CXT_Text, "-");
                     }
-                    CPLXMLNode *psEdge = CPLParseXMLString(pChild->pItem->gmlText->c_str());
-                    CPLAddXMLChild( psNewNode, psEdge );
-                    CPLAddXMLChild( pParent->psParent, psNewNode );
+                    CPLXMLNode *psEdge =
+                        CPLParseXMLString(pChild->pItem->gmlText->c_str());
+                    if( psEdge != NULL )
+                        CPLAddXMLChild(psNewNode, psEdge);
+                    CPLAddXMLChild(pParent->psParent, psNewNode);
                 }
                 pChild = pChild->pNext;
             }
@@ -1587,147 +1676,142 @@ static int gmlHugeResolveEdges( struct huge_helper *helper,
         }
     }
 
-    /* resetting the Rewrite Helper to an empty state */
-    gmlHugeFileRewiterReset( helper );
-    if( bError == TRUE )
-        return FALSE;
-    return TRUE;
+    // Resetting the Rewrite Helper to an empty state.
+    gmlHugeFileRewiterReset(helper);
+
+    return !bError;
 }
 
-static int gmlHugeFileWriteResolved ( struct huge_helper *helper, 
-                                      const char *pszOutputFilename, 
+static bool gmlHugeFileWriteResolved( huge_helper *helper,
+                                      const char *pszOutputFilename,
                                       GMLReader *pReader,
-                                      int *m_bSequentialLayers ) 
+                                      int *m_nHasSequentialLayers )
 {
-/* writing the resolved GML file */
-    VSILFILE       *fp;
-    GMLFeature     *poFeature;
-    const char     *osCommand;
-    int            rc;
-    sqlite3        *hDB = helper->hDB;
-    sqlite3_stmt   *hStmtNodes;
-    int            bError = FALSE;
-    int            iOutCount = 0;
-
-/* -------------------------------------------------------------------- */
-/*      Opening the resolved GML file                                   */
-/* -------------------------------------------------------------------- */
-    fp = VSIFOpenL( pszOutputFilename, "w" );
+    // Open the resolved GML file for writing.
+    VSILFILE *fp = VSIFOpenL(pszOutputFilename, "w");
     if( fp == NULL )
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "Failed to open %.500s to write.", pszOutputFilename );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_OpenFailed, "Failed to open %.500s to write.",
+                 pszOutputFilename);
+        return false;
     }
 
-    /* query cursor [Nodes] */
-    osCommand = "SELECT gml_id, x, y, z "
-                "FROM nodes";
-    rc = sqlite3_prepare( hDB, osCommand, -1, &hStmtNodes, NULL );
-    if( rc != SQLITE_OK )
+    sqlite3 *hDB = helper->hDB;
+
+    // Query cursor [Nodes].
+    const char *osCommand = "SELECT gml_id, x, y, z FROM nodes";
+    sqlite3_stmt *hStmtNodes = NULL;
+    const int rc1 = sqlite3_prepare_v2(hDB, osCommand, -1, &hStmtNodes, NULL);
+    if( rc1 != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to create QUERY stmt for NODES" );
-        VSIFCloseL( fp );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to create QUERY stmt for NODES");
+        VSIFCloseL(fp);
+        return false;
     }
 
-    VSIFPrintfL ( fp, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" ); 
-    VSIFPrintfL ( fp, "<ResolvedTopoFeatureCollection  "
-                      "xmlns:gml=\"http://www.opengis.net/gml\">\n" );		
-    VSIFPrintfL ( fp, "  <ResolvedTopoFeatureMembers>\n" );
-    /* exporting Nodes */
+    VSIFPrintfL(fp, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+    VSIFPrintfL(fp, "<ResolvedTopoFeatureCollection  "
+                    "xmlns:gml=\"http://www.opengis.net/gml\">\n");
+    VSIFPrintfL(fp, "  <ResolvedTopoFeatureMembers>\n");
+
+    int iOutCount = 0;
+
+    // Exporting Nodes.
     GFSTemplateList *pCC = new GFSTemplateList();
-    while ( TRUE )
+    while( true )
     {
-        rc = sqlite3_step( hStmtNodes );
+        const int rc = sqlite3_step(hStmtNodes);
         if( rc == SQLITE_DONE )
             break;
+
         if ( rc == SQLITE_ROW )
         {
-            const char *pszGmlId;
-            char* pszEscaped;
-            double x;
-            double y;
+            bool bHasZ = false;
+            const char *pszGmlId = reinterpret_cast<const char *>(
+                sqlite3_column_text(hStmtNodes, 0));
+            const double x = sqlite3_column_double(hStmtNodes, 1);
+            const double y = sqlite3_column_double(hStmtNodes, 2);
             double z = 0.0;
-            int bHasZ = FALSE;
-            pszGmlId = (const char *)sqlite3_column_text ( hStmtNodes, 0 );
-            x = sqlite3_column_double ( hStmtNodes, 1 );
-            y = sqlite3_column_double ( hStmtNodes, 2 );
-            if ( sqlite3_column_type( hStmtNodes, 3 ) == SQLITE_FLOAT )
+            if ( sqlite3_column_type(hStmtNodes, 3) == SQLITE_FLOAT )
             {
-                z = sqlite3_column_double ( hStmtNodes, 3 );
-                bHasZ = TRUE;
+                z = sqlite3_column_double(hStmtNodes, 3);
+                bHasZ = true;
             }
 
-            /* inserting a node into the resolved GML file */
-            pCC->Update( "ResolvedNodes", TRUE );
-            VSIFPrintfL ( fp, "    <ResolvedNodes>\n" );
-            pszEscaped = CPLEscapeString( pszGmlId, -1, CPLES_XML );
-            VSIFPrintfL ( fp, "      <NodeGmlId>%s</NodeGmlId>\n", pszEscaped );
+            // Inserting a node into the resolved GML file.
+            pCC->Update("ResolvedNodes", true);
+            VSIFPrintfL(fp, "    <ResolvedNodes>\n");
+            char *pszEscaped = CPLEscapeString(pszGmlId, -1, CPLES_XML);
+            VSIFPrintfL(fp, "      <NodeGmlId>%s</NodeGmlId>\n", pszEscaped);
             CPLFree(pszEscaped);
-            VSIFPrintfL ( fp, "      <ResolvedGeometry> \n" );
-            if ( helper->nodeSrs == NULL )
-                VSIFPrintfL ( fp, "        <gml:Point srsDimension=\"%d\">",
-                              ( bHasZ == TRUE ) ? 3 : 2 );
+            VSIFPrintfL(fp, "      <ResolvedGeometry> \n");
+            if( helper->nodeSrs == NULL )
+            {
+                VSIFPrintfL(fp, "        <gml:Point srsDimension=\"%d\">",
+                            bHasZ ? 3 : 2);
+            }
             else
             {
-                pszEscaped = CPLEscapeString( helper->nodeSrs->c_str(), -1, CPLES_XML );
-                VSIFPrintfL ( fp, "        <gml:Point srsDimension=\"%d\""
-                                  " srsName=\"%s\">",
-                                  ( bHasZ == TRUE ) ? 3 : 2,
-                              pszEscaped );
+                pszEscaped =
+                    CPLEscapeString(helper->nodeSrs->c_str(), -1, CPLES_XML);
+                VSIFPrintfL(fp, "        <gml:Point srsDimension=\"%d\""
+                                " srsName=\"%s\">",
+                            bHasZ ? 3 : 2, pszEscaped);
                 CPLFree(pszEscaped);
             }
-            if ( bHasZ == TRUE )
-                VSIFPrintfL ( fp, "<gml:pos>%1.8f %1.8f %1.8f</gml:pos>"
+            if ( bHasZ )
+                VSIFPrintfL(fp, "<gml:pos>%1.8f %1.8f %1.8f</gml:pos>"
                                   "</gml:Point>\n",
-                              x, y, z );
+                            x, y, z);
             else
-                VSIFPrintfL ( fp, "<gml:pos>%1.8f %1.8f</gml:pos>"
-                                  "</gml:Point>\n",
-                              x, y );
-            VSIFPrintfL ( fp, "      </ResolvedGeometry> \n" );
-            VSIFPrintfL ( fp, "    </ResolvedNodes>\n" );
+                VSIFPrintfL(fp, "<gml:pos>%1.8f %1.8f</gml:pos>"
+                                "</gml:Point>\n",
+                            x, y);
+            VSIFPrintfL(fp, "      </ResolvedGeometry> \n");
+            VSIFPrintfL(fp, "    </ResolvedNodes>\n");
             iOutCount++;
         }
         else
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "ResolvedNodes QUERY: sqlite3_step(%s)", 
-            sqlite3_errmsg(hDB) );
-            sqlite3_finalize ( hStmtNodes );
-            return FALSE;
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "ResolvedNodes QUERY: sqlite3_step(%s)",
+                     sqlite3_errmsg(hDB));
+            sqlite3_finalize(hStmtNodes);
+            delete pCC;
+            return false;
         }
     }
-    sqlite3_finalize ( hStmtNodes );
+    sqlite3_finalize(hStmtNodes);
 
-    /* processing GML features */
+    // Processing GML features.
+    GMLFeature *poFeature = NULL;
+    bool bError = false;
+
     while( (poFeature = pReader->NextFeature()) != NULL )
     {
         GMLFeatureClass *poClass = poFeature->GetClass();
-        const CPLXMLNode* const * papsGeomList = poFeature->GetGeometryList();
-        int iPropCount = poClass->GetPropertyCount();
-		
-        int b_has_geom = FALSE;
-        VSIFPrintfL ( fp, "    <%s>\n", poClass->GetElementName() ); 
+        const CPLXMLNode *const *papsGeomList = poFeature->GetGeometryList();
+        const int iPropCount = poClass->GetPropertyCount();
+
+        bool b_has_geom = false;
+        VSIFPrintfL(fp, "    <%s>\n", poClass->GetElementName());
 
         for( int iProp = 0; iProp < iPropCount; iProp++ )
         {
-            GMLPropertyDefn *poPropDefn = poClass->GetProperty( iProp );
+            GMLPropertyDefn *poPropDefn = poClass->GetProperty(iProp);
             const char *pszPropName = poPropDefn->GetName();
-            const GMLProperty *poProp = poFeature->GetProperty( iProp );
+            const GMLProperty *poProp = poFeature->GetProperty(iProp);
 
             if( poProp != NULL )
             {
                 for( int iSub = 0; iSub < poProp->nSubProperties; iSub++ )
                 {
-                    char *gmlText = CPLEscapeString( poProp->papszSubProperties[iSub],
-                                                    -1,
-                                                    CPLES_XML );
-                    VSIFPrintfL ( fp, "      <%s>%s</%s>\n", 
-                                  pszPropName, gmlText, pszPropName ); 
-                    CPLFree( gmlText );
+                    char *gmlText = CPLEscapeString(
+                        poProp->papszSubProperties[iSub], -1, CPLES_XML);
+                    VSIFPrintfL(fp, "      <%s>%s</%s>\n",
+                                pszPropName, gmlText, pszPropName);
+                    CPLFree(gmlText);
                 }
             }
         }
@@ -1739,274 +1823,266 @@ static int gmlHugeFileWriteResolved ( struct huge_helper *helper,
             while( psNode != NULL )
             {
                 char *pszResolved = NULL;
-                int bNotToBeResolved;
+                bool bNotToBeResolved = false;
                 if( psNode->eType != CXT_Element )
-                    bNotToBeResolved = TRUE;
+                {
+                    bNotToBeResolved = true;
+                }
                 else
                 {
-                    if( EQUAL(psNode->pszValue, "TopoCurve") == TRUE ||
-                        EQUAL(psNode->pszValue, "TopoSurface") == TRUE )
-                        bNotToBeResolved = FALSE;
-                    else
-                        bNotToBeResolved = TRUE;
+                    bNotToBeResolved =
+                        !(EQUAL(psNode->pszValue, "TopoCurve") ||
+                          EQUAL(psNode->pszValue, "TopoSurface"));
                 }
-                if( bNotToBeResolved == TRUE )
+                if( bNotToBeResolved )
                 {
-                    VSIFPrintfL ( fp, "      <ResolvedGeometry> \n" );
+                    VSIFPrintfL(fp, "      <ResolvedGeometry> \n");
                     pszResolved = CPLSerializeXMLTree((CPLXMLNode *)psNode);
-                    VSIFPrintfL ( fp, "        %s\n", pszResolved );
-                    CPLFree( pszResolved );
-                    VSIFPrintfL ( fp, "      </ResolvedGeometry>\n" );
-                    b_has_geom = TRUE;
+                    VSIFPrintfL(fp, "        %s\n", pszResolved);
+                    CPLFree(pszResolved);
+                    VSIFPrintfL(fp, "      </ResolvedGeometry>\n");
+                    b_has_geom = true;
                 }
                 else
                 {
-                    gmlHugeFileCheckPendingHrefs( helper, psNode, psNode );
+                    gmlHugeFileCheckPendingHrefs(helper, psNode, psNode);
                     if( helper->pFirstHref == NULL )
                     {
-                        VSIFPrintfL ( fp, "      <ResolvedGeometry> \n" );
-                        pszResolved = CPLSerializeXMLTree((CPLXMLNode *)psNode);
-                        VSIFPrintfL ( fp, "        %s\n", pszResolved );
-                        CPLFree( pszResolved );
-                        VSIFPrintfL ( fp, "      </ResolvedGeometry>\n" );
-                        b_has_geom = TRUE;
+                        VSIFPrintfL(fp, "      <ResolvedGeometry> \n");
+                        pszResolved = CPLSerializeXMLTree(psNode);
+                        VSIFPrintfL(fp, "        %s\n", pszResolved);
+                        CPLFree(pszResolved);
+                        VSIFPrintfL(fp, "      </ResolvedGeometry>\n");
+                        b_has_geom = true;
                     }
                     else
                     {
-                        if( gmlHugeResolveEdges( helper, (CPLXMLNode *)psNode,
-                                                         hDB ) == FALSE)
-                            bError = TRUE;
-                        if( gmlHugeFileHrefCheck( helper ) == FALSE )
-							bError = TRUE;
-                        VSIFPrintfL ( fp, "      <ResolvedGeometry> \n" );
-                        pszResolved = CPLSerializeXMLTree((CPLXMLNode *)psNode);
-                        VSIFPrintfL ( fp, "        %s\n", pszResolved );
-                        CPLFree( pszResolved );
-                        VSIFPrintfL ( fp, "      </ResolvedGeometry>\n" );
-                        b_has_geom = TRUE;
-                        gmlHugeFileHrefReset( helper );
+                        if( gmlHugeResolveEdges(
+                                helper,
+                                const_cast<CPLXMLNode *>(psNode),
+                                hDB) == false)
+                            bError = true;
+                        if( gmlHugeFileHrefCheck(helper) == false )
+                            bError = true;
+                        VSIFPrintfL(fp, "      <ResolvedGeometry> \n");
+                        pszResolved = CPLSerializeXMLTree(psNode);
+                        VSIFPrintfL(fp, "        %s\n", pszResolved);
+                        CPLFree(pszResolved);
+                        VSIFPrintfL(fp, "      </ResolvedGeometry>\n");
+                        b_has_geom = true;
+                        gmlHugeFileHrefReset(helper);
                     }
                 }
                 i++;
                 psNode = papsGeomList[i];
             }
         }
-        pCC->Update( poClass->GetElementName(), b_has_geom );
+        pCC->Update(poClass->GetElementName(), b_has_geom);
 
-        VSIFPrintfL ( fp, "    </%s>\n", poClass->GetElementName() ); 
+        VSIFPrintfL(fp, "    </%s>\n", poClass->GetElementName());
 
         delete poFeature;
         iOutCount++;
     }
 
-    VSIFPrintfL ( fp, "  </ResolvedTopoFeatureMembers>\n" ); 
-    VSIFPrintfL ( fp, "</ResolvedTopoFeatureCollection>\n" ); 
+    VSIFPrintfL(fp, "  </ResolvedTopoFeatureMembers>\n");
+    VSIFPrintfL(fp, "</ResolvedTopoFeatureCollection>\n");
 
-    VSIFCloseL( fp );
-		
-    gmlUpdateFeatureClasses( pCC, pReader, m_bSequentialLayers );
-    if ( *m_bSequentialLayers == TRUE )
-        pReader->ReArrangeTemplateClasses( pCC );
+    VSIFCloseL(fp);
+
+    gmlUpdateFeatureClasses(pCC, pReader, m_nHasSequentialLayers);
+    if ( *m_nHasSequentialLayers )
+        pReader->ReArrangeTemplateClasses(pCC);
     delete pCC;
-    if( bError == TRUE || iOutCount == 0 )
-        return FALSE;
-    return TRUE;
+
+    return !(bError || iOutCount == 0);
 }
 
 /**************************************************************/
 /*                                                            */
 /* private member(s):                                         */
-/* any other funtion is implemented as "internal" static,     */
+/* any other function is implemented as "internal" static,    */
 /* so to make all the SQLite own stuff nicely "invisible"     */
 /*                                                            */
 /**************************************************************/
 
-int GMLReader::ParseXMLHugeFile( const char *pszOutputFilename,
-                                 const int bSqliteIsTempFile,
-                                 const int iSqliteCacheMB )
+bool GMLReader::ParseXMLHugeFile( const char *pszOutputFilename,
+                                  const bool bSqliteIsTempFile,
+                                  const int iSqliteCacheMB )
 
 {
-    GMLFeature  *poFeature;
-    int iFeatureUID = 0;
-    int rc;
-    sqlite3 *hDB = NULL;
-    CPLString osSQLiteFilename;
-    const char *pszSQLiteFilename = NULL;
-    struct huge_helper helper;
-    char *pszErrMsg = NULL;
-
-    /* initializing the helper struct */
-    helper.hDB = NULL;
-    helper.hNodes = NULL;
-    helper.hEdges = NULL;
-    helper.nodeSrs = NULL;
-    helper.pFirst = NULL;
-    helper.pLast = NULL;
-    helper.pFirstHref = NULL;
-    helper.pLastHref = NULL;
-    helper.pFirstParent = NULL;
-    helper.pLastParent = NULL;
-	
 /* -------------------------------------------------------------------- */
 /*      Creating/Opening the SQLite DB file                             */
 /* -------------------------------------------------------------------- */
-    osSQLiteFilename = CPLResetExtension( m_pszFilename, "sqlite" );
-    pszSQLiteFilename = osSQLiteFilename.c_str();
+    const CPLString osSQLiteFilename =
+        CPLResetExtension(m_pszFilename, "sqlite");
+    const char *pszSQLiteFilename = osSQLiteFilename.c_str();
 
     VSIStatBufL statBufL;
-    if ( VSIStatExL ( pszSQLiteFilename, &statBufL, VSI_STAT_EXISTS_FLAG) == 0)
+    if ( VSIStatExL(pszSQLiteFilename, &statBufL, VSI_STAT_EXISTS_FLAG) == 0)
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "sqlite3_open(%s) failed:\n\tDB-file already exists", 
-                  pszSQLiteFilename );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_OpenFailed,
+                 "sqlite3_open(%s) failed: DB-file already exists",
+                 pszSQLiteFilename);
+        return false;
     }
 
-    rc = sqlite3_open( pszSQLiteFilename, &hDB );
-    if( rc != SQLITE_OK )
+    sqlite3 *hDB = NULL;
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "sqlite3_open(%s) failed: %s", 
-                  pszSQLiteFilename, sqlite3_errmsg( hDB ) );
-        return FALSE;
-    }
-    helper.hDB = hDB;
-	
-/* 
-* setting SQLite for max speed; this is intrinsically unsafe,
-* and the DB file could be potentially damaged (power failure ...]
-*
-* but after all this one simply is a TEMPORARY FILE !!
-* so there is no real risk condition
-*/
-    rc = sqlite3_exec( hDB, "PRAGMA synchronous = OFF", NULL, NULL,
-                       &pszErrMsg );
-    if( rc != SQLITE_OK )
-    {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Unable to set PRAGMA synchronous = OFF: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-    }
-    rc = sqlite3_exec( hDB, "PRAGMA journal_mode = OFF", NULL, NULL,
-                       &pszErrMsg );
-    if( rc != SQLITE_OK )
-    {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Unable to set PRAGMA journal_mode = OFF: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-    }
-    rc = sqlite3_exec( hDB, "PRAGMA locking_mode = EXCLUSIVE", NULL, NULL,
-                       &pszErrMsg );
-    if( rc != SQLITE_OK )
-    {
-        CPLError( CE_Failure, CPLE_AppDefined,
-                  "Unable to set PRAGMA locking_mode = EXCLUSIVE: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-    }
-    
-    /* setting the SQLite cache */
-    if( iSqliteCacheMB > 0 )
-    {
-        int cache_size = iSqliteCacheMB * 1024;
-
-        /* refusing to allocate more than 1GB */
-        if( cache_size > 1024 * 1024 )
-            cache_size = 1024 * 1024;
-        char sqlPragma[1024];
-        sprintf( sqlPragma, "PRAGMA cache_size = %d", cache_size );
-        rc = sqlite3_exec( hDB, sqlPragma, NULL, NULL, &pszErrMsg );
+        const int rc = sqlite3_open(pszSQLiteFilename, &hDB);
         if( rc != SQLITE_OK )
         {
-            CPLError( CE_Failure, CPLE_AppDefined,
-                      "Unable to set %s: %s", sqlPragma, pszErrMsg );
-            sqlite3_free( pszErrMsg );
+            CPLError(CE_Failure, CPLE_OpenFailed,
+                     "sqlite3_open(%s) failed: %s",
+                     pszSQLiteFilename, sqlite3_errmsg(hDB));
+            return false;
         }
     }
-	
+
+    huge_helper helper;
+    helper.hDB = hDB;
+
+    char *pszErrMsg = NULL;
+
+    // Setting SQLite for max speed; this is intrinsically unsafe.
+    // The DB file could be potentially damaged.
+    // But, this is a temporary file, so there is no real risk.
+    {
+        const int rc =
+            sqlite3_exec(hDB, "PRAGMA synchronous = OFF", NULL, NULL,
+                         &pszErrMsg);
+        if( rc != SQLITE_OK )
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Unable to set PRAGMA synchronous = OFF: %s",
+                     pszErrMsg);
+            sqlite3_free(pszErrMsg);
+        }
+    }
+    {
+        const int rc =
+            sqlite3_exec(hDB, "PRAGMA journal_mode = OFF", NULL, NULL,
+                         &pszErrMsg);
+        if( rc != SQLITE_OK )
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Unable to set PRAGMA journal_mode = OFF: %s",
+                     pszErrMsg);
+            sqlite3_free(pszErrMsg);
+        }
+    }
+    {
+        const int rc =
+            sqlite3_exec(hDB, "PRAGMA locking_mode = EXCLUSIVE", NULL, NULL,
+                         &pszErrMsg);
+        if( rc != SQLITE_OK )
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Unable to set PRAGMA locking_mode = EXCLUSIVE: %s",
+                     pszErrMsg);
+            sqlite3_free(pszErrMsg);
+        }
+    }
+
+    // Setting the SQLite cache.
+    if( iSqliteCacheMB > 0 )
+    {
+        // Refuse to allocate more than 1GB.
+        const int cache_size = std::min(iSqliteCacheMB * 1024, 1024 * 1024);
+
+        char sqlPragma[64] = {};
+        snprintf(sqlPragma, sizeof(sqlPragma), "PRAGMA cache_size = %d",
+                 cache_size);
+        const int rc = sqlite3_exec(hDB, sqlPragma, NULL, NULL, &pszErrMsg);
+        if( rc != SQLITE_OK )
+        {
+            CPLError(CE_Failure, CPLE_AppDefined,
+                     "Unable to set %s: %s", sqlPragma, pszErrMsg);
+            sqlite3_free(pszErrMsg);
+        }
+    }
+
     if( !SetupParser() )
     {
-        gmlHugeFileCleanUp ( &helper );
-        return FALSE;
+        gmlHugeFileCleanUp(&helper);
+        return false;
     }
 
-    /* creating SQLite tables and Insert cursors */
-    if( gmlHugeFileSQLiteInit( &helper ) == FALSE )
+    // Creating SQLite tables and Insert cursors.
+    if( gmlHugeFileSQLiteInit( &helper ) == false )
     {
         gmlHugeFileCleanUp ( &helper );
-        return FALSE;
+        return false;
     }
 
-    /* processing GML features */
+    // Processing GML features.
+    GMLFeature *poFeature = NULL;
     while( (poFeature = NextFeature()) != NULL )
     {
-        const CPLXMLNode* const * papsGeomList = poFeature->GetGeometryList();
+        const CPLXMLNode *const *papsGeomList = poFeature->GetGeometryList();
         if (papsGeomList != NULL)
         {
             int i = 0;
             const CPLXMLNode *psNode = papsGeomList[i];
-            while(psNode)
+            while( psNode )
             {
-                gmlHugeFileCheckXrefs( &helper, psNode );
-                /* inserting into the SQLite DB any appropriate row */
-                gmlHugeFileSQLiteInsert ( &helper );
-                /* resetting an empty helper struct */
-                gmlHugeFileReset ( &helper );
-                i ++;
+                gmlHugeFileCheckXrefs(&helper, psNode);
+                // Inserting into the SQLite DB any appropriate row.
+                gmlHugeFileSQLiteInsert(&helper);
+                // Resetting an empty helper struct.
+                gmlHugeFileReset (&helper);
+                i++;
                 psNode = papsGeomList[i];
             }
         }
-        iFeatureUID++;
         delete poFeature;
     }
 
-    /* finalizing any SQLite Insert cursor */
+    // Finalizing any SQLite Insert cursor.
     if( helper.hNodes != NULL )
-        sqlite3_finalize ( helper.hNodes );
+        sqlite3_finalize(helper.hNodes);
     helper.hNodes = NULL;
     if( helper.hEdges != NULL )
-        sqlite3_finalize ( helper.hEdges );
+        sqlite3_finalize(helper.hEdges);
     helper.hEdges = NULL;
 
-    /* confirming the still pending TRANSACTION */
-    rc = sqlite3_exec( hDB, "COMMIT", NULL, NULL, &pszErrMsg );
+    // Confirming the still pending TRANSACTION.
+    const int rc = sqlite3_exec(hDB, "COMMIT", NULL, NULL, &pszErrMsg);
     if( rc != SQLITE_OK )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "Unable to perform COMMIT TRANSACTION: %s",
-                  pszErrMsg );
-        sqlite3_free( pszErrMsg );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_AppDefined,
+                 "Unable to perform COMMIT TRANSACTION: %s",
+                 pszErrMsg);
+        sqlite3_free(pszErrMsg);
+        return false;
     }
 
-/* attempting to resolve GML strings */
-    if( gmlHugeFileResolveEdges( &helper ) == FALSE )
+    // Attempting to resolve GML strings.
+    if( gmlHugeFileResolveEdges( &helper ) == false )
     {
-        gmlHugeFileCleanUp ( &helper );
-        return FALSE;
+        gmlHugeFileCleanUp(&helper);
+        return false;
     }
-	
-    /* restarting the GML parser */
+
+    // Restarting the GML parser.
     if( !SetupParser() )
     {
-        gmlHugeFileCleanUp ( &helper );
-        return FALSE;
+        gmlHugeFileCleanUp(&helper);
+        return false;
     }
 
-    /* output: writing the revolved GML file */
-    if ( gmlHugeFileWriteResolved( &helper, pszOutputFilename, this, 
-                                   &m_bSequentialLayers ) == FALSE)
+    // Output: writing the revolved GML file.
+    if ( gmlHugeFileWriteResolved(&helper, pszOutputFilename, this,
+                                  &m_nHasSequentialLayers) == false)
     {
-        gmlHugeFileCleanUp ( &helper );
-        return FALSE;
+        gmlHugeFileCleanUp(&helper);
+        return false;
     }
 
-    gmlHugeFileCleanUp ( &helper );
-    if ( bSqliteIsTempFile == TRUE )
-        VSIUnlink( pszSQLiteFilename );
-    return TRUE;
+    gmlHugeFileCleanUp(&helper);
+    if ( bSqliteIsTempFile )
+        VSIUnlink(pszSQLiteFilename);
+    return true;
 }
 
 /**************************************************************/
@@ -2014,30 +2090,30 @@ int GMLReader::ParseXMLHugeFile( const char *pszOutputFilename,
 /* an alternative <xlink:href> resolver based on SQLite       */
 /*                                                            */
 /**************************************************************/
-int GMLReader::HugeFileResolver( const char *pszFile,
-                                 int bSqliteIsTempFile,
-                                 int iSqliteCacheMB )
+bool GMLReader::HugeFileResolver( const char *pszFile,
+                                  bool bSqliteIsTempFile,
+                                  int iSqliteCacheMB )
 
 {
     // Check if the original source file is set.
     if( m_pszFilename == NULL )
     {
-        CPLError( CE_Failure, CPLE_NotSupported,
-        "GML source file needs to be set first with "
-        "GMLReader::SetSourceFile()." );
-        return FALSE;
+        CPLError(CE_Failure, CPLE_NotSupported,
+                 "GML source file needs to be set first with "
+                 "GMLReader::SetSourceFile().");
+        return false;
     }
-    if ( ParseXMLHugeFile( pszFile, bSqliteIsTempFile, iSqliteCacheMB ) == FALSE )
-        return FALSE;
+    if ( ParseXMLHugeFile(pszFile, bSqliteIsTempFile, iSqliteCacheMB) == false )
+        return false;
 
-    //set the source file to the resolved file
+    // Set the source file to the resolved file.
     CleanupParser();
     if (fpGML)
         VSIFCloseL(fpGML);
     fpGML = NULL;
-    CPLFree( m_pszFilename );
-    m_pszFilename = CPLStrdup( pszFile );
-    return TRUE;
+    CPLFree(m_pszFilename);
+    m_pszFilename = CPLStrdup(pszFile);
+    return true;
 }
 
 #else  // HAVE_SQLITE
@@ -2047,25 +2123,25 @@ int GMLReader::HugeFileResolver( const char *pszFile,
 /*    simply output an error message              */
 /**************************************************/
 
-int GMLReader::HugeFileResolver( const char *pszFile,
-                                 int bSqliteIsTempFile,
-                                 int iSqliteCacheMB )
+bool GMLReader::HugeFileResolver( CPL_UNUSED const char *pszFile,
+                                 CPL_UNUSED bool bSqliteIsTempFile,
+                                 CPL_UNUSED int iSqliteCacheMB )
 
 {
-    CPLError( CE_Failure, CPLE_NotSupported,
-              "OGR was built without SQLite3 support\n"
-              "... sorry, the HUGE GML resolver is unsupported\n" );
-    return FALSE;
+    CPLError(CE_Failure, CPLE_NotSupported,
+             "OGR was built without SQLite3 support. "
+             "Sorry, the HUGE GML resolver is unsupported.");
+    return false;
 }
 
-int GMLReader::ParseXMLHugeFile( const char *pszOutputFilename,
-                                 const int bSqliteIsTempFile,
-                                 const int iSqliteCacheMB )
+bool GMLReader::ParseXMLHugeFile( CPL_UNUSED const char *pszOutputFilename,
+                                 CPL_UNUSED const bool bSqliteIsTempFile,
+                                 CPL_UNUSED const int iSqliteCacheMB )
 {
-    CPLError( CE_Failure, CPLE_NotSupported,
-              "OGR was built without SQLite3 support\n"
-              "... sorry, the HUGE GML resolver is unsupported\n" );
-    return FALSE;
+    CPLError(CE_Failure, CPLE_NotSupported,
+             "OGR was built without SQLite3 support. "
+             "Sorry, the HUGE GML resolver is unsupported.");
+    return false;
 }
 
-#endif // HAVE_SQLITE
+#endif  // HAVE_SQLITE

@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: cpl_vsil_subfile.cpp 21533 2011-01-19 18:13:08Z warmerdam $
  *
  * Project:  VSI Virtual File System
  * Purpose:  Implementation of subfile virtual IO functions.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2009-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,16 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "cpl_vsi_virtual.h"
-#include "cpl_string.h"
-#include "cpl_multiproc.h"
-#include <map>
+#include "cpl_port.h"
+#include "cpl_vsi.h"
 
-#if defined(WIN32CE)
-#  include <wce_errno.h>
+#include <cerrno>
+#include <cstddef>
+#include <cstring>
+#if HAVE_FCNTL_H
+#  include <fcntl.h>
 #endif
 
-CPL_CVSID("$Id: cpl_vsil_subfile.cpp 21533 2011-01-19 18:13:08Z warmerdam $");
+#include "cpl_conv.h"
+#include "cpl_multiproc.h"
+#include "cpl_string.h"
+#include "cpl_vsi_virtual.h"
+
+CPL_CVSID("$Id: cpl_vsil_subfile.cpp 38421 2017-05-16 17:09:42Z rouault $");
 
 /************************************************************************/
 /* ==================================================================== */
@@ -45,18 +51,24 @@ CPL_CVSID("$Id: cpl_vsil_subfile.cpp 21533 2011-01-19 18:13:08Z warmerdam $");
 /************************************************************************/
 
 class VSISubFileHandle : public VSIVirtualHandle
-{ 
+{
   public:
     VSILFILE     *fp;
     vsi_l_offset  nSubregionOffset;
     vsi_l_offset  nSubregionSize;
+    bool          bAtEOF;
 
-    virtual int       Seek( vsi_l_offset nOffset, int nWhence );
-    virtual vsi_l_offset Tell();
-    virtual size_t    Read( void *pBuffer, size_t nSize, size_t nMemb );
-    virtual size_t    Write( const void *pBuffer, size_t nSize, size_t nMemb );
-    virtual int       Eof();
-    virtual int       Close();
+                      VSISubFileHandle() : fp(NULL), nSubregionOffset(0),
+                                           nSubregionSize(0), bAtEOF(false) {}
+
+    virtual int       Seek( vsi_l_offset nOffset, int nWhence ) override;
+    virtual vsi_l_offset Tell() override;
+    virtual size_t    Read( void *pBuffer, size_t nSize,
+                            size_t nMemb ) override;
+    virtual size_t    Write( const void *pBuffer, size_t nSize,
+                             size_t nMemb ) override;
+    virtual int       Eof() override;
+    virtual int       Close() override;
 };
 
 /************************************************************************/
@@ -65,24 +77,26 @@ class VSISubFileHandle : public VSIVirtualHandle
 /* ==================================================================== */
 /************************************************************************/
 
-class VSISubFileFilesystemHandler : public VSIFilesystemHandler 
+class VSISubFileFilesystemHandler : public VSIFilesystemHandler
 {
 public:
                      VSISubFileFilesystemHandler();
     virtual          ~VSISubFileFilesystemHandler();
 
-    int              DecomposePath( const char *pszPath, 
-                                    CPLString &osFilename, 
+    static int              DecomposePath( const char *pszPath,
+                                    CPLString &osFilename,
                                     vsi_l_offset &nSubFileOffset,
                                     vsi_l_offset &nSubFileSize );
 
-    virtual VSIVirtualHandle *Open( const char *pszFilename, 
-                                    const char *pszAccess);
-    virtual int      Stat( const char *pszFilename, VSIStatBufL *pStatBuf, int nFlags );
-    virtual int      Unlink( const char *pszFilename );
-    virtual int      Mkdir( const char *pszDirname, long nMode );
-    virtual int      Rmdir( const char *pszDirname );
-    virtual char   **ReadDir( const char *pszDirname );
+    virtual VSIVirtualHandle *Open( const char *pszFilename,
+                                    const char *pszAccess,
+                                    bool bSetError ) override;
+    virtual int      Stat( const char *pszFilename, VSIStatBufL *pStatBuf,
+                           int nFlags ) override;
+    virtual int      Unlink( const char *pszFilename ) override;
+    virtual int      Mkdir( const char *pszDirname, long nMode ) override;
+    virtual int      Rmdir( const char *pszDirname ) override;
+    virtual char   **ReadDir( const char *pszDirname ) override;
 };
 
 /************************************************************************/
@@ -98,10 +112,10 @@ public:
 int VSISubFileHandle::Close()
 
 {
-    VSIFCloseL( fp );
+    int nRet = VSIFCloseL( fp );
     fp = NULL;
 
-    return 0;
+    return nRet;
 }
 
 /************************************************************************/
@@ -111,6 +125,8 @@ int VSISubFileHandle::Close()
 int VSISubFileHandle::Seek( vsi_l_offset nOffset, int nWhence )
 
 {
+    bAtEOF = false;
+
     if( nWhence == SEEK_SET )
         nOffset += nSubregionOffset;
     else if( nWhence == SEEK_CUR )
@@ -141,7 +157,10 @@ int VSISubFileHandle::Seek( vsi_l_offset nOffset, int nWhence )
 vsi_l_offset VSISubFileHandle::Tell()
 
 {
-    return VSIFTellL( fp ) - nSubregionOffset;
+    vsi_l_offset nBasePos = VSIFTellL( fp );
+    if( nBasePos >= nSubregionOffset )
+        return nBasePos - nSubregionOffset;
+    return 0;
 }
 
 /************************************************************************/
@@ -151,51 +170,78 @@ vsi_l_offset VSISubFileHandle::Tell()
 size_t VSISubFileHandle::Read( void * pBuffer, size_t nSize, size_t nCount )
 
 {
-    if (nSubregionSize == 0)
-        return VSIFReadL( pBuffer, nSize, nCount, fp );
-
-    if (nSize == 0)
-        return 0;
-
-    vsi_l_offset nCurOffset = VSIFTellL(fp);
-    if (nCurOffset >= nSubregionOffset + nSubregionSize)
-        return 0;
-
-    size_t nByteToRead = nSize * nCount;
-    if (nCurOffset + nByteToRead > nSubregionOffset + nSubregionSize)
+    size_t nRet = 0;
+    if( nSubregionSize == 0 )
     {
-        int nRead = (int)VSIFReadL( pBuffer, 1, (size_t)(nSubregionOffset + nSubregionSize - nCurOffset), fp);
-        return nRead / nSize;
+        nRet = VSIFReadL( pBuffer, nSize, nCount, fp );
     }
     else
-        return VSIFReadL( pBuffer, nSize, nCount, fp );
+    {
+        if( nSize == 0 )
+            return 0;
+
+        const vsi_l_offset nCurOffset = VSIFTellL(fp);
+        if( nCurOffset >= nSubregionOffset + nSubregionSize )
+        {
+            bAtEOF = true;
+            return 0;
+        }
+
+        const size_t nByteToRead = nSize * nCount;
+        if( nCurOffset + nByteToRead > nSubregionOffset + nSubregionSize )
+        {
+            const int nRead = static_cast<int>(
+                VSIFReadL(
+                    pBuffer, 1,
+                    static_cast<size_t>(nSubregionOffset + nSubregionSize -
+                                        nCurOffset), fp));
+            nRet = nRead / nSize;
+        }
+        else
+        {
+            nRet = VSIFReadL( pBuffer, nSize, nCount, fp );
+        }
+    }
+
+    if( nRet < nCount )
+        bAtEOF = true;
+
+    return nRet;
 }
 
 /************************************************************************/
 /*                               Write()                                */
 /************************************************************************/
 
-size_t VSISubFileHandle::Write( const void * pBuffer, size_t nSize, size_t nCount )
+size_t VSISubFileHandle::Write( const void * pBuffer, size_t nSize,
+                                size_t nCount )
 
 {
-    if (nSubregionSize == 0)
+    bAtEOF = false;
+
+    if( nSubregionSize == 0 )
         return VSIFWriteL( pBuffer, nSize, nCount, fp );
 
-    if (nSize == 0)
+    if( nSize == 0 )
         return 0;
 
-    vsi_l_offset nCurOffset = VSIFTellL(fp);
-    if (nCurOffset >= nSubregionOffset + nSubregionSize)
+    const vsi_l_offset nCurOffset = VSIFTellL(fp);
+    if( nCurOffset >= nSubregionOffset + nSubregionSize )
         return 0;
 
-    size_t nByteToWrite = nSize * nCount;
-    if (nCurOffset + nByteToWrite > nSubregionOffset + nSubregionSize)
+    const size_t nByteToWrite = nSize * nCount;
+    if( nCurOffset + nByteToWrite > nSubregionOffset + nSubregionSize )
     {
-        int nWritten = (int)VSIFWriteL( pBuffer, 1, (size_t)(nSubregionOffset + nSubregionSize - nCurOffset), fp);
+        const int nWritten = static_cast<int>(
+            VSIFWriteL(
+                pBuffer, 1,
+                static_cast<size_t>(nSubregionOffset + nSubregionSize -
+                                     nCurOffset),
+                fp));
         return nWritten / nSize;
     }
-    else
-        return VSIFWriteL( pBuffer, nSize, nCount, fp );
+
+    return VSIFWriteL( pBuffer, nSize, nCount, fp );
 }
 
 /************************************************************************/
@@ -205,10 +251,7 @@ size_t VSISubFileHandle::Write( const void * pBuffer, size_t nSize, size_t nCoun
 int VSISubFileHandle::Eof()
 
 {
-    if (nSubregionSize != 0)
-        return VSIFTellL( fp ) >= nSubregionOffset + nSubregionSize;
-    else
-        return VSIFEofL( fp );
+    return bAtEOF;
 }
 
 /************************************************************************/
@@ -221,19 +264,13 @@ int VSISubFileHandle::Eof()
 /*                      VSISubFileFilesystemHandler()                   */
 /************************************************************************/
 
-VSISubFileFilesystemHandler::VSISubFileFilesystemHandler()
-
-{
-}
+VSISubFileFilesystemHandler::VSISubFileFilesystemHandler() {}
 
 /************************************************************************/
 /*                      ~VSISubFileFilesystemHandler()                  */
 /************************************************************************/
 
-VSISubFileFilesystemHandler::~VSISubFileFilesystemHandler()
-
-{
-}
+VSISubFileFilesystemHandler::~VSISubFileFilesystemHandler() {}
 
 /************************************************************************/
 /*                           DecomposePath()                            */
@@ -242,34 +279,36 @@ VSISubFileFilesystemHandler::~VSISubFileFilesystemHandler()
 /*      offset (1000), a size (2000) and a path (data/abc.tif).         */
 /************************************************************************/
 
-int 
-VSISubFileFilesystemHandler::DecomposePath( const char *pszPath, 
-                                            CPLString &osFilename, 
+int
+VSISubFileFilesystemHandler::DecomposePath( const char *pszPath,
+                                            CPLString &osFilename,
                                             vsi_l_offset &nSubFileOffset,
                                             vsi_l_offset &nSubFileSize )
 
 {
-    int i;
+    if( !STARTS_WITH(pszPath, "/vsisubfile/") )
+        return FALSE;
 
     osFilename = "";
     nSubFileOffset = 0;
     nSubFileSize = 0;
 
-    if( strncmp(pszPath,"/vsisubfile/",12) != 0 )
-        return FALSE;
-
-    nSubFileOffset = CPLScanUIntBig(pszPath+12, strlen(pszPath + 12));
-    for( i = 12; pszPath[i] != '\0'; i++ )
+    nSubFileOffset =
+        CPLScanUIntBig(pszPath+12, static_cast<int>(strlen(pszPath + 12)));
+    for( int i = 12; pszPath[i] != '\0'; i++ )
     {
         if( pszPath[i] == '_' && nSubFileSize == 0 )
         {
-            /* -1 is sometimes passed to mean that we don't know the file size */
-            /* for example when creating a JPEG2000 datastream in a NITF file */
-            /* Transform it into 0  for correct behaviour of Read(), Write() and Eof() */
-            if (pszPath[i + 1] == '-')
+            // -1 is sometimes passed to mean that we don't know the file size
+            // for example when creating a JPEG2000 datastream in a NITF file
+            // Transform it into 0 for correct behaviour of Read(), Write() and
+            // Eof().
+            if( pszPath[i + 1] == '-' )
                 nSubFileSize = 0;
             else
-                nSubFileSize = CPLScanUIntBig(pszPath + i + 1, strlen(pszPath + i + 1));
+                nSubFileSize =
+                    CPLScanUIntBig(pszPath + i + 1,
+                                   static_cast<int>(strlen(pszPath + i + 1)));
         }
         else if( pszPath[i] == ',' )
         {
@@ -278,7 +317,7 @@ VSISubFileFilesystemHandler::DecomposePath( const char *pszPath,
         }
         else if( pszPath[i] == '/' )
         {
-            // missing comma!
+            // Missing comma!
             return FALSE;
         }
     }
@@ -286,18 +325,22 @@ VSISubFileFilesystemHandler::DecomposePath( const char *pszPath,
     return FALSE;
 }
 
-
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
 VSIVirtualHandle *
-VSISubFileFilesystemHandler::Open( const char *pszFilename, 
-                                   const char *pszAccess )
+VSISubFileFilesystemHandler::Open( const char *pszFilename,
+                                   const char *pszAccess,
+                                   bool /* bSetError */ )
 
 {
+    if( !STARTS_WITH_CI(pszFilename, "/vsisubfile/") )
+        return NULL;
+
     CPLString osSubFilePath;
-    vsi_l_offset nOff, nSize;
+    vsi_l_offset nOff = 0;
+    vsi_l_offset nSize = 0;
 
     if( !DecomposePath( pszFilename, osSubFilePath, nOff, nSize ) )
     {
@@ -316,7 +359,7 @@ VSISubFileFilesystemHandler::Open( const char *pszFilename,
 /*      Open the underlying file.                                       */
 /* -------------------------------------------------------------------- */
     VSILFILE *fp = VSIFOpenL( osSubFilePath, pszAccess );
-    
+
     if( fp == NULL )
         return NULL;
 
@@ -329,7 +372,11 @@ VSISubFileFilesystemHandler::Open( const char *pszFilename,
     poHandle->nSubregionOffset = nOff;
     poHandle->nSubregionSize = nSize;
 
-    VSIFSeekL( fp, nOff, SEEK_SET );
+    if( VSIFSeekL( fp, nOff, SEEK_SET ) != 0 )
+    {
+        delete poHandle;
+        poHandle = NULL;
+    }
 
     return poHandle;
 }
@@ -338,13 +385,17 @@ VSISubFileFilesystemHandler::Open( const char *pszFilename,
 /*                                Stat()                                */
 /************************************************************************/
 
-int VSISubFileFilesystemHandler::Stat( const char * pszFilename, 
+int VSISubFileFilesystemHandler::Stat( const char * pszFilename,
                                        VSIStatBufL * psStatBuf,
                                        int nFlags )
-    
+
 {
+    if( !STARTS_WITH_CI(pszFilename, "/vsisubfile/") )
+        return -1;
+
     CPLString osSubFilePath;
-    vsi_l_offset nOff, nSize;
+    vsi_l_offset nOff = 0;
+    vsi_l_offset nSize = 0;
 
     memset( psStatBuf, 0, sizeof(VSIStatBufL) );
 
@@ -354,14 +405,14 @@ int VSISubFileFilesystemHandler::Stat( const char * pszFilename,
         return -1;
     }
 
-    int nResult = VSIStatExL( osSubFilePath, psStatBuf, nFlags );
-    
+    const int nResult = VSIStatExL( osSubFilePath, psStatBuf, nFlags );
+
     if( nResult == 0 )
     {
         if( nSize != 0 )
-            psStatBuf->st_size = (long)nSize;
+            psStatBuf->st_size = nSize;
         else
-            psStatBuf->st_size -= (long)nOff;
+            psStatBuf->st_size -= nOff;
     }
 
     return nResult;
@@ -371,8 +422,7 @@ int VSISubFileFilesystemHandler::Stat( const char * pszFilename,
 /*                               Unlink()                               */
 /************************************************************************/
 
-int VSISubFileFilesystemHandler::Unlink( const char * pszFilename )
-
+int VSISubFileFilesystemHandler::Unlink( const char * /* pszFilename */ )
 {
     errno = EACCES;
     return -1;
@@ -382,9 +432,8 @@ int VSISubFileFilesystemHandler::Unlink( const char * pszFilename )
 /*                               Mkdir()                                */
 /************************************************************************/
 
-int VSISubFileFilesystemHandler::Mkdir( const char * pszPathname,
-                                    long nMode )
-
+int VSISubFileFilesystemHandler::Mkdir( const char * /* pszPathname */,
+                                        long /* nMode */ )
 {
     errno = EACCES;
     return -1;
@@ -394,7 +443,7 @@ int VSISubFileFilesystemHandler::Mkdir( const char * pszPathname,
 /*                               Rmdir()                                */
 /************************************************************************/
 
-int VSISubFileFilesystemHandler::Rmdir( const char * pszPathname )
+int VSISubFileFilesystemHandler::Rmdir( const char * /* pszPathname */ )
 
 {
     errno = EACCES;
@@ -405,8 +454,7 @@ int VSISubFileFilesystemHandler::Rmdir( const char * pszPathname )
 /*                              ReadDir()                               */
 /************************************************************************/
 
-char **VSISubFileFilesystemHandler::ReadDir( const char *pszPath )
-
+char **VSISubFileFilesystemHandler::ReadDir( const char * /* pszPath */ )
 {
     errno = EACCES;
     return NULL;
@@ -417,24 +465,24 @@ char **VSISubFileFilesystemHandler::ReadDir( const char *pszPath )
 /************************************************************************/
 
 /**
- * Install /vsisubfile/ virtual file handler. 
+ * Install /vsisubfile/ virtual file handler.
  *
- * This virtual file system handler allows access to subregions of 
- * files, treating them as a file on their own to the virtual file 
- * system functions (VSIFOpenL(), etc). 
+ * This virtual file system handler allows access to subregions of
+ * files, treating them as a file on their own to the virtual file
+ * system functions (VSIFOpenL(), etc).
  *
  * A special form of the filename is used to indicate a subportion
  * of another file:
  *
- *   /vsisubfile/<offset>[_<size>],<filename>
+ *   /vsisubfile/&lt;offset&gt;[_&lt;size&gt;],&lt;filename&gt;
  *
- * The size parameter is optional.  Without it the remainder of the
- * file from the start offset as treated as part of the subfile.  Otherwise
- * only <size> bytes from <offset> are treated as part of the subfile. 
- * The <filename> portion may be a relative or absolute path using normal 
- * rules.   The <offset> and <size> values are in bytes. 
+ * The size parameter is optional.  Without it the remainder of the file from
+ * the start offset as treated as part of the subfile.  Otherwise only
+ * &lt;size&gt; bytes from &lt;offset&gt; are treated as part of the subfile.
+ * The &lt;filename&gt; portion may be a relative or absolute path using normal
+ * rules.  The &lt;offset&gt; and &lt;size&gt; values are in bytes.
  *
- * eg. 
+ * eg.
  *   /vsisubfile/1000_3000,/data/abc.ntf
  *   /vsisubfile/5000,../xyz/raw.dat
  *
@@ -442,12 +490,11 @@ char **VSISubFileFilesystemHandler::ReadDir( const char *pszPath )
  * is no meaningful support for filesystem operations for creating new
  * files, traversing directories, and deleting files within the /vsisubfile/
  * area.  Only the VSIStatL(), VSIFOpenL() and operations based on the file
- * handle returned by VSIFOpenL() operate properly. 
+ * handle returned by VSIFOpenL() operate properly.
  */
 
 void VSIInstallSubFileHandler()
 {
-    VSIFileManager::InstallHandler( "/vsisubfile/", 
+    VSIFileManager::InstallHandler( "/vsisubfile/",
                                     new VSISubFileFilesystemHandler );
 }
-                            

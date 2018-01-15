@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogrbnaparser.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: ogrbnaparser.h 35903 2016-10-24 12:09:43Z goatbar $
  *
  * Project:  BNA Parser header
  * Purpose:  Definition of structures, enums and functions of BNA parser
@@ -27,9 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-
-#ifndef _OGR_BNA_PARSER_INCLUDED
-#define _OGR_BNA_PARSER_INCLUDED
+#ifndef OGR_BNA_PARSER_INCLUDED
+#define OGR_BNA_PARSER_INCLUDED
 
 #include "cpl_vsi.h"
 
@@ -40,6 +39,7 @@ extern "C"
 
 typedef enum
 {
+  BNA_UNKNOWN = -1,
   BNA_POINT,
   BNA_POLYGON,
   BNA_POLYLINE,
@@ -67,7 +67,7 @@ typedef struct
 /** Get the next BNA record in the file
    @param f open BNA files (VSI Large API handle)
    @param ok (out) set to TRUE if reading was OK (or EOF detected)
-   @param curLine (in/out) incremenet number line
+   @param curLine (in/out) increment number line
    @param verbose if TRUE, errors will be reported
    @param interestFeatureType if BNA_READ_ALL, any BNA feature will be parsed and read in details.
                               if BNA_READ_NONE, no BNA feature will be parsed and read in details.

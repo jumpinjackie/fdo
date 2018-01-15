@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: subfile_source.h 10645 2007-01-18 02:22:39Z warmerdam $
+ * $Id: vsil_target.h 37393 2017-02-16 21:07:25Z rouault $
  *
  * Project:  JPEG-2000
  * Purpose:  Implements VSI*L based writer.
@@ -27,6 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#ifndef VSIL_TARGET_H
+#define VSIL_TARGET_H
+
 #include "kdu_file_io.h"
 #include "cpl_error.h"
 #include "cpl_vsi.h"
@@ -37,7 +40,7 @@
 
 class vsil_target : public kdu_compressed_target {
 
-public: 
+public:
     vsil_target() { file = NULL; }
     ~vsil_target() { close(); }
 
@@ -48,24 +51,24 @@ public:
             if( file == NULL )
             {
                 kdu_error e;
-                e << "Unable to open compressed data file, \"" << 
+                e << "Unable to open compressed data file, \"" <<
                     fname << "\"!";
                 return;
             }
         }
 
-    bool write(const kdu_byte *buf, int num_bytes)
+    bool write(const kdu_byte *buf, int num_bytes) override
         {
             if( file == NULL )
                 return false;
-            
+
             if( (int) VSIFWriteL( buf, 1, num_bytes, file ) != num_bytes )
                 return false;
             else
                 return true;
         }
 
-    bool start_rewrite(kdu_long backtrack)
+    bool start_rewrite(kdu_long backtrack) override
         {
             if( file == NULL )
                 return false;
@@ -76,18 +79,18 @@ public:
                 return true;
         }
 
-    bool end_rewrite()
+    bool end_rewrite() override
         {
             if( file == NULL )
                 return false;
 
-            if( VSIFSeekL( file, SEEK_END, 0 ) != 0 )
+            if( VSIFSeekL( file, 0, SEEK_END ) != 0 )
                 return false;
             else
                 return true;
         }
 
-    bool close()
+    bool close() override
         {
             if (file != NULL)
                 VSIFCloseL( file );
@@ -99,3 +102,4 @@ private: // Data
     VSILFILE *file;
 };
 
+#endif // VSIL_TARGET_H

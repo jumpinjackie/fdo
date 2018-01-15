@@ -173,12 +173,21 @@ FdoConnectionState OgrConnection::Open()
 
     delete[] tmp;
     
-#if DEBUG
+#ifdef DEBUG
     printf ("Attempt OGR connect to %s \n", mbtmp.c_str());
     printf ("ReadOnly %d\n", (int)readonly);
 #endif
     
+#if GDAL_VERSION_MAJOR < 2
     m_poDS = OGRSFDriverRegistrar::Open(mbtmp.c_str(), !readonly);
+#else
+    int oFlags = GDAL_OF_VECTOR;
+    if (readonly)
+        oFlags |= GDAL_OF_READONLY;
+    else
+        oFlags |= GDAL_OF_UPDATE;
+    m_poDS = (GDALDataset*)GDALOpenEx(mbtmp.c_str(), oFlags, NULL, NULL, NULL);
+#endif
     if( m_poDS == NULL )
     {
         std::string str = "Connect failed: "; 
@@ -192,13 +201,17 @@ FdoConnectionState OgrConnection::Open()
 
 void OgrConnection::Close()
 {
-#if DEBUG
+#ifdef DEBUG
     printf ("Close OGR connection\n");
 #endif
 
     if (m_poDS)
     {
+#if GDAL_VERSION_MAJOR < 2
         OGRDataSource::DestroyDataSource(m_poDS);
+#else
+        GDALClose(m_poDS);
+#endif
         m_poDS = NULL;
     }
     
@@ -526,8 +539,12 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         FdoString* pname = id->GetName();
         std::string mbpname = W2A_SLOW(pname);
         
+#if GDAL_VERSION_MAJOR < 2
         sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname.c_str(), mbfc.c_str());
-#if DEBUG
+#else
+        sprintf(sql, "SELECT DISTINCT \"%s\" FROM \"%s\"", mbpname.c_str(), mbfc.c_str());
+#endif
+#ifdef DEBUG
         printf (" select distinct: %s\n", sql);
 #endif
         OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
@@ -594,8 +611,12 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
                 {
                     char sql[512];
 
+#if GDAL_VERSION_MAJOR < 2
                     sprintf(sql, "SELECT %s FROM '%s'", mbexprs.c_str(), mbfc.c_str());
-#if DEBUG
+#else
+                    sprintf(sql, "SELECT %s FROM \"%s\"", mbexprs.c_str(), mbfc.c_str());
+#endif
+#ifdef DEBUG
                     printf(" select distinct: %s\n", sql);
 #endif
                     OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
@@ -693,7 +714,7 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     //In case this layer was queried previously, we need to reset the internal iterator
     layer->ResetReading();
     
-        //check if we can delete
+    //check if we can update
     int canDo = layer->TestCapability(OLCRandomWrite);
     
     if (!canDo)
@@ -711,7 +732,9 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         //fast update for multiple features it should be optimized
         OgrFdoUtil::ConvertFeature(propvals, feature, layer);
         
-        layer->SetFeature(feature);
+        OGRErr res = layer->SetFeature(feature);
+        if (res)
+            throw FdoCommandException::Create(L"Failed to update feature. OGR result: %d", res);
         
         OGRFeature::DestroyFeature(feature);
         updated++;
@@ -733,7 +756,7 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     //In case this layer was queried previously, we need to reset the internal iterator
     layer->ResetReading();
     
-        //check if we can delete
+    //check if we can delete
     int canDo = layer->TestCapability(OLCDeleteFeature);
     
     if (!canDo)
@@ -741,8 +764,11 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 
     OgrFdoUtil::ApplyFilter(layer, filter);
 
+#if GDAL_VERSION_MAJOR < 2
     std::vector<long> ids; //list of FIDs of features to delete
-    
+#else
+    std::vector<GIntBig> ids; //list of FIDs of features to delete
+#endif
     OGRFeature* feature = NULL;
     
     while (feature = layer->GetNextFeature())
@@ -753,7 +779,11 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     
     int count = 0;
     
+#if GDAL_VERSION_MAJOR < 2
     for (std::vector<long>::iterator iter = ids.begin(); iter != ids.end(); iter++)
+#else
+    for (std::vector<GIntBig>::iterator iter = ids.begin(); iter != ids.end(); iter++)
+#endif
     {
         if (layer->DeleteFeature(*iter) == OGRERR_NONE)
             count++;
@@ -781,7 +811,11 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
 
     //create the new feature
     OGRFeature* feature = OGRFeature::CreateFeature(layer->GetLayerDefn());
+#if GDAL_VERSION_MAJOR < 2
     long fid = OGRNullFID;
+#else
+    GIntBig fid = OGRNullFID;
+#endif
     feature->SetFID(fid);
 
     //set all the properties
@@ -798,7 +832,11 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
     if (fid != OGRNullFID)
     {
         char filter[32];
+#if GDAL_VERSION_MAJOR < 2
         snprintf(filter, 32, "FID=%d", fid);
+#else
+        snprintf(filter, 32, "FID=" CPL_FRMT_GIB, fid);
+#endif
         layer->SetAttributeFilter(filter);
         return new OgrFeatureReader(this, layer, NULL, NULL);
     }
@@ -860,7 +898,11 @@ FdoString* OgrSpatialContextReader::GetCoordinateSystemWkt()
     
     m_wkt = A2W_SLOW(wkt);
     
-    OGRFree (wkt);
+#if GDAL_VERSION_MAJOR < 2
+    OGRFree(wkt);
+#else
+    CPLFree(wkt);
+#endif
     m_wkt = ProjConverter::ProjectionConverter->TranslateProjection(m_wkt.c_str()); 
     return m_wkt.c_str();
 }
@@ -1052,7 +1094,19 @@ FdoInt32 OgrFeatureReader::GetInt32(FdoString* propertyName)
 
 FdoInt64 OgrFeatureReader::GetInt64(FdoString* propertyName)
 {
+#if GDAL_VERSION_MAJOR < 2
     throw FdoCommandException::Create(L"Int64");
+#else
+    W2A_PROPNAME(propertyName);
+
+    //check if we are asked for ID property
+    const char* id = m_poLayer->GetFIDColumn();
+    if ((*id == 0 && strcmp(PROP_FID, mbpropertyName) == 0)
+        || strcmp(id, mbpropertyName) == 0)
+        return m_poFeature->GetFID();
+
+    return m_poFeature->GetFieldAsInteger64(mbpropertyName);
+#endif
 }
 
 float OgrFeatureReader::GetSingle(FdoString* propertyName)
@@ -1095,7 +1149,11 @@ bool OgrFeatureReader::IsNull(FdoString* propertyName)
          || strcmp(geom, mbpropertyName) == 0)
         return m_poFeature->GetGeometryRef()==NULL;
     
+#if GDAL_VERSION_MAJOR < 2
     return !m_poFeature->IsFieldSet(m_poFeature->GetFieldIndex(mbpropertyName));
+#else
+    return !m_poFeature->IsFieldSetAndNotNull(m_poFeature->GetFieldIndex(mbpropertyName));
+#endif
 }
 
 FdoIFeatureReader* OgrFeatureReader::GetFeatureObject(FdoString* propertyName)
@@ -1437,7 +1495,11 @@ FdoIStreamReader* OgrDataReader::GetLOBStreamReader(FdoString* propertyName )
 bool OgrDataReader::IsNull(FdoString* propertyName)
 {
     W2A_PROPNAME(propertyName);
+#if GDAL_VERSION_MAJOR < 2
     return !m_poFeature->IsFieldSet(m_poFeature->GetFieldIndex(mbpropertyName));
+#else
+    return !m_poFeature->IsFieldSetAndNotNull(m_poFeature->GetFieldIndex(mbpropertyName));
+#endif
 }
 
 FdoByteArray* OgrDataReader::GetGeometry(FdoString* propertyName)
@@ -1476,139 +1538,3 @@ void OgrDataReader::Close()
         m_poLayer = NULL;
     }
 }
-
-
-//---------------------------------------------------------------------
-//
-//    Test
-//
-//---------------------------------------------------------------------
-
-int main(void)
-{
-    OGRDataSource* ds = OGRSFDriverRegistrar::Open("C:\\Documents and Settings\\Kenneth\\Skrivebord\\bo", TRUE);
-    /*FdoIConnection* con = CreateConnection();
-    con->SetConnectionString(new FdoString(_L"
-    con->Open(*/
-    return 0;
-}
-
-////HACK This function has a lot of refcount leaks in order
-////to make the code more concise !!!
-//// DO NOT use as example code, this is just for testing.
-//int main(void)
-//{
-//   FdoPtr<FdoIConnection> c = CreateConnection();
-//   //printf("rc %d\n", c->GetRefCount());
-//   //printf("connection %p\n", c.p);
-//   //printf("conn tid %s\n", typeid(c.p).name());
-//   FdoPtr<FdoIConnectionInfo> info = c->GetConnectionInfo();
-//   //printf("rc %d\n", c->GetRefCount());
-//   //printf("conninfo %p\n", info.p);
-//   FdoPtr<FdoIConnectionPropertyDictionary> pd = info->GetConnectionProperties();
-//   //printf("rc %d\n", c->GetRefCount());
-//   
-//   pd->SetProperty(L"DataSource", L"coast_n83.shp");
-//   pd->SetProperty(L"ReadOnly", L"TRUE");
-//   
-//   c->Open();
-//   
-//   FdoPtr<FdoIDescribeSchema> ds = (FdoIDescribeSchema*) c->CreateCommand(FdoCommandType_DescribeSchema);
-//   
-//   ds->Execute();
-//   
-//   FdoPtr<FdoIGetSpatialContexts> gsc = (FdoIGetSpatialContexts*)c->CreateCommand(FdoCommandType_GetSpatialContexts);
-//   
-//   FdoPtr<FdoISpatialContextReader> scrdr = gsc->Execute();
-//   
-//   scrdr->ReadNext();
-//   
-//   printf ("coord sys %ls\n", scrdr->GetCoordinateSystemWkt());
-//   
-//   
-//   FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-//   
-//   
-//   FdoPtr<FdoISelect> select = (FdoISelect*)c->CreateCommand(FdoCommandType_Select);
-//   select->SetFeatureClassName(L"coast_n83");
-//   //select->SetFilter(FdoFilter::Parse(L"(LAST_SALE > 500000) AND (SQFT > 1000)"));
-//   FdoPtr<FdoIFeatureReader> rdr = select->Execute();
-//   
-//   clock_t t0 = clock();
-//   
-//   int count = 0;
-//   while (rdr->ReadNext())
-//   {
-//       int fgflen = 0;
-//       const unsigned char* geom = rdr->GetGeometry(L"GEOMETRY", &fgflen);
-//       
-//       //printf ("fid %d len %d\n", rdr->GetInt32(L"FID"), fgflen);
-//       
-//       try
-//       {
-//       FdoPtr<FdoIGeometry> fdogeom = gf->CreateGeometryFromFgf(geom, fgflen);
-//       
-//       //FdoString* wkt = fdogeom->GetText();
-//       //printf ("%p\n", fdogeom.p);
-//       //printf("geom %ls\n", wkt);
-//       }
-//       catch (FdoException* e)
-//       {
-//           printf ("***********************************************exception: %ls\n", e->GetExceptionMessage());
-//           e->Release();
-//           exit(1);
-//       }
-//       
-//       
-//       count++; 
-//   }
-//   
-//   clock_t t1 = clock();
-//   
-//   printf ("read time %lf\n", (double)(t1 - t0)/CLOCKS_PER_SEC);
-//   
-//   printf ("feat count %d\n", count);
-//   
-//   rdr->Close();
-//   
-//   
-//   /*
-//   FdoPtr<FdoISelectAggregates> sa = (FdoISelectAggregates*) c->CreateCommand(FdoCommandType_SelectAggregates);
-//   
-//   FdoPtr<FdoIdentifierCollection> props = sa->GetPropertyNames();
-//   props->Add(FdoIdentifier::Create(L"RTYPE"));
-//    
-//   sa->SetDistinct(true);
-//   sa->SetFeatureClassName(L"Parcels");
-//   
-//   FdoPtr<FdoIDataReader> drdr = sa->Execute();
-//   
-//   while (drdr->ReadNext())
-//   {
-//       FdoString* val = drdr->GetString(L"RTYPE");
-//       printf ("distinct val: %ls\n", val);
-//   } 
-//   
-//   drdr->Close();
-//   */
-//   /*
-//   FdoPtr<FdoISelectAggregates> sa = (FdoISelectAggregates*) c->CreateCommand(FdoCommandType_SelectAggregates);
-//   
-//   FdoPtr<FdoIdentifierCollection> props = sa->GetPropertyNames();
-//   props->Add(FdoComputedIdentifier::Create(L"mymax", FdoExpression::Parse(L"count(\"LAST_SALE\")")));
-//    
-//   sa->SetFeatureClassName(L"Parcels");
-//   
-//   FdoPtr<FdoIDataReader> drdr = sa->Execute();
-//   
-//   while (drdr->ReadNext())
-//   {
-//       double val = drdr->GetDouble(L"mymax");
-//       printf ("maxval val: %lf\n", val);
-//   } 
-//   
-//   drdr->Close();
-//   */
-//  
-//   c->Close();
-//}

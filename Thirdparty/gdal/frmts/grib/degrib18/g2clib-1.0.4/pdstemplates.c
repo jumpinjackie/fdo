@@ -49,6 +49,11 @@ static const struct pdstemplate templatespds[MAXPDSTEMP] = {
              // 4.14: Derived Fcst based on Ensemble cluster over circular
              //       area at Horiz Level/Layer in a time interval
          {14,44,1, {1,1,1,1,1,2,1,1,4,1,-1,-4,1,-1,-4,1,1,1,1,1,1,1,-4,4,4,1,-1,4,-1,4,2,1,1,1,1,1,1,4,1,1,1,4,1,4} },
+
+             // 4.15: Average, Accumulation, Extreme values or Other statistically-processed values over
+            // values over a spatial area at horizontal level or in a horizontal layer at a point in time
+         {15,18,0, {1,1,1,1,1,2,1,1,4,1,-1,-4,1,-1,-4,1,1,1} },
+
              // 4.20: Radar Product
          {20,19,0, {1,1,1,1,1,-4,4,2,4,2,1,1,1,1,1,2,1,3,2} },
              // 4.30: Satellite Product
@@ -106,26 +111,26 @@ g2int getpdsindex(g2int number)
 //
 //$$$/
 {
-           g2int j,getpdsindex=-1;
+           g2int j,l_getpdsindex=-1;
 
            for (j=0;j<MAXPDSTEMP;j++) {
               if (number == templatespds[j].template_num) {
-                 getpdsindex=j;
-                 return(getpdsindex);
+                 l_getpdsindex=j;
+                 return(l_getpdsindex);
               }
            }
 
-           return(getpdsindex);
+           return(l_getpdsindex);
 }
 
 
 xxtemplate *getpdstemplate(g2int number)
 ///$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    getpdstemplate 
+// SUBPROGRAM:    getpdstemplate
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2000-05-11
 //
-// ABSTRACT: This subroutine returns PDS template information for a 
+// ABSTRACT: This subroutine returns PDS template information for a
 //   specified Product Definition Template 4.NN.
 //   The number of entries in the template is returned along with a map
 //   of the number of octets occupied by each entry.  Also, a flag is
@@ -136,7 +141,7 @@ xxtemplate *getpdstemplate(g2int number)
 //
 // USAGE:    CALL getpdstemplate(number)
 //   INPUT ARGUMENT LIST:
-//     number   - NN, indicating the number of the Product Definition 
+//     number   - NN, indicating the number of the Product Definition
 //                Template 4.NN that is being requested.
 //
 //   RETURN VALUE:
@@ -151,18 +156,18 @@ xxtemplate *getpdstemplate(g2int number)
 //
 //$$$/
 {
-           g2int index;
+           g2int l_index;
            xxtemplate *new;
 
-           index=getpdsindex(number);
+           l_index=getpdsindex(number);
 
-           if (index != -1) {
+           if (l_index != -1) {
               new=(xxtemplate *)malloc(sizeof(xxtemplate));
               new->type=4;
-              new->num=templatespds[index].template_num;
-              new->maplen=templatespds[index].mappdslen;
-              new->needext=templatespds[index].needext;
-              new->map=(g2int *)templatespds[index].mappds;
+              new->num=templatespds[l_index].template_num;
+              new->maplen=templatespds[l_index].mappdslen;
+              new->needext=templatespds[l_index].needext;
+              new->map=(g2int *)templatespds[l_index].mappds;
               new->extlen=0;
               new->ext=0;        //NULL
               return(new);
@@ -174,17 +179,17 @@ xxtemplate *getpdstemplate(g2int number)
 
          return(0);        //NULL
 }
-         
-        
+
+
 xxtemplate *extpdstemplate(g2int number,g2int *list)
 ///$$$  SUBPROGRAM DOCUMENTATION BLOCK
 //                .      .    .                                       .
-// SUBPROGRAM:    extpdstemplate 
+// SUBPROGRAM:    extpdstemplate
 //   PRGMMR: Gilbert         ORG: W/NP11    DATE: 2000-05-11
 //
 // ABSTRACT: This subroutine generates the remaining octet map for a
 //   given Product Definition Template, if required.  Some Templates can
-//   vary depending on data values given in an earlier part of the 
+//   vary depending on data values given in an earlier part of the
 //   Template, and it is necessary to know some of the earlier entry
 //   values to generate the full octet map of the Template.
 //
@@ -193,9 +198,9 @@ xxtemplate *extpdstemplate(g2int number,g2int *list)
 //
 // USAGE:    CALL extpdstemplate(number,list)
 //   INPUT ARGUMENT LIST:
-//     number   - NN, indicating the number of the Product Definition 
+//     number   - NN, indicating the number of the Product Definition
 //                Template 4.NN that is being requested.
-//     list()   - The list of values for each entry in the 
+//     list()   - The list of values for each entry in the
 //                the Product Definition Template 4.NN.
 //
 //   RETURN VALUE:
@@ -209,12 +214,13 @@ xxtemplate *extpdstemplate(g2int number,g2int *list)
 //$$$
 {
            xxtemplate *new;
-           g2int index,i,j,k,l;
+           g2int l_index,i,j,k,l;
 
-           index=getpdsindex(number);
-           if (index == -1) return(0);
+           l_index=getpdsindex(number);
+           if (l_index == -1) return(0);
 
            new=getpdstemplate(number);
+           if (new == NULL) return NULL;
 
            if ( ! new->needext ) return(new);
 

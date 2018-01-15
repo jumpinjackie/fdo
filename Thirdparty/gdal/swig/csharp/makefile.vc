@@ -8,7 +8,7 @@
 #  - Run the VCVARS32.BAT script to initialize the VC++ environment variables
 #  - Start the build with:  nmake /f makefile.vc
 #
-# $Id: makefile.vc 25794 2013-03-24 13:15:43Z tamas $
+# $Id: makefile.vc 39863 2017-08-18 20:27:45Z tamas $
 #
 
 GDAL_ROOT	=	..\..
@@ -119,6 +119,7 @@ samples:
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /r:System.Drawing.dll /out:GDALReadDirect.exe apps\GDALReadDirect.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /r:System.Drawing.dll /out:GDALAdjustContrast.exe apps\GDALAdjustContrast.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /r:System.Drawing.dll /out:GDALDatasetRasterIO.exe apps\GDALDatasetRasterIO.cs
+    $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /r:System.Drawing.dll /out:GDALDatasetRasterIOEx.exe apps\GDALDatasetRasterIOEx.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /out:GDALWrite.exe apps\GDALWrite.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /out:GDALDatasetWrite.exe apps\GDALDatasetWrite.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /out:GDALColorTable.exe apps\GDALColorTable.cs
@@ -131,6 +132,8 @@ samples:
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /out:GDALGetHistogram.exe apps\GDALGetHistogram.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /out:VSIMem.exe apps\VSIMem.cs
     $(CSC) $(CSDEBUG) /r:gdal_csharp.dll /r:System.Drawing.dll /out:GDALMemDataset.exe apps\GDALMemDataset.cs
+	$(CSC) $(CSDEBUG) /r:ogr_csharp.dll /r:osr_csharp.dll /out:OGRLayerAlg.exe apps\OGRLayerAlg.cs
+	$(CSC) $(CSDEBUG) /r:ogr_csharp.dll /r:osr_csharp.dll /out:OGRFeatureEdit.exe apps\OGRFeatureEdit.cs
     
 test:
 !IFDEF MONO
@@ -151,6 +154,8 @@ test:
 	GDALCreateCopy.exe Data/sample.tif Data/sample2.tif
 	GDALOverviews.exe Data/sample.tif NEAREST 2 4
 	GDALInfo.exe Data/sample.tif
+	ogrlayeralg.exe Intersection Data/pointlayer.shp pointlayer Data/pointlayer.shp pointlayer Data intersectionresult
+	ogrinfo.exe Data/intersectionresult.shp
 !ENDIF
 	
 clean:	

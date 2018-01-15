@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrgtmlayer.cpp 17588 2009-08-27 20:52:33Z rouault $
  *
  * Project:  GTM Driver
  * Purpose:  Implementation of OGRGTMLayer class.
@@ -29,17 +28,18 @@
 
 #include "ogr_gtm.h"
 
-OGRGTMLayer::OGRGTMLayer()
-{
-    poDS = NULL;
-    poSRS = NULL;
-    poCT = NULL;
-    pszName = NULL;
-    poFeatureDefn = NULL;
-    nNextFID = 0;
-    nTotalFCount = 0;
-    bError = FALSE;
-}
+CPL_CVSID("$Id: ogrgtmlayer.cpp 35911 2016-10-24 15:03:26Z goatbar $");
+
+OGRGTMLayer::OGRGTMLayer() :
+    poDS(NULL),
+    poSRS(NULL),
+    poCT(NULL),
+    pszName(NULL),
+    poFeatureDefn(NULL),
+    nNextFID(0),
+    nTotalFCount(0),
+    bError(false)
+{}
 
 OGRGTMLayer::~OGRGTMLayer()
 {
@@ -77,15 +77,20 @@ OGRFeatureDefn* OGRGTMLayer::GetLayerDefn()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRGTMLayer::TestCapability( const char * pszCap ) 
+int OGRGTMLayer::TestCapability( const char * pszCap )
 {
     if (EQUAL(pszCap,OLCFastFeatureCount) &&
         m_poFilterGeom == NULL && m_poAttrQuery == NULL )
         return TRUE;
-    else
-        return FALSE;
-}
 
+    if( EQUAL(pszCap,OLCCreateField) )
+        return poDS != NULL && poDS->getOutputFP() != NULL;
+
+    if( EQUAL(pszCap,OLCSequentialWrite) )
+        return poDS != NULL && poDS->getOutputFP() != NULL;
+
+    return FALSE;
+}
 
 /************************************************************************/
 /*                CheckAndFixCoordinatesValidity()                      */
@@ -95,26 +100,26 @@ OGRErr OGRGTMLayer::CheckAndFixCoordinatesValidity( double& pdfLatitude, double&
 {
     if (pdfLatitude < -90 || pdfLatitude > 90)
     {
-        static int bFirstWarning = TRUE;
+        static bool bFirstWarning = true;
         if (bFirstWarning)
         {
             CPLError(CE_Failure, CPLE_AppDefined,
                      "Latitude %f is invalid. Valid range is [-90,90]. This warning will not be issued any more",
                      pdfLatitude);
-            bFirstWarning = FALSE;
+            bFirstWarning = false;
         }
-        return CE_Failure;
+        return OGRERR_FAILURE;
     }
 
     if (pdfLongitude < -180 || pdfLongitude > 180)
     {
-        static int bFirstWarning = TRUE;
+        static bool bFirstWarning = true;
         if (bFirstWarning)
         {
             CPLError(CE_Warning, CPLE_AppDefined,
                      "Longitude %f has been modified to fit into range [-180,180]. This warning will not be issued any more",
                      pdfLongitude);
-            bFirstWarning = FALSE;
+            bFirstWarning = false;
         }
 
         if (pdfLongitude > 180)
@@ -122,18 +127,18 @@ OGRErr OGRGTMLayer::CheckAndFixCoordinatesValidity( double& pdfLatitude, double&
         else if (pdfLongitude < -180)
             pdfLongitude += ((int) (180 - pdfLongitude)/360)*360;
 
-        return CE_None;
+        return OGRERR_NONE;
     }
 
-    return CE_None;
+    return OGRERR_NONE;
 }
 
 /************************************************************************/
 /*                            CreateField()                             */
 /************************************************************************/
 
-OGRErr OGRGTMLayer::CreateField( OGRFieldDefn *poField, int bApproxOK )
-
+OGRErr OGRGTMLayer::CreateField( OGRFieldDefn *poField,
+                                 int /* bApproxOK */ )
 {
     for( int iField = 0; iField < poFeatureDefn->GetFieldCount(); iField++ )
     {

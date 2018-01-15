@@ -4,13 +4,13 @@ include ../../../GDALmake.opt
 
 CORE_OBJ =	gmlpropertydefn.o gmlfeatureclass.o gmlfeature.o gmlreader.o \
 		parsexsd.o resolvexlinks.o hugefileresolver.o gmlutils.o \
-		gmlreadstate.o gmlhandler.o trstring.o gfstemplate.o
+		gmlreadstate.o gmlhandler.o gfstemplate.o gmlregistry.o
 
 OGR_OBJ =	ogrgmldriver.o ogrgmldatasource.o ogrgmllayer.o
 
 OBJ =	$(CORE_OBJ) $(OGR_OBJ)
 
-CPPFLAGS :=	-I.. -I../.. $(GDAL_INCLUDE) $(XERCES_INCLUDE) $(EXPAT_INCLUDE) $(SQLITE_INC) $(CPPFLAGS)
+CPPFLAGS :=	-I.. -I../..  $(XERCES_INCLUDE) $(EXPAT_INCLUDE) $(SQLITE_INC) $(CPPFLAGS)
 #CFLAGS	:=	$(filter-out -Wall,$(CFLAGS))
 
 ifeq ($(HAVE_XERCES),yes)

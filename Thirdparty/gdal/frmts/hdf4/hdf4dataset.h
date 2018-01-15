@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: hdf4dataset.h 18945 2010-02-27 20:39:31Z rouault $
+ * $Id: hdf4dataset.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  Hierarchical Data Format Release 4 (HDF4)
  * Purpose:  Header file for HDF4 datasets reader.
@@ -27,36 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _HDF4DATASET_H_INCLUDED_
-#define _HDF4DATASET_H_INCLUDED_
+#ifndef HDF4DATASET_H_INCLUDED_
+#define HDF4DATASET_H_INCLUDED_
 
 #include "cpl_list.h"
 #include "gdal_pam.h"
 
-typedef enum			// Types of dataset:
+typedef enum                    // Types of dataset:
 {
-    HDF4_SDS,			// Scientific Dataset
-    HDF4_GR,			// General Raster Image
+    HDF4_SDS,                   // Scientific Dataset
+    HDF4_GR,                    // General Raster Image
     HDF4_EOS,                   // HDF EOS
     HDF4_UNKNOWN
 } HDF4DatasetType;
 
-typedef enum			// Types of data products:
+typedef enum                    // Types of data products:
 {
-    H4ST_GDAL,		        // HDF written by GDAL
+    H4ST_GDAL,                  // HDF written by GDAL
     H4ST_EOS_GRID,              // HDF-EOS Grid
     H4ST_EOS_SWATH,             // HDF-EOS Swath
     H4ST_EOS_SWATH_GEOL,        // HDF-EOS Swath Geolocation Array
-    H4ST_SEAWIFS_L1A,		// SeaWiFS Level-1A Data
-    H4ST_SEAWIFS_L2,		// SeaWiFS Level-2 Data
-    H4ST_SEAWIFS_L3,		// SeaWiFS Level-3 Standard Mapped Image
+    H4ST_SEAWIFS_L1A,           // SeaWiFS Level-1A Data
+    H4ST_SEAWIFS_L2,            // SeaWiFS Level-2 Data
+    H4ST_SEAWIFS_L3,            // SeaWiFS Level-3 Standard Mapped Image
     H4ST_HYPERION_L1,           // Hyperion L1 Data Product
     H4ST_UNKNOWN
 } HDF4SubdatasetType;
 
 /************************************************************************/
 /* ==================================================================== */
-/*				HDF4Dataset				*/
+/*                              HDF4Dataset                             */
 /* ==================================================================== */
 /************************************************************************/
 
@@ -65,22 +65,21 @@ class HDF4Dataset : public GDALPamDataset
 
   private:
 
-    int         bIsHDFEOS;
+    bool bIsHDFEOS;
 
     static char **HDF4EOSTokenizeAttrs( const char *pszString );
     static char **HDF4EOSGetObject( char **papszAttrList, char **ppszAttrName,
-                                    char **ppszAttrValue );
-     
+                                    char **ppszAttrClass, char **ppszAttrValue );
+
   protected:
-
-    FILE	*fp;
-    int32	hGR, hSD;
-    int32	nImages;
+    int32       hGR;
+    int32       hSD;
+    int32       nImages;
     HDF4SubdatasetType iSubdatasetType;
-    const char	*pszSubdatasetType;
+    const char  *pszSubdatasetType;
 
-    char	**papszGlobalMetadata;
-    char	**papszSubDatasets;
+    char        **papszGlobalMetadata;
+    char        **papszSubDatasets;
 
     CPLErr              ReadGlobalAttributes( int32 );
 
@@ -95,9 +94,10 @@ class HDF4Dataset : public GDALPamDataset
 
   public:
                 HDF4Dataset();
-		~HDF4Dataset();
-    
-    virtual char        **GetMetadata( const char * pszDomain = "" );
+    virtual ~HDF4Dataset();
+
+    virtual char      **GetMetadataDomainList() override;
+    virtual char        **GetMetadata( const char * pszDomain = "" ) override;
     static GDALDataset  *Open( GDALOpenInfo * );
     static int          Identify( GDALOpenInfo * );
 };
@@ -105,6 +105,4 @@ class HDF4Dataset : public GDALPamDataset
 char *SPrintArray( GDALDataType eDataType, const void *paDataArray,
                    int nValues, const char *pszDelimiter );
 
-
-#endif /* _HDF4DATASET_H_INCLUDED_ */
-
+#endif /* HDF4DATASET_H_INCLUDED_ */

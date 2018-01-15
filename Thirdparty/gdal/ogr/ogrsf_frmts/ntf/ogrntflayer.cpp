@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrntflayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  UK NTF Reader
  * Purpose:  Implements OGRNTFLayer class.
@@ -30,7 +29,7 @@
 #include "ntf.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrntflayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogrntflayer.cpp 36332 2016-11-20 15:19:39Z rouault $");
 
 /************************************************************************/
 /*                            OGRNTFLayer()                             */
@@ -41,16 +40,15 @@ CPL_CVSID("$Id: ogrntflayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
 
 OGRNTFLayer::OGRNTFLayer( OGRNTFDataSource *poDSIn,
                           OGRFeatureDefn * poFeatureDefine,
-                          NTFFeatureTranslator pfnTranslatorIn )
-
+                          NTFFeatureTranslator pfnTranslatorIn ) :
+    poFeatureDefn(poFeatureDefine),
+    pfnTranslator(pfnTranslatorIn),
+    poDS(poDSIn),
+    iCurrentReader(-1),
+    nCurrentPos(-1),
+    nCurrentFID(1)
 {
-    poDS = poDSIn;
-    poFeatureDefn = poFeatureDefine;
-    pfnTranslator = pfnTranslatorIn;
-
-    iCurrentReader = -1;
-    nCurrentPos = -1;
-    nCurrentFID = 1;
+    SetDescription( poFeatureDefn->GetName() );
 }
 
 /************************************************************************/
@@ -63,7 +61,7 @@ OGRNTFLayer::~OGRNTFLayer()
     if( m_nFeaturesRead > 0 && poFeatureDefn != NULL )
     {
         CPLDebug( "Mem", "%d features read on layer '%s'.",
-                  (int) m_nFeaturesRead, 
+                  (int) m_nFeaturesRead,
                   poFeatureDefn->GetName() );
     }
 
@@ -122,12 +120,12 @@ OGRFeature *OGRNTFLayer::GetNextFeature()
         poCurrentReader->SetFPPos( nCurrentPos, nCurrentFID );
     else
         poCurrentReader->Reset();
-        
+
 /* -------------------------------------------------------------------- */
 /*      Read features till we find one that satisfies our current       */
 /*      spatial criteria.                                               */
 /* -------------------------------------------------------------------- */
-    while( TRUE )
+    while( true )
     {
         poFeature = poCurrentReader->ReadOGRFeature( this );
         if( poFeature == NULL )
@@ -136,7 +134,7 @@ OGRFeature *OGRNTFLayer::GetNextFeature()
         m_nFeaturesRead++;
 
         if( (m_poFilterGeom == NULL
-             || poFeature->GetGeometryRef() == NULL 
+             || poFeature->GetGeometryRef() == NULL
              || FilterGeometry( poFeature->GetGeometryRef() ) )
             && (m_poAttrQuery == NULL
                 || m_poAttrQuery->Evaluate( poFeature )) )
@@ -159,7 +157,7 @@ OGRFeature *OGRNTFLayer::GetNextFeature()
             poCurrentReader->DestroyIndex();
         }
 
-        do { 
+        do {
             iCurrentReader++;
         } while( iCurrentReader < poDS->GetFileCount()
                  && !poDS->GetFileReader(iCurrentReader)->TestForLayer(this) );
@@ -181,24 +179,10 @@ OGRFeature *OGRNTFLayer::GetNextFeature()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRNTFLayer::TestCapability( const char * pszCap )
+int OGRNTFLayer::TestCapability( const char * /* pszCap */ )
 
 {
-    if( EQUAL(pszCap,OLCRandomRead) )
-        return FALSE;
-
-    else if( EQUAL(pszCap,OLCSequentialWrite) 
-             || EQUAL(pszCap,OLCRandomWrite) )
-        return FALSE;
-
-    else if( EQUAL(pszCap,OLCFastFeatureCount) )
-        return FALSE;
-
-    else if( EQUAL(pszCap,OLCFastSpatialFilter) )
-        return FALSE;
-
-    else 
-        return FALSE;
+    return FALSE;
 }
 
 /************************************************************************/
@@ -213,14 +197,4 @@ OGRFeature * OGRNTFLayer::FeatureTranslate( NTFFileReader *poReader,
         return NULL;
 
     return pfnTranslator( poReader, this, papoGroup );
-}
-
-/************************************************************************/
-/*                           GetSpatialRef()                            */
-/************************************************************************/
-
-OGRSpatialReference *OGRNTFLayer::GetSpatialRef()
-
-{
-    return poDS->GetSpatialRef();
 }

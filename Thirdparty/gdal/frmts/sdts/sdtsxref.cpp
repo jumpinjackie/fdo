@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: sdtsxref.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  SDTS Translator
  * Purpose:  Implementation of SDTS_XREF class for reading XREF module.
@@ -29,19 +28,17 @@
 
 #include "sdts_al.h"
 
-CPL_CVSID("$Id: sdtsxref.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: sdtsxref.cpp 34810 2016-07-28 13:47:32Z goatbar $");
 
 /************************************************************************/
 /*                             SDTS_XREF()                              */
 /************************************************************************/
 
-SDTS_XREF::SDTS_XREF()
-
-{
-    pszSystemName = CPLStrdup( "" );
-    pszDatum = CPLStrdup( "" );
-    nZone = 0;
-}
+SDTS_XREF::SDTS_XREF() :
+    pszSystemName(CPLStrdup("")),
+    pszDatum(CPLStrdup("")),
+    nZone(0)
+{}
 
 /************************************************************************/
 /*                             ~SDTS_XREF()                             */
@@ -62,19 +59,17 @@ SDTS_XREF::~SDTS_XREF()
 int SDTS_XREF::Read( const char * pszFilename )
 
 {
-    DDFModule   oXREFFile;
-    DDFRecord   *poRecord;
-
 /* -------------------------------------------------------------------- */
 /*      Open the file, and read the header.                             */
 /* -------------------------------------------------------------------- */
+    DDFModule oXREFFile;
     if( !oXREFFile.Open( pszFilename ) )
         return FALSE;
-    
+
 /* -------------------------------------------------------------------- */
 /*      Read the first record, and verify that this is an XREF record.  */
 /* -------------------------------------------------------------------- */
-    poRecord = oXREFFile.ReadRecord();
+    DDFRecord *poRecord = oXREFFile.ReadRecord();
     if( poRecord == NULL )
         return FALSE;
 
@@ -86,11 +81,11 @@ int SDTS_XREF::Read( const char * pszFilename )
 /* -------------------------------------------------------------------- */
 
     CPLFree( pszSystemName );
-    pszSystemName = 
+    pszSystemName =
         CPLStrdup( poRecord->GetStringSubfield( "XREF", 0, "RSNM", 0 ) );
 
     CPLFree( pszDatum );
-    pszDatum = 
+    pszDatum =
         CPLStrdup( poRecord->GetStringSubfield( "XREF", 0, "HDAT", 0 ) );
 
     nZone = poRecord->GetIntSubfield( "XREF", 0, "ZONE", 0 );

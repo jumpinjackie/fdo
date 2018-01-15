@@ -1,23 +1,16 @@
 /******************************************************************************
- * $Id: ogr_java.i 24762 2012-08-11 16:28:26Z rouault $
+ * $Id: ogr_java.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Name:     ogr_java.i
  * Project:  GDAL SWIG Interface
  * Purpose:  Typemaps for Java bindings
  * Author:   Benjamin Collins, The MITRE Corporation
  *
- *
- * $Log$
- * Revision 1.2  2006/02/16 17:21:12  collinsb
- * Updates to Java bindings to keep the code from halting execution if the native libraries cannot be found.
- *
- * Revision 1.1  2006/02/02 20:56:07  collinsb
- * Added Java specific typemap code
- *
- *
 */
 
+#ifndef FROM_GDAL_I
 %include java_exceptions.i
+#endif
 
 %pragma(java) jniclasscode=%{
   private static boolean available = false;
@@ -26,19 +19,19 @@
     try {
       System.loadLibrary("ogrjni");
       available = true;
-      
+
       if (org.gdal.gdal.gdal.HasThreadSupport() == 0)
       {
         System.err.println("WARNING : GDAL should be compiled with thread support for safe execution in Java.");
       }
-      
+
     } catch (UnsatisfiedLinkError e) {
       available = false;
       System.err.println("Native library load failed.");
       System.err.println(e);
     }
   }
-  
+
   public static boolean isAvailable() {
     return available;
   }
@@ -53,21 +46,31 @@
 
 /*
  *
- */ 
- 
+ */
+
 %pragma(java) jniclassimports=%{
 import org.gdal.osr.SpatialReference;
 import org.gdal.osr.CoordinateTransformation;
+import org.gdal.gdal.MajorObject;
 %}
- 
+
 %pragma(java) moduleimports=%{
 import org.gdal.osr.SpatialReference;
+import org.gdal.gdal.MajorObject;
 %}
 
 %typemap(javaimports) OGRLayerShadow %{
 import org.gdal.osr.SpatialReference;
+import org.gdal.gdal.MajorObject;
 %}
 %typemap(javaimports) OGRDataSourceShadow %{
+import org.gdal.osr.SpatialReference;
+import org.gdal.gdal.MajorObject;
+%}
+%typemap(javaimports) OGRDriverShadow %{
+import org.gdal.gdal.MajorObject;
+%}
+%typemap(javaimports) OGRGeomFieldDefnShadow %{
 import org.gdal.osr.SpatialReference;
 %}
 
@@ -96,10 +99,59 @@ import org.gdal.osr.SpatialReference;
 
 %}
 
+#if SWIG_VERSION < 0x020000
+
+%typemap(javabody_derived) OGRLayerShadow %{
+  private long swigCPtr;
+
+  public Layer(long cPtr, boolean cMemoryOwn) {
+    super(ogrJNI.SWIGLayerUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
+
+  public static long getCPtr(Layer obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
+%}
+
+#else
+
+%typemap(javabody_derived) OGRLayerShadow %{
+  private long swigCPtr;
+
+  public Layer(long cPtr, boolean cMemoryOwn) {
+    super(ogrJNI.Layer_SWIGUpcast(cPtr), cMemoryOwn);
+    swigCPtr = cPtr;
+  }
+
+  public static long getCPtr(Layer obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
+%}
+
+#endif
+
+%typemap(javabody) OGRStyleTableShadow %{
+  private boolean swigCMemOwn;
+  private long swigCPtr;
+
+  public $javaclassname(long cPtr, boolean cMemoryOwn) {
+    if (cPtr == 0)
+        throw new RuntimeException();
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = cPtr;
+  }
+
+  public static long getCPtr($javaclassname obj) {
+    return (obj == null) ? 0 : obj.swigCPtr;
+  }
+%}
+
 %typemap(javacode) OGRLayerShadow %{
   private Object parentReference;
 
-  protected static long getCPtrAndDisown($javaclassname obj) {
+
+  public static long getCPtrAndDisown($javaclassname obj) {
     if (obj != null)
     {
         obj.swigCMemOwn= false;
@@ -109,7 +161,7 @@ import org.gdal.osr.SpatialReference;
   }
 
   /* Ensure that the GC doesn't collect any parent instance set from Java */
-  protected void addReference(Object reference) {
+  public void addReference(Object reference) {
     parentReference = reference;
   }
 
@@ -270,7 +322,10 @@ import org.gdal.osr.CoordinateTransformation;
                   OGRFeatureDefnShadow* GetDefnRef,
                   OGRFieldDefnShadow* GetFieldDefnRef,
                   OGRFieldDefnShadow* GetFieldDefn,
-                  OGRGeometryShadow* GetGeometryRef {
+                  OGRGeometryDefnShadow* GetGeomFieldDefnRef,
+                  OGRGeometryDefnShadow* GetGeomFieldDefn,
+                  OGRGeometryShadow* GetGeometryRef,
+                  OGRGeometryShadow* GetGeomFieldRef {
     long cPtr = $jnicall;
     $javaclassname ret = null;
     if (cPtr != 0) {
@@ -288,8 +343,9 @@ import org.gdal.osr.CoordinateTransformation;
 
 /* ------------------------------------------------------------------- */
 /* Below an advanced technique to avoid the use of a finalize() method */
-/* in the Feature object, that prevents efficient garbarge collection. */
+/* in the Feature object, that prevents efficient garbage collection.  */
 /* This is loosely based on ideas from an article at                   */
+ // TODO: Broken URL.
 /* http://java.sun.com/developer/technicalArticles/javase/finalization */
 /* ------------------------------------------------------------------- */
 
@@ -302,7 +358,7 @@ import org.gdal.osr.CoordinateTransformation;
   static private Thread cleanupThread = null;
 
   /* We start a cleanup thread in daemon mode */
-  /* If we can't, we'll cleanup garbaged features at creation time */
+  /* If we cannot, we will cleanup garbage features at creation time */
   static
   {
     cleanupThread = new Thread() {
@@ -399,15 +455,15 @@ class%}
   private long swigCPtr;
   private type ## Native nativeObject;
 
-  protected $javaclassname(long cPtr, boolean cMemoryOwn) {
+  public $javaclassname(long cPtr, boolean cMemoryOwn) {
     if (cPtr == 0)
         throw new RuntimeException();
     swigCPtr = cPtr;
     if (cMemoryOwn)
         nativeObject = new type ## Native(this, cPtr);
   }
-  
-  protected static long getCPtr($javaclassname obj) {
+
+  public static long getCPtr($javaclassname obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 %}
@@ -451,10 +507,13 @@ import org.gdal.ogr.FeatureNative;
 
 SMART_FINALIZER(Geometry)
 
+
 /* ----------------------------------------------------------------- */
 /* End of smart finalizer mechanism                                  */
 /* ----------------------------------------------------------------- */
 
+#ifndef FROM_GDAL_I
 %include callback.i
+#endif
 
 %include typemaps_java.i

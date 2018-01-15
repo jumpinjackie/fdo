@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalwarper.h 25884 2013-04-09 17:04:16Z etourigny $
+ * $Id: gdalwarper.h 37035 2016-12-29 16:08:53Z goatbar $
  *
  * Project:  GDAL High Performance Warper
  * Purpose:  Prototypes, and definitions for warping related work.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2003, Frank Warmerdam
+ * Copyright (c) 2009-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -40,9 +41,11 @@
 
 #include "gdal_alg.h"
 #include "cpl_minixml.h"
+#include "cpl_multiproc.h"
 
 CPL_C_START
 
+/* Note: values are selected to be consistent with GDALRIOResampleAlg of gcore/gdal.h */
 /*! Warp Resampling Algorithm */
 typedef enum {
   /*! Nearest neighbour (select on one input pixel) */ GRA_NearestNeighbour=0,
@@ -50,46 +53,64 @@ typedef enum {
   /*! Cubic Convolution Approximation (4x4 kernel) */  GRA_Cubic=2,
   /*! Cubic B-Spline Approximation (4x4 kernel) */     GRA_CubicSpline=3,
   /*! Lanczos windowed sinc interpolation (6x6 kernel) */ GRA_Lanczos=4,
-  /*! Average (computes the average of all non-NODATA contributing pixels) */ GRA_Average=5, 
-  /*! Mode (selects the value which appears most often of all the sampled points) */ GRA_Mode=6
+  /*! Average (computes the average of all non-NODATA contributing pixels) */ GRA_Average=5,
+  /*! Mode (selects the value which appears most often of all the sampled points) */ GRA_Mode=6,
+  /*  GRA_Gauss=7 reserved. */
+  /*! Max (selects maximum of all non-NODATA contributing pixels) */ GRA_Max=8,
+  /*! Min (selects minimum of all non-NODATA contributing pixels) */ GRA_Min=9,
+  /*! Med (selects median of all non-NODATA contributing pixels) */ GRA_Med=10,
+  /*! Q1 (selects first quartile of all non-NODATA contributing pixels) */ GRA_Q1=11,
+  /*! Q3 (selects third quartile of all non-NODATA contributing pixels) */ GRA_Q3=12
 } GDALResampleAlg;
 
-typedef int 
+/*! GWKAverageOrMode Algorithm */
+typedef enum {
+    /*! Average */ GWKAOM_Average=1,
+    /*! Mode */ GWKAOM_Fmode=2,
+    /*! Mode of GDT_Byte, GDT_UInt16, or GDT_Int16 */ GWKAOM_Imode=3,
+    /*! Maximum */ GWKAOM_Max=4,
+    /*! Minimum */ GWKAOM_Min=5,
+    /*! Quantile */ GWKAOM_Quant=6
+} GWKAverageOrModeAlg;
+
+/*! @cond Doxygen_Suppress */
+typedef int
 (*GDALMaskFunc)( void *pMaskFuncArg,
-                 int nBandCount, GDALDataType eType, 
-                 int nXOff, int nYOff, 
+                 int nBandCount, GDALDataType eType,
+                 int nXOff, int nYOff,
                  int nXSize, int nYSize,
-                 GByte **papabyImageData, 
+                 GByte **papabyImageData,
                  int bMaskIsFloat, void *pMask );
 
-CPLErr CPL_DLL 
+CPLErr CPL_DLL
 GDALWarpNoDataMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
                       int nXOff, int nYOff, int nXSize, int nYSize,
                       GByte **papabyImageData, int bMaskIsFloat,
-                      void *pValidityMask );
+                      void *pValidityMask, int* pbOutAllValid );
 
-CPLErr CPL_DLL 
+CPLErr CPL_DLL
 GDALWarpDstAlphaMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
                         int nXOff, int nYOff, int nXSize, int nYSize,
                         GByte ** /*ppImageData */,
                         int bMaskIsFloat, void *pValidityMask );
-CPLErr CPL_DLL 
+CPLErr CPL_DLL
 GDALWarpSrcAlphaMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
                         int nXOff, int nYOff, int nXSize, int nYSize,
                         GByte ** /*ppImageData */,
-                        int bMaskIsFloat, void *pValidityMask );
+                        int bMaskIsFloat, void *pValidityMask, int* pbOutAllOpaque );
 
-CPLErr CPL_DLL 
+CPLErr CPL_DLL
 GDALWarpSrcMaskMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
                        int nXOff, int nYOff, int nXSize, int nYSize,
                        GByte ** /*ppImageData */,
                        int bMaskIsFloat, void *pValidityMask );
 
-CPLErr CPL_DLL 
+CPLErr CPL_DLL
 GDALWarpCutlineMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
                        int nXOff, int nYOff, int nXSize, int nYSize,
                        GByte ** /* ppImageData */,
                        int bMaskIsFloat, void *pValidityMask );
+/*! @endcond */
 
 /************************************************************************/
 /*                           GDALWarpOptions                            */
@@ -97,11 +118,11 @@ GDALWarpCutlineMasker( void *pMaskFuncArg, int nBandCount, GDALDataType eType,
 
 /** Warp control options for use with GDALWarpOperation::Initialize()  */
 typedef struct {
-    
-    char              **papszWarpOptions;  
+
+    char              **papszWarpOptions;
 
     /*! In bytes, 0.0 for internal default */
-    double              dfWarpMemoryLimit; 
+    double              dfWarpMemoryLimit;
 
     /*! Resampling algorithm to use */
     GDALResampleAlg     eResampleAlg;
@@ -111,14 +132,14 @@ typedef struct {
     GDALDataType        eWorkingDataType;
 
     /*! Source image dataset. */
-    GDALDatasetH	hSrcDS;
+    GDALDatasetH        hSrcDS;
 
     /*! Destination image dataset - may be NULL if only using GDALWarpOperation::WarpRegionToBuffer(). */
     GDALDatasetH        hDstDS;
 
     /*! Number of bands to process, may be 0 to select all bands. */
     int                 nBandCount;
-    
+
     /*! The band numbers for the source bands to process (1 based) */
     int                *panSrcBands;
 
@@ -133,13 +154,13 @@ typedef struct {
 
     /*! The "nodata" value real component for each input band, if NULL there isn't one */
     double             *padfSrcNoDataReal;
-    /*! The "nodata" value imaginary component - may be NULL even if real 
+    /*! The "nodata" value imaginary component - may be NULL even if real
       component is provided. */
     double             *padfSrcNoDataImag;
 
     /*! The "nodata" value real component for each output band, if NULL there isn't one */
     double             *padfDstNoDataReal;
-    /*! The "nodata" value imaginary component - may be NULL even if real 
+    /*! The "nodata" value imaginary component - may be NULL even if real
       component is provided. */
     double             *padfDstNoDataImag;
 
@@ -156,25 +177,39 @@ typedef struct {
     /*! Handle to image transformer setup structure */
     void                *pTransformerArg;
 
+    /** Unused. Must be NULL */
     GDALMaskFunc       *papfnSrcPerBandValidityMaskFunc;
+    /** Unused. Must be NULL */
     void              **papSrcPerBandValidityMaskFuncArg;
-    
+
+    /** Unused. Must be NULL */
     GDALMaskFunc        pfnSrcValidityMaskFunc;
+    /** Unused. Must be NULL */
     void               *pSrcValidityMaskFuncArg;
-    
+
+    /** Unused. Must be NULL */
     GDALMaskFunc        pfnSrcDensityMaskFunc;
+    /** Unused. Must be NULL */
     void               *pSrcDensityMaskFuncArg;
 
+    /** Unused. Must be NULL */
     GDALMaskFunc        pfnDstDensityMaskFunc;
+    /** Unused. Must be NULL */
     void               *pDstDensityMaskFuncArg;
 
+    /** Unused. Must be NULL */
     GDALMaskFunc        pfnDstValidityMaskFunc;
+    /** Unused. Must be NULL */
     void               *pDstValidityMaskFuncArg;
 
+    /** Unused. Must be NULL */
     CPLErr              (*pfnPreWarpChunkProcessor)( void *pKern, void *pArg );
+    /** Unused. Must be NULL */
     void               *pPreWarpProcessorArg;
-    
+
+    /** Unused. Must be NULL */
     CPLErr              (*pfnPostWarpChunkProcessor)( void *pKern, void *pArg);
+    /** Unused. Must be NULL */
     void               *pPostWarpProcessorArg;
 
     /*! Optional OGRPolygonH for a masking cutline. */
@@ -190,30 +225,32 @@ void CPL_DLL CPL_STDCALL GDALDestroyWarpOptions( GDALWarpOptions * );
 GDALWarpOptions CPL_DLL * CPL_STDCALL
 GDALCloneWarpOptions( const GDALWarpOptions * );
 
+/*! @cond Doxygen_Suppress */
 CPLXMLNode CPL_DLL * CPL_STDCALL
       GDALSerializeWarpOptions( const GDALWarpOptions * );
 GDALWarpOptions CPL_DLL * CPL_STDCALL
       GDALDeserializeWarpOptions( CPLXMLNode * );
+/*! @endcond */
 
 /************************************************************************/
 /*                         GDALReprojectImage()                         */
 /************************************************************************/
 
 CPLErr CPL_DLL CPL_STDCALL
-GDALReprojectImage( GDALDatasetH hSrcDS, const char *pszSrcWKT, 
+GDALReprojectImage( GDALDatasetH hSrcDS, const char *pszSrcWKT,
                     GDALDatasetH hDstDS, const char *pszDstWKT,
                     GDALResampleAlg eResampleAlg, double dfWarpMemoryLimit,
                     double dfMaxError,
-                    GDALProgressFunc pfnProgress, void *pProgressArg, 
+                    GDALProgressFunc pfnProgress, void *pProgressArg,
                     GDALWarpOptions *psOptions );
 
 CPLErr CPL_DLL CPL_STDCALL
-GDALCreateAndReprojectImage( GDALDatasetH hSrcDS, const char *pszSrcWKT, 
+GDALCreateAndReprojectImage( GDALDatasetH hSrcDS, const char *pszSrcWKT,
                     const char *pszDstFilename, const char *pszDstWKT,
                     GDALDriverH hDstDriver, char **papszCreateOptions,
                     GDALResampleAlg eResampleAlg, double dfWarpMemoryLimit,
                     double dfMaxError,
-                    GDALProgressFunc pfnProgress, void *pProgressArg, 
+                    GDALProgressFunc pfnProgress, void *pProgressArg,
                     GDALWarpOptions *psOptions );
 
 /************************************************************************/
@@ -221,89 +258,133 @@ GDALCreateAndReprojectImage( GDALDatasetH hSrcDS, const char *pszSrcWKT,
 /************************************************************************/
 
 GDALDatasetH CPL_DLL CPL_STDCALL
-GDALAutoCreateWarpedVRT( GDALDatasetH hSrcDS, 
-                         const char *pszSrcWKT, const char *pszDstWKT, 
-                         GDALResampleAlg eResampleAlg, 
+GDALAutoCreateWarpedVRT( GDALDatasetH hSrcDS,
+                         const char *pszSrcWKT, const char *pszDstWKT,
+                         GDALResampleAlg eResampleAlg,
                          double dfMaxError, const GDALWarpOptions *psOptions );
 
-GDALDatasetH CPL_DLL CPL_STDCALL 
-GDALCreateWarpedVRT( GDALDatasetH hSrcDS, 
+GDALDatasetH CPL_DLL CPL_STDCALL
+GDALCreateWarpedVRT( GDALDatasetH hSrcDS,
                      int nPixels, int nLines, double *padfGeoTransform,
                      GDALWarpOptions *psOptions );
 
 CPLErr CPL_DLL CPL_STDCALL
-GDALInitializeWarpedVRT( GDALDatasetH hDS, 
+GDALInitializeWarpedVRT( GDALDatasetH hDS,
                          GDALWarpOptions *psWO );
 
 CPL_C_END
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 
 /************************************************************************/
 /*                            GDALWarpKernel                            */
 /*                                                                      */
-/*      This class represents the lowest level of abstraction.  It      */
-/*      is holds the imagery for one "chunk" of a warp, and the         */
-/*      pre-prepared masks.  All IO is done before and after it's       */
-/*      operation.  This class is not normally used by the              */
-/*      application.                                                    */
-/************************************************************************/
 
-// This is the number of dummy pixels that must be reserved in source arrays
-// in order to satisfy assumptions made in GWKResample(), and more specifically
-// by GWKGetPixelRow() that always read a even number of pixels. So if we are
-// in the situation to read the last pixel of the source array, we need 1 extra
-// dummy pixel to avoid reading out of bounds.
+/** This is the number of dummy pixels that must be reserved in source arrays
+ * in order to satisfy assumptions made in GWKResample(), and more specifically
+ * by GWKGetPixelRow() that always read a even number of pixels. So if we are
+ * in the situation to read the last pixel of the source array, we need 1 extra
+ * dummy pixel to avoid reading out of bounds. */
 #define WARP_EXTRA_ELTS    1
 
+/** This class represents the lowest level of abstraction of warping.
+ *
+ * It holds the imagery for one "chunk" of a warp, and the
+ * pre-prepared masks.  All IO is done before and after its
+ * operation.  This class is not normally used by the
+ * application.
+ */
 class CPL_DLL GDALWarpKernel
 {
 public:
+    /** Warp options */
     char              **papszWarpOptions;
 
-    GDALResampleAlg	eResample;
+    /** Resample algorithm */
+    GDALResampleAlg     eResample;
+    /** Working data type */
     GDALDataType        eWorkingDataType;
+    /** Number of input and output bands (excluding alpha bands) */
     int                 nBands;
 
+    /** Width of the source image */
     int                 nSrcXSize;
+    /** Height of the source image */
     int                 nSrcYSize;
-    GByte               **papabySrcImage; /* each subarray must have WARP_EXTRA_ELTS at the end */
+    /** Extra pixels (included in nSrcXSize) reserved for filter window. Should be ignored in scale computation */
+    int                 nSrcXExtraSize;
+    /** Extra pixels (included in nSrcYSize) reserved for filter window. Should be ignored in scale computation */
+    int                 nSrcYExtraSize;
+    /** Array of nBands source images of size nSrcXSize * nSrcYSize. Each subarray must have WARP_EXTRA_ELTS at the end */
+    GByte               **papabySrcImage;
 
-    GUInt32           **papanBandSrcValid; /* each subarray must have WARP_EXTRA_ELTS at the end */
-    GUInt32            *panUnifiedSrcValid; /* must have WARP_EXTRA_ELTS at the end */
-    float              *pafUnifiedSrcDensity; /* must have WARP_EXTRA_ELTS at the end */
+    /** Array of nBands validity mask of size (nSrcXSize * nSrcYSize + WARP_EXTRA_ELTS) / 8 */
+    GUInt32           **papanBandSrcValid;
+    /** Unified validity mask of size (nSrcXSize * nSrcYSize + WARP_EXTRA_ELTS) / 8 */
+    GUInt32            *panUnifiedSrcValid;
+    /** Unified source density of size nSrcXSize * nSrcYSize + WARP_EXTRA_ELTS */
+    float              *pafUnifiedSrcDensity;
 
+    /** Width of the destination image */
     int                 nDstXSize;
+    /** Height of the destination image */
     int                 nDstYSize;
+    /** Array of nBands destination images of size nDstXSize * nDstYSize */
     GByte             **papabyDstImage;
+    /** Validify mask of size (nDstXSize * nDstYSize) / 8 */
     GUInt32            *panDstValid;
+    /** Destination density of size nDstXSize * nDstYSize */
     float              *pafDstDensity;
 
-    double              dfXScale;   // Resampling scale, i.e.
-    double              dfYScale;   // nDstSize/nSrcSize.
-    double              dfXFilter;  // Size of filter kernel.
+    /** X resampling scale, i.e. nDstXSize / nSrcXSize */
+    double              dfXScale;
+    /** Y resampling scale, i.e. nDstYSize / nSrcYSize */
+    double              dfYScale;
+    /** X size of filter kernel */
+    double              dfXFilter;
+    /** Y size of filter kernel */
     double              dfYFilter;
-    int                 nXRadius;   // Size of window to filter.
+    /** X size of window to filter */
+    int                 nXRadius;
+    /** Y size of window to filter */
     int                 nYRadius;
-    int                 nFiltInitX; // Filtering offset
+    /** X filtering offset */
+    int                 nFiltInitX;
+    /** Y filtering offset */
     int                 nFiltInitY;
-    
+
+    /** X offset of the source buffer regarding the top-left corner of the image */
     int                 nSrcXOff;
+    /** Y offset of the source buffer regarding the top-left corner of the image */
     int                 nSrcYOff;
 
+    /** X offset of the destination buffer regarding the top-left corner of the image */
     int                 nDstXOff;
+    /** Y offset of the destination buffer regarding the top-left corner of the image */
     int                 nDstYOff;
-        
+
+    /** Pixel transformation function */
     GDALTransformerFunc pfnTransformer;
+    /** User data provided to pfnTransformer */
     void                *pTransformerArg;
 
+    /** Progress function */
     GDALProgressFunc    pfnProgress;
+    /** User data provided to pfnProgress */
     void                *pProgress;
 
+    /** Base/offset value for progress computation */
     double              dfProgressBase;
+    /** Scale value for progress computation */
     double              dfProgressScale;
-    
+
+    /** Array of nBands value for destination nodata */
     double              *padfDstNoDataReal;
+
+/*! @cond Doxygen_Suppress */
+    /** Per-thread data. Internally set */
+    void                *psThreadData;
+/*! @endcond */
 
                        GDALWarpKernel();
     virtual           ~GDALWarpKernel();
@@ -311,6 +392,13 @@ public:
     CPLErr              Validate();
     CPLErr              PerformWarp();
 };
+
+/*! @cond Doxygen_Suppress */
+void* GWKThreadsCreate(char** papszWarpOptions,
+                       GDALTransformerFunc pfnTransformer,
+                       void* pTransformerArg);
+void GWKThreadsEnd(void* psThreadDataIn);
+/*! @endcond */
 
 /************************************************************************/
 /*                         GDALWarpOperation()                          */
@@ -322,6 +410,10 @@ public:
 /*      masks.  Actual resampling is done by the GDALWarpKernel.        */
 /************************************************************************/
 
+/*! @cond Doxygen_Suppress */
+typedef struct _GDALWarpChunk GDALWarpChunk;
+/*! @endcond */
+
 class CPL_DLL GDALWarpOperation {
 private:
     GDALWarpOptions *psOptions;
@@ -329,31 +421,33 @@ private:
     void            WipeOptions();
     int             ValidateOptions();
 
-    CPLErr          ComputeSourceWindow( int nDstXOff, int nDstYOff, 
+    CPLErr          ComputeSourceWindow( int nDstXOff, int nDstYOff,
                                          int nDstXSize, int nDstYSize,
-                                         int *pnSrcXOff, int *pnSrcYOff, 
-                                         int *pnSrcXSize, int *pnSrcYSize );
+                                         int *pnSrcXOff, int *pnSrcYOff,
+                                         int *pnSrcXSize, int *pnSrcYSize,
+                                         int *pnSrcXExtraSize, int *pnSrcYExtraSize,
+                                         double* pdfSrcFillRatio );
 
-    CPLErr          CreateKernelMask( GDALWarpKernel *, int iBand, 
+    static CPLErr          CreateKernelMask( GDALWarpKernel *, int iBand,
                                       const char *pszType );
 
-    void            *unused1;
-    void            *unused2;
-    void            *hIOMutex;
-    void            *hWarpMutex;
+    CPLMutex        *hIOMutex;
+    CPLMutex        *hWarpMutex;
 
     int             nChunkListCount;
     int             nChunkListMax;
-    int            *panChunkList;
+    GDALWarpChunk  *pasChunkList;
 
     int             bReportTimings;
     unsigned long   nLastTimeReported;
 
+    void           *psThreadData;
+
     void            WipeChunkList();
-    CPLErr          CollectChunkList( int nDstXOff, int nDstYOff, 
+    CPLErr          CollectChunkList( int nDstXOff, int nDstYOff,
                                       int nDstXSize, int nDstYSize );
     void            ReportTiming( const char * );
-    
+
 public:
                     GDALWarpOperation();
     virtual        ~GDALWarpOperation();
@@ -362,29 +456,43 @@ public:
 
     const GDALWarpOptions         *GetOptions();
 
-    CPLErr          ChunkAndWarpImage( int nDstXOff, int nDstYOff, 
+    CPLErr          ChunkAndWarpImage( int nDstXOff, int nDstYOff,
                                        int nDstXSize, int nDstYSize );
-    CPLErr          ChunkAndWarpMulti( int nDstXOff, int nDstYOff, 
+    CPLErr          ChunkAndWarpMulti( int nDstXOff, int nDstYOff,
                                        int nDstXSize, int nDstYSize );
-    CPLErr          WarpRegion( int nDstXOff, int nDstYOff, 
+    CPLErr          WarpRegion( int nDstXOff, int nDstYOff,
                                 int nDstXSize, int nDstYSize,
                                 int nSrcXOff=0, int nSrcYOff=0,
                                 int nSrcXSize=0, int nSrcYSize=0,
                                 double dfProgressBase=0.0, double dfProgressScale=1.0);
-    
-    CPLErr          WarpRegionToBuffer( int nDstXOff, int nDstYOff, 
-                                        int nDstXSize, int nDstYSize, 
-                                        void *pDataBuf, 
+    CPLErr          WarpRegion( int nDstXOff, int nDstYOff,
+                                int nDstXSize, int nDstYSize,
+                                int nSrcXOff, int nSrcYOff,
+                                int nSrcXSize, int nSrcYSize,
+                                int nSrcXExtraSize, int nSrcYExtraSize,
+                                double dfProgressBase, double dfProgressScale);
+    CPLErr          WarpRegionToBuffer( int nDstXOff, int nDstYOff,
+                                        int nDstXSize, int nDstYSize,
+                                        void *pDataBuf,
                                         GDALDataType eBufDataType,
                                         int nSrcXOff=0, int nSrcYOff=0,
                                         int nSrcXSize=0, int nSrcYSize=0,
                                         double dfProgressBase=0.0, double dfProgressScale=1.0);
+    CPLErr          WarpRegionToBuffer( int nDstXOff, int nDstYOff,
+                                        int nDstXSize, int nDstYSize,
+                                        void *pDataBuf,
+                                        GDALDataType eBufDataType,
+                                        int nSrcXOff, int nSrcYOff,
+                                        int nSrcXSize, int nSrcYSize,
+                                        int nSrcXExtraSize, int nSrcYExtraSize,
+                                        double dfProgressBase, double dfProgressScale);
 };
 
 #endif /* def __cplusplus */
 
 CPL_C_START
 
+/** Opaque type representing a GDALWarpOperation object */
 typedef void * GDALWarpOperationH;
 
 GDALWarpOperationH CPL_DLL GDALCreateWarpOperation(const GDALWarpOptions* );
@@ -396,6 +504,21 @@ CPLErr CPL_DLL GDALWarpRegion( GDALWarpOperationH,
 CPLErr CPL_DLL GDALWarpRegionToBuffer( GDALWarpOperationH, int, int, int, int,
                                        void *, GDALDataType,
                                        int, int, int, int );
+
+/************************************************************************/
+/*      Warping kernel functions                                        */
+/************************************************************************/
+
+/*! @cond Doxygen_Suppress */
+int GWKGetFilterRadius(GDALResampleAlg eResampleAlg);
+
+typedef double (*FilterFuncType)(double dfX);
+FilterFuncType GWKGetFilterFunc(GDALResampleAlg eResampleAlg);
+
+// TODO(schwehr): Can padfVals be a const pointer?
+typedef double (*FilterFunc4ValuesType)(double* padfVals);
+FilterFunc4ValuesType GWKGetFilterFunc4Values(GDALResampleAlg eResampleAlg);
+/*! @endcond */
 
 CPL_C_END
 

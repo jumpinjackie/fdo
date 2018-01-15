@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: gdalwarp.cpp 12380 2007-10-12 17:35:00Z rouault $
  *
  * Project:  GDAL
- * Purpose:  Commandline point transformer.
+ * Purpose:  Command line point transformer.
  * Author:   Frank Warmerdam <warmerdam@pobox.com>
  *
  ******************************************************************************
  * Copyright (c) 2007, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2008-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,7 +31,7 @@
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
 
-CPL_CVSID("$Id: gdaltransform.cpp 12380 2007-10-12 17:35:00Z rouault $");
+CPL_CVSID("$Id: gdaltransform.cpp 36537 2016-11-27 23:51:56Z goatbar $");
 
 /************************************************************************/
 /*                               Usage()                                */
@@ -40,12 +40,12 @@ CPL_CVSID("$Id: gdaltransform.cpp 12380 2007-10-12 17:35:00Z rouault $");
 static void Usage(const char* pszErrorMsg = NULL)
 
 {
-    printf( 
+    printf(
         "Usage: gdaltransform [--help-general]\n"
         "    [-i] [-s_srs srs_def] [-t_srs srs_def] [-to \"NAME=VALUE\"]\n"
         "    [-order n] [-tps] [-rpc] [-geoloc] \n"
-        "    [-gcp pixel line easting northing [elevation]]*\n" 
-        "    [srcfile [dstfile]]\n" 
+        "    [-gcp pixel line easting northing [elevation]]* [-output_xy]\n"
+        "    [srcfile [dstfile]]\n"
         "\n" );
 
     if( pszErrorMsg != NULL )
@@ -58,14 +58,14 @@ static void Usage(const char* pszErrorMsg = NULL)
 /*                             SanitizeSRS                              */
 /************************************************************************/
 
-char *SanitizeSRS( const char *pszUserInput )
+static char *SanitizeSRS( const char *pszUserInput )
 
 {
     OGRSpatialReferenceH hSRS;
     char *pszResult = NULL;
 
     CPLErrorReset();
-    
+
     hSRS = OSRNewSpatialReference( NULL );
     if( OSRSetFromUserInput( hSRS, pszUserInput ) == OGRERR_NONE )
         OSRExportToWkt( hSRS, &pszResult );
@@ -76,7 +76,7 @@ char *SanitizeSRS( const char *pszUserInput )
                   pszUserInput );
         exit( 1 );
     }
-    
+
     OSRDestroySpatialReference( hSRS );
 
     return pszResult;
@@ -88,7 +88,8 @@ char *SanitizeSRS( const char *pszUserInput )
 
 #define CHECK_HAS_ENOUGH_ADDITIONAL_ARGS(nExtraArg) \
     do { if (i + nExtraArg >= argc) \
-        Usage(CPLSPrintf("%s option requires %d argument(s)", argv[i], nExtraArg)); } while(0)
+        Usage(CPLSPrintf("%s option requires %d argument(s)", \
+                         argv[i], nExtraArg)); } while( false )
 
 int main( int argc, char ** argv )
 
@@ -102,6 +103,11 @@ int main( int argc, char ** argv )
     GDAL_GCP            *pasGCPs = NULL;
     int                 bInverse = FALSE;
     char              **papszTO = NULL;
+    int                 bOutputXY = FALSE;
+    double              dfX = 0.0;
+    double              dfY = 0.0;
+    double              dfZ = 0.0;
+    bool                bCoordOnCommandLine = false;
 
     /* Check that we are running against at least GDAL 1.5 */
     /* Note to developers : if we use newer API, please change the requirement */
@@ -122,12 +128,13 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
     int i;
 
-    for( i = 1; i < argc; i++ )
+    for( i = 1; i < argc && argv[i] != NULL; i++ )
     {
         if( EQUAL(argv[i], "--utility_version") )
         {
             printf("%s was compiled against GDAL %s and is running against GDAL %s\n",
                    argv[0], GDAL_RELEASE_NAME, GDALVersionInfo("RELEASE_NAME"));
+            CSLDestroy(argv);
             return 0;
         }
         else if( EQUAL(argv[i],"--help") )
@@ -181,28 +188,42 @@ int main( int argc, char ** argv )
             /* -gcp pixel line easting northing [elev] */
 
             nGCPCount++;
-            pasGCPs = (GDAL_GCP *) 
+            pasGCPs = (GDAL_GCP *)
                 CPLRealloc( pasGCPs, sizeof(GDAL_GCP) * nGCPCount );
             GDALInitGCPs( 1, pasGCPs + nGCPCount - 1 );
 
-            pasGCPs[nGCPCount-1].dfGCPPixel = atof(argv[++i]);
-            pasGCPs[nGCPCount-1].dfGCPLine = atof(argv[++i]);
-            pasGCPs[nGCPCount-1].dfGCPX = atof(argv[++i]);
-            pasGCPs[nGCPCount-1].dfGCPY = atof(argv[++i]);
-            if( argv[i+1] != NULL 
+            pasGCPs[nGCPCount-1].dfGCPPixel = CPLAtof(argv[++i]);
+            pasGCPs[nGCPCount-1].dfGCPLine = CPLAtof(argv[++i]);
+            pasGCPs[nGCPCount-1].dfGCPX = CPLAtof(argv[++i]);
+            pasGCPs[nGCPCount-1].dfGCPY = CPLAtof(argv[++i]);
+            if( argv[i+1] != NULL
                 && (CPLStrtod(argv[i+1], &endptr) != 0.0 || argv[i+1][0] == '0') )
             {
                 /* Check that last argument is really a number and not a filename */
                 /* looking like a number (see ticket #863) */
                 if (endptr && *endptr == 0)
-                    pasGCPs[nGCPCount-1].dfGCPZ = atof(argv[++i]);
+                    pasGCPs[nGCPCount-1].dfGCPZ = CPLAtof(argv[++i]);
             }
 
             /* should set id and info? */
-        }   
+        }
 
+        else if( EQUAL(argv[i],"-output_xy") )
+        {
+            bOutputXY = TRUE;
+        }
+
+        else if( EQUAL(argv[i],"-coord")  && i + 2 < argc)
+        {
+            bCoordOnCommandLine = true;
+            dfX = CPLAtof(argv[++i]);
+            dfY = CPLAtof(argv[++i]);
+            if( i + 1 < argc && CPLGetValueType(argv[i+1]) != CPL_VALUE_STRING )
+                dfZ = CPLAtof(argv[++i]);
+            bOutputXY = TRUE;
+        }
         else if( argv[i][0] == '-' )
-            Usage(CPLSPrintf("Unkown option name '%s'", argv[i]));
+            Usage(CPLSPrintf("Unknown option name '%s'", argv[i]));
 
         else if( pszSrcFilename == NULL )
             pszSrcFilename = argv[i];
@@ -235,10 +256,10 @@ int main( int argc, char ** argv )
 
     if( hSrcDS != NULL && nGCPCount > 0 )
     {
-        fprintf( stderr, "Commandline GCPs and input file specified, specify one or the other.\n" );
+        fprintf( stderr, "Command line GCPs and input file specified, specify one or the other.\n" );
         exit( 1 );
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Create a transformation object from the source to               */
 /*      destination coordinate system.                                  */
@@ -246,19 +267,19 @@ int main( int argc, char ** argv )
     if( nGCPCount != 0 && nOrder == -1 )
     {
         pfnTransformer = GDALTPSTransform;
-        hTransformArg = 
+        hTransformArg =
             GDALCreateTPSTransformer( nGCPCount, pasGCPs, FALSE );
     }
     else if( nGCPCount != 0 )
     {
         pfnTransformer = GDALGCPTransform;
-        hTransformArg = 
+        hTransformArg =
             GDALCreateGCPTransformer( nGCPCount, pasGCPs, nOrder, FALSE );
     }
     else
     {
         pfnTransformer = GDALGenImgProjTransform;
-        hTransformArg = 
+        hTransformArg =
             GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, papszTO );
     }
 
@@ -272,40 +293,49 @@ int main( int argc, char ** argv )
 /* -------------------------------------------------------------------- */
 /*      Read points from stdin, transform and write to stdout.          */
 /* -------------------------------------------------------------------- */
-    while( !feof(stdin) )
+    while( bCoordOnCommandLine || !feof(stdin) )
     {
-        char szLine[1024];
-
-        if( fgets( szLine, sizeof(szLine)-1, stdin ) == NULL )
-            break;
-
-        char **papszTokens = CSLTokenizeString(szLine);
-        double dfX, dfY, dfZ = 0.0;
-        int bSuccess = TRUE;
-
-        if( CSLCount(papszTokens) < 2 )
+        if( !bCoordOnCommandLine )
         {
+            char szLine[1024];
+
+            if( fgets( szLine, sizeof(szLine)-1, stdin ) == NULL )
+                break;
+
+            char **papszTokens = CSLTokenizeString(szLine);
+
+            if( CSLCount(papszTokens) < 2 )
+            {
+                CSLDestroy(papszTokens);
+                continue;
+            }
+
+            dfX = CPLAtof(papszTokens[0]);
+            dfY = CPLAtof(papszTokens[1]);
+            if( CSLCount(papszTokens) >= 3 )
+                dfZ = CPLAtof(papszTokens[2]);
+            else
+                dfZ = 0.0;
             CSLDestroy(papszTokens);
-            continue;
         }
 
-        dfX = atof(papszTokens[0]);
-        dfY = atof(papszTokens[1]);
-        if( CSLCount(papszTokens) >= 3 )
-            dfZ = atof(papszTokens[2]);
-
-        if( pfnTransformer( hTransformArg, bInverse, 1, 
+        int bSuccess = TRUE;
+        if( pfnTransformer( hTransformArg, bInverse, 1,
                             &dfX, &dfY, &dfZ, &bSuccess )
             && bSuccess )
         {
-            printf( "%.15g %.15g %.15g\n", dfX, dfY, dfZ );
+            if( bOutputXY )
+                CPLprintf( "%.15g %.15g\n", dfX, dfY );
+            else
+                CPLprintf( "%.15g %.15g %.15g\n", dfX, dfY, dfZ );
         }
         else
         {
             printf( "transformation failed.\n" );
         }
 
-        CSLDestroy(papszTokens);
+        if( bCoordOnCommandLine )
+            break;
     }
 
     if( nGCPCount != 0 && nOrder == -1 )

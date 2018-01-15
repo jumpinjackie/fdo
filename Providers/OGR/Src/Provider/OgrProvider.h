@@ -263,7 +263,9 @@ public:
             FdoDataType_Double,
 //            FdoDataType_Int16,
             FdoDataType_Int32,
-//            FdoDataType_Int64,
+#if GDAL_VERSION_MAJOR >= 2
+            FdoDataType_Int64,
+#endif
 //            FdoDataType_Single,
             FdoDataType_String,
 //      FdoDataType_BLOB,
@@ -551,7 +553,12 @@ public:
     FdoInt32 Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals);
     FdoInt32 Delete(FdoIdentifier* fcname, FdoFilter* filter);
     FdoIFeatureReader* Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals);
+
+#if GDAL_VERSION_MAJOR < 2
     OGRDataSource* GetOGRDataSource() { return m_poDS; }
+#else
+    GDALDataset* GetOGRDataSource() { return m_poDS; }
+#endif
 
 private :
 
@@ -560,7 +567,12 @@ private :
     FdoConnectionState m_connState;
     FdoFeatureSchemaCollection* m_pSchema;
     FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
+
+#if GDAL_VERSION_MAJOR < 2
     OGRDataSource* m_poDS;
+#else
+    GDALDataset* m_poDS;
+#endif
 };
 
 

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_xplane_nav_reader.cpp
+ * $Id: ogr_xplane_nav_reader.cpp$
  *
  * Project:  X-Plane nav.dat file reader header
  * Purpose:  Definition of classes for X-Plane nav.dat file reader
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_XPLANE_NAV_READER_H_INCLUDED
-#define _OGR_XPLANE_NAV_READER_H_INCLUDED
+#ifndef OGR_XPLANE_NAV_READER_H_INCLUDED
+#define OGR_XPLANE_NAV_READER_H_INCLUDED
 
 #include "ogr_xplane.h"
 #include "ogr_xplane_reader.h"
@@ -36,7 +36,6 @@
 /************************************************************************/
 /*                           OGRXPlaneILSLayer                          */
 /************************************************************************/
-
 
 class OGRXPlaneILSLayer : public OGRXPlaneLayer
 {
@@ -58,7 +57,6 @@ class OGRXPlaneILSLayer : public OGRXPlaneLayer
 /*                           OGRXPlaneVORLayer                          */
 /************************************************************************/
 
-
 class OGRXPlaneVORLayer : public OGRXPlaneLayer
 {
   public:
@@ -78,7 +76,6 @@ class OGRXPlaneVORLayer : public OGRXPlaneLayer
 /*                           OGRXPlaneNDBLayer                          */
 /************************************************************************/
 
-
 class OGRXPlaneNDBLayer : public OGRXPlaneLayer
 {
   public:
@@ -96,7 +93,6 @@ class OGRXPlaneNDBLayer : public OGRXPlaneLayer
 /************************************************************************/
 /*                           OGRXPlaneGSLayer                          */
 /************************************************************************/
-
 
 class OGRXPlaneGSLayer : public OGRXPlaneLayer
 {
@@ -118,7 +114,6 @@ class OGRXPlaneGSLayer : public OGRXPlaneLayer
 /*                          OGRXPlaneMarkerLayer                        */
 /************************************************************************/
 
-
 class OGRXPlaneMarkerLayer : public OGRXPlaneLayer
 {
   public:
@@ -136,7 +131,6 @@ class OGRXPlaneMarkerLayer : public OGRXPlaneLayer
 /*                         OGRXPlaneDMEILSLayer                         */
 /************************************************************************/
 
-
 class OGRXPlaneDMEILSLayer : public OGRXPlaneLayer
 {
   public:
@@ -152,11 +146,9 @@ class OGRXPlaneDMEILSLayer : public OGRXPlaneLayer
                                    double dfDMEBias);
 };
 
-
 /************************************************************************/
 /*                           OGRXPlaneDMELayer                          */
 /************************************************************************/
-
 
 class OGRXPlaneDMELayer : public OGRXPlaneLayer
 {
@@ -173,13 +165,12 @@ class OGRXPlaneDMELayer : public OGRXPlaneLayer
                                    double dfDMEBias);
 };
 
-
 enum
 {
-    NAVAID_NDB            = 2, 
+    NAVAID_NDB            = 2,
     NAVAID_VOR            = 3, /* VOR, VORTAC or VOR-DME.*/
-    NAVAID_LOC_ILS        = 4, /* Localiser that is part of a full ILS */
-    NAVAID_LOC_STANDALONE = 5, /* Stand-alone localiser (LOC), also including a LDA (Landing Directional Aid) or SDF (Simplified Directional Facility) */
+    NAVAID_LOC_ILS        = 4, /* Localizer that is part of a full ILS */
+    NAVAID_LOC_STANDALONE = 5, /* Stand-alone Localizer (LOC), also including a LDA (Landing Directional Aid) or SDF (Simplified Directional Facility) */
     NAVAID_GS             = 6, /* Glideslope */
     NAVAID_OM             = 7, /* Outer marker */
     NAVAID_MM             = 8, /* Middle marker */
@@ -187,7 +178,6 @@ enum
     NAVAID_DME_COLOC      = 12, /* DME (including the DME element of an ILS, VORTAC or VOR-DME) */
     NAVAID_DME_STANDALONE = 13, /* DME (including the DME element of an NDB-DME) */
 };
-
 
 /************************************************************************/
 /*                           OGRXPlaneNavReader                         */
@@ -209,12 +199,12 @@ class OGRXPlaneNavReader : public OGRXPlaneReader
         void                     ParseRecord(int nType);
 
     protected:
-        virtual void             Read();
+        virtual void             Read() override;
 
     public:
-                                 OGRXPlaneNavReader( OGRXPlaneDataSource* poDataSource );
-        virtual OGRXPlaneReader* CloneForLayer(OGRXPlaneLayer* poLayer);
-        virtual int              IsRecognizedVersion( const char* pszVersionString);
+        explicit                 OGRXPlaneNavReader( OGRXPlaneDataSource* poDataSource );
+        virtual OGRXPlaneReader* CloneForLayer(OGRXPlaneLayer* poLayer) override;
+        virtual int              IsRecognizedVersion( const char* pszVersionString) override;
 };
 
 #endif

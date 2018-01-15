@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrodbctablelayer.cpp 24961 2012-09-23 18:06:49Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRODBCTableLayer class, access to an existing table.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2003, Frank Warmerdam
+ * Copyright (c) 2009-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,29 +30,23 @@
 #include "cpl_conv.h"
 #include "ogr_odbc.h"
 
-CPL_CVSID("$Id: ogrodbctablelayer.cpp 24961 2012-09-23 18:06:49Z rouault $");
+CPL_CVSID("$Id: ogrodbctablelayer.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 /************************************************************************/
 /*                          OGRODBCTableLayer()                         */
 /************************************************************************/
 
-OGRODBCTableLayer::OGRODBCTableLayer( OGRODBCDataSource *poDSIn )
-
+OGRODBCTableLayer::OGRODBCTableLayer( OGRODBCDataSource *poDSIn ) :
+    pszQuery(NULL),
+    bHaveSpatialExtents(FALSE),
+    pszTableName(NULL),
+    pszSchemaName(NULL)
 {
     poDS = poDSIn;
-
-    pszQuery = NULL;
-
-    bUpdateAccess = TRUE;
-    bHaveSpatialExtents = FALSE;
-
     iNextShapeId = 0;
 
     nSRSId = -1;
 
     poFeatureDefn = NULL;
-    
-    pszTableName = NULL;
-    pszSchemaName = NULL;
 }
 
 /************************************************************************/
@@ -73,7 +67,7 @@ OGRODBCTableLayer::~OGRODBCTableLayer()
 /*                             Initialize()                             */
 /************************************************************************/
 
-CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName, 
+CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
                                       const char *pszGeomCol )
 
 {
@@ -81,6 +75,8 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
 
     CPLFree( pszFIDColumn );
     pszFIDColumn = NULL;
+
+    SetDescription( pszLayerName );
 
 /* -------------------------------------------------------------------- */
 /*      Parse out schema name if present in layer.  We assume a         */
@@ -103,13 +99,13 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
 /*      Do we have a simple primary key?                                */
 /* -------------------------------------------------------------------- */
     CPLODBCStatement oGetKey( poSession );
-    
-    if( oGetKey.GetPrimaryKeys( pszTableName, NULL, pszSchemaName ) 
+
+    if( oGetKey.GetPrimaryKeys( pszTableName, NULL, pszSchemaName )
         && oGetKey.Fetch() )
     {
         pszFIDColumn = CPLStrdup(oGetKey.GetColData( 3 ));
-        
-        if( oGetKey.Fetch() ) // more than one field in key! 
+
+        if( oGetKey.Fetch() ) // more than one field in key!
         {
             CPLFree( pszFIDColumn );
             pszFIDColumn = NULL;
@@ -143,8 +139,8 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
 
     if( poFeatureDefn->GetFieldCount() == 0 )
     {
-        CPLError( CE_Warning, CPLE_AppDefined, 
-                  "No column definitions found for table '%s', layer not usable.", 
+        CPLError( CE_Warning, CPLE_AppDefined,
+                  "No column definitions found for table '%s', layer not usable.",
                   pszLayerName );
         return CE_Failure;
     }
@@ -152,16 +148,16 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
 /* -------------------------------------------------------------------- */
 /*      Do we have XMIN, YMIN, XMAX, YMAX extent fields?                */
 /* -------------------------------------------------------------------- */
-    if( poFeatureDefn->GetFieldIndex( "XMIN" ) != -1 
-        && poFeatureDefn->GetFieldIndex( "XMAX" ) != -1 
-        && poFeatureDefn->GetFieldIndex( "YMIN" ) != -1 
+    if( poFeatureDefn->GetFieldIndex( "XMIN" ) != -1
+        && poFeatureDefn->GetFieldIndex( "XMAX" ) != -1
+        && poFeatureDefn->GetFieldIndex( "YMIN" ) != -1
         && poFeatureDefn->GetFieldIndex( "YMAX" ) != -1 )
     {
         bHaveSpatialExtents = TRUE;
         CPLDebug( "OGR_ODBC", "Table %s has geometry extent fields.",
                   pszLayerName );
     }
-        
+
 /* -------------------------------------------------------------------- */
 /*      If we got a geometry column, does it exist?  Is it binary?      */
 /* -------------------------------------------------------------------- */
@@ -170,8 +166,8 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
         int iColumn = oGetCol.GetColId( pszGeomColumn );
         if( iColumn < 0 )
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "Column %s requested for geometry, but it does not exist.", 
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "Column %s requested for geometry, but it does not exist.",
                       pszGeomColumn );
             CPLFree( pszGeomColumn );
             pszGeomColumn = NULL;
@@ -183,7 +179,6 @@ CPLErr OGRODBCTableLayer::Initialize( const char *pszLayerName,
                 bGeomColumnWKB = TRUE;
         }
     }
-
 
     return CE_None;
 }
@@ -241,10 +236,10 @@ OGRErr OGRODBCTableLayer::ResetStatement()
             poStmt->Append( " WHERE" );
         else
             poStmt->Append( " AND" );
-        
+
         poStmt->Appendf( " XMAX > %.8f AND XMIN < %.8f"
-                         " AND YMAX > %.8f AND YMIN < %.8f", 
-                         m_sFilterEnvelope.MinX, m_sFilterEnvelope.MaxX, 
+                         " AND YMAX > %.8f AND YMIN < %.8f",
+                         m_sFilterEnvelope.MinX, m_sFilterEnvelope.MaxX,
                          m_sFilterEnvelope.MinY, m_sFilterEnvelope.MaxY );
     }
 
@@ -274,7 +269,7 @@ void OGRODBCTableLayer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRODBCTableLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRODBCTableLayer::GetFeature( GIntBig nFeatureId )
 
 {
     if( pszFIDColumn == NULL )
@@ -287,7 +282,7 @@ OGRFeature *OGRODBCTableLayer::GetFeature( long nFeatureId )
     poStmt = new CPLODBCStatement( poDS->GetSession() );
     poStmt->Append( "SELECT * FROM " );
     poStmt->Append( poFeatureDefn->GetName() );
-    poStmt->Appendf( " WHERE %s = %ld", pszFIDColumn, nFeatureId );
+    poStmt->Appendf( " WHERE %s = " CPL_FRMT_GIB, pszFIDColumn, nFeatureId );
 
     if( !poStmt->ExecuteSQL() )
     {
@@ -303,22 +298,24 @@ OGRFeature *OGRODBCTableLayer::GetFeature( long nFeatureId )
 /*                         SetAttributeFilter()                         */
 /************************************************************************/
 
-OGRErr OGRODBCTableLayer::SetAttributeFilter( const char *pszQuery )
+OGRErr OGRODBCTableLayer::SetAttributeFilter( const char *pszQueryIn )
 
 {
-    if( (pszQuery == NULL && this->pszQuery == NULL)
-        || (pszQuery != NULL && this->pszQuery != NULL 
-            && EQUAL(pszQuery,this->pszQuery)) )
+    CPLFree(m_pszAttrQueryString);
+    m_pszAttrQueryString = (pszQueryIn) ? CPLStrdup(pszQueryIn) : NULL;
+
+    if( (pszQueryIn == NULL && pszQuery == NULL)
+        || (pszQueryIn != NULL && pszQuery != NULL
+            && EQUAL(pszQueryIn, pszQuery)) )
         return OGRERR_NONE;
 
-    CPLFree( this->pszQuery );
-    this->pszQuery = (pszQuery != NULL ) ? CPLStrdup( pszQuery ) : NULL;
+    CPLFree( pszQuery );
+    pszQuery = pszQueryIn != NULL ? CPLStrdup( pszQueryIn ) : NULL;
 
     ClearStatement();
 
     return OGRERR_NONE;
 }
-
 
 /************************************************************************/
 /*                           TestCapability()                           */
@@ -329,8 +326,8 @@ int OGRODBCTableLayer::TestCapability( const char * pszCap )
 {
     if( EQUAL(pszCap,OLCRandomRead) )
         return TRUE;
-        
-    else 
+
+    else
         return OGRODBCLayer::TestCapability( pszCap );
 }
 
@@ -343,7 +340,7 @@ int OGRODBCTableLayer::TestCapability( const char * pszCap )
 /*      way of counting features matching a spatial query.              */
 /************************************************************************/
 
-int OGRODBCTableLayer::GetFeatureCount( int bForce )
+GIntBig OGRODBCTableLayer::GetFeatureCount( int bForce )
 
 {
     if( m_poFilterGeom != NULL )
@@ -358,13 +355,13 @@ int OGRODBCTableLayer::GetFeatureCount( int bForce )
 
     if( !oStmt.ExecuteSQL() || !oStmt.Fetch() )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "GetFeatureCount() failed on query %s.\n%s",
                   oStmt.GetCommand(), poDS->GetSession()->GetLastError() );
         return OGRODBCLayer::GetFeatureCount(bForce);
     }
 
-    return atoi(oStmt.GetColData(0));
+    return CPLAtoGIntBig(oStmt.GetColData(0));
 }
 
 /************************************************************************/
@@ -382,21 +379,20 @@ OGRSpatialReference *OGRODBCTableLayer::GetSpatialRef()
     if( nSRSId == -2 )
     {
         PGconn          *hPGConn = poDS->GetPGConn();
-        PGresult        *hResult;
-        char            szCommand[1024];
 
         nSRSId = -1;
 
         poDS->SoftStartTransaction();
 
-        sprintf( szCommand, 
+        char szCommand[1024] = {};
+        sprintf( szCommand,
                  "SELECT srid FROM geometry_columns "
                  "WHERE f_table_name = '%s'",
                  poFeatureDefn->GetName() );
-        hResult = PQexec(hPGConn, szCommand );
+        PGresult *hResult = PQexec(hPGConn, szCommand );
 
-        if( hResult 
-            && PQresultStatus(hResult) == PGRES_TUPLES_OK 
+        if( hResult
+            && PQresultStatus(hResult) == PGRES_TUPLES_OK
             && PQntuples(hResult) == 1 )
         {
             nSRSId = atoi(PQgetvalue(hResult,0,0));
@@ -408,4 +404,3 @@ OGRSpatialReference *OGRODBCTableLayer::GetSpatialRef()
 
     return OGRODBCLayer::GetSpatialRef();
 }
-

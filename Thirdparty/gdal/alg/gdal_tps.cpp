@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: gdal_tps.cpp 25304 2012-12-13 21:03:58Z rouault $
  *
  * Project:  High Performance Image Reprojector
  * Purpose:  Thin Plate Spline transformer (GDAL wrapper portion)
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2004, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2011-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,13 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "thinplatespline.h"
-#include "gdal_alg.h"
-#include "cpl_conv.h"
-#include "cpl_string.h"
-#include "cpl_atomic_ops.h"
 
-CPL_CVSID("$Id: gdal_tps.cpp 25304 2012-12-13 21:03:58Z rouault $");
+#include <stdlib.h>
+#include <string.h>
+#include <map>
+#include <utility>
+
+#include "cpl_atomic_ops.h"
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_minixml.h"
+#include "cpl_multiproc.h"
+#include "cpl_string.h"
+#include "gdal.h"
+#include "gdal_alg.h"
+#include "gdal_alg_priv.h"
+#include "gdal_priv.h"
+
+CPL_CVSID("$Id: gdal_tps.cpp 36667 2016-12-04 05:25:23Z goatbar $");
 
 CPL_C_START
 CPLXMLNode *GDALSerializeTPSTransformer( void *pTransformArg );
@@ -46,30 +59,51 @@ typedef struct
 
     VizGeorefSpline2D   *poForward;
     VizGeorefSpline2D   *poReverse;
+    bool                 bForwardSolved;
+    bool                 bReverseSolved;
 
-    int       bReversed;
+    bool      bReversed;
 
     int       nGCPCount;
     GDAL_GCP *pasGCPList;
-    
+
     volatile int nRefCount;
-    
+
 } TPSTransformInfo;
 
 /************************************************************************/
-/*                       GDALCloneTPSTransformer()                      */
+/*                   GDALCreateSimilarTPSTransformer()                  */
 /************************************************************************/
 
-void* GDALCloneTPSTransformer( void *hTransformArg )
+static
+void* GDALCreateSimilarTPSTransformer( void *hTransformArg,
+                                       double dfRatioX, double dfRatioY )
 {
-    VALIDATE_POINTER1( hTransformArg, "GDALCloneTPSTransformer", NULL );
+    VALIDATE_POINTER1( hTransformArg, "GDALCreateSimilarTPSTransformer", NULL );
 
-    TPSTransformInfo *psInfo = 
-        (TPSTransformInfo *) hTransformArg;
+    TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(hTransformArg);
 
-    /* We can just use a ref count, since using the source transformation */
-    /* is thread-safe */
-    CPLAtomicInc(&(psInfo->nRefCount));
+    if( dfRatioX == 1.0 && dfRatioY == 1.0 )
+    {
+        // We can just use a ref count, since using the source transformation
+        // is thread-safe.
+        CPLAtomicInc(&(psInfo->nRefCount));
+    }
+    else
+    {
+        GDAL_GCP *pasGCPList = GDALDuplicateGCPs( psInfo->nGCPCount,
+                                                  psInfo->pasGCPList );
+        for( int i = 0; i < psInfo->nGCPCount; i++ )
+        {
+            pasGCPList[i].dfGCPPixel /= dfRatioX;
+            pasGCPList[i].dfGCPLine /= dfRatioY;
+        }
+        psInfo = static_cast<TPSTransformInfo *>(
+            GDALCreateTPSTransformer( psInfo->nGCPCount, pasGCPList,
+                                      psInfo->bReversed ));
+        GDALDeinitGCPs( psInfo->nGCPCount, pasGCPList );
+        CPLFree( pasGCPList );
+    }
 
     return psInfo;
 }
@@ -83,83 +117,181 @@ void* GDALCloneTPSTransformer( void *hTransformArg )
  *
  * The thin plate spline transformer produces exact transformation
  * at all control points and smoothly varying transformations between
- * control points with greatest influence from local control points. 
- * It is suitable for for many applications not well modelled by polynomial
- * transformations. 
+ * control points with greatest influence from local control points.
+ * It is suitable for for many applications not well modeled by polynomial
+ * transformations.
  *
  * Creating the TPS transformer involves solving systems of linear equations
  * related to the number of control points involved.  This solution is
  * computed within this function call.  It can be quite an expensive operation
- * for large numbers of GCPs.  For instance, for reference, it takes on the 
- * order of 10s for 400 GCPs on a 2GHz Athlon processor. 
+ * for large numbers of GCPs.  For instance, for reference, it takes on the
+ * order of 10s for 400 GCPs on a 2GHz Athlon processor.
  *
- * TPS Transformers are serializable. 
+ * TPS Transformers are serializable.
  *
  * The GDAL Thin Plate Spline transformer is based on code provided by
- * Gilad Ronnen on behalf of VIZRT Inc (http://www.visrt.com).  Incorporation 
- * of the algorithm into GDAL was supported by the Centro di Ecologia Alpina 
- * (http://www.cealp.it). 
+ * Gilad Ronnen on behalf of VIZRT Inc (http://www.visrt.com).  Incorporation
+ * of the algorithm into GDAL was supported by the Centro di Ecologia Alpina
+ * (http://www.cealp.it).
  *
  * @param nGCPCount the number of GCPs in pasGCPList.
  * @param pasGCPList an array of GCPs to be used as input.
  * @param bReversed set it to TRUE to compute the reversed transformation.
- * 
- * @return the transform argument or NULL if creation fails. 
+ *
+ * @return the transform argument or NULL if creation fails.
  */
 
-void *GDALCreateTPSTransformer( int nGCPCount, const GDAL_GCP *pasGCPList, 
+void *GDALCreateTPSTransformer( int nGCPCount, const GDAL_GCP *pasGCPList,
                                 int bReversed )
+{
+    return GDALCreateTPSTransformerInt(nGCPCount, pasGCPList, bReversed, NULL);
+}
+
+static void GDALTPSComputeForwardInThread( void *pData )
+{
+    TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(pData);
+    psInfo->bForwardSolved = psInfo->poForward->solve() != 0;
+}
+
+void *GDALCreateTPSTransformerInt( int nGCPCount, const GDAL_GCP *pasGCPList,
+                                   int bReversed, char** papszOptions )
 
 {
-    TPSTransformInfo *psInfo;
-    int    iGCP;
-
 /* -------------------------------------------------------------------- */
 /*      Allocate transform info.                                        */
 /* -------------------------------------------------------------------- */
-    psInfo = (TPSTransformInfo *) CPLCalloc(sizeof(TPSTransformInfo),1);
+    TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(
+        CPLCalloc(sizeof(TPSTransformInfo), 1));
 
     psInfo->pasGCPList = GDALDuplicateGCPs( nGCPCount, pasGCPList );
     psInfo->nGCPCount = nGCPCount;
 
-    psInfo->bReversed = bReversed;
+    psInfo->bReversed = CPL_TO_BOOL(bReversed);
     psInfo->poForward = new VizGeorefSpline2D( 2 );
     psInfo->poReverse = new VizGeorefSpline2D( 2 );
 
-    strcpy( psInfo->sTI.szSignature, "GTI" );
+    memcpy( psInfo->sTI.abySignature,
+            GDAL_GTI2_SIGNATURE,
+            strlen(GDAL_GTI2_SIGNATURE) );
     psInfo->sTI.pszClassName = "GDALTPSTransformer";
     psInfo->sTI.pfnTransform = GDALTPSTransform;
     psInfo->sTI.pfnCleanup = GDALDestroyTPSTransformer;
     psInfo->sTI.pfnSerialize = GDALSerializeTPSTransformer;
+    psInfo->sTI.pfnCreateSimilar = GDALCreateSimilarTPSTransformer;
 
 /* -------------------------------------------------------------------- */
 /*      Attach all the points to the transformation.                    */
 /* -------------------------------------------------------------------- */
-    for( iGCP = 0; iGCP < nGCPCount; iGCP++ )
+    std::map< std::pair<double, double>, int > oMapPixelLineToIdx;
+    std::map< std::pair<double, double>, int > oMapXYToIdx;
+    for( int iGCP = 0; iGCP < nGCPCount; iGCP++ )
     {
-        double    afPL[2], afXY[2];
+        const double afPL[2] = {
+            pasGCPList[iGCP].dfGCPPixel,
+            pasGCPList[iGCP].dfGCPLine };
+        const double afXY[2] =
+            { pasGCPList[iGCP].dfGCPX, pasGCPList[iGCP].dfGCPY };
 
-        afPL[0] = pasGCPList[iGCP].dfGCPPixel;
-        afPL[1] = pasGCPList[iGCP].dfGCPLine;
-        afXY[0] = pasGCPList[iGCP].dfGCPX;
-        afXY[1] = pasGCPList[iGCP].dfGCPY;
-
-        if( bReversed )
+        std::map< std::pair<double, double>, int >::iterator oIter(
+            oMapPixelLineToIdx.find(std::pair<double, double>(afPL[0],
+                                                              afPL[1])));
+        if( oIter != oMapPixelLineToIdx.end() )
         {
-            psInfo->poReverse->add_point( afPL[0], afPL[1], afXY );
-            psInfo->poForward->add_point( afXY[0], afXY[1], afPL );
+            if( afXY[0] == pasGCPList[oIter->second].dfGCPX &&
+                afXY[1] == pasGCPList[oIter->second].dfGCPY )
+            {
+                continue;
+            }
+            else
+            {
+                CPLError(CE_Warning, CPLE_AppDefined,
+                         "GCP %d and %d have same (pixel,line)=(%f,%f), "
+                         "but different (X,Y): (%f,%f) vs (%f,%f)",
+                         iGCP + 1, oIter->second,
+                         afPL[0], afPL[1],
+                         afXY[0], afXY[1],
+                         pasGCPList[oIter->second].dfGCPX,
+                         pasGCPList[oIter->second].dfGCPY);
+            }
         }
         else
         {
-            psInfo->poForward->add_point( afPL[0], afPL[1], afXY );
-            psInfo->poReverse->add_point( afXY[0], afXY[1], afPL );
+            oMapPixelLineToIdx[std::pair<double, double>(afPL[0], afPL[1])] =
+                iGCP;
+        }
+
+        oIter = oMapXYToIdx.find(std::pair<double, double>(afXY[0], afXY[1]));
+        if( oIter != oMapXYToIdx.end() )
+        {
+            CPLError(CE_Warning, CPLE_AppDefined,
+                     "GCP %d and %d have same (x,y)=(%f,%f), "
+                     "but different (pixel,line): (%f,%f) vs (%f,%f)",
+                     iGCP + 1, oIter->second,
+                     afXY[0], afXY[1],
+                     afPL[0], afPL[1],
+                     pasGCPList[oIter->second].dfGCPPixel,
+                     pasGCPList[oIter->second].dfGCPLine);
+        }
+        else
+        {
+            oMapXYToIdx[std::pair<double, double>(afXY[0], afXY[1])] = iGCP;
+        }
+
+        bool bOK = true;
+        if( bReversed )
+        {
+            bOK &= psInfo->poReverse->add_point( afPL[0], afPL[1], afXY );
+            bOK &= psInfo->poForward->add_point( afXY[0], afXY[1], afPL );
+        }
+        else
+        {
+            bOK &= psInfo->poForward->add_point( afPL[0], afPL[1], afXY );
+            bOK &= psInfo->poReverse->add_point( afXY[0], afXY[1], afPL );
+        }
+        if( !bOK )
+        {
+            GDALDestroyTPSTransformer(psInfo);
+            return NULL;
         }
     }
 
     psInfo->nRefCount = 1;
 
-    psInfo->poForward->solve();
-    psInfo->poReverse->solve();
+    int nThreads = 1;
+    if( nGCPCount > 100 )
+    {
+        const char* pszWarpThreads =
+            CSLFetchNameValue(papszOptions, "NUM_THREADS");
+        if( pszWarpThreads == NULL )
+            pszWarpThreads = CPLGetConfigOption("GDAL_NUM_THREADS", "1");
+        if( EQUAL(pszWarpThreads, "ALL_CPUS") )
+            nThreads = CPLGetNumCPUs();
+        else
+            nThreads = atoi(pszWarpThreads);
+    }
+
+    if( nThreads > 1 )
+    {
+        // Compute direct and reverse transforms in parallel.
+        CPLJoinableThread* hThread =
+            CPLCreateJoinableThread(GDALTPSComputeForwardInThread, psInfo);
+        psInfo->bReverseSolved = psInfo->poReverse->solve() != 0;
+        if( hThread != NULL )
+            CPLJoinThread(hThread);
+        else
+            psInfo->bForwardSolved = psInfo->poForward->solve() != 0;
+    }
+    else
+    {
+        psInfo->bForwardSolved = psInfo->poForward->solve() != 0;
+        psInfo->bReverseSolved = psInfo->poReverse->solve() != 0;
+    }
+
+    if( !psInfo->bForwardSolved || !psInfo->bReverseSolved )
+    {
+        GDALDestroyTPSTransformer(psInfo);
+        return NULL;
+    }
 
     return psInfo;
 }
@@ -172,18 +304,19 @@ void *GDALCreateTPSTransformer( int nGCPCount, const GDAL_GCP *pasGCPList,
  * Destroy TPS transformer.
  *
  * This function is used to destroy information about a GCP based
- * polynomial transformation created with GDALCreateTPSTransformer(). 
+ * polynomial transformation created with GDALCreateTPSTransformer().
  *
- * @param pTransformArg the transform arg previously returned by 
- * GDALCreateTPSTransformer(). 
+ * @param pTransformArg the transform arg previously returned by
+ * GDALCreateTPSTransformer().
  */
 
 void GDALDestroyTPSTransformer( void *pTransformArg )
 
 {
-    VALIDATE_POINTER0( pTransformArg, "GDALDestroyTPSTransformer" );
+    if( pTransformArg == NULL )
+        return;
 
-    TPSTransformInfo *psInfo = (TPSTransformInfo *) pTransformArg;
+    TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(pTransformArg);
 
     if( CPLAtomicDec(&(psInfo->nRefCount)) == 0 )
     {
@@ -192,7 +325,7 @@ void GDALDestroyTPSTransformer( void *pTransformArg )
 
         GDALDeinitGCPs( psInfo->nGCPCount, psInfo->pasGCPList );
         CPLFree( psInfo->pasGCPList );
-        
+
         CPLFree( pTransformArg );
     }
 }
@@ -208,8 +341,8 @@ void GDALDestroyTPSTransformer( void *pTransformArg )
  * used to transform one or more points from pixel/line coordinates to
  * georeferenced coordinates (SrcToDst) or vice versa (DstToSrc).
  *
- * @param pTransformArg return value from GDALCreateTPSTransformer(). 
- * @param bDstToSrc TRUE if transformation is from the destination 
+ * @param pTransformArg return value from GDALCreateTPSTransformer().
+ * @param bDstToSrc TRUE if transformation is from the destination
  * (georeferenced) coordinates to pixel/line or FALSE when transforming
  * from pixel/line to georeferenced coordinates.
  * @param nPointCount the number of values in the x, y and z arrays.
@@ -222,20 +355,19 @@ void GDALDestroyTPSTransformer( void *pTransformArg )
  * @return TRUE.
  */
 
-int GDALTPSTransform( void *pTransformArg, int bDstToSrc, 
-                      int nPointCount, 
-                      double *x, double *y, double *z, 
+int GDALTPSTransform( void *pTransformArg, int bDstToSrc,
+                      int nPointCount,
+                      double *x, double *y,
+                      CPL_UNUSED double *z,
                       int *panSuccess )
-
 {
     VALIDATE_POINTER1( pTransformArg, "GDALTPSTransform", 0 );
 
-    int    i;
-    TPSTransformInfo *psInfo = (TPSTransformInfo *) pTransformArg;
+    TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(pTransformArg);
 
-    for( i = 0; i < nPointCount; i++ )
+    for( int i = 0; i < nPointCount; i++ )
     {
-        double xy_out[2];
+        double xy_out[2] = { 0.0, 0.0 };
 
         if( bDstToSrc )
         {
@@ -264,55 +396,26 @@ CPLXMLNode *GDALSerializeTPSTransformer( void *pTransformArg )
 {
     VALIDATE_POINTER1( pTransformArg, "GDALSerializeTPSTransformer", NULL );
 
-    CPLXMLNode *psTree;
     TPSTransformInfo *psInfo = static_cast<TPSTransformInfo *>(pTransformArg);
 
-    psTree = CPLCreateXMLNode( NULL, CXT_Element, "TPSTransformer" );
+    CPLXMLNode *psTree = CPLCreateXMLNode(NULL, CXT_Element, "TPSTransformer");
 
 /* -------------------------------------------------------------------- */
 /*      Serialize bReversed.                                            */
 /* -------------------------------------------------------------------- */
-    CPLCreateXMLElementAndValue( 
-        psTree, "Reversed", 
-        CPLString().Printf( "%d", psInfo->bReversed ) );
-                                 
+    CPLCreateXMLElementAndValue(
+        psTree, "Reversed",
+        CPLString().Printf( "%d", static_cast<int>(psInfo->bReversed) ) );
+
 /* -------------------------------------------------------------------- */
-/*	Attach GCP List. 						*/
+/*      Attach GCP List.                                                */
 /* -------------------------------------------------------------------- */
     if( psInfo->nGCPCount > 0 )
     {
-        int iGCP;
-        CPLXMLNode *psGCPList = CPLCreateXMLNode( psTree, CXT_Element, 
-                                                  "GCPList" );
-
-        for( iGCP = 0; iGCP < psInfo->nGCPCount; iGCP++ )
-        {
-            CPLXMLNode *psXMLGCP;
-            GDAL_GCP *psGCP = psInfo->pasGCPList + iGCP;
-
-            psXMLGCP = CPLCreateXMLNode( psGCPList, CXT_Element, "GCP" );
-
-            CPLSetXMLValue( psXMLGCP, "#Id", psGCP->pszId );
-
-            if( psGCP->pszInfo != NULL && strlen(psGCP->pszInfo) > 0 )
-                CPLSetXMLValue( psXMLGCP, "Info", psGCP->pszInfo );
-
-            CPLSetXMLValue( psXMLGCP, "#Pixel", 
-                            CPLString().Printf( "%.4f", psGCP->dfGCPPixel ) );
-
-            CPLSetXMLValue( psXMLGCP, "#Line", 
-                            CPLString().Printf( "%.4f", psGCP->dfGCPLine ) );
-
-            CPLSetXMLValue( psXMLGCP, "#X", 
-                            CPLString().Printf( "%.12E", psGCP->dfGCPX ) );
-
-            CPLSetXMLValue( psXMLGCP, "#Y", 
-                            CPLString().Printf( "%.12E", psGCP->dfGCPY ) );
-
-            if( psGCP->dfGCPZ != 0.0 )
-                CPLSetXMLValue( psXMLGCP, "#GCPZ", 
-                                CPLString().Printf( "%.12E", psGCP->dfGCPZ ) );
-        }
+        GDALSerializeGCPListToXML( psTree,
+                                   psInfo->pasGCPList,
+                                   psInfo->nGCPCount,
+                                   NULL );
     }
 
     return psTree;
@@ -325,65 +428,32 @@ CPLXMLNode *GDALSerializeTPSTransformer( void *pTransformArg )
 void *GDALDeserializeTPSTransformer( CPLXMLNode *psTree )
 
 {
-    GDAL_GCP *pasGCPList = 0;
-    int nGCPCount = 0;
-    void *pResult;
-    int bReversed;
-
     /* -------------------------------------------------------------------- */
     /*      Check for GCPs.                                                 */
     /* -------------------------------------------------------------------- */
     CPLXMLNode *psGCPList = CPLGetXMLNode( psTree, "GCPList" );
+    GDAL_GCP *pasGCPList = NULL;
+    int nGCPCount = 0;
 
     if( psGCPList != NULL )
     {
-        int  nGCPMax = 0;
-        CPLXMLNode *psXMLGCP;
-         
-        // Count GCPs.
-        for( psXMLGCP = psGCPList->psChild; psXMLGCP != NULL; 
-             psXMLGCP = psXMLGCP->psNext )
-            nGCPMax++;
-         
-        pasGCPList = (GDAL_GCP *) CPLCalloc(sizeof(GDAL_GCP),nGCPMax);
-
-        for( psXMLGCP = psGCPList->psChild; psXMLGCP != NULL; 
-             psXMLGCP = psXMLGCP->psNext )
-        {
-            GDAL_GCP *psGCP = pasGCPList + nGCPCount;
-
-            if( !EQUAL(psXMLGCP->pszValue,"GCP") || 
-                psXMLGCP->eType != CXT_Element )
-                continue;
-             
-            GDALInitGCPs( 1, psGCP );
-             
-            CPLFree( psGCP->pszId );
-            psGCP->pszId = CPLStrdup(CPLGetXMLValue(psXMLGCP,"Id",""));
-             
-            CPLFree( psGCP->pszInfo );
-            psGCP->pszInfo = CPLStrdup(CPLGetXMLValue(psXMLGCP,"Info",""));
-             
-            psGCP->dfGCPPixel = atof(CPLGetXMLValue(psXMLGCP,"Pixel","0.0"));
-            psGCP->dfGCPLine = atof(CPLGetXMLValue(psXMLGCP,"Line","0.0"));
-             
-            psGCP->dfGCPX = atof(CPLGetXMLValue(psXMLGCP,"X","0.0"));
-            psGCP->dfGCPY = atof(CPLGetXMLValue(psXMLGCP,"Y","0.0"));
-            psGCP->dfGCPZ = atof(CPLGetXMLValue(psXMLGCP,"Z","0.0"));
-            nGCPCount++;
-        }
+        GDALDeserializeGCPListFromXML( psGCPList,
+                                       &pasGCPList,
+                                       &nGCPCount,
+                                       NULL );
     }
 
 /* -------------------------------------------------------------------- */
 /*      Get other flags.                                                */
 /* -------------------------------------------------------------------- */
-    bReversed = atoi(CPLGetXMLValue(psTree,"Reversed","0"));
+    const int bReversed = atoi(CPLGetXMLValue(psTree, "Reversed", "0"));
 
 /* -------------------------------------------------------------------- */
 /*      Generate transformation.                                        */
 /* -------------------------------------------------------------------- */
-    pResult = GDALCreateTPSTransformer( nGCPCount, pasGCPList, bReversed );
-    
+    void *pResult =
+        GDALCreateTPSTransformer( nGCPCount, pasGCPList, bReversed );
+
 /* -------------------------------------------------------------------- */
 /*      Cleanup GCP copy.                                               */
 /* -------------------------------------------------------------------- */

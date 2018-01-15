@@ -12,7 +12,7 @@ drivers based on criteria specified in an XML control file.  It is primarily
 used to derive spatial layers from flat tables with spatial information in
 attribute columns.  It can also be used to associate coordinate system
 information with a datasource, merge layers from different datasources into
-a single data source, or even just to provide an anchor file for access to 
+a single data source, or even just to provide an anchor file for access to
 non-file oriented datasources.<p>
 
 The virtual files are currently normally prepared by hand.<p>
@@ -34,7 +34,22 @@ is to say, the <i>FID</i> element is not specified</li>
 
 The root element of the XML control file is <b>OGRVRTDataSource</b>.  It has
 an <b>OGRVRTLayer</b> (or <b>OGRVRTWarpedLayer</b> or <b>OGRVRTUnionLayer</b> starting
-with GDAL 1.10.0) child for each layer in the virtual datasource.<p>
+with GDAL 1.10.0) child for each layer in the virtual datasource, and a
+<b>Metadata</b> element.<p>
+
+A <a href="http://svn.osgeo.org/gdal/trunk/gdal/data/ogrvrt.xsd">XML schema of the OGR VRT format</a>
+is available. Starting with GDAL 1.11, when GDAL is configured with libXML2 support, that
+schema will be used to validate the VRT documents. Non-conformities will be reported only as
+warnings. That validation can be disabled by setting the GDAL_XML_VALIDATION configuration option to NO.<p>
+
+<p>
+<b>Metadata</b> (optional): (GDAL &gt;= 2.0) This element contains a list of metadata name/value
+pairs associated with the dataset as a whole. It has
+&lt;MDI&gt; (metadata item) subelements which have a "key" attribute and the value
+as the data of the element. The Metadata element can be repeated multiple times,
+in which case it must be accompanied with a "domain" attribute to indicate the
+name of the metadata domain.
+</p>
 
 A <b>OGRVRTLayer</b> element should have a <b>name</b> attribute with the layer name, and may have the
 following subelements:
@@ -50,6 +65,21 @@ datasource should be opened in shared mode. Defaults to OFF for SrcLayer use and
 
 <br>
 
+<li> <b>OpenOptions</b> (optional): (GDAL &gt;= 2.0) This element may list a number of open
+options as child elements of the form &lt;OOI key="key_name"&gt;value_name&lt;/OOI&gt;</li>
+
+<br>
+
+<li> <b>Metadata</b> (optional): (GDAL &gt;= 2.0) This element contains a list of metadata name/value
+pairs associated with the layer as a whole. It has
+&lt;MDI&gt; (metadata item) subelements which have a "key" attribute and the value
+as the data of the element. The Metadata element can be repeated multiple times,
+in which case it must be accompanied with a "domain" attribute to indicate the
+name of the metadata domain.
+</li>
+
+<br>
+
 <li> <b>SrcLayer</b> (optional): The value is the name of the layer on the
 source data source from which this virtual layer should be derived.  If this
 element isn't provided, then the SrcSQL element must be provided.</li>
@@ -58,7 +88,7 @@ element isn't provided, then the SrcSQL element must be provided.</li>
 
 <li> <b>SrcSQL</b> (optional): An SQL statement to execute to generate the
 desired layer result.  This should be provided instead of the SrcLayer for
-statement derived results.   Some limitations may apply for SQL derived 
+statement derived results.   Some limitations may apply for SQL derived
 layers. Starting with OGR 1.10, an optional <b>dialect</b> attribute can be specified
 on the SrcSQL element to specify which SQL "dialect" should be used :
 possible values are currently <a href="ogr_sql.html">OGRSQL</a> or
@@ -67,25 +97,28 @@ the default dialect of the datasource will be used.</li>
 
 <br>
 
-<li> <b>FID</b> (optional): Name of the attribute column from which the 
+<li> <b>FID</b> (optional): Name of the attribute column from which the
 FID of features should be derived.  If not provided, the FID of the source
-features will be used directly.</li>
+features will be used directly. The layer will report the FID column name only
+if it is also reported as a regular field. Starting with GDAL 2.0, a "name"
+attribute can be specified on the FID element so that the FID column name is
+always reported.</li>
 
 <br>
 
-<li> <b>Style</b> (optional): Name of the attribute column from which the 
+<li> <b>Style</b> (optional): Name of the attribute column from which the
 style of features should be derived.  If not provided, the style of the source
 features will be used directly.</li>
 
 <br>
 
-<li> <b>GeometryType</b> (optional): The geometry type to be assigned to the 
-layer. 
+<li> <b>GeometryType</b> (optional): The geometry type to be assigned to the
+layer.
 If not provided it will be taken from the source layer.  The value should
-be one of "wkbNone", "wkbUnknown", "wkbPoint", "wkbLineString", "wkbPolygon", 
-"wkbMultiPoint", 
-"wkbMultiLineString", "wkbMultiPolygon", or "wkbGeometryCollection".  
-Optionally "25D" may be appended to mark it as including Z coordinates.  
+be one of "wkbNone", "wkbUnknown", "wkbPoint", "wkbLineString", "wkbPolygon",
+"wkbMultiPoint",
+"wkbMultiLineString", "wkbMultiPolygon", or "wkbGeometryCollection".
+Optionally "25D" may be appended to mark it as including Z coordinates.
 Defaults to "wkbUnknown" indicating that any geometry type is allowed.</li>
 
 <br>
@@ -105,19 +138,46 @@ The type of geometry encoding is indicated with the <b>encoding</b> attribute wh
 value "WKT", "WKB" or "PointFromColumns".<br>
 If the encoding is "WKT" or "WKB" then the <b>field</b> attribute will have
 the name of the field containing the WKT or WKB geometry.<br>
-If the encoding is "PointFromColumns" then the <b>x</b>, <b>y</b> and <b>z</b> attributes
-will have the names of the columns to be used for the X, Y and Z coordinates.
-The <b>z</b> attribute is optional.<br>
-Starting with GDAL 1.7.0, the optional <b>reportSrcColumn</b> attribute can be used to specify
-whether the source geometry fields (the fields set in the <b>field</b>, <b>x</b>, <b>x</b>
-or <b>z</b> attributes) should be reported as fields of the VRT layer. It defaults to TRUE.
+If the encoding is "PointFromColumns" then the <b>x</b>, <b>y</b>, <b>z</b> and <b>m</b> attributes
+will have the names of the columns to be used for the X, Y, Z and M coordinates.
+The <b>z</b> and <b>m</b> attributes are optional (m only supported since OGR 2.1.1).<br>
+The optional <b>reportSrcColumn</b> attribute can be used to specify
+whether the source geometry fields (the fields set in the <b>field</b>, <b>x</b>, <b>y</b>, <b>z</b>, <b>m</b> attributes) should be reported as fields of the VRT layer. It defaults to TRUE.
 If set to FALSE, the source geometry fields will only be used to build the geometry of the features of the VRT layer.</li>
-
+<p>
+Starting with OGR 1.11, the GeometryField element can be repeated as many times
+as necessary to create multiple geometry fields. It accepts a <b>name</b>
+attribute (recommended) that will be used to define the VRT geometry field name. When <b>encoding</b> is
+not specified, the <b>field</b> attribute will be used to determine the corresponding
+geometry field name in the source layer. If neither <b>encoding</b> nor <b>field</b>
+are specified, it is assumed that the name of source geometry field is the value
+of the <b>name</b> attribute.
+</p>
+<p>
+Starting with GDAL 2.0, the optional <b>nullable</b> attribute can be used to specify
+whether the geometry field is nullable. It defaults to "true".</li>
+</p>
+<p>
+When several geometry fields are used, the following child elements of <b>GeometryField</b>
+can be defined to explicitly set the geometry type, SRS, source region, or extent.
+<ul>
+<li><b>GeometryType</b> (optional) : same syntax as OGRVRTLayer-level <b>GeometryType</b>.</li>
+<li><b>SRS</b> (optional) : same syntax as OGRVRTLayer-level <b>LayerSRS</b> (note SRS vs LayerSRS)</li>
+<li><b>SrcRegion</b> (optional) : same syntax as OGRVRTLayer-level <b>SrcRegion</b></li>
+<li><b>ExtentXMin</b>, <b>ExtentYMin</b>, <b>ExtentXMax</b> and <b>ExtentXMax</b> (optional) :
+same syntax as OGRVRTLayer-level elements of same name</li>
+</ul>
+</p>
+<p>If no <b>GeometryField</b> element is specified, all the geometry fields of the
+source layer will be exposed by the VRT layer. In order not to expose any geometry
+field of the source layer, you need to specify OGRVRTLayer-level <b>GeometryType</b>
+element to wkbNone.
+</p>
 <br>
 
-<li> <b>SrcRegion</b> (optionnal, from GDAL 1.7.0) : This element is used
+<li> <b>SrcRegion</b> (optional, from GDAL 1.7.0) : This element is used
 to define an initial spatial filter for the source features. This spatial
-filter will be combined with any spatial filter explicitely set on the VRT
+filter will be combined with any spatial filter explicitly set on the VRT
 layer with the SetSpatialFilter() method. The value of the element must be
 a valid WKT string defining a polygon. An optional <b>clip</b> attribute
 can be set to "TRUE" to clip the geometries to the source region, otherwise
@@ -125,19 +185,23 @@ the source geometries are not modified.</li>
 
 <br>
 
-<li> <b>Field</b> (optional, from GDAL 1.7.0): One or more attribute fields 
-may be defined with Field elements.  If no Field elements are defined, the 
-fields of the source layer/sql will be defined on the VRT layer.  The Field 
+<li> <b>Field</b> (optional, from GDAL 1.7.0): One or more attribute fields
+may be defined with Field elements.  If no Field elements are defined, the
+fields of the source layer/sql will be defined on the VRT layer.  The Field
 may have the following attributes:
 <ul>
 <li> <b>name</b> (required): the name of the field.
-<li> <b>type</b>: the field type, one of "Integer", "IntegerList", 
-"Real", "RealList", "String", "StringList", "Binary", "Date", "Time", 
-or "DateTime" - defaults to "String".
-<li> <b>width</b>: the field width, defaults to unknown.
-<li> <b>precision</b>: the field width, defaults to zero.
-<li> <b>src</b>: the name of the source field to be copied to this one.  By
-default defaults to the value of "name".
+<li> <b>type</b>: the field type, one of "Integer", "IntegerList",
+"Real", "RealList", "String", "StringList", "Binary", "Date", "Time",
+or "DateTime". Defaults to "String".
+<li> <b>subtype</b>: (GDAL &gt;= 2.0) the field subtype, one of "None", "Boolean",
+"Int16", "Float32". Defaults to "None".
+<li> <b>width</b>: the field width. Defaults to unknown.
+<li> <b>precision</b>: the field width. Defaults to zero.
+<li> <b>src</b>: the name of the source field to be copied to this one.
+Defaults to the value of "name".
+<li> <b>nullable</b> (GDAL &gt;= 2.0) can be used to specify
+whether the field is nullable. It defaults to "true".</li>
 </ul>
 </li>
 
@@ -145,12 +209,12 @@ default defaults to the value of "name".
 
 <li> <b>FeatureCount</b> (optional, from GDAL 1.10.0) : This element is used
 to define the feature count of the layer (when no spatial or attribute filter is set).
-This can be usefull on static data, when getting the feature count from the source layer is slow.</li>
+This can be useful on static data, when getting the feature count from the source layer is slow.</li>
 
 <br>
 
 <li> <b>ExtentXMin</b>, <b>ExtentYMin</b>, <b>ExtentXMax</b> and <b>ExtentXMax</b> (optional, from GDAL 1.10.0) :
-Those elements are used to define the extent of the layer. This can be usefull on static data, when
+Those elements are used to define the extent of the layer. This can be useful on static data, when
 getting the extent from the source layer is slow.</li>
 
 <br>
@@ -168,7 +232,7 @@ a source layer. It may have the following subelements:
 the source layer to reproject.</li>
 <br>
 
-<li> <b>SrcSRS</b> (mandatory): The value of this element is the spatial
+<li> <b>SrcSRS</b> (optional): The value of this element is the spatial
 reference to use for the layer before reprojection. If not specified, it is deduced from
 the source layer.</li>
 <br>
@@ -178,9 +242,14 @@ reference to use for the layer after reprojection. </li>
 <br>
 
 <li> <b>ExtentXMin</b>, <b>ExtentYMin</b>, <b>ExtentXMax</b> and <b>ExtentXMax</b> (optional, from GDAL 1.10.0) :
-Those elements are used to define the extent of the layer. This can be usefull on static data, when
+Those elements are used to define the extent of the layer. This can be useful on static data, when
 getting the extent from the source layer is slow.</li>
+<br>
 
+<li> <b>WarpedGeomFieldName</b> (optional, from GDAL 1.11) : The value of this element
+is the geometry field name of the source layer to wrap. If not specified, the first geometry
+field will be used. If there are several geometry fields, only the one matching
+WarpedGeomFieldName will be warped; the other ones will be untouched.</li>
 <br>
 
 </ul>
@@ -213,7 +282,7 @@ will be deduced from the geometry type of all source layers.</li>
 SRS of the first source layer.</li>
 <br>
 
-<li> <b>FieldStrategy</b> (optional, exclusive with <b>Field</b>) :
+<li> <b>FieldStrategy</b> (optional, exclusive with <b>Field</b> or <b>GeometryField</b>) :
 may be <b>FirstLayer</b> to use the fields from the first layer found,
 <b>Union</b> to use a super-set of all the fields from all source layers, or
 <b>Intersection</b> to use a sub-set of all the common fields from all source layers. Defaults to <b>Union</b>.</li>
@@ -221,6 +290,10 @@ may be <b>FirstLayer</b> to use the fields from the first layer found,
 
 <li> <b>Field</b> (optional, exclusive with <b>FieldStrategy</b>) : see above for the syntax. Note: the src attribute
 is not supported in the context of a OGRVRTUnionLayer element (field names are assumed to be identical).</li>
+<br>
+
+<li> <b>GeometryField</b> (optional, exclusive with <b>FieldStrategy</b>, GDAL &gt;= 1.11) : the <b>name</b> attribute and
+the following sub-elements <b>GeometryType</b>, <b>SRS</b> and <b>Extent[X|Y][Min|Max]</b> are available.</li>
 <br>
 
 <li> <b>FeatureCount</b> (optional) : see above for the syntax</li>
@@ -235,18 +308,18 @@ is not supported in the context of a OGRVRTUnionLayer element (field names are a
 <h2>Example: ODBC Point Layer</h2>
 
 In the following example (disease.ovf) the worms table from the ODBC
-database DISEASE is used to form a spatial layer.  The virtual file 
+database DISEASE is used to form a spatial layer.  The virtual file
 uses the "x" and "y" columns to get the spatial location.  It also marks
 the layer as a point layer, and as being in the WGS84 coordinate system.<p>
 
 <pre>&lt;OGRVRTDataSource&gt;
 
     &lt;OGRVRTLayer name="worms"&gt;
-        &lt;SrcDataSource&gt;ODBC:DISEASE,worms&lt;/SrcDataSource&gt; 
- 	&lt;SrcLayer&gt;worms&lt;/SrcLayer&gt; 
-	&lt;GeometryType&gt;wkbPoint&lt;/GeometryType&gt; 
+        &lt;SrcDataSource&gt;ODBC:DISEASE,worms&lt;/SrcDataSource&gt;
+ 	&lt;SrcLayer&gt;worms&lt;/SrcLayer&gt;
+	&lt;GeometryType&gt;wkbPoint&lt;/GeometryType&gt;
         &lt;LayerSRS&gt;WGS84&lt;/LayerSRS&gt;
-	&lt;GeometryField encoding="PointFromColumns" x="x" y="y"/&gt; 
+	&lt;GeometryField encoding="PointFromColumns" x="x" y="y"/&gt;
     &lt;/OGRVRTLayer&gt;
 
 &lt;/OGRVRTDataSource&gt;
@@ -254,9 +327,9 @@ the layer as a point layer, and as being in the WGS84 coordinate system.<p>
 
 <h2>Example: Renaming attributes</h2>
 
-It can be usefull in some circumstances to be able to rename the field names 
-from a source layer to other names. This is particularly true when you want 
-to transcode to a format whose schema is fixed, such as GPX 
+It can be useful in some circumstances to be able to rename the field names
+from a source layer to other names. This is particularly true when you want
+to transcode to a format whose schema is fixed, such as GPX
 (&lt;name&gt;, &lt;desc&gt, etc.).  This can be accomplished using
 SQL this way:<p>
 
@@ -327,6 +400,108 @@ and source2.shp.<p>
 &lt;/OGRVRTDataSource&gt;
 </pre>
 
+<h2>Example: SQLite/Spatialite SQL dialect (GDAL &gt;=1.10.0)</h2>
+
+The following example will return four different layers which are generated in a fly
+from the same polygon shapefile. The first one is the shapefile layer as it stands.
+The second layer gives simplified polygons by applying SpatiaLite function "Simplify"
+with parameter tolerance=10. In the third layer the original geometries are replaced by
+their convex hulls. In the fourth layer SpatiaLite function PointOnSurface is used for
+replacing the original geometries by points which are inside the corresponding source
+polygons. Note that for using the last three layers of this VRT file GDAL must be
+compiled with SQLite and SpatiaLite.<p>
+
+<pre>
+&lt;OGRVRTDataSource&gt;
+    &lt;OGRVRTLayer name="polygons"&gt;
+        &lt;SrcDataSource&gt;polygons.shp&lt;/SrcDataSource&gt;
+        &lt;/OGRVRTLayer&gt;
+    &lt;OGRVRTLayer name="polygons_as_simplified"&gt;
+        &lt;SrcDataSource&gt;polygons.shp&lt;/SrcDataSource&gt;
+        &lt;SrcSQL dialect="sqlite"&gt;SELECT Simplify(geometry,10) from polygons&lt;/SrcSQL&gt;
+    &lt;/OGRVRTLayer&gt;
+    &lt;OGRVRTLayer name="polygons_as_hulls"&gt;
+        &lt;SrcDataSource&gt;polygons.shp&lt;/SrcDataSource&gt;
+        &lt;SrcSQL dialect="sqlite"&gt;SELECT ConvexHull(geometry) from polygons&lt;/SrcSQL&gt;
+    &lt;/OGRVRTLayer&gt;
+    &lt;OGRVRTLayer name="polygons_as_points"&gt;
+        &lt;SrcDataSource&gt;polygons.shp&lt;/SrcDataSource&gt;
+        &lt;SrcSQL dialect="sqlite"&gt;SELECT PointOnSurface(geometry) from polygons&lt;/SrcSQL&gt;
+    &lt;/OGRVRTLayer&gt;
+&lt;/OGRVRTDataSource&gt;
+</pre>
+
+<h2>Example: Multiple geometry fields (GDAL &gt;= 1.11)</h2>
+
+<p>
+The following example will expose all the attribute and geometry fields of the
+source layer:
+</p>
+<pre>&lt;OGRVRTDataSource&gt;
+    &lt;OGRVRTLayer name="test"&gt;
+        &lt;SrcDataSource&gt;PG:dbname=testdb&lt;/SrcDataSource&gt;
+    &lt;/OGRVRTLayer&gt;
+&lt;/OGRVRTDataSource&gt;
+</pre>
+
+<p>
+To expose only part (or all!) of the fields:
+</p>
+<pre>&lt;OGRVRTDataSource&gt;
+    &lt;OGRVRTLayer name="other_test"&gt;
+        &lt;SrcDataSource&gt;PG:dbname=testdb&lt;/SrcDataSource&gt;
+        &lt;SrcLayer&gt;test&lt;/SrcLayer&gt;
+        &lt;GeometryField name="pg_geom_field_1" /&gt;
+        &lt;GeometryField name="vrt_geom_field_2" field="pg_geom_field_2"&gt;
+            &lt;GeometryType&gt;wkbPolygon&lt;/GeometryType&gt;
+            &lt;SRS&gt;EPSG:4326&lt;/SRS&gt;
+            &lt;ExtentXMin&gt;-180&lt;/ExtentXMin&gt;
+            &lt;ExtentYMin&gt;-90&lt;/ExtentYMin&gt;
+            &lt;ExtentXMax&gt;180&lt;/ExtentXMax&gt;
+            &lt;ExtentYMax&gt;90&lt;/ExtentYMax&gt;
+        &lt;/GeometryField&gt;
+        &lt;Field name="vrt_field_1" src="src_field_1" /&gt;
+    &lt;/OGRVRTLayer&gt;w
+&lt;/OGRVRTDataSource&gt;
+</pre>
+
+To reproject the 'pg_geom_field_2' geometry field to EPSG:4326:<p>
+
+<pre>&lt;OGRVRTDataSource&gt;
+    &lt;OGRVRTWarpedLayer&gt;
+        &lt;OGRVRTLayer name="other_test"&gt;
+            &lt;SrcDataSource&gt;PG:dbname=testdb&lt;/SrcDataSource&gt;
+        &lt;/OGRVRTLayer&gt;
+        &lt;WarpedGeomFieldName&gt;pg_geom_field_2&lt;/WarpedGeomFieldName&gt;
+        &lt;TargetSRS&gt;EPSG:32631&lt;/TargetSRS&gt;
+    &lt;/OGRVRTWarpedLayer&gt;
+&lt;/OGRVRTDataSource&gt;
+</pre>
+
+To make the union of several multi-geometry layers and keep only a few of them:<p>
+
+<pre>&lt;OGRVRTDataSource&gt;
+    &lt;OGRVRTUnionLayer name="unionLayer"&gt;
+        &lt;OGRVRTLayer name="source1"&gt;
+            &lt;SrcDataSource&gt;PG:dbname=testdb&lt;/SrcDataSource&gt;
+        &lt;/OGRVRTLayer&gt;
+        &lt;OGRVRTLayer name="source2"&gt;
+            &lt;SrcDataSource&gt;PG:dbname=testdb&lt;/SrcDataSource&gt;
+        &lt;/OGRVRTLayer&gt;
+        &lt;GeometryField name="pg_geom_field_2"&gt;
+            &lt;GeometryType&gt;wkbPolygon&lt;/GeometryType&gt;
+            &lt;SRS&gt;EPSG:4326&lt;/SRS&gt;
+            &lt;ExtentXMin&gt;-180&lt;/ExtentXMin&gt;
+            &lt;ExtentYMin&gt;-90&lt;/ExtentYMin&gt;
+            &lt;ExtentXMax&gt;180&lt;/ExtentXMax&gt;
+            &lt;ExtentYMax&gt;90&lt;/ExtentYMax&gt;
+        &lt;/GeometryField&gt;
+        &lt;GeometryField name="pg_geom_field_3" /&gt;
+        &lt;Field name="src_field_1" /&gt;
+    &lt;/OGRVRTUnionLayer&gt;
+&lt;/OGRVRTDataSource&gt;
+</pre>
+
 <h2>Other Notes</h2>
 
 <ul>
@@ -343,10 +518,6 @@ is important it can be helpful to index the X and Y columns in the source
 datastore, if that is possible.  For instance if the source is an RDBMS.
 You can turn off that feature by setting the <i>useSpatialSubquery</i> attribute
 of the GeometryField element to FALSE.<p>
-
-<li> Normally the <i>SrcDataSource</i> is a non-spatial tabular format (such as
-MySQL, SQLite, CSV, OCI, or ODBC) but it can also be a spatial database in which
-case the geometry can be directly copied over. <p>
 
 </ul>
 

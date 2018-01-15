@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: subfile_source.h 23357 2011-11-07 18:34:42Z warmerdam $
+ * $Id: subfile_source.h 37076 2017-01-09 18:35:44Z goatbar $
  *
  * Project:  JPEG-2000
  * Purpose:  Implements read-only virtual io on a subregion of a file.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2004, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,36 +28,59 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#ifndef JP2KAK_SUBFILE_SOURCE_H
+#define JP2KAK_SUBFILE_SOURCE_H
+
 #include "kdu_file_io.h"
 #include "cpl_error.h"
+#include "cpl_vsi_virtual.h"
+
+#include <assert.h>
+
+#if KDU_MAJOR_VERSION > 7 || (KDU_MAJOR_VERSION == 7 && KDU_MINOR_VERSION >= 5)
+    using namespace kdu_core;
+    using namespace kdu_supp;
+#endif
+
+static const long IO_CHUNK_SIZE = 65536L;
+static const long IO_BUFFER_SIZE = 1048576L;
 
 /************************************************************************/
 /*                            subfile_source                            */
 /************************************************************************/
 
 class subfile_source : public kdu_compressed_source {
+  public:
+    subfile_source() :
+        capabilities(0),
+        subfile_offset(0),
+        subfile_size(0),
+        file(NULL)
+    {}
 
-  public: 
-    subfile_source() { file = NULL; }
-    ~subfile_source() { close(); }
+    ~subfile_source() override { close(); }
 
+    bool exists() const { return (file != NULL); }
 
-    bool exists() { return (file != NULL); }
+    bool operator!() const { return (file == NULL); }
 
-    bool operator!() { return (file == NULL); }
-
-    void open(const char *fname, int bSequential )
+    void open(const char *fname, int bSequential, int bCached )
       {
-          const char *real_filename;
           close();
+
+          const char *real_filename = NULL;
 
           if( EQUALN( fname, "J2K_SUBFILE:",12) )
           {
               char** papszTokens = CSLTokenizeString2(fname + 12, ",", 0);
               if (CSLCount(papszTokens) >= 2)
               {
-                  subfile_offset = (int) CPLScanUIntBig(papszTokens[0], strlen(papszTokens[0]));
-                  subfile_size = (int) CPLScanUIntBig(papszTokens[1], strlen(papszTokens[1]));
+                  subfile_offset = static_cast<int>(
+                      CPLScanUIntBig(papszTokens[0],
+                                     static_cast<int>(strlen(papszTokens[0]))));
+                  subfile_size = static_cast<int>(
+                      CPLScanUIntBig(papszTokens[1],
+                                     static_cast<int>(strlen(papszTokens[1]))));
               }
               else
               {
@@ -69,14 +93,19 @@ class subfile_source : public kdu_compressed_source {
 
               real_filename = strstr(fname,",");
               if( real_filename != NULL )
+              {
                   real_filename = strstr(real_filename+1,",");
+              }
               if( real_filename != NULL )
+              {
                   real_filename++;
+              }
               else
               {
                   kdu_error e;
 
-                  e << "Could not find filename in subfile definition." << fname;
+                  e << "Could not find filename in subfile definition."
+                      << fname;
                   return;
               }
           }
@@ -84,85 +113,91 @@ class subfile_source : public kdu_compressed_source {
           {
               real_filename = fname;
               subfile_offset = 0;
-              subfile_size = 0; 
+              subfile_size = 0;
           }
 
           file = VSIFOpenL( real_filename, "r");
           if( file == NULL )
           {
               kdu_error e;
-              e << "Unable to open compressed data file, \"" << 
+              e << "Unable to open compressed data file, \"" <<
                   real_filename << "\"!";
               return;
           }
 
-          if( bSequential ) 
-            capabilities = KDU_SOURCE_CAP_SEQUENTIAL;
-          else
-            capabilities = KDU_SOURCE_CAP_SEQUENTIAL | KDU_SOURCE_CAP_SEEKABLE;
+          if ( bCached )
+          {
+              file = reinterpret_cast<VSILFILE *>(
+                  VSICreateCachedFile(
+                      reinterpret_cast<VSIVirtualHandle *>(file),
+                      IO_CHUNK_SIZE, IO_BUFFER_SIZE));
+              if( file == NULL )
+              {
+                  kdu_error e;
+                  e << "Unable to open compressed data file, \"" <<
+                      real_filename << "\"!";
+                  return;
+              }
+          }
 
-          seek_origin = subfile_offset;
-          seek( 0 );
+          if( bSequential )
+              capabilities = KDU_SOURCE_CAP_SEQUENTIAL;
+          else
+              capabilities =
+                  KDU_SOURCE_CAP_SEQUENTIAL | KDU_SOURCE_CAP_SEEKABLE;
+
+          seek(0);
       }
 
-    int get_capabilities() { return capabilities; }
+    int get_capabilities() override { return capabilities; }
 
-    bool seek(kdu_long offset)
-      { 
+    bool seek(kdu_long offset) override
+      {
           assert(file != NULL);
           if( file == NULL )
               return false;
-          
+
           if (!(capabilities & KDU_SOURCE_CAP_SEEKABLE))
               return false;
-          
-          if( VSIFSeekL( file, seek_origin+offset, SEEK_SET ) == 0 )
+
+          if( VSIFSeekL( file, subfile_offset+offset, SEEK_SET ) == 0 )
               return true;
           else
               return false;
       }
 
-    bool set_seek_origin(kdu_long position)
-      { 
-          if (!(capabilities & KDU_SOURCE_CAP_SEEKABLE))
-              return false;
-          seek_origin = position + subfile_offset;
-          return true;
-      }
-
-    kdu_long get_pos(bool absolute)
-      { 
+    kdu_long get_pos() override
+      {
         if (file == NULL) return -1;
-        kdu_long result = VSIFTellL( file );
-        if (!absolute) 
-            result -= seek_origin;
-        else
-            result -= subfile_offset;
+        kdu_long result = VSIFTellL(file);
+        result -= subfile_offset;
         return result;
       }
 
-    int read(kdu_byte *buf, int num_bytes)
-      { 
+    int read(kdu_byte *buf, int num_bytes) override
+      {
         assert(file != NULL);
 
-        num_bytes = VSIFReadL(buf,1,(size_t) num_bytes,file);
+        num_bytes = static_cast<int>(
+            VSIFReadL(buf, 1, static_cast<size_t>(num_bytes), file));
         return num_bytes;
       }
 
-    bool close()
+    bool close() override
       {
         if (file != NULL)
-            VSIFCloseL( file );
+            VSIFCloseL(file);
         file = NULL;
         return true;
       }
 
   private: // Data
     int capabilities;
-    kdu_long seek_origin;
 
     int subfile_offset;
     int subfile_size;
-    
+
     VSILFILE *file;
   };
+
+#endif  // JP2KAK_SUBFILE_SOURCE_H

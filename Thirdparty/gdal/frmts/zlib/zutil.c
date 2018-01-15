@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-/* @(#) $Id: zutil.c 10656 2007-01-19 01:31:01Z mloskot $ */
+/* @(#) $Id: zutil.c 36387 2016-11-21 12:56:56Z rouault $ */
 
 #include "zutil.h"
 
@@ -135,14 +135,6 @@ const char * ZEXPORT zError(err)
 {
     return ERR_MSG(err);
 }
-
-#if defined(_WIN32_WCE)
-    /* The Microsoft C Run-Time Library for Windows CE doesn't have
-     * errno.  We define it as a global variable to simplify porting.
-     * Its value is always 0 and should not be used.
-     */
-    int errno = 0;
-#endif
 
 #ifndef HAVE_MEMCPY
 
@@ -302,7 +294,8 @@ voidpf zcalloc (opaque, items, size)
     unsigned items;
     unsigned size;
 {
-    if (opaque) items += size - size; /* make compiler happy */
+    /* cppcheck-suppress uselessAssignmentPtrArg */
+    if (opaque) opaque = 0; /* to make compiler happy */
     return sizeof(uInt) > 2 ? (voidpf)malloc(items * size) :
                               (voidpf)calloc(items, size);
 }

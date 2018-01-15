@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_pds.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: ogr_pds.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  PDS Translator
  * Purpose:  Definition of classes for OGR .pdstable driver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,11 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_PDS_H_INCLUDED
-#define _OGR_PDS_H_INCLUDED
+#ifndef OGR_PDS_H_INCLUDED
+#define OGR_PDS_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 #include "nasakeywordhandler.h"
+
+namespace OGRPDS {
 
 /************************************************************************/
 /*                              OGRPDSLayer                             */
@@ -71,7 +73,7 @@ class OGRPDSLayer : public OGRLayer
     int                nLatitudeIndex;
 
     FieldDesc*         pasFieldDesc;
-    
+
     void               ReadStructure(CPLString osStructureFilename);
     OGRFeature        *GetNextRawFeature();
 
@@ -82,25 +84,24 @@ class OGRPDSLayer : public OGRLayer
                                          CPLString osStructureFilename,
                                          int nRecords,
                                          int nStartBytes, int nRecordSize,
-                                         GByte* pabyRecord, int bIsASCII);
-                        ~OGRPDSLayer();
+                                         GByte* pabyRecord, bool bIsASCII);
+                        virtual ~OGRPDSLayer();
 
+    virtual void                ResetReading() override;
+    virtual OGRFeature *        GetNextFeature() override;
 
-    virtual void                ResetReading();
-    virtual OGRFeature *        GetNextFeature();
+    virtual OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    virtual int                 TestCapability( const char * ) override;
 
-    virtual int                 TestCapability( const char * );
+    virtual GIntBig             GetFeatureCount(int bForce = TRUE ) override;
 
-    virtual OGRSpatialReference *GetSpatialRef() { return NULL; }
+    virtual OGRFeature         *GetFeature( GIntBig nFID ) override;
 
-    virtual int                 GetFeatureCount(int bForce = TRUE );
-
-    virtual OGRFeature         *GetFeature( long nFID );
-
-    virtual OGRErr              SetNextByIndex( long nIndex );
+    virtual OGRErr              SetNextByIndex( GIntBig nIndex ) override;
 };
+
+} /* end of OGRPDS namespace */
 
 /************************************************************************/
 /*                           OGRPDSDataSource                           */
@@ -116,44 +117,28 @@ class OGRPDSDataSource : public OGRDataSource
     NASAKeywordHandler  oKeywords;
 
     CPLString           osTempResult;
-    const char         *GetKeywordSub( const char *pszPath, 
+    const char         *GetKeywordSub( const char *pszPath,
                                        int iSubscript,
                                        const char *pszDefault );
 
-    int                 LoadTable(const char* pszFilename,
-                                  int nRecordSize,
-                                  CPLString osTableID);
+    bool                LoadTable( const char* pszFilename,
+                                   int nRecordSize,
+                                   CPLString osTableID );
 
   public:
                         OGRPDSDataSource();
-                        ~OGRPDSDataSource();
+                        virtual ~OGRPDSDataSource();
 
-    int                 Open( const char * pszFilename,
-                              int bUpdate );
+    int                 Open( const char * pszFilename );
 
-    virtual const char*         GetName() { return pszName; }
+    virtual const char*         GetName() override { return pszName; }
 
-    virtual int                 GetLayerCount() { return nLayers; }
-    virtual OGRLayer*           GetLayer( int );
+    virtual int                 GetLayerCount() override { return nLayers; }
+    virtual OGRLayer*           GetLayer( int ) override;
 
-    virtual int                 TestCapability( const char * );
+    virtual int                 TestCapability( const char * ) override;
 
     static void         CleanString( CPLString &osInput );
 };
 
-/************************************************************************/
-/*                              OGRPDSDriver                            */
-/************************************************************************/
-
-class OGRPDSDriver : public OGRSFDriver
-{
-  public:
-                ~OGRPDSDriver();
-
-    virtual const char*         GetName();
-    virtual OGRDataSource*      Open( const char *, int );
-    virtual int                 TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_PDS_H_INCLUDED */
+#endif /* ndef OGR_PDS_H_INCLUDED */

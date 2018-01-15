@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrxplanedriver.cpp
  *
  * Project:  X-Plane aeronautical data reader
  * Purpose:  Implements OGRXPlaneDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2008, Even Rouault
+ * Copyright (c) 2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,6 +29,8 @@
 #include "ogr_xplane.h"
 #include "cpl_conv.h"
 
+CPL_CVSID("$Id: ogrxplanedriver.cpp 35676 2016-10-10 05:14:51Z goatbar $");
+
 /************************************************************************/
 /*                              GetName()                               */
 /************************************************************************/
@@ -47,14 +48,18 @@ const char *OGRXPlaneDriver::GetName()
 OGRDataSource *OGRXPlaneDriver::Open( const char * pszFilename, int bUpdate )
 
 {
-    if ( bUpdate )
+    if( bUpdate )
     {
-        return FALSE;
+        return NULL;
     }
 
-    OGRXPlaneDataSource   *poDS = new OGRXPlaneDataSource();
+    if( !EQUAL(CPLGetExtension(pszFilename), "dat") )
+        return NULL;
 
-    int bReadWholeFile = CSLTestBoolean(CPLGetConfigOption("OGR_XPLANE_READ_WHOLE_FILE", "TRUE"));
+    OGRXPlaneDataSource *poDS = new OGRXPlaneDataSource();
+
+    bool bReadWholeFile = CPLTestBool(
+        CPLGetConfigOption("OGR_XPLANE_READ_WHOLE_FILE", "TRUE"));
 
     if( !poDS->Open( pszFilename, bReadWholeFile ) )
     {
@@ -69,7 +74,7 @@ OGRDataSource *OGRXPlaneDriver::Open( const char * pszFilename, int bUpdate )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRXPlaneDriver::TestCapability( const char * pszCap )
+int OGRXPlaneDriver::TestCapability( CPL_UNUSED const char * pszCap )
 {
     return FALSE;
 }
@@ -81,6 +86,13 @@ int OGRXPlaneDriver::TestCapability( const char * pszCap )
 void RegisterOGRXPlane()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRXPlaneDriver );
-}
+    OGRSFDriver* poDriver = new OGRXPlaneDriver;
 
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "X-Plane/Flightgear aeronautical data" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "dat" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_xplane.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+}

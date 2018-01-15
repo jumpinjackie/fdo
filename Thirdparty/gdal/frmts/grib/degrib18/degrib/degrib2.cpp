@@ -44,7 +44,7 @@
  * message in "expect2" bytes or 0 bytes from the start.  Returns -1 if it
  * can't find "GRIB", 1 if "GRIB" is not 0, "expect", or "expect2" bytes from
  * the start.
- *   It stores the bytes it reads (a max of "expect") upto but not including
+ *   It stores the bytes it reads (a max of "expect") up to but not including
  * the 'G' in "GRIB" in wmo.
  *
  *   After it finds section 0, it then parses the 16 bytes that make up
@@ -123,10 +123,10 @@ int ReadSECT0 (DataSource &fp, char **buff, uInt4 *buffLen, sInt4 limit,
    wordType word;       /* Used to check that the edition is correct. */
    uInt4 curLen;        /* Where we currently are in buff. */
    uInt4 i;             /* Used to loop over the first few char's */
-   uInt4 stillNeed;     /* Number of bytes still needed to get 1st 8 bytes of 
+   uInt4 stillNeed;     /* Number of bytes still needed to get 1st 8 bytes of
                          * message into memory. */
 
-   /* Get first 8 bytes.  If GRIB we don't care.  If TDLP, this is the length 
+   /* Get first 8 bytes.  If GRIB we don't care.  If TDLP, this is the length
     * of record.  Read at least 1 record (length + 2 * 8) + 8 (next record
     * length) + 8 bytes before giving up. */
    curLen = 8;
@@ -263,7 +263,7 @@ int ReadSECT0 (DataSource &fp, char **buff, uInt4 *buffLen, sInt4 limit,
  *  msgNum = Which message to look for. (Input)
  *  offset = Where in the file the message starts (this is before the
  *           wmo ASCII part if there is one.) (Output)
- *  curMsg = The current # of messages we have looked through. (In/Out) 
+ *  curMsg = The current # of messages we have looked through. (In/Out)
  *
  * FILES/DATABASES:
  *   An already opened "GRIB2" File
@@ -286,7 +286,7 @@ int ReadSECT0 (DataSource &fp, char **buff, uInt4 *buffLen, sInt4 limit,
 int FindGRIBMsg (DataSource &fp, int msgNum, sInt4 *offset, int *curMsg)
 {
    int cnt;             /* The current message we are looking at. */
-   char *buff;          /* Holds the info between records. */
+   char *buff = NULL;   /* Holds the info between records. */
    uInt4 buffLen;       /* Length of info between records. */
    sInt4 sect0[SECT0LEN_WORD]; /* Holds the current Section 0. */
    uInt4 gribLen;       /* Length of the current GRIB message. */
@@ -613,7 +613,7 @@ static int FindSectLen (char *c_ipack, sInt4 gribLen, sInt4 ns[8],
  *  12/2002 (TK,AC,TB,&MS): Code Review.
  *
  * NOTES
- * 1) Numbers not found in document were discused with Bob Glahn on 8/29/2002
+ * 1) Numbers not found in document were discussed with Bob Glahn on 8/29/2002
  * 2) Possible exceptions:
  *    template 3.120 could need ns[3] = 1600
  *    template 4.30 could need a different ns4.
@@ -761,7 +761,7 @@ void IS_Free (IS_dataType *is)
  *   9/2002 Arthur Taylor (MDL/RSIS): Created.
  *  11/2002 AAT: Updated.
  *  12/2002 (TK,AC,TB,&MS): Code Review.
- *   1/2003 AAT: It wasn't error coded 208, but rather 202 to look for.
+ *   1/2003 AAT: It was not error coded 208, but rather 202 to look for.
  *   3/2003 AAT: Modified handling of section 2 stuff (no loop)
  *   3/2003 AAT: Added ability to handle multiple grids in same message.
  *   4/2003 AAT: Added ability to call GRIB1 decoder for GRIB1 messages.
@@ -798,7 +798,7 @@ void IS_Free (IS_dataType *is)
  *    xmissp, and xmisss.  We don't embed because we don't know what to set
  *    xmissp or xmisss to.  Instead after we know the range, we choose a value
  *    and walk through the bitmap setting grib_Data appropriately.
- * 5a) iclean = 0;  This is because we do want the missing values embeded.
+ * 5a) iclean = 0;  This is because we do want the missing values embedded.
  *    that is we want the missing values to be place holders.
  * 6) f_endMsg is true if in the past we either completed reading a message,
  *    or we haven't read any messages.  In either case we need to read the
@@ -815,18 +815,20 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
                      uInt4 *grib_DataLen, grib_MetaData *meta,
                      IS_dataType *IS, int subgNum, double majEarth,
                      double minEarth, int simpVer, sInt4 *f_endMsg,
-                     LatLon *lwlf, LatLon *uprt)
+                     CPL_UNUSED LatLon *lwlf,
+                     CPL_UNUSED LatLon *uprt)
 {
    sInt4 l3264b;        /* Number of bits in a sInt4.  Needed by FORTRAN
                          * unpack library to determine if system has a 4
                          * byte_ sInt4 or an 8 byte sInt4. */
-   char *buff;          /* Holds the info between records. */
+   char *buff = NULL;   /* Holds the info between records. */
    uInt4 buffLen;       /* Length of info between records. */
    sInt4 sect0[SECT0LEN_WORD]; /* Holds the current Section 0. */
    uInt4 gribLen;       /* Length of the current GRIB message. */
    sInt4 nd5;           /* Size of grib message rounded up to the nearest
                          * sInt4. */
-   char *c_ipack;       /* A char ptr to the message stored in IS->ipack */
+   /* A char ptr to the message stored in IS->ipack */
+   char *c_ipack = NULL;
    sInt4 local_ns[8];   /* Local copy of section lengths. */
    sInt4 nd2x3;         /* Total number of grid points. */
    short int table50;   /* Type of packing used. (See code table 5.0)
@@ -842,10 +844,10 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
                          * unless library is compiled a particular way. */
    sInt4 ibitmap;       /* 0 means no bitmap returned, otherwise 1. */
    float xmissp;        /* The primary missing value.  If iclean = 0, this
-                         * value is embeded in grid, otherwise it is the
+                         * value is embedded in grid, otherwise it is the
                          * value returned from the GRIB message. */
    float xmisss;        /* The secondary missing value.  If iclean = 0, this
-                         * value is embeded in grid, otherwise it is the
+                         * value is embedded in grid, otherwise it is the
                          * value returned from the GRIB message. */
    sInt4 jer[UNPK_NUM_ERRORS * 2]; /* Any Error codes along with their *
                                     * severity levels generated using the *
@@ -873,7 +875,6 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
     * don't want to throw it out, nor have to re-read ipack from disk.
     */
    l3264b = sizeof (sInt4) * 8;
-   buff = NULL;
    buffLen = 0;
    if (*f_endMsg == 1) {
       if (ReadSECT0 (fp, &buff, &buffLen, -1, sect0, &gribLen, &version) < 0) {
@@ -995,7 +996,7 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
             }
             /* Don't need to do the following, but we do in case code
              * changes. */
-            c_ipack = (char *) IS->ipack;
+            /*c_ipack = (char *) IS->ipack;*/
          }
       }
       IS->nd5 = nd5;
@@ -1065,15 +1066,15 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
                   IS->is[5], IS->ns[5], gribLen, xmissp, xmisss, simpVer)
        != 0) {
 #ifdef DEBUG
-      FILE *fp;
-      if ((fp = fopen ("dump.is0", "wt")) != NULL) {
+      FILE *l_fp;
+      if ((l_fp = fopen ("dump.is0", "wt")) != NULL) {
          for (i = 0; i < 8; i++) {
-            fprintf (fp, "---Section %d---\n", (int) i);
+            fprintf (l_fp, "---Section %d---\n", (int) i);
             for (j = 1; j <= IS->ns[i]; j++) {
-               fprintf (fp, "IS%d Item %d = %d\n", (int) i, (int) j, IS->is[i][j - 1]);
+               fprintf (l_fp, "IS%d Item %d = %d\n", (int) i, (int) j, IS->is[i][j - 1]);
             }
          }
-         fclose (fp);
+         fclose (l_fp);
       }
 #endif
       preErrSprintf ("Inside ReadGrib2Record.. Problems in MetaParse\n");
@@ -1101,7 +1102,7 @@ int ReadGrib2Record (DataSource &fp, sChar f_unit, double **Grib_Data,
 */
    if (ComputeUnit (meta->convert, meta->unitName, f_unit, &unitM, &unitB,
                     unitName) == 0) {
-      unitLen = strlen (unitName);
+      unitLen = static_cast<int>(strlen (unitName));
       meta->unitName = (char *) realloc ((void *) (meta->unitName),
                                          1 + unitLen * sizeof (char));
       strncpy (meta->unitName, unitName, unitLen);

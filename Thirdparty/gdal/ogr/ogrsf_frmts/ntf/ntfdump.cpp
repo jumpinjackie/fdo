@@ -1,8 +1,7 @@
 /******************************************************************************
- * $Id: ntfdump.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  NTF Translator
- * Purpose:  Simple test harnass.
+ * Purpose:  Simple test harness.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
  ******************************************************************************
@@ -31,7 +30,7 @@
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ntfdump.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ntfdump.cpp 35933 2016-10-25 16:46:26Z goatbar $");
 
 static void NTFDump( const char * pszFile, char **papszOptions );
 static void NTFCount( const char * pszFile );
@@ -45,10 +44,10 @@ int main( int argc, char ** argv )
 {
     const char  *pszMode = "-d";
     char        **papszOptions = NULL;
-    
+
     if( argc == 1 )
         printf( "Usage: ntfdump [-s n] [-g] [-d] [-c] [-codelist] files\n" );
-    
+
     for( int i = 1; i < argc; i++ )
     {
         if( EQUAL(argv[i],"-g") )
@@ -82,30 +81,25 @@ int main( int argc, char ** argv )
 static void NTFCount( const char * pszFile )
 
 {
-    FILE      *fp;
-    NTFRecord *poRecord = NULL;
-    int       anCount[100], i;
-
-    for( i = 0; i < 100; i++ )
-        anCount[i] = 0;
-
-    fp = VSIFOpen( pszFile, "r" );
+    FILE *fp = VSIFOpen( pszFile, "r" );
     if( fp == NULL )
         return;
-    
+
+    int anCount[100] = {};
+
+    NTFRecord *poRecord = NULL;
     do {
         if( poRecord != NULL )
             delete poRecord;
 
         poRecord = new NTFRecord( fp );
         anCount[poRecord->GetType()]++;
-
     } while( poRecord->GetType() != 99 );
 
     VSIFClose( fp );
 
     printf( "\nReporting on: %s\n", pszFile );
-    for( i = 0; i < 100; i++ )
+    for( int i = 0; i < 100; i++ )
     {
         if( anCount[i] > 0 )
             printf( "Found %d records of type %d\n", anCount[i], i );
@@ -119,14 +113,14 @@ static void NTFCount( const char * pszFile )
 static void NTFDump( const char * pszFile, char **papszOptions )
 
 {
-    OGRFeature         *poFeature;
-    OGRNTFDataSource   oDS;
+    OGRNTFDataSource oDS;
 
     oDS.SetOptionList( papszOptions );
-    
+
     if( !oDS.Open( pszFile ) )
         return;
 
+    OGRFeature *poFeature = NULL;
     while( (poFeature = oDS.GetNextFeature()) != NULL )
     {
         printf( "-------------------------------------\n" );

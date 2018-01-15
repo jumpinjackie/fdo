@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: val_repl.py 19920 2010-06-26 10:59:03Z rouault $
+# $Id: val_repl.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 # Project:  GDAL Python samples
 # Purpose:  Script to replace specified values from the input raster file
@@ -11,7 +11,8 @@
 #
 ###############################################################################
 # Copyright (c) 2003, Andrey Kiselev <dron@remotesensing.org>
-# 
+# Copyright (c) 2009-2010, Even Rouault <even dot rouault at mines-paris dot org>
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -32,13 +33,8 @@
 ###############################################################################
 
 
-try:
-    from osgeo import gdal
-    from osgeo.gdalconst import *
-    gdal.TermProgress = gdal.TermProgress_nocb
-except ImportError:
-    import gdal
-    from gdalconst import *
+from osgeo import gdal
+gdal.TermProgress = gdal.TermProgress_nocb
 
 try:
     import numpy
@@ -60,8 +56,8 @@ def Usage():
 # =============================================================================
 def ParseType(type):
     gdal_dt = gdal.GetDataTypeByName(type)
-    if gdal_dt is GDT_Unknown:
-        gdal_dt = GDT_Byte
+    if gdal_dt is gdal.GDT_Unknown:
+        gdal_dt = gdal.GDT_Byte
     return gdal_dt
 
 # =============================================================================
@@ -71,7 +67,7 @@ outNoData = None
 infile = None
 outfile = None
 format = 'GTiff'
-type = GDT_Byte
+type = gdal.GDT_Byte
 
 # Parse command line arguments.
 i = 1
@@ -114,7 +110,7 @@ if inNoData is None:
 if outNoData is None:
     Usage()
 
-indataset = gdal.Open( infile, GA_ReadOnly )
+indataset = gdal.Open( infile, gdal.GA_ReadOnly )
 
 out_driver = gdal.GetDriverByName(format)
 outdataset = out_driver.Create(outfile, indataset.RasterXSize, indataset.RasterYSize, indataset.RasterCount, type)

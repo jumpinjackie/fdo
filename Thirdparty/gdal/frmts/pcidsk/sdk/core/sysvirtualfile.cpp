@@ -59,19 +59,19 @@ const int SysVirtualFile::block_size = SYSVIRTUALFILE_BLOCKSIZE;
 /*                           SysVirtualFile()                           */
 /************************************************************************/
 
-SysVirtualFile::SysVirtualFile( CPCIDSKFile *file, int start_block, 
+SysVirtualFile::SysVirtualFile( CPCIDSKFile *fileIn, int start_block, 
                                 uint64 image_length, 
-                                SysBlockMap *sysblockmap,
-                                int image_index )
+                                SysBlockMap *sysblockmapIn,
+                                int image_indexIn )
 
 {
     io_handle = NULL;
     io_mutex = NULL;
 
     file_length = image_length;
-    this->file = file;
-    this->sysblockmap = sysblockmap;
-    this->image_index = image_index;
+    this->file = fileIn;
+    this->sysblockmap = sysblockmapIn;
+    this->image_index = image_indexIn;
 
     loaded_block = -1;
     loaded_block_dirty = false;
@@ -112,11 +112,11 @@ uint16 SysVirtualFile::GetBlockSegment( int requested_block )
 
 {
     if( requested_block < 0 )
-        ThrowPCIDSKException( "SysVirtualFile::GetBlockSegment(%d) - illegal request.",
+        return (uint16)ThrowPCIDSKException(0, "SysVirtualFile::GetBlockSegment(%d) - illegal request.",
                               requested_block );
 
     if( requested_block >= blocks_loaded )
-        LoadBMEntrysTo( requested_block );
+        LoadBMEntriesTo( requested_block );
 
     if( regular_blocks )
         // regular blocks are all in one segment.
@@ -133,11 +133,11 @@ int SysVirtualFile::GetBlockIndexInSegment( int requested_block )
 
 {
     if( requested_block < 0 )
-        ThrowPCIDSKException( "SysVirtualFile::GetBlockIndexInSegment(%d) - illegal request.",
+        return ThrowPCIDSKException(0, "SysVirtualFile::GetBlockIndexInSegment(%d) - illegal request.",
                               requested_block );
 
     if( requested_block >= blocks_loaded )
-        LoadBMEntrysTo( requested_block );
+        LoadBMEntriesTo( requested_block );
 
     if( regular_blocks )
         // regular blocks all follow the first block in order.
@@ -157,7 +157,7 @@ void SysVirtualFile::SetBlockInfo( int requested_block,
 
 {
     if( requested_block < 0 )
-        ThrowPCIDSKException( "SysVirtualFile::SetBlockSegment(%d) - illegal request.",
+        return ThrowPCIDSKException( "SysVirtualFile::SetBlockSegment(%d) - illegal request.",
                               requested_block );
 
     // this should always be the case.
@@ -189,18 +189,19 @@ void SysVirtualFile::SetBlockInfo( int requested_block,
     }
 
     // Ah, we see they are now irregular.  We need to build up the
-    // segment/index arrays and proceed to populate them. 
-    Debug( file->GetInterfaces()->Debug, 
-           "SysVirtualFile - Discovered stream is irregulr.  %d/%d follows %d/%d at block %d.\n",
+    // segment/index arrays and proceed to populate them.
+    Debug( file->GetInterfaces()->Debug,
+           "SysVirtualFile - Discovered stream is irregular.  "
+           "%d/%d follows %d/%d at block %d.\n",
            new_block_segment, new_block_index,
            xblock_segment[0], xblock_index[0], 
            requested_block );
-           
+
     regular_blocks = false;
     while( (int) xblock_segment.size() < blocks_loaded )
     {
         xblock_segment.push_back( xblock_segment[0] );
-        xblock_index.push_back( xblock_index[xblock_index.size()-1]+1 );
+        xblock_index.push_back( xblock_index.back()+1 );
     }
 
     xblock_segment.push_back( new_block_segment );
@@ -273,7 +274,7 @@ void SysVirtualFile::ReadFromFile( void *buffer, uint64 offset, uint64 size )
 
     uint64 buffer_offset = 0;
 #if 0
-    printf("Requesting region at %llu of size %llu\n", offset, size);
+    printf("Requesting region at %llu of size %llu\n", offset, size);/*ok*/
 #endif
     while( buffer_offset < size )
     {
@@ -330,7 +331,7 @@ void SysVirtualFile::LoadBlock( int requested_block )
 /*      Does this block exist in the virtual file?                      */
 /* -------------------------------------------------------------------- */
     if( requested_block < 0 || requested_block >= blocks_loaded )
-        ThrowPCIDSKException( "SysVirtualFile::LoadBlock(%d) - block out of range.",
+        return ThrowPCIDSKException( "SysVirtualFile::LoadBlock(%d) - block out of range.",
                               requested_block );
 
 /* -------------------------------------------------------------------- */
@@ -341,9 +342,12 @@ void SysVirtualFile::LoadBlock( int requested_block )
 /* -------------------------------------------------------------------- */
 /*      Load the requested block.                                       */
 /* -------------------------------------------------------------------- */
-    LoadBMEntrysTo( requested_block );
+    LoadBMEntriesTo( requested_block );
     PCIDSKSegment *data_seg_obj =
         file->GetSegment( GetBlockSegment( requested_block ) );
+    if( data_seg_obj == NULL )
+        return ThrowPCIDSKException( "SysVirtualFile::LoadBlock(%d) - no segment found",
+                                     requested_block );
 
     data_seg_obj->ReadFromFile( block_data,
                                 block_size * (uint64) GetBlockIndexInSegment( requested_block ),
@@ -382,7 +386,7 @@ void SysVirtualFile::FlushDirtyBlock(void)
 /************************************************************************/
 void SysVirtualFile::GrowVirtualFile(std::ptrdiff_t requested_block)
 {
-    LoadBMEntrysTo( requested_block );
+    LoadBMEntriesTo( static_cast<int>(requested_block) );
 
     if( requested_block == blocks_loaded )
     {
@@ -396,7 +400,7 @@ void SysVirtualFile::GrowVirtualFile(std::ptrdiff_t requested_block)
 
         offset = 
             sysblockmap->GrowVirtualFile( image_index, last_bm_index, new_seg);
-        SetBlockInfo( requested_block, (uint16) new_seg, offset );
+        SetBlockInfo( static_cast<int>(requested_block), (uint16) new_seg, offset );
     }
 }
 
@@ -431,23 +435,23 @@ void SysVirtualFile::WriteBlocks(int first_block,
     std::size_t blocks_written = 0;
     std::size_t current_first_block = first_block;
     while (blocks_written < (std::size_t) block_count) {
-        LoadBMEntrysTo( current_first_block+1 );
+        LoadBMEntriesTo( static_cast<int>(current_first_block+1) );
 
-        unsigned int cur_segment = GetBlockSegment( current_first_block );
-        unsigned int cur_block = current_first_block;
+        unsigned int cur_segment = GetBlockSegment( static_cast<int>(current_first_block) );
+        unsigned int cur_block = static_cast<unsigned int>(current_first_block);
         while (cur_block < (unsigned int)block_count + first_block &&
                (unsigned int) GetBlockSegment(cur_block + 1) == cur_segment)
         {
             cur_block++;
-            LoadBMEntrysTo( current_first_block+1 );
+            LoadBMEntriesTo( static_cast<int>(current_first_block+1) );
         }
         
         // Find largest span of contiguous blocks we can write
-        uint64 write_start = GetBlockIndexInSegment(current_first_block);
+        uint64 write_start = GetBlockIndexInSegment(static_cast<int>(current_first_block));
         uint64 write_cur = write_start * block_size;
         unsigned int count_to_write = 1;
         while (write_cur + block_size ==
-               (uint64)GetBlockIndexInSegment(count_to_write + current_first_block - 1) * block_size &&
+               (uint64)GetBlockIndexInSegment(static_cast<int>(count_to_write + current_first_block - 1)) * block_size &&
             count_to_write < (cur_block - current_first_block))
         {
             write_cur += block_size;
@@ -497,7 +501,7 @@ void SysVirtualFile::LoadBlocks(int requested_block_start,
     
     while (blocks_read < (unsigned int)requested_block_count) {
         // Coalesce blocks that are in the same segment
-        LoadBMEntrysTo( current_start+1 );
+        LoadBMEntriesTo( current_start+1 );
         unsigned int cur_segment = GetBlockSegment(current_start); // segment of current
                 // first block
         unsigned int cur_block = current_start; // starting block ID
@@ -506,7 +510,7 @@ void SysVirtualFile::LoadBlocks(int requested_block_start,
             // this block is in the same segment as the previous one we
             // wanted to read.
             cur_block++;
-            LoadBMEntrysTo( cur_block+1 );
+            LoadBMEntriesTo( cur_block+1 );
         }
         
         // now attempt to determine if the region of blocks (from current_start
@@ -528,27 +532,27 @@ void SysVirtualFile::LoadBlocks(int requested_block_start,
         for (unsigned int i = 0 ; i < count_to_read; i++) {
             GrowVirtualFile(i + current_start);
         }
-        
-        printf("Coalescing the read of %d blocks\n", count_to_read);
+
+        printf("Coalescing the read of %d blocks\n", count_to_read);/*ok*/
 #endif
 
         // Perform the actual read
         PCIDSKSegment *data_seg_obj =
             file->GetSegment( cur_segment );
-        
+
         std::size_t data_size = block_size * count_to_read;
 
 #if 0
-        printf("Reading %d bytes at offset %d in buffer\n", data_size, buffer_off);
+        printf("Reading %d bytes at offset %d in buffer\n", data_size, buffer_off);/*ok*/
 #endif
 
         data_seg_obj->ReadFromFile( ((uint8*)buffer) + buffer_off,
                                     block_size * read_start,
                                     data_size );
-                                    
+
         buffer_off += data_size; // increase buffer offset
-        
-        // Increment the current start by the number of blocks we jsut read
+
+        // Increment the current start by the number of blocks we just read
         current_start += count_to_read;
         blocks_read += count_to_read;
     }
@@ -564,7 +568,7 @@ void SysVirtualFile::LoadBlocks(int requested_block_start,
 /*      are available.                                                  */
 /************************************************************************/
 
-void SysVirtualFile::LoadBMEntrysTo( int target_index )
+void SysVirtualFile::LoadBMEntriesTo( int target_index )
 
 {
     if( target_index > 0 )

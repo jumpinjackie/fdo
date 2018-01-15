@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: records.h 22488 2011-06-02 17:04:47Z rouault $
+ * $Id: records.h 35885 2016-10-24 06:23:09Z goatbar $
  *
  * Project:  APP ENVISAT Support
  * Purpose:  Low Level Envisat file access (read/write) API.
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __RECORDS_H__
-#define __RECORDS_H__
+#ifndef RECORDS_H_
+#define RECORDS_H_
 
 #include "gdal.h"
 
@@ -36,7 +36,6 @@
 extern "C"
 {
 #endif
-
 
 #define MJD_FIELD_SIZE 12
 
@@ -62,9 +61,9 @@ typedef enum {
 
 typedef struct {
     const char* szName;
-    const int nOffset;
-    const EnvisatDataType eType;
-    const int nCount;
+    int nOffset;
+    EnvisatDataType eType;
+    int nCount;
 } EnvisatFieldDescr;
 
 typedef struct {
@@ -75,11 +74,10 @@ typedef struct {
 const EnvisatRecordDescr* EnvisatFile_GetRecordDescriptor(const char* pszProduct,
                                               const char* pszDataset);
 
-CPLErr EnvisatFile_GetFieldAsString(const void*, int, const EnvisatFieldDescr*, char*);
-
+CPLErr EnvisatFile_GetFieldAsString(const void*, int, const EnvisatFieldDescr*, char*, size_t);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* __RECORDS_H__ */
+#endif /* RECORDS_H_ */

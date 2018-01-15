@@ -1,12 +1,13 @@
 /*****************************************************************************
- * $Id: IntergraphDataset.h 20996 2010-10-28 18:38:15Z rouault $
+ * $Id: IntergraphDataset.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  Intergraph Raster Format support
  * Purpose:  Read selected types of Intergraph Raster Format
- * Author:   Ivan Lucena [ivan.lucena@pmldnet.com]
+ * Author:   Ivan Lucena, [lucena_ivan at hotmail.com]
  *
  ******************************************************************************
  * Copyright (c) 2007, Ivan Lucena
+ * Copyright (c) 2007-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files ( the "Software" ),
@@ -51,24 +52,23 @@ private:
 
 public:
     IntergraphDataset();
-    ~IntergraphDataset();
+    virtual ~IntergraphDataset();
 
     static GDALDataset *Open( GDALOpenInfo *poOpenInfo );
     static GDALDataset *Create( const char *pszFilename,
         int nXSize,
         int nYSize,
-        int nBands, 
+        int nBands,
         GDALDataType eType,
         char **papszOptions );
-    static GDALDataset *CreateCopy( const char *pszFilename, 
+    static GDALDataset *CreateCopy( const char *pszFilename,
         GDALDataset *poSrcDS,
         int bStrict,
         char **papszOptions,
-        GDALProgressFunc pfnProgress, 
+        GDALProgressFunc pfnProgress,
         void * pProgressData );
 
-    virtual CPLErr GetGeoTransform( double *padfTransform );
-    virtual CPLErr SetGeoTransform( double *padfTransform );
-    virtual CPLErr SetProjection( const char *pszProjString );
+    virtual CPLErr GetGeoTransform( double *padfTransform ) override;
+    virtual CPLErr SetGeoTransform( double *padfTransform ) override;
+    virtual CPLErr SetProjection( const char *pszProjString ) override;
 };
-

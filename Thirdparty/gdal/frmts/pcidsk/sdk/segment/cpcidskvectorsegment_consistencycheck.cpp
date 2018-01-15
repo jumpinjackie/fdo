@@ -36,10 +36,13 @@
 using namespace PCIDSK;
 
 /* -------------------------------------------------------------------- */
-/*      Size of a block in the record/vertice block tables.  This is    */
+/*      Size of a block in the record/vertex block tables.  This is    */
 /*      determined by the PCIDSK format and may not be changed.         */
 /* -------------------------------------------------------------------- */
-static const int block_page_size = 8192;  
+static const int block_page_size = 8192;
+#ifndef CPL_BASE_H_INCLUDED
+template<class T> static void CPL_IGNORE_RET_VAL(T) {}
+#endif
 
 /************************************************************************/
 /* ==================================================================== */
@@ -58,10 +61,10 @@ public:
     // binary search for the offset closes to our target or earlier.
     uint32  FindPreceding( uint32 offset )
         {
-            if( offsets.size() == 0 )
+            if( offsets.empty() )
                 return 0;
 
-            uint32 start=0, end=offsets.size()-1;
+            uint32 start=0, end=static_cast<uint32>(offsets.size())-1;
 
             while( end > start )
             {
@@ -82,7 +85,7 @@ public:
             uint32 preceding = FindPreceding( offset );
 
             // special case for empty
-            if( offsets.size() == 0 )
+            if( offsets.empty() )
             {
                 offsets.push_back( offset );
                 sizes.push_back( size );
@@ -90,7 +93,7 @@ public:
             }
                     
             // special case for before first.
-            if( offsets.size() > 0 && offset < offsets[0] )
+            if( !offsets.empty() && offset < offsets[0] )
             {
                 if( offset+size > offsets[0] )
                     return true;
@@ -163,7 +166,7 @@ std::string CPCIDSKVectorSegment::ConsistencyCheck()
     report += ConsistencyCheck_ShapeIndices();
 
     if( report != "" )
-        fprintf( stderr, "ConsistencyCheck() Report:\n%s", report.c_str() );
+        fprintf( stderr, "ConsistencyCheck() Report:\n%s", report.c_str() );/*ok*/
 
     return report;
 }
@@ -215,13 +218,12 @@ std::string CPCIDSKVectorSegment::ConsistencyCheck_DataIndices()
 
 {
     std::string report;
-    unsigned int section;
 
     SpaceMap smap;
 
-    smap.AddChunk( 0, vh.header_blocks );
+    CPL_IGNORE_RET_VAL(smap.AddChunk( 0, vh.header_blocks ));
 
-    for( section = 0; section < 2; section++ )
+    for( int section = 0; section < 2; section++ )
     {
         const std::vector<uint32> *map = di[section].GetIndex();
         unsigned int i;
@@ -232,7 +234,8 @@ std::string CPCIDSKVectorSegment::ConsistencyCheck_DataIndices()
             {
                 char msg[100];
 
-                sprintf( msg, "Conflict for block %d, held by at least data index '%d'.\n",
+                snprintf( msg,  sizeof(msg),
+                          "Conflict for block %d, held by at least data index '%d'.\n",
                          (*map)[i], section );
 
                 report += msg;
@@ -270,7 +273,8 @@ std::string CPCIDSKVectorSegment::ConsistencyCheck_ShapeIndices()
         {
             char msg[100];
 
-            sprintf( msg, "ShapeID %d is used for shape %d and %d!\n", 
+            snprintf( msg, sizeof(msg),
+                      "ShapeID %d is used for shape %u and %u!\n", 
                      shape_index_ids[toff], 
                      toff, id_map[shape_index_ids[toff]]);
             report += msg;

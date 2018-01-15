@@ -1,4 +1,4 @@
-dnl $Id: ax_lib_xerces.m4 23370 2011-11-13 13:21:30Z rouault $
+dnl $Id: ax_lib_xerces.m4 35650 2016-10-08 10:17:38Z rouault $
 dnl
 dnl @synopsis AX_LIB_XERCES([MINIMUM-VERSION])
 dnl
@@ -28,7 +28,7 @@ dnl
 dnl @category InstalledPackages
 dnl @category Cxx
 dnl @author Mateusz Loskot <mateusz@loskot.net>
-dnl @version $Date: 2011-11-13 05:21:30 -0800 (Sun, 13 Nov 2011) $
+dnl @version $Date: 2016-10-08 03:17:38 -0700 (Sat, 08 Oct 2016) $
 dnl @license AllPermissive
 dnl          Copying and distribution of this file, with or without modification,
 dnl          are permitted in any medium without royalty provided the copyright notice and
@@ -121,7 +121,7 @@ AC_DEFUN([AX_LIB_XERCES],
         CPPFLAGS="$CPPFLAGS -I$xerces_include_dir -I$xerces_include_dir2"
 
         saved_LIBS="$LIBS"
-        LIBS="$LIBS $xerces_lib_flags"
+        LIBS="$xerces_lib_flags $LIBS"
 
         dnl
         dnl Check Xerces headers
@@ -191,13 +191,10 @@ XMLPlatformUtils::Initialize();
 
     if test "$run_xerces_test" = "yes"; then
         if test "$xerces_header_found" = "yes" -a "$xerces_lib_found" = "yes"; then
-
-            AC_SUBST([XERCES_CFLAGS])
-            AC_SUBST([XERCES_LDFLAGS])
-
             HAVE_XERCES="yes"
         else
             XERCES_CFLAGS=""
+            XERCES_LDFLAGS=""
             HAVE_XERCES="no"
         fi
 
@@ -248,7 +245,14 @@ XMLPlatformUtils::Initialize();
                         AC_MSG_RESULT([yes])
                     else
                         AC_MSG_RESULT([no])
-                        AC_MSG_WARN([Found Xerces C++ Parser $XERCES_VERSION, which is older than required. Possible compilation failure.])
+                        if test "$xerces_requested" = "yes"; then
+                            AC_MSG_ERROR([Found Xerces C++ Parser $XERCES_VERSION, which is older than required.])
+                        else
+                            AC_MSG_WARN([Found Xerces C++ Parser $XERCES_VERSION, which is older than required. Disabling it])
+                            XERCES_CFLAGS=""
+                            XERCES_LDFLAGS=""
+                            HAVE_XERCES="no"
+                        fi
                     fi
                 else
                     AC_MSG_RESULT([no])
@@ -256,6 +260,9 @@ XMLPlatformUtils::Initialize();
                 fi
             fi
         fi
+
+        AC_SUBST([XERCES_CFLAGS])
+        AC_SUBST([XERCES_LDFLAGS])
 
     else
         HAVE_XERCES="no"

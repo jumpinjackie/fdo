@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrbnadriver.cpp
  *
  * Project:  BNA Translator
  * Purpose:  Implements OGRBNADriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2007, Even Rouault
+ * Copyright (c) 2007, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,35 +29,36 @@
 #include "ogr_bna.h"
 #include "cpl_conv.h"
 
-/************************************************************************/
-/*                           ~OGRBNADriver()                            */
-/************************************************************************/
-
-OGRBNADriver::~OGRBNADriver()
-
-{
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRBNADriver::GetName()
-
-{
-    return "BNA";
-}
+CPL_CVSID("$Id: ogrbnadriver.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRBNADriver::Open( const char * pszFilename, int bUpdate )
+static GDALDataset *OGRBNADriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
+// --------------------------------------------------------------------
+//      Does this appear to be a .bna file?
+// --------------------------------------------------------------------
+    const char* pszFilename = poOpenInfo->pszFilename;
+    if( STARTS_WITH_CI(pszFilename, "BNA:") )
+    {
+        pszFilename += 4;
+    }
+    else if( poOpenInfo->fpL == NULL ||
+        !(EQUAL( CPLGetExtension(pszFilename), "bna" )
+           || ((STARTS_WITH_CI(pszFilename, "/vsigzip/") ||
+                STARTS_WITH_CI(pszFilename, "/vsizip/")) &&
+               (strstr( pszFilename, ".bna") ||
+                strstr( pszFilename, ".BNA")))) )
+    {
+        return NULL;
+    }
+
     OGRBNADataSource   *poDS = new OGRBNADataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+    if( !poDS->Open( pszFilename, poOpenInfo->eAccess == GA_Update ) )
     {
         delete poDS;
         poDS = NULL;
@@ -68,14 +68,17 @@ OGRDataSource *OGRBNADriver::Open( const char * pszFilename, int bUpdate )
 }
 
 /************************************************************************/
-/*                          CreateDataSource()                          */
+/*                               Create()                               */
 /************************************************************************/
 
-OGRDataSource *OGRBNADriver::CreateDataSource( const char * pszName,
-                                                 char **papszOptions )
-
+static GDALDataset *OGRBNADriverCreate( const char * pszName,
+                                        int /* nBands */,
+                                        int /* nXSize */,
+                                        int /* nYSize */,
+                                        GDALDataType /* eDT */,
+                                        char **papszOptions )
 {
-    OGRBNADataSource   *poDS = new OGRBNADataSource();
+    OGRBNADataSource *poDS = new OGRBNADataSource();
 
     if( !poDS->Create( pszName, papszOptions ) )
     {
@@ -87,33 +90,17 @@ OGRDataSource *OGRBNADriver::CreateDataSource( const char * pszName,
 }
 
 /************************************************************************/
-/*                          DeleteDataSource()                          */
+/*                               Delete()                               */
 /************************************************************************/
 
-OGRErr OGRBNADriver::DeleteDataSource( const char *pszFilename )
+static CPLErr OGRBNADriverDelete( const char *pszFilename )
 
 {
     if( VSIUnlink( pszFilename ) == 0 )
-        return OGRERR_NONE;
-    else
-        return OGRERR_FAILURE;
+        return CE_None;
+
+    return CE_Failure;
 }
-
-/************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRBNADriver::TestCapability( const char * pszCap )
-
-{
-    if( EQUAL(pszCap,ODrCCreateDataSource) )
-        return TRUE;
-    else if( EQUAL(pszCap,ODrCDeleteDataSource) )
-        return TRUE;
-    else
-        return FALSE;
-}
-
 
 /************************************************************************/
 /*                           RegisterOGRBNA()                           */
@@ -122,6 +109,44 @@ int OGRBNADriver::TestCapability( const char * pszCap )
 void RegisterOGRBNA()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRBNADriver );
-}
+    if( GDALGetDriverByName( "BNA" ) != NULL )
+        return;
 
+    GDALDriver  *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "BNA" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "Atlas BNA" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "bna" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_bna.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+"<CreationOptionList>"
+#ifdef WIN32
+"  <Option name='LINEFORMAT' type='string-select' description='end-of-line sequence' default='CRLF'>"
+#else
+"  <Option name='LINEFORMAT' type='string-select' description='end-of-line sequence' default='LF'>"
+#endif
+"    <Value>CRLF</Value>"
+"    <Value>LF</Value>"
+"  </Option>"
+"  <Option name='MULTILINE' type='boolean' description='Whether coordinates should be put on the same line' default='NO'/>"
+"  <Option name='NB_IDS' type='string-select' description='Number of identifiers per record' default='2'>"
+"    <Value>2</Value>"
+"    <Value>3</Value>"
+"    <Value>4</Value>"
+"    <Value>NB_SOURCE_FIELDS</Value>"
+"  </Option>"
+"  <Option name='ELLIPSES_AS_ELLIPSES' type='boolean' description='Whether ellipses and circles should be recognized and written as such, instead of polygons' default='YES'/>"
+"  <Option name='NB_PAIRS_PER_LINE' type='int' description='Maximum number of coordinate pair per line in multiline format'/>"
+"  <Option name='COORDINATE_PRECISION' type='int' description='Number of decimal for coordinates' default='10'/>"
+"</CreationOptionList>");
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+                               "<LayerCreationOptionList/>");
+
+    poDriver->pfnOpen = OGRBNADriverOpen;
+    poDriver->pfnCreate = OGRBNADriverCreate;
+    poDriver->pfnDelete = OGRBNADriverDelete;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

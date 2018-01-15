@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gtiff.h 25659 2013-02-19 22:51:46Z warmerdam $
+ * $Id: gtiff.h 37184 2017-01-19 12:26:29Z rouault $
  *
  * Project:  GeoTIFF Driver
  * Purpose:  GDAL GeoTIFF support.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 1998, 2002, Frank Warmerdam <warmerdam@pobox.com>
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,9 +32,10 @@
 #define GTIFF_H_INCLUDED
 
 #include "cpl_port.h"
+#include "cpl_string.h"
 
-#include "tiffio.h"
 #include "gdal.h"
+#include "tiffio.h"
 
 CPL_C_START
 int    GTiffOneTimeInit();
@@ -41,9 +43,23 @@ void CPL_DLL LibgeotiffOneTimeInit();
 void   LibgeotiffOneTimeCleanupMutex();
 CPL_C_END
 
-void    GTIFFGetOverviewBlockSize(int* pnBlockXSize, int* pnBlockYSize);
-void    GTIFFSetJpegQuality(GDALDatasetH hGTIFFDS, int nJpegQuality);
-int     GTIFFGetCompressionMethod(const char* pszValue, const char* pszVariableName);
+void    GTIFFSetInExternalOvr( bool b );
+void    GTIFFGetOverviewBlockSize( int* pnBlockXSize, int* pnBlockYSize );
+void    GTIFFSetJpegQuality( GDALDatasetH hGTIFFDS, int nJpegQuality );
+void    GTIFFSetJpegTablesMode( GDALDatasetH hGTIFFDS, int nJpegTablesMode );
+int     GTIFFGetCompressionMethod( const char* pszValue,
+                                   const char* pszVariableName );
+
+void GTiffDatasetWriteRPCTag( TIFF *hTIFF, char **papszRPCMD );
+char** GTiffDatasetReadRPCTag( TIFF *hTIFF );
+
+void GTiffWriteJPEGTables( TIFF* hTIFF,
+                           const char* pszPhotometric,
+                           const char* pszJPEGQuality,
+                           const char* pszJPEGTablesMode );
+CPLString GTiffFormatGDALNoDataTagValue( double dfNoData );
+
+const int knGTIFFJpegTablesModeDefault = 1; /* JPEGTABLESMODE_QUANT */
 
 #define TIFFTAG_GDAL_METADATA  42112
 #define TIFFTAG_GDAL_NODATA    42113

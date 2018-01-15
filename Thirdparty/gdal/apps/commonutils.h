@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: commonutils.h 25416 2012-12-31 20:42:56Z rouault $
+ * $Id: commonutils.h 34815 2016-07-28 20:00:17Z goatbar $
  *
  * Project:  GDAL Utilities
  * Purpose:  Common utility routines
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault
+ * Copyright (c) 2011-2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,18 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _COMMONUTILS_H_
-#define _COMMONUTILS_H_
+#ifndef COMMONUTILS_H_INCLUDED
+#define COMMONUTILS_H_INCLUDED
 
 #include "cpl_port.h"
 
 CPL_C_START
 
-void CheckExtensionConsistency(const char* pszDestFilename,
-                               const char* pszDriverName);
+void CPL_DLL CheckExtensionConsistency( const char* pszDestFilename,
+                                        const char* pszDriverName );
 
-void EarlySetConfigOptions( int argc, char ** argv );
+void CPL_DLL EarlySetConfigOptions( int argc, char ** argv );
 
 CPL_C_END
 
-#endif
+#endif /* COMMONUTILS_H_INCLUDED */

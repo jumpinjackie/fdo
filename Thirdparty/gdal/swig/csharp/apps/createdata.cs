@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: createdata.cs 19757 2010-05-22 18:37:08Z rouault $
+ * $Id: createdata.cs 35222 2016-08-28 06:06:11Z goatbar $
  *
  * Name:     createdata.cs
  * Project:  GDAL CSharp Interface
@@ -8,6 +8,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Tamas Szekeres
+ * Copyright (c) 2009-2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -47,17 +48,17 @@ using OSGeo.OSR;
 
 /// <summary>
 /// A C# based sample to create a layer.
-/// </summary> 
+/// </summary>
 
 class CreateData {
-	
-	public static void usage() 
 
-	{ 
+	public static void usage()
+
+	{
 		Console.WriteLine("usage: createdata {data source name} {layername}");
 		System.Environment.Exit(-1);
 	}
- 
+
 	public static void Main(string[] args) {
 
 		if (args.Length != 2) usage();
@@ -72,10 +73,10 @@ class CreateData {
 
 		/* -------------------------------------------------------------------- */
 		/*      Get driver                                                      */
-		/* -------------------------------------------------------------------- */	
+		/* -------------------------------------------------------------------- */
         Driver drv = Ogr.GetDriverByName("ESRI Shapefile");
 
-		if (drv == null) 
+		if (drv == null)
 		{
 			Console.WriteLine("Can't get driver.");
             System.Environment.Exit(-1);
@@ -87,10 +88,10 @@ class CreateData {
 
 		/* -------------------------------------------------------------------- */
 		/*      Creating the datasource                                         */
-		/* -------------------------------------------------------------------- */	
+		/* -------------------------------------------------------------------- */
 
         DataSource ds = drv.CreateDataSource( args[0], new string[] {} );
-        if (drv == null) 
+        if (drv == null)
         {
             Console.WriteLine("Can't create the datasource.");
             System.Environment.Exit(-1);
@@ -101,7 +102,7 @@ class CreateData {
         /* -------------------------------------------------------------------- */
 
         Layer layer;
-        
+
         int i;
         for(i=0;i<ds.GetLayerCount();i++)
         {
@@ -167,7 +168,7 @@ class CreateData {
 		feature.SetField( "DateField", 2007, 3, 15, 18, 24, 30, 0 );
 
         Geometry geom = Geometry.CreateFromWkt("POINT(47.0 19.2)");
-        
+
         if( feature.SetGeometry( geom ) != 0 )
         {
             Console.WriteLine( "Failed add geometry to the feature" );
@@ -179,7 +180,7 @@ class CreateData {
             Console.WriteLine( "Failed to create feature in shapefile" );
             System.Environment.Exit(-1);
         }
-        
+
 		ReportLayer(layer);
 	}
 
@@ -192,13 +193,13 @@ class CreateData {
 		layer.GetExtent(ext, 1);
 		Console.WriteLine( "Extent: " + ext.MinX + "," + ext.MaxX + "," +
 			ext.MinY + "," + ext.MaxY);
-		
+
 		/* -------------------------------------------------------------------- */
 		/*      Reading the spatial reference                                   */
 		/* -------------------------------------------------------------------- */
         OSGeo.OSR.SpatialReference sr = layer.GetSpatialRef();
 		string srs_wkt;
-		if ( sr != null ) 
+		if ( sr != null )
 		{
 			sr.ExportToPrettyWkt( out srs_wkt, 1 );
 		}
@@ -215,8 +216,8 @@ class CreateData {
 		for( int iAttr = 0; iAttr < def.GetFieldCount(); iAttr++ )
 		{
 			FieldDefn fdef = def.GetFieldDefn( iAttr );
-            
-			Console.WriteLine( fdef.GetNameRef() + ": " + 
+
+			Console.WriteLine( fdef.GetNameRef() + ": " +
 				fdef.GetFieldTypeName( fdef.GetFieldType() ) + " (" +
 				fdef.GetWidth() + "." +
 				fdef.GetPrecision() + ")");
@@ -240,7 +241,7 @@ class CreateData {
 		for( int iField = 0; iField < feat.GetFieldCount(); iField++ )
 		{
 			FieldDefn fdef = def.GetFieldDefn( iField );
-            
+
 			Console.Write( fdef.GetNameRef() + " (" +
 				fdef.GetFieldTypeName(fdef.GetFieldType()) + ") = ");
 
@@ -248,15 +249,15 @@ class CreateData {
 				Console.WriteLine( feat.GetFieldAsString( iField ) );
 			else
 				Console.WriteLine( "(null)" );
-            
+
 		}
 
 		if( feat.GetStyleString() != null )
 			Console.WriteLine( "  Style = " + feat.GetStyleString() );
-    
+
 		Geometry geom = feat.GetGeometryRef();
 		if( geom != null )
-			Console.WriteLine( "  " + geom.GetGeometryName() + 
+			Console.WriteLine( "  " + geom.GetGeometryName() +
 				"(" + geom.GetGeometryType() + ")" );
 
 		Envelope env = new Envelope();

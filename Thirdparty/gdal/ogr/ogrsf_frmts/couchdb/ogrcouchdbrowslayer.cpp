@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrcouchdbrowslayer.cpp 22252 2011-04-28 20:59:51Z rouault $
  *
  * Project:  CouchDB Translator
  * Purpose:  Implements OGRCouchDBRowsLayer class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,15 +28,15 @@
 
 #include "ogr_couchdb.h"
 
-CPL_CVSID("$Id: ogrcouchdbrowslayer.cpp 22252 2011-04-28 20:59:51Z rouault $");
+CPL_CVSID("$Id: ogrcouchdbrowslayer.cpp 35298 2016-09-02 23:00:49Z goatbar $");
 
 /************************************************************************/
 /*                         OGRCouchDBRowsLayer()                        */
 /************************************************************************/
 
-OGRCouchDBRowsLayer::OGRCouchDBRowsLayer(OGRCouchDBDataSource* poDS) :
-                                                    OGRCouchDBLayer(poDS)
-
+OGRCouchDBRowsLayer::OGRCouchDBRowsLayer(OGRCouchDBDataSource* poDSIn) :
+    OGRCouchDBLayer(poDSIn),
+    bAllInOne(false)
 {
     poFeatureDefn = new OGRFeatureDefn( "rows" );
     poFeatureDefn->Reference();
@@ -48,17 +47,14 @@ OGRCouchDBRowsLayer::OGRCouchDBRowsLayer(OGRCouchDBDataSource* poDS) :
     OGRFieldDefn oFieldRev("_rev", OFTString);
     poFeatureDefn->AddFieldDefn(&oFieldRev);
 
-    bAllInOne = FALSE;
+    SetDescription( poFeatureDefn->GetName() );
 }
 
 /************************************************************************/
 /*                        ~OGRCouchDBRowsLayer()                        */
 /************************************************************************/
 
-OGRCouchDBRowsLayer::~OGRCouchDBRowsLayer()
-
-{
-}
+OGRCouchDBRowsLayer::~OGRCouchDBRowsLayer() {}
 
 /************************************************************************/
 /*                            ResetReading()                            */
@@ -69,7 +65,7 @@ void OGRCouchDBRowsLayer::ResetReading()
 {
     OGRCouchDBLayer::ResetReading();
 
-    if (!bAllInOne)
+    if( !bAllInOne )
     {
         json_object_put(poFeatures);
         poFeatures = NULL;
@@ -81,16 +77,16 @@ void OGRCouchDBRowsLayer::ResetReading()
 /*                           FetchNextRows()                            */
 /************************************************************************/
 
-int OGRCouchDBRowsLayer::FetchNextRows()
+bool OGRCouchDBRowsLayer::FetchNextRows()
 {
-    if (bAllInOne)
-        return FALSE;
+    if( bAllInOne )
+        return false;
 
     json_object_put(poFeatures);
     poFeatures = NULL;
     aoFeatures.resize(0);
 
-    int bHasEsperluet = (strstr(poDS->GetURL(), "?") != NULL);
+    bool bHasEsperluet = strstr(poDS->GetURL(), "?") != NULL;
 
     CPLString osURI;
     if (strstr(poDS->GetURL(), "limit=") == NULL &&
@@ -98,7 +94,7 @@ int OGRCouchDBRowsLayer::FetchNextRows()
     {
         if (!bHasEsperluet)
         {
-            bHasEsperluet = TRUE;
+            bHasEsperluet = true;
             osURI += "?";
         }
 
@@ -107,9 +103,9 @@ int OGRCouchDBRowsLayer::FetchNextRows()
     }
     if (strstr(poDS->GetURL(), "reduce=") == NULL)
     {
-        if (!bHasEsperluet)
+        if( !bHasEsperluet )
         {
-            bHasEsperluet = TRUE;
+            // bHasEsperluet = true;
             osURI += "?";
         }
 
@@ -123,18 +119,18 @@ int OGRCouchDBRowsLayer::FetchNextRows()
 /*                         BuildFeatureDefn()                           */
 /************************************************************************/
 
-int OGRCouchDBRowsLayer::BuildFeatureDefn()
+bool OGRCouchDBRowsLayer::BuildFeatureDefn()
 {
-    int bRet = FetchNextRows();
+    bool bRet = FetchNextRows();
     if (!bRet)
-        return FALSE;
+        return false;
 
     bRet = BuildFeatureDefnFromRows(poFeatures);
     if (!bRet)
-        return FALSE;
+        return false;
 
-    if ( bEOF )
-        bAllInOne = TRUE;
+    if( bEOF )
+        bAllInOne = true;
 
-    return TRUE;
+    return true;
 }

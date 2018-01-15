@@ -1,7 +1,6 @@
 /******************************************************************************
- * $Id: gdalgmlcoverage.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
- * Project:  GDAL 
+ * Project:  GDAL
  * Purpose:  Generic support for GML Coverage descriptions.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
@@ -27,20 +26,28 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "gdal_priv.h"
-#include "cpl_string.h"
-#include "cpl_minixml.h"
-#include "ogr_spatialref.h"
-#include "ogr_geometry.h"
-#include "ogr_api.h"
 
-CPL_CVSID("$Id: gdalgmlcoverage.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+#include <cstdlib>
+#include <cstring>
+
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_minixml.h"
+#include "cpl_string.h"
+#include "ogr_api.h"
+#include "ogr_core.h"
+#include "ogr_geometry.h"
+#include "ogr_spatialref.h"
+
+CPL_CVSID("$Id: gdalgmlcoverage.cpp 36523 2016-11-27 04:13:26Z goatbar $");
 
 /************************************************************************/
 /*                        ParseGMLCoverageDesc()                        */
 /************************************************************************/
 
-CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML, 
+CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
                              int *pnXSize, int *pnYSize,
                              double *padfGeoTransform,
                              char **ppszProjection )
@@ -54,7 +61,8 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
 /* -------------------------------------------------------------------- */
     CPLXMLNode *psRG = CPLSearchXMLNode( psXML, "=RectifiedGrid" );
     CPLXMLNode *psOriginPoint = NULL;
-    const char *pszOffset1=NULL, *pszOffset2=NULL;
+    const char *pszOffset1 = NULL;
+    const char *pszOffset2 = NULL;
 
     if( psRG != NULL )
     {
@@ -66,7 +74,7 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
         if( psOffset1 != NULL )
         {
             pszOffset1 = CPLGetXMLValue( psOffset1, "", NULL );
-            pszOffset2 = CPLGetXMLValue( psOffset1->psNext, "=offsetVector", 
+            pszOffset2 = CPLGetXMLValue( psOffset1->psNext, "=offsetVector",
                                          NULL );
         }
     }
@@ -74,7 +82,7 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
 /* -------------------------------------------------------------------- */
 /*      If we are missing any of the origin or 2 offsets then give up.  */
 /* -------------------------------------------------------------------- */
-    if( psRG == NULL || psOriginPoint == NULL 
+    if( psRG == NULL || psOriginPoint == NULL
         || pszOffset1 == NULL || pszOffset2 == NULL )
     {
         CPLError( CE_Failure, CPLE_AppDefined,
@@ -92,10 +100,12 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
 
     if( CSLCount(papszLow) < 2 || CSLCount(papszHigh) < 2 )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
                   "Unable to find or parse GridEnvelope.low/high." );
+        CSLDestroy( papszLow );
+        CSLDestroy( papszHigh );
         return CE_Failure;
-    }        
+    }
 
     if( pnXSize != NULL )
         *pnXSize = atoi(papszHigh[0]) - atoi(papszLow[0]) + 1;
@@ -113,20 +123,20 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
 
     if( psOriginPoint != NULL )
     {
-        int bOldWrap = FALSE;
+        bool bOldWrap = false;
 
-        // old coverages (ie. WCS) just have <pos> under <origin> so we
-        // may need to temporarily force <origin> to <Point>
+        // Old coverages (i.e. WCS) just have <pos> under <origin>, so we
+        // may need to temporarily force <origin> to <Point>.
         if( psOriginPoint->eType == CXT_Element
-            && EQUAL(psOriginPoint->pszValue,"origin") )
+            && EQUAL(psOriginPoint->pszValue, "origin") )
         {
             strcpy( psOriginPoint->pszValue, "Point");
-            bOldWrap = TRUE;
+            bOldWrap = true;
         }
-        poOriginGeometry = (OGRPoint *) 
-            OGR_G_CreateFromGMLTree( psOriginPoint );
+        poOriginGeometry = reinterpret_cast<OGRPoint *>(
+            OGR_G_CreateFromGMLTree( psOriginPoint ) );
 
-        if( poOriginGeometry != NULL 
+        if( poOriginGeometry != NULL
             && wkbFlatten(poOriginGeometry->getGeometryType()) != wkbPoint )
         {
             delete poOriginGeometry;
@@ -145,11 +155,11 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
 /* -------------------------------------------------------------------- */
     char **papszOffset1Tokens = NULL;
     char **papszOffset2Tokens = NULL;
-    int bSuccess = FALSE;
+    bool bSuccess = false;
 
-    papszOffset1Tokens = 
+    papszOffset1Tokens =
         CSLTokenizeStringComplex( pszOffset1, " ,", FALSE, FALSE );
-    papszOffset2Tokens = 
+    papszOffset2Tokens =
         CSLTokenizeStringComplex( pszOffset2, " ,", FALSE, FALSE );
 
     if( CSLCount(papszOffset1Tokens) >= 2
@@ -157,11 +167,11 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
         && poOriginGeometry != NULL )
     {
         padfGeoTransform[0] = poOriginGeometry->getX();
-        padfGeoTransform[1] = atof(papszOffset1Tokens[0]);
-        padfGeoTransform[2] = atof(papszOffset1Tokens[1]);
+        padfGeoTransform[1] = CPLAtof(papszOffset1Tokens[0]);
+        padfGeoTransform[2] = CPLAtof(papszOffset1Tokens[1]);
         padfGeoTransform[3] = poOriginGeometry->getY();
-        padfGeoTransform[4] = atof(papszOffset2Tokens[0]);
-        padfGeoTransform[5] = atof(papszOffset2Tokens[1]);
+        padfGeoTransform[4] = CPLAtof(papszOffset2Tokens[0]);
+        padfGeoTransform[5] = CPLAtof(papszOffset2Tokens[1]);
 
         // offset from center of pixel.
         padfGeoTransform[0] -= padfGeoTransform[1]*0.5;
@@ -169,7 +179,7 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
         padfGeoTransform[3] -= padfGeoTransform[4]*0.5;
         padfGeoTransform[3] -= padfGeoTransform[5]*0.5;
 
-        bSuccess = TRUE;
+        bSuccess = true;
         //bHaveGeoTransform = TRUE;
     }
 
@@ -180,19 +190,19 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
         delete poOriginGeometry;
 
 /* -------------------------------------------------------------------- */
-/*      If we have gotten a geotransform, then try to interprete the    */
+/*      If we have gotten a geotransform, then try to interpret the     */
 /*      srsName.                                                        */
 /* -------------------------------------------------------------------- */
-    if( bSuccess && pszSRSName != NULL 
+    if( bSuccess && pszSRSName != NULL
         && (*ppszProjection == NULL || strlen(*ppszProjection) == 0) )
     {
-        if( EQUALN(pszSRSName,"epsg:",5) )
+        if( STARTS_WITH_CI(pszSRSName, "epsg:") )
         {
             OGRSpatialReference oSRS;
             if( oSRS.SetFromUserInput( pszSRSName ) == OGRERR_NONE )
                 oSRS.exportToWkt( ppszProjection );
         }
-        else if( EQUALN(pszSRSName,"urn:ogc:def:crs:",16) )
+        else if( STARTS_WITH_CI(pszSRSName, "urn:ogc:def:crs:") )
         {
             OGRSpatialReference oSRS;
             if( oSRS.importFromURN( pszSRSName ) == OGRERR_NONE )
@@ -203,10 +213,9 @@ CPLErr GDALParseGMLCoverage( CPLXMLNode *psXML,
     }
 
     if( *ppszProjection )
-        CPLDebug( "GDALJP2Metadata", 
-                  "Got projection from GML box: %s", 
+        CPLDebug( "GDALJP2Metadata",
+                  "Got projection from GML box: %s",
                   *ppszProjection );
 
     return CE_None;
 }
-

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: rasterlitedataset.h 24674 2012-07-10 20:41:35Z rouault $
+ * $Id: rasterlitedataset.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  GDAL Rasterlite driver
  * Purpose:  Implement GDAL Rasterlite support using OGR SQLite driver
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  **********************************************************************
- * Copyright (c) 2009, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2009-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,13 +26,22 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
- 
+
 #ifndef RASTERLITE_DATASET_INCLUDED
 #define RASTERLITE_DATASET_INCLUDED
 
 #include "gdal_pam.h"
+#include "ogr_api.h"
 
 char** RasterliteGetTileDriverOptions(char** papszOptions);
+
+OGRDataSourceH RasterliteOpenSQLiteDB(const char* pszFilename,
+                                      GDALAccess eAccess);
+CPLString RasterliteGetPixelSizeCond(double dfPixelXSize,
+                                     double dfPixelYSize,
+                                     const char* pszTablePrefixWithDot = "");
+CPLString RasterliteGetSpatialFilterCond(double minx, double miny,
+                                         double maxx, double maxy);
 
 class RasterliteBand;
 
@@ -45,61 +54,62 @@ class RasterliteBand;
 class RasterliteDataset : public GDALPamDataset
 {
     friend class RasterliteBand;
-    
+
   public:
                  RasterliteDataset();
                  RasterliteDataset(RasterliteDataset* poMainDS, int nLevel);
-                 
+
     virtual     ~RasterliteDataset();
-    
-    virtual char **GetMetadata( const char *pszDomain );
-    virtual const char *GetMetadataItem( const char *pszName, 
-                                         const char *pszDomain );
-    virtual CPLErr GetGeoTransform( double* padfGeoTransform );
-    virtual const char* GetProjectionRef();
-    
-    virtual char** GetFileList();
-    
-    virtual CPLErr IBuildOverviews( const char * pszResampling, 
+
+    virtual char      **GetMetadataDomainList() override;
+    virtual char **GetMetadata( const char *pszDomain ) override;
+    virtual const char *GetMetadataItem( const char *pszName,
+                                         const char *pszDomain ) override;
+    virtual CPLErr GetGeoTransform( double* padfGeoTransform ) override;
+    virtual const char* GetProjectionRef() override;
+
+    virtual char** GetFileList() override;
+
+    virtual CPLErr IBuildOverviews( const char * pszResampling,
                                     int nOverviews, int * panOverviewList,
                                     int nBands, int * panBandList,
-                                    GDALProgressFunc pfnProgress, void * pProgressData );
+                                    GDALProgressFunc pfnProgress, void * pProgressData ) override;
 
     static GDALDataset *Open( GDALOpenInfo * );
     static int          Identify( GDALOpenInfo * );
 
   protected:
-    virtual int         CloseDependentDatasets();
+    virtual int         CloseDependentDatasets() override;
 
   private:
-  
     int bMustFree;
     RasterliteDataset* poMainDS;
     int nLevel;
-    
+
     char** papszMetadata;
     char** papszImageStructure;
     char** papszSubDatasets;
-    
+
     int nResolutions;
-    double* padfXResolutions, *padfYResolutions;
+    double *padfXResolutions;
+    double *padfYResolutions;
     RasterliteDataset** papoOverviews;
     int nLimitOvrCount;
-    
+
     int bValidGeoTransform;
     double adfGeoTransform[6];
     char* pszSRS;
-    
+
     GDALColorTable* poCT;
-    
+
     CPLString osTableName;
     CPLString osFileName;
-    
+
     int bCheckForExistingOverview;
     CPLString osOvrFileName;
 
     OGRDataSourceH hDS;
-    
+
     void AddSubDataset( const char* pszDSName);
     int  GetBlockParams(OGRLayerH hRasterLyr, int nLevel, int* pnBands,
                         GDALDataType* peDataType,
@@ -127,20 +137,20 @@ class RasterliteBand: public GDALPamRasterBand
   public:
                             RasterliteBand( RasterliteDataset* poDS, int nBand,
                                             GDALDataType eDataType,
-                                            int nBlockXSize, int nBlockYSize);
+                                            int nBlockXSize, int nBlockYSize );
 
-    virtual GDALColorInterp GetColorInterpretation();
-    virtual GDALColorTable* GetColorTable();
+    virtual GDALColorInterp GetColorInterpretation() override;
+    virtual GDALColorTable* GetColorTable() override;
 
-    virtual int             GetOverviewCount();
-    virtual GDALRasterBand* GetOverview(int nLevel);
+    virtual int             GetOverviewCount() override;
+    virtual GDALRasterBand* GetOverview(int nLevel) override;
 
-    virtual CPLErr          IReadBlock( int, int, void * );
+    virtual CPLErr          IReadBlock( int, int, void * ) override;
 };
 
 GDALDataset *
-RasterliteCreateCopy( const char * pszFilename, GDALDataset *poSrcDS, 
-                       int bStrict, char ** papszOptions, 
+RasterliteCreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
+                       int bStrict, char ** papszOptions,
                        GDALProgressFunc pfnProgress, void * pProgressData );
 
 CPLErr RasterliteDelete(const char* pszFilename);

@@ -13,12 +13,12 @@
 /*#include "f2c.h"*/
 #include <stdlib.h>
 #include "grib2.h"
-typedef g2int integer;
-typedef g2float real;
 
-/* Subroutine */ int reduce(integer *kfildo, integer *jmin, integer *jmax, 
+#include "cpl_port.h"
+
+/* Subroutine */ int reduce(CPL_UNUSED integer *kfildo, integer *jmin, integer *jmax,
 	integer *lbit, integer *nov, integer *lx, integer *ndg, integer *ibit,
-	 integer *jbit, integer *kbit, integer *novref, integer *ibxx2, 
+	 integer *jbit, integer *kbit, integer *novref, integer *ibxx2,
 	integer *ier)
 {
     /* Initialized data */
@@ -33,8 +33,8 @@ typedef g2float real;
     static real pimp;
     static integer move, novl;
     static char cfeed[1];
-    static integer nboxj[31], lxnkp, iorigb, ibxx2m1, movmin,
-	     ntotbt[31], ntotpr, newboxt;
+    static integer /* nboxj[31], */ lxnkp, iorigb, ibxx2m1, movmin,
+        ntotbt[31], ntotpr, newboxt;
     integer *newbox, *newboxp;
 
 
@@ -143,7 +143,7 @@ typedef g2float real;
 
     for (j = 1; j <= 31; ++j) {
 	ntotbt[j - 1] = 999999999;
-	nboxj[j - 1] = 0;
+	/* nboxj[j - 1] = 0; */
 /* L112: */
     }
 
@@ -155,12 +155,12 @@ typedef g2float real;
     ntotbt[*kbit - 1] = iorigb;
 /*           THIS IS THE VALUE OF TOTAL BITS FOR THE ORIGINAL LX */
 /*           GROUPS, WHICH REQUIRES KBITS TO PACK THE GROUP */
-/*           LENGHTS.  SETTING THIS HERE MAKES ONE LESS LOOPS */
+/*           LENGTHS.  SETTING THIS HERE MAKES ONE LESS LOOPS */
 /*           NECESSARY BELOW. */
 
 /*        COMPUTE BITS NOW USED FOR THE PARAMETERS DEFINED. */
 
-/*        DETERMINE OTHER POSSIBILITES BY INCREASING LX AND DECREASING */
+/*        DETERMINE OTHER POSSIBILITIES BY INCREASING LX AND DECREASING */
 /*        NOV( ) WITH VALUES GREATER THAN THRESHOLDS.  ASSUME A GROUP IS */
 /*        SPLIT INTO 2 OR MORE GROUPS SO THAT KBIT IS REDUCED WITHOUT */
 /*        CHANGING IBIT OR JBIT. */
@@ -168,7 +168,8 @@ typedef g2float real;
     jj = 0;
 
 /* Computing MIN */
-    i__1 = 30, i__2 = *kbit - 1;
+    i__1 = 30;
+    i__2 = *kbit - 1;
     /*for (j = min(i__1,i__2); j >= 2; --j) {*/
     for (j = (i__1 < i__2) ? i__1 : i__2; j >= 2; --j) {
 /*           VALUES GE KBIT WILL NOT REQUIRE SPLITS.  ONCE THE TOTAL */
@@ -217,9 +218,9 @@ L190:
 	    ;
 	}
 
-	nboxj[j - 1] = newboxt;
+	/* nboxj[j - 1] = newboxt; */
 	ntotpr = ntotbt[j];
-	ntotbt[j - 1] = (*ibit + *jbit) * (*lx + newboxt) + j * (*lx + 
+	ntotbt[j - 1] = (*ibit + *jbit) * (*lx + newboxt) + j * (*lx +
 		newboxt);
 
 	if (ntotbt[j - 1] >= ntotpr) {
@@ -335,8 +336,8 @@ L250:
 	    }
 
 	    if (newboxp[l - 1] > 0) {
-		if ((movmin + *novref) * newboxp[l - 1] + *novref <= nov[l] + 
-			*novref && (movmin + *novref) * (newboxp[l - 1] + 1) 
+		if ((movmin + *novref) * newboxp[l - 1] + *novref <= nov[l] +
+			*novref && (movmin + *novref) * (newboxp[l - 1] + 1)
 			>= nov[l] + *novref) {
 		    goto L288;
 		} else {
@@ -384,7 +385,7 @@ L288:
 /*           LX IS NOW THE NEW NUMBER OF GROUPS. */
 	*kbit = jj;
 /*           KBIT IS NOW THE NEW NUMBER OF BITS REQUIRED FOR PACKING */
-/*           GROUP LENGHTS. */
+/*           GROUP LENGTHS. */
     }
 
 /*     WRITE(KFILDO,406)CFEED,LX */
@@ -407,4 +408,3 @@ L410:
     if ( newboxp != 0 ) free(newboxp);
     return 0;
 } /* reduce_ */
-

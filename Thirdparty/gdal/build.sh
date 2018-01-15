@@ -101,10 +101,10 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     mkdir -p lib
     mkdir -p include
 
-    rm -f lib/*.libgdal.a    
-    rm -f lib/*.libgdal.so    
-    rm -f lib/*.libgdal.so.1    
-    rm -f lib/*.libgdal.so.1.17.0   
+    rm -f lib/*.libgdal.a
+    rm -f lib/*.libgdal.so
+    rm -f lib/*.libgdal.so.20
+    rm -f lib/*.libgdal.so.20.3.2
     rm -f include/*
 
     chmod a+x ./configure
@@ -163,8 +163,8 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
 
         cp -f .libs/libgdal.a lib/
         cp -f .libs/libgdal.so lib/
-        cp -f .libs/libgdal.so.1 lib/
-        cp -f .libs/libgdal.so.1.17.0 lib/
+        cp -f .libs/libgdal.so.20 lib/
+        cp -f .libs/libgdal.so.20.3.2 lib/
 
         cp -f port/*.h include/
         cp -f gcore/*.h include/
@@ -177,8 +177,8 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
 
         rm -rf lib/libgdal.a
         rm -rf lib/libgdal.so
-        rm -rf lib/libgdal.so.1
-        rm -rf lib/libgdal.so.1.17.0
+        rm -rf lib/libgdal.so.20
+        rm -rf lib/libgdal.so.20.3.2
 
         make clean
         if [ "$?" -ne 0 ] ; then

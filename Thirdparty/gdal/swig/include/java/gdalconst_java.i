@@ -1,19 +1,10 @@
 /******************************************************************************
- * $Id: gdalconst_java.i 21579 2011-01-24 21:57:24Z rouault $
+ * $Id: gdalconst_java.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Name:     gdalconst_java.i
  * Project:  GDAL SWIG Interface
  * Purpose:  Typemaps for Java bindings
  * Author:   Benjamin Collins, The MITRE Corporation
- *
- *
- * $Log$
- * Revision 1.2  2006/02/16 17:21:12  collinsb
- * Updates to Java bindings to keep the code from halting execution if the native libraries cannot be found.
- *
- * Revision 1.1  2006/02/02 20:56:07  collinsb
- * Added Java specific typemap code
- *
  *
 */
 
@@ -30,7 +21,7 @@
       System.err.println(e);
     }
   }
-  
+
   public static boolean isAvailable() {
     return available;
   }

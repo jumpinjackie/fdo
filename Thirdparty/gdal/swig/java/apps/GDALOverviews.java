@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: GDALOverviews.java 20974 2010-10-26 18:03:08Z rouault $
+ * $Id: GDALOverviews.java 35222 2016-08-28 06:06:11Z goatbar $
  *
  * Name:     GDALOverviews.java
  * Project:  GDAL Java Interface
@@ -50,19 +50,19 @@ import org.gdal.gdal.TermProgressCallback;
 
 /// <summary>
 /// A Java based sample to create GDAL raster overviews.
-/// </summary> 
+/// </summary>
 
 class GDALOverviews {
-	
-	public static void usage() 
 
-	{ 
+	public static void usage()
+
+	{
 		System.out.println("usage: gdaloverviews {GDAL dataset name} {resamplealg} {level1} {level2} ....");
 		System.out.println("example: gdaloverviews sample.tif \"NEAREST\" 2 4");
 		System.exit(-1);
 	}
- 
-    public static void main(String[] args) 
+
+    public static void main(String[] args)
     {
         /* -------------------------------------------------------------------- */
         /*      Register driver(s).                                             */
@@ -71,15 +71,15 @@ class GDALOverviews {
 
         args = gdal.GeneralCmdLineProcessor(args);
         if (args.length <= 2) usage();
-        
-        try 
+
+        try
         {
             /* -------------------------------------------------------------------- */
             /*      Open dataset.                                                   */
             /* -------------------------------------------------------------------- */
             Dataset ds = gdal.Open( args[0], gdalconst.GA_Update );
-		
-            if (ds == null) 
+
+            if (ds == null)
             {
                 System.out.println("Can't open " + args[0]);
                 System.exit(-1);
@@ -89,26 +89,26 @@ class GDALOverviews {
             System.out.println("  Projection: " + ds.GetProjectionRef());
             System.out.println("  RasterCount: " + ds.getRasterCount());
             System.out.println("  RasterSize (" + ds.getRasterXSize() + "," + ds.getRasterYSize() + ")");
-            
+
             int[] levels = new int[args.length -2];
 
             System.out.println(levels.length);
-           
+
             for (int i = 2; i < args.length; i++)
             {
                 levels[i-2] = Integer.parseInt(args[i]);
             }
-			
+
             if (ds.BuildOverviews(args[1], levels, new TermProgressCallback()) != gdalconst.CE_None)
             {
                 System.out.println("The BuildOverviews operation doesn't work");
                 System.exit(-1);
             }
- 
+
             /* -------------------------------------------------------------------- */
             /*      Displaying the raster parameters                                */
             /* -------------------------------------------------------------------- */
-            for (int iBand = 1; iBand <= ds.getRasterCount(); iBand++) 
+            for (int iBand = 1; iBand <= ds.getRasterCount(); iBand++)
             {
                 Band band = ds.GetRasterBand(iBand);
                 System.out.println("Band " + iBand + " :");
@@ -132,7 +132,7 @@ class GDALOverviews {
             System.out.println("Completed.");
             System.out.println("Use:  gdalread " + args[0] + " outfile.png [overview] to extract a particular overview!" );
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
             System.out.println("Application error: " + e.getMessage());
         }

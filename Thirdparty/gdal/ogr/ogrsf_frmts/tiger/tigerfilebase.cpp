@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigerfilebase.cpp 23871 2012-02-02 03:24:07Z warmerdam $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerBaseFile class, providing common services to all
@@ -8,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 1999, Frank Warmerdam
+ * Copyright (c) 2009-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,27 +33,26 @@
 #include "cpl_error.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: tigerfilebase.cpp 23871 2012-02-02 03:24:07Z warmerdam $");
+CPL_CVSID("$Id: tigerfilebase.cpp 38802 2017-06-02 09:04:34Z rouault $");
 
 /************************************************************************/
 /*                           TigerFileBase()                            */
 /************************************************************************/
 
 TigerFileBase::TigerFileBase( const TigerRecordInfo *psRTInfoIn,
-                              const char            *m_pszFileCodeIn )
-
-{
-    pszShortModule = NULL;
-    pszModule = NULL;
-    fpPrimary = NULL;
-    poFeatureDefn = NULL;
-    nFeatures = 0;
-    nVersionCode = 0;
-    nVersion = TIGER_Unknown;
-
-    psRTInfo = psRTInfoIn;
-    m_pszFileCode = m_pszFileCodeIn;
-}
+                              const char *m_pszFileCodeIn ) :
+    poDS(NULL),
+    pszModule(NULL),
+    pszShortModule(NULL),
+    fpPrimary(NULL),
+    poFeatureDefn(NULL),
+    nFeatures(0),
+    nRecordLength(0),
+    nVersionCode(0),
+    nVersion(TIGER_Unknown),
+    psRTInfo(psRTInfoIn),
+    m_pszFileCode(m_pszFileCodeIn)
+{}
 
 /************************************************************************/
 /*                           ~TigerFileBase()                           */
@@ -86,13 +85,12 @@ int TigerFileBase::OpenFile( const char * pszModuleToOpen,
                              const char *pszExtension )
 
 {
-    char        *pszFilename;
 
     CPLFree( pszModule );
     pszModule = NULL;
     CPLFree( pszShortModule );
     pszShortModule = NULL;
-    
+
     if( fpPrimary != NULL )
     {
         VSIFCloseL( fpPrimary );
@@ -102,28 +100,26 @@ int TigerFileBase::OpenFile( const char * pszModuleToOpen,
     if( pszModuleToOpen == NULL )
         return TRUE;
 
-    pszFilename = poDS->BuildFilename( pszModuleToOpen, pszExtension );
+    char *pszFilename = poDS->BuildFilename( pszModuleToOpen, pszExtension );
 
     fpPrimary = VSIFOpenL( pszFilename, "rb" );
 
     CPLFree( pszFilename );
 
-    if( fpPrimary != NULL )
-    {
-        pszModule = CPLStrdup(pszModuleToOpen);
-        pszShortModule = CPLStrdup(pszModuleToOpen);
-        for( int i = 0; pszShortModule[i] != '\0'; i++ )
-        {
-            if( pszShortModule[i] == '.' )
-                pszShortModule[i] = '\0';
-        }
-
-        SetupVersion();
-
-        return TRUE;
-    }
-    else
+    if( fpPrimary == NULL )
         return FALSE;
+
+    pszModule = CPLStrdup(pszModuleToOpen);
+    pszShortModule = CPLStrdup(pszModuleToOpen);
+    for( int i = 0; pszShortModule[i] != '\0'; i++ )
+    {
+        if( pszShortModule[i] == '.' )
+            pszShortModule[i] = '\0';
+    }
+
+    SetupVersion();
+
+    return TRUE;
 }
 
 /************************************************************************/
@@ -151,16 +147,14 @@ void TigerFileBase::SetupVersion()
 int TigerFileBase::EstablishRecordLength( VSILFILE * fp )
 
 {
-    char        chCurrent;
-    int         nRecLen = 0;
-    
     if( fp == NULL || VSIFSeekL( fp, 0, SEEK_SET ) != 0 )
         return -1;
 
 /* -------------------------------------------------------------------- */
 /*      Read through to the end of line.                                */
 /* -------------------------------------------------------------------- */
-    chCurrent = '\0';
+    int nRecLen = 0;
+    char chCurrent = '\0';
     while( VSIFReadL( &chCurrent, 1, 1, fp ) == 1
            && chCurrent != 10
            && chCurrent != 13 )
@@ -175,7 +169,7 @@ int TigerFileBase::EstablishRecordLength( VSILFILE * fp )
     {
         return -1;
     }
-    
+
     nRecLen++; /* for the 10 or 13 we encountered */
 
 /* -------------------------------------------------------------------- */
@@ -217,12 +211,11 @@ void TigerFileBase::EstablishFeatureCount()
 /*      (including line terminators).  Get the total file size, and     */
 /*      divide by this length to get the presumed number of records.    */
 /* -------------------------------------------------------------------- */
-    long        nFileSize;
-    
-    VSIFSeekL( fpPrimary, 0, SEEK_END );
-    nFileSize = VSIFTellL( fpPrimary );
 
-    if( (nFileSize % nRecordLength) != 0 )
+    VSIFSeekL( fpPrimary, 0, SEEK_END );
+    const vsi_l_offset nFileSize = VSIFTellL( fpPrimary );
+
+    if( (nFileSize % (vsi_l_offset)nRecordLength) != 0 )
     {
         CPLError( CE_Warning, CPLE_FileIO,
                   "TigerFileBase::EstablishFeatureCount(): "
@@ -230,7 +223,10 @@ void TigerFileBase::EstablishFeatureCount()
                   (int) nFileSize, (int) nRecordLength );
     }
 
-    nFeatures = nFileSize / nRecordLength;
+    if( nFileSize / (vsi_l_offset)nRecordLength > (vsi_l_offset)INT_MAX )
+        nFeatures = INT_MAX;
+    else
+        nFeatures = static_cast<int>(nFileSize / (vsi_l_offset)nRecordLength);
 }
 
 /************************************************************************/
@@ -243,7 +239,7 @@ const char* TigerFileBase::GetField( const char * pachRawDataRecord,
 {
     char         aszField[128];
     int                 nLength = nEndChar - nStartChar + 1;
-    
+
     CPLAssert( nEndChar - nStartChar + 2 < (int) sizeof(aszField) );
 
     strncpy( aszField, pachRawDataRecord + nStartChar - 1, nLength );
@@ -281,85 +277,85 @@ void TigerFileBase::SetField( OGRFeature *poFeature, const char *pszField,
 /*      formatting, or leave blank if not found.                        */
 /************************************************************************/
 
-int TigerFileBase::WriteField( OGRFeature *poFeature, const char *pszField, 
-                               char *pachRecord, int nStart, int nEnd, 
-                               char chFormat, char chType )
+bool TigerFileBase::WriteField( OGRFeature *poFeature, const char *pszField,
+                                char *pachRecord, int nStart, int nEnd,
+                                char chFormat, char chType )
 
 {
-    int         iField = poFeature->GetFieldIndex( pszField );
-    char        szValue[512], szFormat[32];
+    const int iField = poFeature->GetFieldIndex( pszField );
+    char szValue[512];
 
     CPLAssert( nEnd - nStart + 1 < (int) sizeof(szValue)-1 );
 
-    if( iField < 0 || !poFeature->IsFieldSet( iField ) )
-        return FALSE;
+    if( iField < 0 || !poFeature->IsFieldSetAndNotNull( iField ) )
+        return false;
 
+    char szFormat[32];
     if( chType == 'N' && chFormat == 'L' )
     {
-        sprintf( szFormat, "%%0%dd", nEnd - nStart + 1 );
-        sprintf( szValue, szFormat, poFeature->GetFieldAsInteger( iField ) );
+        snprintf( szFormat, sizeof(szFormat), "%%0%dd", nEnd - nStart + 1 );
+        snprintf( szValue, sizeof(szValue), szFormat, poFeature->GetFieldAsInteger( iField ) );
     }
     else if( chType == 'N' && chFormat == 'R' )
     {
-        sprintf( szFormat, "%%%dd", nEnd - nStart + 1 );
-        sprintf( szValue, szFormat, poFeature->GetFieldAsInteger( iField ) );
+        snprintf( szFormat, sizeof(szFormat), "%%%dd", nEnd - nStart + 1 );
+        snprintf( szValue, sizeof(szValue), szFormat, poFeature->GetFieldAsInteger( iField ) );
     }
     else if( chType == 'A' && chFormat == 'L' )
     {
-        strncpy( szValue, poFeature->GetFieldAsString( iField ), 
+        strncpy( szValue, poFeature->GetFieldAsString( iField ),
                  sizeof(szValue) - 1 );
         szValue[sizeof(szValue) - 1] = 0;
         if( (int) strlen(szValue) < nEnd - nStart + 1 )
-            memset( szValue + strlen(szValue), ' ', 
+            memset( szValue + strlen(szValue), ' ',
                     nEnd - nStart + 1 - strlen(szValue) );
     }
     else if( chType == 'A' && chFormat == 'R' )
     {
-        sprintf( szFormat, "%%%ds", nEnd - nStart + 1 );
-        sprintf( szValue, szFormat, poFeature->GetFieldAsString( iField ) );
+        snprintf( szFormat, sizeof(szFormat), "%%%ds", nEnd - nStart + 1 );
+        snprintf( szValue, sizeof(szValue), szFormat, poFeature->GetFieldAsString( iField ) );
     }
     else
     {
-        CPLAssert( FALSE );
-        return FALSE;
+        CPLAssert( false );
+        return false;
     }
 
     strncpy( pachRecord + nStart - 1, szValue, nEnd - nStart + 1 );
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
 /*                             WritePoint()                             */
 /************************************************************************/
 
-int TigerFileBase::WritePoint( char *pachRecord, int nStart, 
-                               double dfX, double dfY )
+bool TigerFileBase::WritePoint( char *pachRecord, int nStart,
+                                double dfX, double dfY )
 
 {
-    char        szTemp[20];
-
     if( dfX == 0.0 && dfY == 0.0 )
     {
-        strncpy( pachRecord + nStart - 1, "+000000000+00000000", 19 );
+        memcpy( pachRecord + nStart - 1, "+000000000+00000000", 19 );
     }
     else
     {
-        sprintf( szTemp, "%+10d%+9d", 
+        char szTemp[20];
+        snprintf( szTemp, sizeof(szTemp), "%+10d%+9d",
                  (int) floor(dfX * 1000000 + 0.5),
                  (int) floor(dfY * 1000000 + 0.5) );
         strncpy( pachRecord + nStart - 1, szTemp, 19 );
     }
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
 /*                            WriteRecord()                             */
 /************************************************************************/
 
-int TigerFileBase::WriteRecord( char *pachRecord, int nRecLen, 
-                                const char *pszType, VSILFILE * fp )
+bool TigerFileBase::WriteRecord( char *pachRecord, int nRecLen,
+                                 const char *pszType, VSILFILE * fp )
 
 {
     if( fp == NULL )
@@ -367,24 +363,23 @@ int TigerFileBase::WriteRecord( char *pachRecord, int nRecLen,
 
     pachRecord[0] = *pszType;
 
-
     /*
      * Prior to TIGER_2002, type 5 files lacked the version.  So write
-     * the version in the record iff we're using TIGER_2002 or higher,
+     * the version in the record if we're using TIGER_2002 or higher,
      * or if this is not type "5"
      */
     if ( (poDS->GetVersion() >= TIGER_2002) ||
          (!EQUAL(pszType, "5")) )
     {
-        char    szVersion[5];
-        sprintf( szVersion, "%04d", poDS->GetVersionCode() );
+        char szVersion[5];
+        snprintf( szVersion, sizeof(szVersion), "%04d", poDS->GetVersionCode() );
         strncpy( pachRecord + 1, szVersion, 4 );
     }
 
     VSIFWriteL( pachRecord, nRecLen, 1, fp );
     VSIFWriteL( (void *) "\r\n", 2, 1, fp );
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
@@ -393,29 +388,29 @@ int TigerFileBase::WriteRecord( char *pachRecord, int nRecLen,
 /*      Setup our access to be to the module indicated in the feature.  */
 /************************************************************************/
 
-int TigerFileBase::SetWriteModule( const char *pszExtension, int nRecLen,
-                                   OGRFeature *poFeature )
-
+bool TigerFileBase::SetWriteModule( const char *pszExtension,
+                                    CPL_UNUSED int nRecLen,
+                                    OGRFeature *poFeature )
 {
 /* -------------------------------------------------------------------- */
 /*      Work out what module we should be writing to.                   */
 /* -------------------------------------------------------------------- */
     const char *pszTargetModule = poFeature->GetFieldAsString( "MODULE" );
-    char        szFullModule[30];
 
-    /* TODO/notdef: eventually more logic based on FILE and STATE/COUNTY can 
+    /* TODO/notdef: eventually more logic based on FILE and STATE/COUNTY can
        be inserted here. */
 
     if( pszTargetModule == NULL )
-        return FALSE;
+        return false;
 
-    sprintf( szFullModule, "%s.RT", pszTargetModule );
+    char szFullModule[30];
+    snprintf( szFullModule, sizeof(szFullModule), "%s.RT", pszTargetModule );
 
 /* -------------------------------------------------------------------- */
 /*      Is this our current module?                                     */
 /* -------------------------------------------------------------------- */
     if( pszModule != NULL && EQUAL(szFullModule,pszModule) )
-        return TRUE;
+        return true;
 
 /* -------------------------------------------------------------------- */
 /*      Cleanup the previous file, if any.                              */
@@ -441,48 +436,46 @@ int TigerFileBase::SetWriteModule( const char *pszExtension, int nRecLen,
         poDS->DeleteModuleFiles( szFullModule );
         poDS->AddModule( szFullModule );
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Does this file already exist?                                   */
 /* -------------------------------------------------------------------- */
-    char *pszFilename;
-
-    pszFilename = poDS->BuildFilename( szFullModule, pszExtension );
+    char *pszFilename = poDS->BuildFilename( szFullModule, pszExtension );
 
     fpPrimary = VSIFOpenL( pszFilename, "ab" );
     CPLFree(pszFilename);
     if( fpPrimary == NULL )
-        return FALSE;
+        return false;
 
     pszModule = CPLStrdup( szFullModule );
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
 /*                           AddFieldDefns()                            */
 /************************************************************************/
-void TigerFileBase::AddFieldDefns(const TigerRecordInfo *psRTInfo,
-                                  OGRFeatureDefn  *poFeatureDefn)
+void TigerFileBase::AddFieldDefns(const TigerRecordInfo *psRTInfoIn,
+                                  OGRFeatureDefn  *poFeatureDefnIn)
 {
     OGRFieldDefn        oField("",OFTInteger);
     int i, bLFieldHack;
 
-    bLFieldHack = 
-        CSLTestBoolean( CPLGetConfigOption( "TIGER_LFIELD_AS_STRING", "NO" ) );
-    
-    for (i=0; i<psRTInfo->nFieldCount; ++i) {
-        if (psRTInfo->pasFields[i].bDefine) {
-            OGRFieldType eFT = (OGRFieldType)psRTInfo->pasFields[i].OGRtype;
+    bLFieldHack =
+        CPLTestBool( CPLGetConfigOption( "TIGER_LFIELD_AS_STRING", "NO" ) );
 
-            if( bLFieldHack 
-                && psRTInfo->pasFields[i].cFmt == 'L' 
-                && psRTInfo->pasFields[i].cType == 'N' )
+    for (i=0; i<psRTInfoIn->nFieldCount; ++i) {
+        if (psRTInfoIn->pasFields[i].bDefine) {
+            OGRFieldType eFT = (OGRFieldType)psRTInfoIn->pasFields[i].OGRtype;
+
+            if( bLFieldHack
+                && psRTInfoIn->pasFields[i].cFmt == 'L'
+                && psRTInfoIn->pasFields[i].cType == 'N' )
                 eFT = OFTString;
 
-            oField.Set( psRTInfo->pasFields[i].pszFieldName, eFT, 
-                        psRTInfo->pasFields[i].nLen );
-            poFeatureDefn->AddFieldDefn( &oField );
+            oField.Set( psRTInfoIn->pasFields[i].pszFieldName, eFT,
+                        psRTInfoIn->pasFields[i].nLen );
+            poFeatureDefnIn->AddFieldDefn( &oField );
         }
     }
 }
@@ -491,18 +484,18 @@ void TigerFileBase::AddFieldDefns(const TigerRecordInfo *psRTInfo,
 /*                             SetFields()                              */
 /************************************************************************/
 
-void TigerFileBase::SetFields(const TigerRecordInfo *psRTInfo,
+void TigerFileBase::SetFields(const TigerRecordInfo *psRTInfoIn,
                               OGRFeature      *poFeature,
                               char            *achRecord)
 {
-  int i;
-  for (i=0; i<psRTInfo->nFieldCount; ++i) {
-    if (psRTInfo->pasFields[i].bSet) {
+  for( int i = 0; i < psRTInfoIn->nFieldCount; ++i )
+  {
+    if (psRTInfoIn->pasFields[i].bSet) {
       SetField( poFeature,
-                psRTInfo->pasFields[i].pszFieldName,
-                achRecord, 
-                psRTInfo->pasFields[i].nBeg,
-                psRTInfo->pasFields[i].nEnd );
+                psRTInfoIn->pasFields[i].pszFieldName,
+                achRecord,
+                psRTInfoIn->pasFields[i].nBeg,
+                psRTInfoIn->pasFields[i].nEnd );
     }
   }
 }
@@ -510,42 +503,40 @@ void TigerFileBase::SetFields(const TigerRecordInfo *psRTInfo,
 /************************************************************************/
 /*                             WriteField()                             */
 /************************************************************************/
-void TigerFileBase::WriteFields(const TigerRecordInfo *psRTInfo,
+void TigerFileBase::WriteFields(const TigerRecordInfo *psRTInfoIn,
                                 OGRFeature      *poFeature,
                                 char            *szRecord)
 {
-  int i;
-  for (i=0; i<psRTInfo->nFieldCount; ++i) {
-    if (psRTInfo->pasFields[i].bWrite) {
+  for( int i = 0; i < psRTInfoIn->nFieldCount; ++i )
+  {
+    if (psRTInfoIn->pasFields[i].bWrite) {
       WriteField( poFeature,
-                  psRTInfo->pasFields[i].pszFieldName,
-                  szRecord, 
-                  psRTInfo->pasFields[i].nBeg,
-                  psRTInfo->pasFields[i].nEnd,
-                  psRTInfo->pasFields[i].cFmt,
-                  psRTInfo->pasFields[i].cType );
+                  psRTInfoIn->pasFields[i].pszFieldName,
+                  szRecord,
+                  psRTInfoIn->pasFields[i].nBeg,
+                  psRTInfoIn->pasFields[i].nEnd,
+                  psRTInfoIn->pasFields[i].cFmt,
+                  psRTInfoIn->pasFields[i].cType );
     }
   }
 }
-
-
 
 /************************************************************************/
 /*                             SetModule()                              */
 /************************************************************************/
 
-int TigerFileBase::SetModule( const char * pszModule )
+bool TigerFileBase::SetModule( const char * pszModuleIn )
 
 {
-    if (m_pszFileCode == NULL)
-        return FALSE;
+    if( m_pszFileCode == NULL )
+        return false;
 
-    if( !OpenFile( pszModule, m_pszFileCode ) )
-        return FALSE;
+    if( !OpenFile( pszModuleIn, m_pszFileCode ) )
+        return false;
 
     EstablishFeatureCount();
 
-    return TRUE;
+    return true;
 }
 
 /************************************************************************/
@@ -582,6 +573,8 @@ OGRFeature *TigerFileBase::GetFeature( int nRecordId )
         return NULL;
     }
 
+    // Overflow cannot happen since psRTInfo->nRecordLength is unsigned
+    // char and sizeof(achRecord) == OGR_TIGER_RECBUF_LEN > 255
     if( VSIFReadL( achRecord, psRTInfo->nRecordLength, 1, fpPrimary ) != 1 )
     {
         CPLError( CE_Failure, CPLE_FileIO,

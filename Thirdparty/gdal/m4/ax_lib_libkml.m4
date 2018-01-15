@@ -1,22 +1,30 @@
-dnl $Id: ax_lib_libkml.m4 23867 2012-02-02 00:00:19Z winkey $
+dnl $Id: ax_lib_libkml.m4 36466 2016-11-23 14:51:29Z rouault $
 dnl
 dnl @synopsis AX_LIB_LIBKML([MINIMUM-VERSION])
 dnl
 dnl This macro provides tests of availability of Google libkml library
 dnl of particular version or newer.
 dnl
-dnl libkml - http://code.google.com/p/libkml/
+dnl libkml - https://github.com/google/libkml
 dnl
-dnl This macros checks for Google libkml headers and libraries 
+dnl A fork of libkml is also available:
+dnl
+dnl https://github.com/libkml/libkml
+dnl
+dnl This macros checks for Google libkml headers and libraries
 dnl and defines compilation flags.
-dnl 
+dnl
+dnl The libkml fork supports pkg-config, which is tried first.
+dnl If a suitable libkml version is not found with pkg-config, the manual
+dnl checks for the libkml library & include paths are performed.
+dnl
 dnl Macro supports following options and their values:
 dnl 1) Single-option usage:
 dnl --with-libkml - yes, no or path to Google libkml installation prefix
 dnl 2) Three-options usage (all options are required):
 dnl --with-libkml=yes
 dnl --with-libkml-inc - path to base directory with  headers
-dnl --with-libkml-lib - linker flags for 
+dnl --with-libkml-lib - linker flags for
 dnl
 dnl This macro calls:
 dnl
@@ -31,7 +39,7 @@ dnl
 dnl @category InstalledPackages
 dnl @category Cxx
 dnl @author Mateusz Loskot <mateusz@loskot.net>
-dnl @version $Date: 2012-02-01 16:00:19 -0800 (Wed, 01 Feb 2012) $
+dnl @version $Date: 2016-11-23 06:51:29 -0800 (Wed, 23 Nov 2016) $
 dnl @license AllPermissive
 dnl          Copying and distribution of this file, with or without modification,
 dnl          are permitted in any medium without royalty provided the copyright notice and
@@ -45,7 +53,7 @@ AC_DEFUN([AX_LIB_LIBKML],
         ),
         [
         if test "$withval" = "yes"; then
-            if test -d /usr/local/include/kml ; then 
+            if test -d /usr/local/include/kml ; then
                 libkml_prefix=/usr/local
             elif test -d /usr/include/kml ; then
                 libkml_prefix=/usr
@@ -63,12 +71,12 @@ AC_DEFUN([AX_LIB_LIBKML],
         ],
         [
         dnl Default behavior is implicit yes
-        if test -d /usr/local/include/kml ; then 
+        if test -d /usr/local/include/kml ; then
             libkml_prefix=/usr/local
         elif test -d /usr/include/kml ; then
             libkml_prefix=/usr
         else
-            libkml_prefix="" 
+            libkml_prefix=""
         fi
         ]
     )
@@ -88,181 +96,242 @@ AC_DEFUN([AX_LIB_LIBKML],
         [libkml_lib_flags=""]
     )
 
-    LIBKML_CFLAGS=""
-    LIBKML_LDFLAGS=""
-    LIBKML_VERSION=""
-
     dnl
-    dnl Collect include/lib paths and flags
-    dnl 
-    run_libkml_test="no"
-
-    if test -n "$libkml_prefix"; then
-        libkml_include_dir="$libkml_prefix/include"
-        libkml_include_dir2="$libkml_prefix/include/kml"
-        libkml_include_dir3="$libkml_prefix/include/kml/third_party/boost_1_34_1"
-        if test "$libkml_prefix" = "/usr"; then
-            libkml_lib_flags="-lkmldom -lkmlbase -lkmlengine -lkmlconvenience -lminizip -luriparser"
-        else
-            libkml_lib_flags="-L$libkml_prefix/lib -lkmldom -lkmlbase -lkmlengine -lkmlconvenience -lminizip -luriparser"
-        fi
-        run_libkml_test="yes"
-    elif test "$libkml_requested" = "yes"; then
-        if test -n "$libkml_include_dir" -a -n "$libkml_lib_flags"; then
-            libkml_include_dir2="$libkml_include_dir/kml"
-            libkml_include_dir3="$libkml_include_dir/kml/third_party/boost_1_34_1"
-            run_libkml_test="yes"
-        fi
-    else
-        run_libkml_test="no"
-    fi
-
+    dnl Try pkg-config first
     dnl
-    dnl Check libkml headers/libraries
-    dnl
-    if test "$run_libkml_test" = "yes"; then
+    PKG_PROG_PKG_CONFIG([0.25]) # check and set $PKG_CONFIG
 
+    PKG_CHECK_MODULES([LIBKML], [libkml >= $1],
+        [LIBKML_VERSION=`$PKG_CONFIG --modversion libkml`],
+        [LIBKML_VERSION=;])
+
+    if test -n "$LIBKML_VERSION" -a -n "$libkml_prefix"; then
+        # Test that the package found is for the right architecture
         saved_CPPFLAGS="$CPPFLAGS"
-        CPPFLAGS="$CPPFLAGS -I$libkml_include_dir -I$libkml_include_dir2 -I$libkml_include_dir3"
-
         saved_LIBS="$LIBS"
-        LIBS="$LIBS $libkml_lib_flags"
+        CPPFLAGS="$CPPFLAGS $LIBKML_CFLAGS"
+        LIBS="$LIBKML_LIBS"
 
-        dnl
-        dnl Check headers
-        dnl
-        AC_MSG_CHECKING([for Google libkml headers in $libkml_include_dir, $libkml_include_dir2, and $libkml_include_dir3])
-
+        AC_MSG_CHECKING([if libkml can be linked])
         AC_LANG_PUSH([C++])
-        AC_COMPILE_IFELSE([
+        AC_LINK_IFELSE([
             AC_LANG_PROGRAM(
                 [[
 @%:@include <kml/dom.h>
-                ]],
-                [[]]
+                        ]],
+                        [[
+kmldom::KmlFactory* factory = kmldom::KmlFactory::GetFactory();
+                ]]
             )],
             [
-            LIBKML_CFLAGS="-I$libkml_include_dir -I$libkml_include_dir2 -I$libkml_include_dir3"
-            libkml_header_found="yes"
-            AC_MSG_RESULT([found])
+            HAVE_LIBKML=yes
+            AC_MSG_RESULT([yes])
             ],
             [
-            libkml_header_found="no"
-            AC_MSG_RESULT([not found])
+            HAVE_LIBKML=no
+            AC_MSG_RESULT([no])
             ]
         )
         AC_LANG_POP([C++])
-        
-        dnl
-        dnl Check libraries
-        dnl
-        if test "$libkml_header_found" = "yes"; then
-
-            AC_MSG_CHECKING([for Google libkml libraries])
-
-            AC_LANG_PUSH([C++])
-            AC_LINK_IFELSE([
-                AC_LANG_PROGRAM(
-                    [[
-@%:@include <kml/dom.h>
-                    ]],
-                    [[
-kmldom::KmlFactory* factory = kmldom::KmlFactory::GetFactory();
-                    ]]
-                )],
-                [
-                LIBKML_LDFLAGS="$libkml_lib_flags"
-                libkml_lib_found="yes"
-                AC_MSG_RESULT([found])
-                ],
-                [
-                libkml_lib_found="no"
-                AC_MSG_RESULT([not found])
-                ]
-            )
-            AC_LANG_POP([C++])
-        fi
 
         CPPFLAGS="$saved_CPPFLAGS"
         LIBS="$saved_LIBS"
     fi
 
-    AC_MSG_CHECKING([for Google libkml])
+    if test "$HAVE_LIBKML" = "yes"; then
+        HAVE_LIBKML="yes"
 
-    if test "$run_libkml_test" = "yes"; then
-        if test "$libkml_header_found" = "yes" -a "$libkml_lib_found" = "yes"; then
+	LIBKML_LDFLAGS="$LIBKML_LIBS"
 
-            AC_SUBST([LIBKML_CFLAGS])
-            AC_SUBST([LIBKML_LDFLAGS])
+	AC_MSG_CHECKING([for LIBKML CFLAGS])
+        AC_MSG_RESULT([$LIBKML_CFLAGS])
 
-            HAVE_LIBKML="yes"
-        else 
-            HAVE_LIBKML="no"
+	AC_MSG_CHECKING([for LIBKML LDFLAGS])
+	AC_MSG_RESULT([$LIBKML_LDFLAGS])
+
+	AC_MSG_CHECKING([for LIBKML VERSION])
+	AC_MSG_RESULT([$LIBKML_VERSION])
+
+        AC_SUBST([LIBKML_CFLAGS])
+        AC_SUBST([LIBKML_LDLAGS])
+        AC_SUBST([LIBKML_VERSION])
+    else
+        LIBKML_CFLAGS=""
+        LIBKML_LDFLAGS=""
+        LIBKML_VERSION=""
+
+        dnl
+        dnl Collect include/lib paths and flags
+        dnl
+        run_libkml_test="no"
+
+        if test -n "$libkml_prefix"; then
+            libkml_include_dir="$libkml_prefix/include"
+            libkml_include_dir2="$libkml_prefix/include/kml"
+            libkml_include_dir3="$libkml_prefix/include/kml/third_party/boost_1_34_1"
+            if test "$libkml_prefix" = "/usr"; then
+                libkml_lib_flags="-lkmldom -lkmlbase -lkmlengine -lkmlconvenience -lminizip -luriparser"
+            else
+                libkml_lib_flags="-L$libkml_prefix/lib -lkmldom -lkmlbase -lkmlengine -lkmlconvenience -lminizip -luriparser"
+            fi
+            run_libkml_test="yes"
+        elif test "$libkml_requested" = "yes"; then
+            if test -n "$libkml_include_dir" -a -n "$libkml_lib_flags"; then
+                libkml_include_dir2="$libkml_include_dir/kml"
+                libkml_include_dir3="$libkml_include_dir/kml/third_party/boost_1_34_1"
+                run_libkml_test="yes"
+            fi
+        else
+            run_libkml_test="no"
         fi
 
-        AC_MSG_RESULT([$HAVE_LIBKML])
-
         dnl
-        dnl Check  version
+        dnl Check libkml headers/libraries
         dnl
-        if test "$HAVE_LIBKML" = "yes"; then
+        if test "$run_libkml_test" = "yes"; then
 
-            libkml_version_req=ifelse([$1], [], [], [$1])
-            
-            if test  -n "$libkml_version_req"; then
+            saved_CPPFLAGS="$CPPFLAGS"
+            CPPFLAGS="$CPPFLAGS -I$libkml_include_dir -I$libkml_include_dir2 -I$libkml_include_dir3"
 
-                AC_MSG_CHECKING([if Google libkml version is >= $libkml_version_req])
+            saved_LIBS="$LIBS"
+            LIBS="$LIBS $libkml_lib_flags"
 
-                if test -f "$libkml_include_dir2/base/version.h"; then
+            dnl
+            dnl Check headers
+            dnl
+            AC_MSG_CHECKING([for Google libkml headers in $libkml_include_dir, $libkml_include_dir2, and $libkml_include_dir3])
 
-                    libkml_major=$(sed -n '/^#define LIBKML_MAJOR_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
-		    	$libkml_include_dir2/base/version.h)
-                    libkml_minor=$(sed -n '/^#define LIBKML_MINOR_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
-		    	$libkml_include_dir2/base/version.h)
-                    libkml_revision=$(sed -n '/^#define LIBKML_MICRO_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
-		    	$libkml_include_dir2/base/version.h)
+            AC_LANG_PUSH([C++])
+            AC_COMPILE_IFELSE([
+                AC_LANG_PROGRAM(
+                    [[
+@%:@include <kml/dom.h>
+                    ]],
+                    [[]]
+                )],
+                [
+                LIBKML_CFLAGS="-I$libkml_include_dir -I$libkml_include_dir2 -I$libkml_include_dir3"
+                libkml_header_found="yes"
+                AC_MSG_RESULT([found])
+                ],
+                [
+                libkml_header_found="no"
+                AC_MSG_RESULT([not found])
+                ]
+            )
+            AC_LANG_POP([C++])
 
-                    LIBKML_VERSION="$libkml_major.$libkml_minor.$libkml_revision"
-                    AC_SUBST([LIBKML_VERSION])
+            dnl
+            dnl Check libraries
+            dnl
+            if test "$libkml_header_found" = "yes"; then
 
-                    dnl Decompose required version string and calculate numerical representation
-                    libkml_version_req_major=`expr $libkml_version_req : '\([[0-9]]*\)'`
-                    libkml_version_req_minor=`expr $libkml_version_req : '[[0-9]]*\.\([[0-9]]*\)'`
-                    libkml_version_req_revision=`expr $libkml_version_req : '[[0-9]]*\.[[0-9]]*\.\([[0-9]]*\)'`
-                    if test "x$libkml_version_req_revision" = "x"; then
-                        libkml_version_req_revision="0"
-                    fi
-                    
-                    libkml_version_req_number=`expr $libkml_version_req_major \* 10000 \
-                                               \+ $libkml_version_req_minor \* 100 \
-                                               \+ $libkml_version_req_revision`
+                AC_MSG_CHECKING([for Google libkml libraries])
 
-                    dnl Calculate numerical representation of detected version
-                    libkml_version_number=`expr $libkml_major \* 10000 \
-                                          \+ $libkml_minor \* 100 \
-                                           \+ $libkml_revision`
+                AC_LANG_PUSH([C++])
+                AC_LINK_IFELSE([
+                    AC_LANG_PROGRAM(
+                        [[
+@%:@include <kml/dom.h>
+                        ]],
+                        [[
+kmldom::KmlFactory* factory = kmldom::KmlFactory::GetFactory();
+                        ]]
+                    )],
+                    [
+                    LIBKML_LDFLAGS="$libkml_lib_flags"
+                    libkml_lib_found="yes"
+                    AC_MSG_RESULT([found])
+                    ],
+                    [
+                    libkml_lib_found="no"
+                    AC_MSG_RESULT([not found])
+                    ]
+                )
+                AC_LANG_POP([C++])
+            fi
 
-                    libkml_version_check=`expr $libkml_version_number \>\= $libkml_version_req_number`
-                    if test "$libkml_version_check" = "1"; then
-                        AC_MSG_RESULT([yes])
+            CPPFLAGS="$saved_CPPFLAGS"
+            LIBS="$saved_LIBS"
+        fi
+
+        AC_MSG_CHECKING([for Google libkml])
+
+        if test "$run_libkml_test" = "yes"; then
+            if test "$libkml_header_found" = "yes" -a "$libkml_lib_found" = "yes"; then
+
+                AC_SUBST([LIBKML_CFLAGS])
+                AC_SUBST([LIBKML_LDFLAGS])
+
+                HAVE_LIBKML="yes"
+            else
+                HAVE_LIBKML="no"
+            fi
+
+            AC_MSG_RESULT([$HAVE_LIBKML])
+
+            dnl
+            dnl Check  version
+            dnl
+            if test "$HAVE_LIBKML" = "yes"; then
+
+                libkml_version_req=ifelse([$1], [], [], [$1])
+
+                if test  -n "$libkml_version_req"; then
+
+                    AC_MSG_CHECKING([if Google libkml version is >= $libkml_version_req])
+
+                    if test -f "$libkml_include_dir2/base/version.h"; then
+
+                        libkml_major=$(sed -n '/^#define LIBKML_MAJOR_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
+                            $libkml_include_dir2/base/version.h)
+                        libkml_minor=$(sed -n '/^#define LIBKML_MINOR_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
+                            $libkml_include_dir2/base/version.h)
+                        libkml_revision=$(sed -n '/^#define LIBKML_MICRO_VERSION.*$/{s/\([^0-9]*\)\([0-9]*\).*/\2/;P;}' \
+                            $libkml_include_dir2/base/version.h)
+
+                        LIBKML_VERSION="$libkml_major.$libkml_minor.$libkml_revision"
+                        AC_SUBST([LIBKML_VERSION])
+
+                        dnl Decompose required version string and calculate numerical representation
+                        libkml_version_req_major=`expr $libkml_version_req : '\([[0-9]]*\)'`
+                        libkml_version_req_minor=`expr $libkml_version_req : '[[0-9]]*\.\([[0-9]]*\)'`
+                        libkml_version_req_revision=`expr $libkml_version_req : '[[0-9]]*\.[[0-9]]*\.\([[0-9]]*\)'`
+                        if test "x$libkml_version_req_revision" = "x"; then
+                            libkml_version_req_revision="0"
+                        fi
+
+                        libkml_version_req_number=`expr $libkml_version_req_major \* 10000 \
+                                                   \+ $libkml_version_req_minor \* 100 \
+                                                   \+ $libkml_version_req_revision`
+
+                        dnl Calculate numerical representation of detected version
+                        libkml_version_number=`expr $libkml_major \* 10000 \
+                                              \+ $libkml_minor \* 100 \
+                                               \+ $libkml_revision`
+
+                        libkml_version_check=`expr $libkml_version_number \>\= $libkml_version_req_number`
+                        if test "$libkml_version_check" = "1"; then
+                            AC_MSG_RESULT([yes])
+                        else
+                            AC_MSG_RESULT([no])
+                            AC_MSG_WARN([Found Google libkml ${LIBKML_VERSION}, which is older than required (${libkml_version_req}). KML support disabled.])
+                            HAVE_LIBKML="no"
+                        fi
                     else
                         AC_MSG_RESULT([no])
-                        AC_MSG_WARN([Found Google libkml ${LIBKML_VERSION}, which is older than required (${libkml_version_req}). KML support disabled.])
-			HAVE_LIBKML="no"
+                        AC_MSG_WARN([Missing header $libkml_include_dir2/base/bersion.hpp. Unable to determine Google libkml version.])
                     fi
-                else
-                    AC_MSG_RESULT([no])
-                    AC_MSG_WARN([Missing header $libkml_include_dir2/base/bersion.hpp. Unable to determine Google libkml version.])
                 fi
             fi
-        fi
 
-    else
-        HAVE_LIBKML="no"
-        AC_MSG_RESULT([$HAVE_LIBKML])
+        else
+            HAVE_LIBKML="no"
+            AC_MSG_RESULT([$HAVE_LIBKML])
 
-        if test "$libkml_requested" = "yes"; then
-            AC_MSG_WARN([Google libkml support requested but headers or library not found. Specify valid prefix of libkml using --with-libkml=@<:@DIR@:>@ or provide include directory and linker flags using --with-libkml-inc and --with-libkml-lib])
+            if test "$libkml_requested" = "yes"; then
+                AC_MSG_WARN([Google libkml support requested but headers or library not found. Specify valid prefix of libkml using --with-libkml=@<:@DIR@:>@ or provide include directory and linker flags using --with-libkml-inc and --with-libkml-lib])
+            fi
         fi
     fi
 ])

@@ -7,10 +7,10 @@ FileDataSource::FileDataSource(const char * fileName)
     fp = VSIFOpenL(fileName, "rb");
 }
 
-FileDataSource::FileDataSource(VSILFILE* fp)
+FileDataSource::FileDataSource(VSILFILE* fpIn)
 : closeFile(false)
 {
-    this->fp = fp;
+    this->fp = fpIn;
 }
 
 FileDataSource::~FileDataSource()
@@ -37,7 +37,7 @@ int FileDataSource::DataSourceFgetc()
 int FileDataSource::DataSourceUngetc(int c)
 {
     DataSourceFseek(-1, SEEK_CUR );
-    
+
     return c;
 }
 
@@ -56,5 +56,5 @@ int FileDataSource::DataSourceFeof()
 
 long FileDataSource::DataSourceFtell()
 {
-    return VSIFTellL( fp );
+    return static_cast<long>(VSIFTellL( fp ));
 }

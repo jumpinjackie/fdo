@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: parsexsd.h 20341 2010-08-17 20:27:09Z rouault $
+ * $Id: parsexsd.h 31777 2015-11-26 14:14:41Z rouault $
  *
  * Project:  GML Reader
  * Purpose:  Implementation of GMLParseXSD()
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2005, Frank Warmerdam
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,13 +28,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _PARSEXSD_H_INCLUDED
-#define _PARSEXSD_H_INCLUDED
+#ifndef PARSEXSD_H_INCLUDED
+#define PARSEXSD_H_INCLUDED
 
 #include <vector>
 #include "gmlreader.h"
 
-int GMLParseXSD( const char *pszFile,
-                 std::vector<GMLFeatureClass*> & aosClasses);
+bool GMLParseXSD( const char *pszFile,
+                 std::vector<GMLFeatureClass*> & aosClasses,
+                 bool& bFullyUnderstood );
 
-#endif // _PARSEXSD_H_INCLUDED
+#endif // PARSEXSD_H_INCLUDED

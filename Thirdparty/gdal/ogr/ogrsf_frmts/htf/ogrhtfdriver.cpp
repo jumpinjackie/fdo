@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrhtfdriver.cpp 20735 2010-10-03 13:40:34Z rouault $
  *
  * Project:  HTF Translator
  * Purpose:  Implements OGRHTFDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,42 +26,30 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_htf.h"
 #include "cpl_conv.h"
+#include "ogr_htf.h"
+#include "ogrsf_frmts.h"
 
-CPL_CVSID("$Id: ogrhtfdriver.cpp 20735 2010-10-03 13:40:34Z rouault $");
-
-extern "C" void RegisterOGRHTF();
-
-/************************************************************************/
-/*                           ~OGRHTFDriver()                            */
-/************************************************************************/
-
-OGRHTFDriver::~OGRHTFDriver()
-
-{
-}
-
-/************************************************************************/
-/*                              GetName()                               */
-/************************************************************************/
-
-const char *OGRHTFDriver::GetName()
-
-{
-    return "HTF";
-}
+CPL_CVSID("$Id: ogrhtfdriver.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRHTFDriver::Open( const char * pszFilename, int bUpdate )
+static GDALDataset *OGRHTFDriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
-    OGRHTFDataSource   *poDS = new OGRHTFDataSource();
+    if( poOpenInfo->eAccess == GA_Update ||
+        poOpenInfo->fpL == NULL )
+        return NULL;
 
-    if( !poDS->Open( pszFilename, bUpdate ) )
+    if( !STARTS_WITH( reinterpret_cast<char *>(poOpenInfo->pabyHeader),
+                      "HTF HEADER") )
+        return NULL;
+
+    OGRHTFDataSource *poDS = new OGRHTFDataSource();
+
+    if( !poDS->Open( poOpenInfo->pszFilename ) )
     {
         delete poDS;
         poDS = NULL;
@@ -72,22 +59,25 @@ OGRDataSource *OGRHTFDriver::Open( const char * pszFilename, int bUpdate )
 }
 
 /************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRHTFDriver::TestCapability( const char * pszCap )
-
-{
-    return FALSE;
-}
-
-/************************************************************************/
 /*                           RegisterOGRHTF()                           */
 /************************************************************************/
 
 void RegisterOGRHTF()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRHTFDriver );
-}
+    if( GDALGetDriverByName( "HTF" ) != NULL )
+        return;
 
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "HTF" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                                   "Hydrographic Transfer Vector" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_htf.html" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+
+    poDriver->pfnOpen = OGRHTFDriverOpen;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_vfk.h 24067 2012-03-04 11:27:45Z martinl $
+ * $Id: ogr_vfk.h 37757 2017-03-18 14:03:33Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private definitions for OGR/VFK driver.
@@ -53,35 +53,31 @@ private:
     /* feature definition */
     OGRFeatureDefn      *poFeatureDefn;
 
-    /* OGR data source */
-    OGRVFKDataSource    *poDS;
-
     /* VFK data block */
     IVFKDataBlock       *poDataBlock;
 
     /* get next feature */
     int                  m_iNextFeature;
-    
+
     /* private methods */
     OGRGeometry         *CreateGeometry(IVFKFeature *);
     OGRFeature          *GetFeature(IVFKFeature *);
-    
+
 public:
     OGRVFKLayer(const char *, OGRSpatialReference *,
                 OGRwkbGeometryType, OGRVFKDataSource *);
     ~OGRVFKLayer();
 
-    OGRFeature          *GetNextFeature();
-    OGRFeature          *GetFeature(long);
+    OGRFeature          *GetNextFeature() override;
+    OGRFeature          *GetFeature(GIntBig) override;
 
-    OGRFeatureDefn      *GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn      *GetLayerDefn() override { return poFeatureDefn; }
 
-    void                 ResetReading();
-    
-    int                  TestCapability(const char *);
-    OGRSpatialReference *GetSpatialRef();
+    void                 ResetReading() override;
 
-    int                  GetFeatureCount(int = TRUE);
+    int                  TestCapability(const char *) override;
+
+    GIntBig              GetFeatureCount(int = TRUE) override;
 };
 
 /************************************************************************/
@@ -93,9 +89,9 @@ private:
     /* list of available layers */
     OGRVFKLayer  **papoLayers;
     int            nLayers;
-    
+
     char *         pszName;
-    
+
     /* input related parameters */
     IVFKReader    *poReader;
 
@@ -106,30 +102,16 @@ public:
     OGRVFKDataSource();
     ~OGRVFKDataSource();
 
-    int            Open(const char *, int);
-    
-    const char    *GetName() { return pszName; }
-    
-    int            GetLayerCount() { return nLayers; }
-    OGRLayer      *GetLayer(int);
+    int            Open(GDALOpenInfo* poOpenInfo);
 
-    int            TestCapability(const char *);
+    const char    *GetName() override { return pszName; }
+
+    int            GetLayerCount() override { return nLayers; }
+    OGRLayer      *GetLayer(int) override;
+
+    int            TestCapability(const char *) override;
 
     IVFKReader    *GetReader() const { return poReader; }
-};
-
-/************************************************************************/
-/*                            OGRVFKDriver                              */
-/************************************************************************/
-class OGRVFKDriver:public OGRSFDriver
-{
-public:
-    ~OGRVFKDriver();
-                
-    const char    *GetName();
-    OGRDataSource *Open(const char *, int);
-    
-    int            TestCapability(const char *);
 };
 
 #endif // GDAL_OGR_VFK_H_INCLUDED

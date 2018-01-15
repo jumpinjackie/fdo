@@ -1,8 +1,8 @@
 /******************************************************************************
- * $Id: dgnlibp.h 22381 2011-05-16 21:14:22Z rouault $
+ * $Id: dgnlibp.h 35374 2016-09-09 13:32:13Z goatbar $
  *
  * Project:  Microstation DGN Access Library
- * Purpose:  Internal (privatE) datastructures, and prototypes for DGN Access 
+ * Purpose:  Internal (privatE) datastructures, and prototypes for DGN Access
  *           Library.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
@@ -28,15 +28,10 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _DGNLIBP_H_INCLUDED
-#define _DGNLIBP_H_INCLUDED
+#ifndef DGNLIBP_H_INCLUDED
+#define DGNLIBP_H_INCLUDED
 
 #include "dgnlib.h"
-
-
-#ifndef PI
-#define PI  3.1415926535897932384626433832795
-#endif
 
 typedef struct {
     FILE        *fp;
@@ -45,7 +40,7 @@ typedef struct {
     int         nElemBytes;
     GByte       abyElem[131076];
 
-    int         got_tcb;
+    bool        got_tcb;
     int         dimension;
     int         options;
     double      scale;
@@ -53,7 +48,7 @@ typedef struct {
     double      origin_y;
     double      origin_z;
 
-    int         index_built;
+    bool        index_built;
     int         element_count;
     int         max_element_count;
     DGNElementInfo *element_index;
@@ -61,7 +56,7 @@ typedef struct {
     int         got_color_table;
     GByte       color_table[256][3];
 
-    int         got_bounds;
+    bool        got_bounds;
     GUInt32     min_x;
     GUInt32     min_y;
     GUInt32     min_z;
@@ -69,11 +64,11 @@ typedef struct {
     GUInt32     max_y;
     GUInt32     max_z;
 
-    int         has_spatial_filter;
-    int         sf_converted_to_uor;
+    bool        has_spatial_filter;
+    bool        sf_converted_to_uor;
 
-    int         select_complex_group;
-    int         in_complex_group;
+    bool        select_complex_group;
+    bool        in_complex_group;
 
     GUInt32     sf_min_x;
     GUInt32     sf_min_y;
@@ -90,7 +85,7 @@ typedef struct {
                         + ((p)[3] << 8) \
                         + ((p)[1] << 24) \
                         + ((p)[0] << 16))
-#define DGN_WRITE_INT32( n, p ) { GInt32 nMacroWork = (n);                   \
+#define DGN_WRITE_INT32( n, p ) { GInt32 nMacroWork = (GInt32)(n);                   \
  ((unsigned char *)p)[0] = (unsigned char)((nMacroWork & 0x00ff0000) >> 16); \
  ((unsigned char *)p)[1] = (unsigned char)((nMacroWork & 0xff000000) >> 24); \
  ((unsigned char *)p)[2] = (unsigned char)((nMacroWork & 0x000000ff) >> 0);  \
@@ -108,4 +103,4 @@ void DGNAsciiToRad50( const char *str, unsigned short *rad50 );
 void DGNSpatialFilterToUOR( DGNInfo *);
 int  DGNLoadRawElement( DGNInfo *psDGN, int *pnType, int *pnLevel );
 
-#endif /* ndef _DGNLIBP_H_INCLUDED */
+#endif /* ndef DGNLIBP_H_INCLUDED */

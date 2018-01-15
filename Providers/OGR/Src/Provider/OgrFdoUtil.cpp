@@ -71,13 +71,25 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         classCapabilities->SetSupportsWrite(true);
         fc->SetCapabilities(classCapabilities);
 
+#if GDAL_VERSION_MAJOR < 2
         OGRDataSource* dataStore = connection->GetOGRDataSource();
+#else
+        GDALDataset* dataStore = connection->GetOGRDataSource();
+#endif
         if (NULL != dataStore)
         {
+#if GDAL_VERSION_MAJOR < 2
             OGRSFDriver* driver = dataStore->GetDriver();
+#else
+            GDALDriver* driver = dataStore->GetDriver();
+#endif
             if (NULL != driver)
             {
+#if GDAL_VERSION_MAJOR < 2
                 const char* name = driver->GetName();
+#else
+                const char* name = dataStore->GetDriverName();
+#endif
 
                 // As far as I know, ESRI Shapefile is the only feature source that uses
                 // clockwise vertex order. I assume other feature sources use counterclockwise
@@ -102,7 +114,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         const char* name = field->GetNameRef();
         std::wstring wname = A2W_SLOW(name);
         dot2tilde(wname);
-#if DEBUG
+#ifdef DEBUG
         printf("Attribute : %s\n", name);
 #endif
         FdoDataType dt;
@@ -117,7 +129,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         case OFTDate:
         case OFTTime:
         case OFTDateTime: dt = FdoDataType_DateTime; break;
-
+#if GDAL_VERSION_MAJOR >= 2
+        case OFTInteger64: dt = FdoDataType_Int64; break;
+#endif
         default: add=false; break; //unknown property type
         }
 
@@ -134,10 +148,25 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
                 dpd->SetDataType(dt);
                 dpd->SetLength(field->GetWidth());
                 dpd->SetPrecision(field->GetPrecision());
-                //TODO: default value
+#if GDAL_VERSION_MAJOR >= 2
+                //Since such concepts are now available in GDAL 2.x, we might as well map them
+                dpd->SetNullable((field->IsNullable() == TRUE));
+                const char* defaultVal = field->GetDefault();
+                if (defaultVal)
+                {
+                    std::wstring wname = A2W_SLOW(defaultVal);
+                    dpd->SetDefaultValue(wname.c_str());
+                }
+#endif
                 pdc->Add(dpd);
             }
         }
+#ifdef DEBUG
+        else
+        {
+            printf("Unknown data type for attributed: %s\n", name);
+        }
+#endif
     }
 
     //add geometry property -- this code assumes there is one
@@ -209,7 +238,11 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         if (!fid.p)
         {
             fid = FdoDataPropertyDefinition::Create(widname.c_str(), L"");
-            fid->SetDataType(FdoDataType_Int32); //TODO should we use Int64?
+#if GDAL_VERSION_MAJOR < 2
+            fid->SetDataType(FdoDataType_Int32);
+#else
+            fid->SetDataType(FdoDataType_Int64); //FID is GIntBig in 2.x
+#endif
             pdc->Add(fid);
         }
 
@@ -287,6 +320,18 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
                         dst->SetField(mbpropName, (int)iv->GetInt32());
                 }
                 break;
+#if GDAL_VERSION_MAJOR >= 2
+            case OFTInteger64:
+                {
+                    FdoInt64Value* i64v = dynamic_cast<FdoInt64Value*>(value.p);
+                    FdoInt32Value* iv = dynamic_cast<FdoInt32Value*>(value.p);
+                    if (i64v && !i64v->IsNull())
+                        dst->SetField(mbpropName, (GIntBig)i64v->GetInt64());
+                    if (iv && !iv->IsNull()) //Allow int32
+                        dst->SetField(mbpropName, (int)iv->GetInt32());
+                }
+                break;
+#endif
             case OFTString:
                 {
                     FdoStringValue* sv = dynamic_cast<FdoStringValue*>(value.p);
@@ -443,7 +488,11 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
                     printf ("failed to convert intersects spatial filter geometry value");
 #endif
 
+#if GDAL_VERSION_MAJOR < 2
                 OGRFree(geom);
+#else
+                CPLFree(geom);
+#endif
             }
         }
     }

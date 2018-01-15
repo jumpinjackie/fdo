@@ -47,7 +47,7 @@
  *
  */
 
-/* @(#) $Id: deflate.c 10656 2007-01-19 01:31:01Z mloskot $ */
+/* @(#) $Id: deflate.c 36393 2016-11-21 14:25:42Z rouault $ */
 
 #include "deflate.h"
 
@@ -1245,7 +1245,7 @@ local void check_match(s, start, match, length)
         z_error("invalid match");
     }
     if (z_verbose > 1) {
-        fprintf(stderr,"\\[%d,%d]", start-match, length);
+        fprintf(stderr,"\\[%u,%d]", start-match, length);
         do { putc(s->window[start++], stderr); } while (--length != 0);
     }
 }

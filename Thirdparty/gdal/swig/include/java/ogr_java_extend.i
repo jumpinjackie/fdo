@@ -1,13 +1,13 @@
 /******************************************************************************
- * $Id: ogr_java_extend.i 10639 2007-01-17 20:57:32Z tamas $
+ * $Id: ogr_java_extend.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Name:     ogr_java_extend.i
  * Project:  GDAL SWIG Interface
- * Purpose:  Java specific OGR extensions 
+ * Purpose:  Java specific OGR extensions
  * Author:   Andrea Aime (andrea.aime@gmail.com)
  *
  */
- 
+
 /******************************************************************************
  * OGR WKB import and  export. Both extensions make sure byte[] is used in    *
  * java instead of char[]                                                     *
@@ -51,7 +51,7 @@
     }
 %}
 
-%extend OGRGeometryShadow 
+%extend OGRGeometryShadow
 {
   OGRGeometryShadow( OGRwkbGeometryType type, char *wkt, int nLen, unsigned char *pBuf, const char *gml ) {
     if (type != wkbUnknown ) {

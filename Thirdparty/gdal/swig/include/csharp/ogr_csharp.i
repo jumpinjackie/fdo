@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_csharp.i 15475 2008-10-07 21:40:20Z tamas $
+ * $Id: ogr_csharp.i 34525 2016-07-03 02:53:47Z goatbar $
  *
  * Name:     ogr_csharp.i
  * Project:  GDAL CSharp Interface
@@ -27,7 +27,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
- 
+
 %include cpl_exceptions.i
 
 %rename (GetFieldType) GetType;
@@ -40,6 +40,7 @@
 
 DEFINE_EXTERNAL_CLASS(OSRSpatialReferenceShadow, OSGeo.OSR.SpatialReference)
 DEFINE_EXTERNAL_CLASS(OSRCoordinateTransformationShadow, OSGeo.OSR.CoordinateTransformation)
+DEFINE_EXTERNAL_CLASS(GDALMajorObjectShadow, OSGeo.GDAL.MajorObject)
 
 
 %typemap(cscode, noblock="1") OGRGeometryShadow {
@@ -48,7 +49,7 @@ DEFINE_EXTERNAL_CLASS(OSRCoordinateTransformationShadow, OSGeo.OSR.CoordinateTra
       int size = WkbSize();
       if (buffer.Length < size)
         throw new ArgumentException("Buffer size is small (ExportToWkb)");
-        
+
       IntPtr ptr = Marshal.AllocHGlobal(size * Marshal.SizeOf(buffer[0]));
       try {
           retval = ExportToWkb(size, ptr, byte_order);
@@ -62,11 +63,11 @@ DEFINE_EXTERNAL_CLASS(OSRCoordinateTransformationShadow, OSGeo.OSR.CoordinateTra
   public int ExportToWkb( byte[] buffer ) {
       return ExportToWkb( buffer, wkbByteOrder.wkbXDR);
   }
-  
+
   public static $csclassname CreateFromWkb(byte[] wkb){
      if (wkb.Length == 0)
         throw new ArgumentException("Buffer size is small (CreateFromWkb)");
-     $csclassname retval;   
+     $csclassname retval;
      IntPtr ptr = Marshal.AllocHGlobal(wkb.Length * Marshal.SizeOf(wkb[0]));
      try {
          Marshal.Copy(wkb, 0, ptr, wkb.Length);
@@ -74,17 +75,17 @@ DEFINE_EXTERNAL_CLASS(OSRCoordinateTransformationShadow, OSGeo.OSR.CoordinateTra
       } finally {
           Marshal.FreeHGlobal(ptr);
       }
-      return retval;  
+      return retval;
   }
-  
+
   public static $csclassname CreateFromWkt(string wkt){
      return new $csclassname(wkbGeometryType.wkbUnknown, wkt, 0, IntPtr.Zero, null);
   }
-  
+
   public static $csclassname CreateFromGML(string gml){
      return new $csclassname(wkbGeometryType.wkbUnknown, null, 0, IntPtr.Zero, gml);
   }
-  
+
   public Geometry(wkbGeometryType type) : this(OgrPINVOKE.new_Geometry((int)type, null, 0, IntPtr.Zero, null), true, null) {
     if (OgrPINVOKE.SWIGPendingException.Pending) throw OgrPINVOKE.SWIGPendingException.Retrieve();
   }

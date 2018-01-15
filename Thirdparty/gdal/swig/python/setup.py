@@ -1,19 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
- 
+
 # Setup script for GDAL Python bindings.
 # Inspired by psycopg2 setup.py file
 # http://www.initd.org/tracker/psycopg/browser/psycopg2/trunk/setup.py
 # Howard Butler hobu.inc@gmail.com
 
 
-gdal_version = '1.10.0'
+gdal_version = '2.2.2'
 
 import sys
 import os
-import string
 
 from glob import glob
+
+# If CXX is defined in the environment, it will be used to link the .so
+# but distutils will be confused if it is made of several words like 'ccache g++'
+# and it will try to use only the first word.
+# See https://lists.osgeo.org/pipermail/gdal-dev/2016-July/044686.html
+# Note: in general when doing "make", CXX will not be defined, unless it is defined as
+# an environment variable, but in that case it is the value of GDALmake.opt that
+# will be set, not the one from the environment that started "make" !
+# If no CXX environment variable is defined, then the value of the CXX variable
+# in GDALmake.opt will not be set as an environment variable
+if 'CXX' in os.environ and os.environ['CXX'].strip().find(' ') >= 0:
+    print('WARNING: "CXX=%s" was defined in the environment and contains more than one word. Unsetting it since that is incompatible of distutils' % os.environ['CXX'])
+    del os.environ['CXX']
 
 # ---------------------------------------------------------------------------
 # Switches
@@ -22,13 +34,14 @@ from glob import glob
 HAVE_NUMPY=False
 HAVE_SETUPTOOLS = False
 BUILD_FOR_CHEESESHOP = False
+GNM_ENABLED = True
 
 # ---------------------------------------------------------------------------
 # Default build options
-# (may be overriden with setup.cfg or command line switches).
+# (may be overridden with setup.cfg or command line switches).
 # ---------------------------------------------------------------------------
 
-include_dirs = ['../../port', '../../gcore', '../../alg', '../../ogr/']
+include_dirs = ['../../port', '../../gcore', '../../alg', '../../ogr/', '../../ogr/ogrsf_frmts', '../../gnm', '../../apps']
 library_dirs = ['../../.libs', '../../']
 libraries = ['gdal']
 
@@ -104,7 +117,6 @@ class gdal_config_error(Exception): pass
 
 from distutils.command.build_ext import build_ext
 from distutils.ccompiler import get_default_compiler
-from distutils.sysconfig import get_python_inc
 
 def fetch_config(option, gdal_config='gdal-config'):
 
@@ -132,16 +144,16 @@ except OSError, e:
         p.wait()
 
     except ImportError:
-        
+
         import popen2
-        
+
         p = popen2.popen3(command)
         r = p[0].readline().strip()
         if not r:
             raise Warning(p[2].readline())
-    
+
     return r
-    
+
 class gdal_ext(build_ext):
 
     GDAL_CONFIG = 'gdal-config'
@@ -161,25 +173,31 @@ class gdal_ext(build_ext):
 
     def get_compiler(self):
         return self.compiler or get_default_compiler()
-    
+
     def get_gdal_config(self, option):
         try:
             return fetch_config(option, gdal_config = self.gdal_config)
         except gdal_config_error:
-            # If an error is thrown, it is possibly because 
-            # the gdal-config location given in setup.cfg is 
+            # If an error is thrown, it is possibly because
+            # the gdal-config location given in setup.cfg is
             # incorrect, or possibly the default -- ../../apps/gdal-config
-            # We'll try one time to use the gdal-config that might be 
+            # We'll try one time to use the gdal-config that might be
             # on the path. If that fails, we're done, however.
             if not self.already_raised_no_config_error:
                 self.already_raised_no_config_error = True
                 return fetch_config(option)
-            
+
     def finalize_options(self):
         if self.include_dirs is None:
             self.include_dirs = include_dirs
+        # Needed on recent MacOSX
+        elif isinstance(self.include_dirs, str) and sys.platform == 'darwin':
+            self.include_dirs += ':' + ':'.join(include_dirs)
         if self.library_dirs is None:
             self.library_dirs = library_dirs
+        # Needed on recent MacOSX
+        elif isinstance(self.library_dirs, str) and sys.platform == 'darwin':
+            self.library_dirs += ':' + ':'.join(library_dirs)
         if self.libraries is None:
             if self.get_compiler() == 'msvc':
                 libraries.remove('gdal')
@@ -187,9 +205,9 @@ class gdal_ext(build_ext):
             self.libraries = libraries
 
         build_ext.finalize_options(self)
-        
+
         self.include_dirs.append(self.numpy_include_dir)
-        
+
         if self.get_compiler() == 'msvc':
             return True
 
@@ -200,6 +218,11 @@ class gdal_ext(build_ext):
 
 extra_link_args = []
 extra_compile_args = []
+
+if sys.platform == 'darwin' and [int(x) for x in os.uname()[2].split('.')] >= [11, 0, 0]:
+    # since MacOS X 10.9, clang no longer accepts -mno-fused-madd
+    #extra_compile_args.append('-Qunused-arguments')
+    os.environ['ARCHFLAGS'] = '-Wno-error=unused-command-line-argument-hard-error-in-future'
 
 gdal_module = Extension('osgeo._gdal',
                         sources=['extensions/gdal_wrap.cpp'],
@@ -227,6 +250,11 @@ array_module = Extension('osgeo._gdal_array',
                     extra_compile_args = extra_compile_args,
                     extra_link_args = extra_link_args)
 
+gnm_module = Extension('osgeo._gnm',
+                    sources=['extensions/gnm_wrap.cpp'],
+                    extra_compile_args = extra_compile_args,
+                    extra_link_args = extra_link_args)
+
 ext_modules = [gdal_module,
               gdalconst_module,
               osr_module,
@@ -236,7 +264,18 @@ py_modules = ['gdal',
               'ogr',
               'osr',
               'gdalconst']
-      
+
+if os.path.exists('setup_vars.ini'):
+    with open('setup_vars.ini') as f:
+        lines = f.readlines()
+        if 'GNM_ENABLED=no' in lines or 'GNM_ENABLED=no\n' in lines:
+            GNM_ENABLED = False
+
+if GNM_ENABLED:
+    ext_modules.append(gnm_module)
+    py_modules.append('gnm')
+
+
 if HAVE_NUMPY:
     ext_modules.append(array_module)
     py_modules.append('gdalnumeric')
@@ -267,16 +306,15 @@ classifiers = [
         'Programming Language :: C++',
         'Topic :: Scientific/Engineering :: GIS',
         'Topic :: Scientific/Engineering :: Information Analysis',
-        
-]
 
+]
 
 
 if BUILD_FOR_CHEESESHOP:
     data_files = [("osgeo/data/gdal", glob(os.path.join("../../data", "*")))]
 else:
     data_files = None
-    
+
 exclude_package_data = {'':['GNUmakefile']}
 
 if HAVE_SETUPTOOLS:

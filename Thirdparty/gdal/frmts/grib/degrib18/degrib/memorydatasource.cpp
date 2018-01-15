@@ -25,7 +25,7 @@ size_t MemoryDataSource::DataSourceFread(void* lpBuf, size_t size, size_t count)
 		eof = false; // feof also "resets" after a good read
 
 	memcpy(lpBuf, memoryBlock + seekPos, size * count);
-	seekPos += size * count;
+	seekPos += static_cast<long>(size * count);
 
 	return count;
 
@@ -43,7 +43,7 @@ int MemoryDataSource::DataSourceFgetc()
 		returnVal = (int)c;
 		eof = false;
 	}
-	return returnVal;		
+	return returnVal;
 }
 
 int MemoryDataSource::DataSourceUngetc(int c)
@@ -82,7 +82,7 @@ int MemoryDataSource::DataSourceFseek(long offset, int origin)
 
 int MemoryDataSource::DataSourceFeof()
 {
-	return eof;	
+	return eof;
 }
 
 long MemoryDataSource::DataSourceFtell()

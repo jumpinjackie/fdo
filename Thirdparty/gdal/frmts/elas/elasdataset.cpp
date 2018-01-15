@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: elasdataset.cpp 23048 2011-09-04 17:05:50Z rouault $
  *
  * Project:  ELAS Translator
  * Purpose:  Complete implementation of ELAS translator module for GDAL.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 1999, Frank Warmerdam
+ * Copyright (c) 2008-2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,51 +27,86 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "gdal_frmts.h"
 #include "gdal_pam.h"
 
-CPL_CVSID("$Id: elasdataset.cpp 23048 2011-09-04 17:05:50Z rouault $");
+#include <cmath>
+#include <algorithm>
 
-CPL_C_START
-void	GDALRegister_ELAS(void);
-CPL_C_END
+using std::fill;
 
-typedef struct {
-    GInt32	NBIH;	/* bytes in header, normaly 1024 */
-    GInt32      NBPR;	/* bytes per data record (all bands of scanline) */
-    GInt32	IL;	/* initial line - normally 1 */
-    GInt32	LL;	/* last line */
-    GInt32	IE;	/* initial element (pixel), normally 1 */
-    GInt32	LE;	/* last element (pixel) */
-    GInt32	NC;	/* number of channels (bands) */
-    GInt32	H4321;	/* header record identifier - always 4321. */
-    char	YLabel[4]; /* Should be "NOR" for UTM */
+CPL_CVSID("$Id: elasdataset.cpp 36501 2016-11-25 14:09:24Z rouault $");
+
+typedef struct ELASHeader {
+    ELASHeader();
+
+    GInt32      NBIH;   /* bytes in header, normally 1024 */
+    GInt32      NBPR;   /* bytes per data record (all bands of scanline) */
+    GInt32      IL;     /* initial line - normally 1 */
+    GInt32      LL;     /* last line */
+    GInt32      IE;     /* initial element (pixel), normally 1 */
+    GInt32      LE;     /* last element (pixel) */
+    GInt32      NC;     /* number of channels (bands) */
+    GUInt32     H4321;  /* header record identifier - always 4321. */
+    char        YLabel[4]; /* Should be "NOR" for UTM */
     GInt32      YOffset;/* topleft pixel center northing */
-    char	XLabel[4]; /* Should be "EAS" for UTM */
+    char        XLabel[4]; /* Should be "EAS" for UTM */
     GInt32      XOffset;/* topleft pixel center easting */
-    float	YPixSize;/* height of pixel in georef units */
-    float	XPixSize;/* width of pixel in georef units */
-    float	Matrix[4]; /* 2x2 transformation matrix.  Should be
+    float       YPixSize;/* height of pixel in georef units */
+    float       XPixSize;/* width of pixel in georef units */
+    float       Matrix[4]; /* 2x2 transformation matrix.  Should be
                               1,0,0,1 for pixel/line, or
                               1,0,0,-1 for UTM */
-    GByte	IH19[4];/* data type, and size flags */
-    GInt32	IH20;	/* number of secondary headers */
-    char	unused1[8];
-    GInt32	LABL;	/* used by LABL module */
-    char	HEAD;	/* used by HEAD module */
-    char	Comment1[64];
-    char	Comment2[64];
-    char	Comment3[64];
-    char	Comment4[64];
-    char	Comment5[64];
-    char	Comment6[64];
-    GUInt16	ColorTable[256];  /* RGB packed with 4 bits each */
-    char	unused2[32];
-} ELASHeader;
+    GByte       IH19[4];  /* data type, and size flags */
+    GInt32      IH20;   /* number of secondary headers */
+    char        unused1[8];
+    GInt32      LABL;   /* used by LABL module */
+    char        HEAD;   /* used by HEAD module */
+    char        Comment1[64];
+    char        Comment2[64];
+    char        Comment3[64];
+    char        Comment4[64];
+    char        Comment5[64];
+    char        Comment6[64];
+    GUInt16     ColorTable[256];  /* RGB packed with 4 bits each */
+    char        unused2[32];
+} _ELASHeader;
 
+ELASHeader::ELASHeader() :
+    NBIH(0),
+    NBPR(0),
+    IL(0),
+    LL(0),
+    IE(0),
+    LE(0),
+    NC(0),
+    H4321(0),
+    YOffset(0),
+    XOffset(0),
+    YPixSize(0.0),
+    XPixSize(0.0),
+    IH20(0),
+    LABL(0),
+    HEAD(0)
+{
+    fill( YLabel, YLabel + CPL_ARRAYSIZE(YLabel), 0 );
+    fill( XLabel, XLabel + CPL_ARRAYSIZE(XLabel), 0 );
+    fill( Matrix, Matrix + CPL_ARRAYSIZE(Matrix), 0.f );
+    fill( IH19, IH19 + CPL_ARRAYSIZE(IH19), 0 );
+    fill( unused1, unused1 + CPL_ARRAYSIZE(unused1), 0 );
+    fill( Comment1, Comment1 + CPL_ARRAYSIZE(Comment1), 0 );
+    fill( Comment2, Comment2 + CPL_ARRAYSIZE(Comment2), 0 );
+    fill( Comment3, Comment3 + CPL_ARRAYSIZE(Comment3), 0 );
+    fill( Comment4, Comment4 + CPL_ARRAYSIZE(Comment4), 0 );
+    fill( Comment5, Comment5 + CPL_ARRAYSIZE(Comment5), 0 );
+    fill( Comment6, Comment6 + CPL_ARRAYSIZE(Comment6), 0 );
+    fill( ColorTable, ColorTable + CPL_ARRAYSIZE(ColorTable), 0 );
+    fill( unused2, unused2 + CPL_ARRAYSIZE(unused2), 0 );
+}
 
 /************************************************************************/
 /* ==================================================================== */
-/*				ELASDataset				*/
+/*                              ELASDataset                             */
 /* ==================================================================== */
 /************************************************************************/
 
@@ -81,24 +116,24 @@ class ELASDataset : public GDALPamDataset
 {
     friend class ELASRasterBand;
 
-    VSILFILE	*fp;
+    VSILFILE    *fp;
 
     ELASHeader  sHeader;
-    int		bHeaderModified;
+    int         bHeaderModified;
 
     GDALDataType eRasterDataType;
 
-    int		nLineOffset;
-    int		nBandOffset;     // within a line.
-    
-    double	adfGeoTransform[6];
+    int         nLineOffset;
+    int         nBandOffset;  // Within a line.
+
+    double      adfGeoTransform[6];
 
   public:
                  ELASDataset();
-                 ~ELASDataset();
+    virtual ~ELASDataset();
 
-    virtual CPLErr GetGeoTransform( double * );
-    virtual CPLErr SetGeoTransform( double * );
+    virtual CPLErr GetGeoTransform( double * ) override;
+    virtual CPLErr SetGeoTransform( double * ) override;
 
     static GDALDataset *Open( GDALOpenInfo * );
     static int          Identify( GDALOpenInfo * );
@@ -106,7 +141,7 @@ class ELASDataset : public GDALPamDataset
                                 int nXSize, int nYSize, int nBands,
                                 GDALDataType eType, char ** papszParmList );
 
-    virtual void FlushCache( void );
+    virtual void FlushCache( void ) override;
 };
 
 /************************************************************************/
@@ -124,25 +159,24 @@ class ELASRasterBand : public GDALPamRasterBand
                    ELASRasterBand( ELASDataset *, int );
 
     // should override RasterIO eventually.
-    
-    virtual CPLErr IReadBlock( int, int, void * );
-    virtual CPLErr IWriteBlock( int, int, void * ); 
-};
 
+    virtual CPLErr IReadBlock( int, int, void * ) override;
+    virtual CPLErr IWriteBlock( int, int, void * ) override;
+};
 
 /************************************************************************/
 /*                           ELASRasterBand()                            */
 /************************************************************************/
 
-ELASRasterBand::ELASRasterBand( ELASDataset *poDS, int nBand )
+ELASRasterBand::ELASRasterBand( ELASDataset *poDSIn, int nBandIn )
 
 {
-    this->poDS = poDS;
-    this->nBand = nBand;
+    poDS = poDSIn;
+    nBand = nBandIn;
 
-    this->eAccess = poDS->eAccess;
+    eAccess = poDSIn->eAccess;
 
-    eDataType = poDS->eRasterDataType;
+    eDataType = poDSIn->eRasterDataType;
 
     nBlockXSize = poDS->GetRasterXSize();
     nBlockYSize = 1;
@@ -152,20 +186,17 @@ ELASRasterBand::ELASRasterBand( ELASDataset *poDS, int nBand )
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr ELASRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
+CPLErr ELASRasterBand::IReadBlock( CPL_UNUSED int nBlockXOff,
+                                   int nBlockYOff,
                                    void * pImage )
-
 {
-    ELASDataset	*poGDS = (ELASDataset *) poDS;
-    CPLErr		eErr = CE_None;
-    long		nOffset;
-    int			nDataSize;
-
     CPLAssert( nBlockXOff == 0 );
 
-    nDataSize = GDALGetDataTypeSize(eDataType) * poGDS->GetRasterXSize() / 8;
-    nOffset = poGDS->nLineOffset * nBlockYOff + 1024 + (nBand-1) * nDataSize;
-    
+    ELASDataset *poGDS = (ELASDataset *) poDS;
+
+    int nDataSize = GDALGetDataTypeSize(eDataType) * poGDS->GetRasterXSize() / 8;
+    long nOffset = poGDS->nLineOffset * nBlockYOff + 1024 + (nBand-1) * nDataSize;
+
 /* -------------------------------------------------------------------- */
 /*      If we can't seek to the data, we will assume this is a newly    */
 /*      created file, and that the file hasn't been extended yet.       */
@@ -177,41 +208,38 @@ CPLErr ELASRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
         CPLError( CE_Failure, CPLE_FileIO,
                   "Seek or read of %d bytes at %ld failed.\n",
                   nDataSize, nOffset );
-        eErr = CE_Failure;
+        return CE_Failure;
     }
 
-    return eErr;
+    return CE_None;
 }
 
 /************************************************************************/
 /*                            IWriteBlock()                             */
 /************************************************************************/
 
-CPLErr ELASRasterBand::IWriteBlock( int nBlockXOff, int nBlockYOff,
-                                     void * pImage )
-
+CPLErr ELASRasterBand::IWriteBlock( CPL_UNUSED int nBlockXOff,
+                                    int nBlockYOff,
+                                    void * pImage )
 {
-    ELASDataset	*poGDS = (ELASDataset *) poDS;
-    CPLErr		eErr = CE_None;
-    long		nOffset;
-    int			nDataSize;
-
     CPLAssert( nBlockXOff == 0 );
     CPLAssert( eAccess == GA_Update );
 
-    nDataSize = GDALGetDataTypeSize(eDataType) * poGDS->GetRasterXSize() / 8;
-    nOffset = poGDS->nLineOffset * nBlockYOff + 1024 + (nBand-1) * nDataSize;
-    
+    ELASDataset *poGDS = (ELASDataset *) poDS;
+
+    int nDataSize = GDALGetDataTypeSize(eDataType) * poGDS->GetRasterXSize() / 8;
+    long nOffset = poGDS->nLineOffset * nBlockYOff + 1024 + (nBand-1) * nDataSize;
+
     if( VSIFSeekL( poGDS->fp, nOffset, SEEK_SET ) != 0
         || VSIFWriteL( pImage, 1, nDataSize, poGDS->fp ) != (size_t) nDataSize )
     {
         CPLError( CE_Failure, CPLE_FileIO,
                   "Seek or write of %d bytes at %ld failed.\n",
                   nDataSize, nOffset );
-        eErr = CE_Failure;
+        return CE_Failure;
     }
 
-    return eErr;
+    return CE_None;
 }
 
 /************************************************************************/
@@ -220,16 +248,17 @@ CPLErr ELASRasterBand::IWriteBlock( int nBlockXOff, int nBlockYOff,
 /* ==================================================================== */
 /************************************************************************/
 
-
 /************************************************************************/
 /*                            ELASDataset()                             */
 /************************************************************************/
 
-ELASDataset::ELASDataset()
-
+ELASDataset::ELASDataset() :
+    fp(NULL),
+    bHeaderModified(0),
+    eRasterDataType(GDT_Unknown),
+    nLineOffset(0),
+    nBandOffset(0)
 {
-    fp = NULL;
-
     adfGeoTransform[0] = 0.0;
     adfGeoTransform[1] = 1.0;
     adfGeoTransform[2] = 0.0;
@@ -249,8 +278,7 @@ ELASDataset::~ELASDataset()
 
     if( fp != NULL )
     {
-        VSIFCloseL( fp );
-        fp = NULL;
+        CPL_IGNORE_RET_VAL(VSIFCloseL( fp ));
     }
 }
 
@@ -267,8 +295,8 @@ void ELASDataset::FlushCache()
 
     if( bHeaderModified )
     {
-        VSIFSeekL( fp, 0, SEEK_SET );
-        VSIFWriteL( &sHeader, 1024, 1, fp );
+        CPL_IGNORE_RET_VAL(VSIFSeekL( fp, 0, SEEK_SET ));
+        CPL_IGNORE_RET_VAL(VSIFWriteL( &sHeader, 1024, 1, fp ));
         bHeaderModified = FALSE;
     }
 }
@@ -309,21 +337,15 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create a corresponding GDALDataset.                             */
 /* -------------------------------------------------------------------- */
-    ELASDataset 	*poDS;
-    const char	 	*pszAccess;
+    const char *pszAccess = poOpenInfo->eAccess == GA_Update ? "r+b" : "rb";
 
-    if( poOpenInfo->eAccess == GA_Update )
-        pszAccess = "r+b";
-    else
-        pszAccess = "rb";
-
-    poDS = new ELASDataset();
+    ELASDataset *poDS = new ELASDataset();
 
     poDS->fp = VSIFOpenL( poOpenInfo->pszFilename, pszAccess );
     if( poDS->fp == NULL )
     {
         CPLError( CE_Failure, CPLE_OpenFailed,
-                  "Attempt to open `%s' with acces `%s' failed.\n",
+                  "Attempt to open `%s' with access `%s' failed.\n",
                   poOpenInfo->pszFilename, pszAccess );
         delete poDS;
         return NULL;
@@ -340,18 +362,17 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
         CPLError( CE_Failure, CPLE_FileIO,
                   "Attempt to read 1024 byte header filed on file %s\n",
                   poOpenInfo->pszFilename );
+        delete poDS;
         return NULL;
     }
 
 /* -------------------------------------------------------------------- */
 /*      Extract information of interest from the header.                */
 /* -------------------------------------------------------------------- */
-    int		nStart, nEnd, nELASDataType, nBytesPerSample;
-    
     poDS->nLineOffset = CPL_MSBWORD32( poDS->sHeader.NBPR );
 
-    nStart = CPL_MSBWORD32( poDS->sHeader.IL );
-    nEnd = CPL_MSBWORD32( poDS->sHeader.LL );
+    int nStart = CPL_MSBWORD32( poDS->sHeader.IL );
+    int nEnd = CPL_MSBWORD32( poDS->sHeader.LL );
     poDS->nRasterYSize = nEnd - nStart + 1;
 
     nStart = CPL_MSBWORD32( poDS->sHeader.IE );
@@ -367,9 +388,9 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
         return NULL;
     }
 
-    nELASDataType = (poDS->sHeader.IH19[2] & 0x7e) >> 2;
-    nBytesPerSample = poDS->sHeader.IH19[3];
-    
+    const int nELASDataType = (poDS->sHeader.IH19[2] & 0x7e) >> 2;
+    const int nBytesPerSample = poDS->sHeader.IH19[3];
+
     if( nELASDataType == 0 && nBytesPerSample == 1 )
         poDS->eRasterDataType = GDT_Byte;
     else if( nELASDataType == 1 && nBytesPerSample == 1 )
@@ -382,14 +403,14 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
     {
         delete poDS;
         CPLError( CE_Failure, CPLE_AppDefined,
-                  "Unrecognised image data type %d, with BytesPerSample=%d.\n",
+                  "Unrecognized image data type %d, with BytesPerSample=%d.\n",
                   nELASDataType, nBytesPerSample );
         return NULL;
     }
-    
+
 /* -------------------------------------------------------------------- */
-/*	Band offsets are always multiples of 256 within a multi-band	*/
-/*	scanline of data.						*/
+/*      Band offsets are always multiples of 256 within a multi-band    */
+/*      scanline of data.                                               */
 /* -------------------------------------------------------------------- */
     poDS->nBandOffset =
         (poDS->nRasterXSize * GDALGetDataTypeSize(poDS->eRasterDataType)/8);
@@ -403,15 +424,14 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
-    int		iBand;
-
-    for( iBand = 0; iBand < poDS->nBands; iBand++ )
+    /* coverity[tainted_data] */
+    for( int iBand = 0; iBand < poDS->nBands; iBand++ )
     {
         poDS->SetBand( iBand+1, new ELASRasterBand( poDS, iBand+1 ) );
     }
 
 /* -------------------------------------------------------------------- */
-/*	Extract the projection coordinates, if present.			*/
+/*      Extract the projection coordinates, if present.                 */
 /* -------------------------------------------------------------------- */
     if( poDS->sHeader.XOffset != 0 )
     {
@@ -425,7 +445,7 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
         poDS->adfGeoTransform[3] =
             (GInt32) CPL_MSBWORD32(poDS->sHeader.YOffset);
         poDS->adfGeoTransform[4] = 0.0;
-        poDS->adfGeoTransform[5] = -1.0 * ABS(poDS->sHeader.YPixSize);
+        poDS->adfGeoTransform[5] = -1.0 * std::abs(poDS->sHeader.YPixSize);
 
         CPL_MSBPTR32(&(poDS->sHeader.XPixSize));
         CPL_MSBPTR32(&(poDS->sHeader.YPixSize));
@@ -442,7 +462,7 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
         poDS->adfGeoTransform[4] = 0.0;
         poDS->adfGeoTransform[5] = 1.0;
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Initialize any PAM information.                                 */
 /* -------------------------------------------------------------------- */
@@ -452,9 +472,9 @@ GDALDataset *ELASDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Check for external overviews.                                   */
 /* -------------------------------------------------------------------- */
-    poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename, poOpenInfo->papszSiblingFiles );
+    poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename, poOpenInfo->GetSiblingFiles() );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -469,14 +489,12 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
                                   char ** /* notdef: papszParmList */ )
 
 {
-    int		nBandOffset;
-    
 /* -------------------------------------------------------------------- */
 /*      Verify input options.                                           */
 /* -------------------------------------------------------------------- */
     if (nBands <= 0)
     {
-        CPLError( CE_Failure, CPLE_NotSupported, 
+        CPLError( CE_Failure, CPLE_NotSupported,
                   "ELAS driver does not support %d bands.\n", nBands);
         return NULL;
     }
@@ -494,9 +512,7 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
 /* -------------------------------------------------------------------- */
 /*      Try to create the file.                                         */
 /* -------------------------------------------------------------------- */
-    FILE	*fp;
-
-    fp = VSIFOpen( pszFilename, "w" );
+    FILE *fp = VSIFOpen( pszFilename, "w" );
 
     if( fp == NULL )
     {
@@ -505,11 +521,11 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
                   pszFilename );
         return NULL;
     }
-    
+
 /* -------------------------------------------------------------------- */
-/*	How long will each band of a scanline be?			*/
+/*      How long will each band of a scanline be?                       */
 /* -------------------------------------------------------------------- */
-    nBandOffset = nXSize * GDALGetDataTypeSize(eType)/8;
+    int nBandOffset = nXSize * GDALGetDataTypeSize(eType)/8;
 
     if( nBandOffset % 256 != 0 )
     {
@@ -522,14 +538,14 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
 /*      Note that CPL_MSBWORD32() will swap little endian words to      */
 /*      big endian on little endian platforms.                          */
 /* -------------------------------------------------------------------- */
-    ELASHeader	sHeader;
+    ELASHeader sHeader;
 
     memset( &sHeader, 0, 1024 );
 
     sHeader.NBIH = CPL_MSBWORD32(1024);
 
     sHeader.NBPR = CPL_MSBWORD32(nBands * nBandOffset);
-    
+
     sHeader.IL = CPL_MSBWORD32(1);
     sHeader.LL = CPL_MSBWORD32(nYSize);
 
@@ -554,15 +570,13 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
 /* -------------------------------------------------------------------- */
 /*      Write the header data.                                          */
 /* -------------------------------------------------------------------- */
-    VSIFWrite( &sHeader, 1024, 1, fp );
+    CPL_IGNORE_RET_VAL(VSIFWrite( &sHeader, 1024, 1, fp ));
 
 /* -------------------------------------------------------------------- */
 /*      Now write out zero data for all the imagery.  This is           */
 /*      inefficient, but simplies the IReadBlock() / IWriteBlock() logic.*/
 /* -------------------------------------------------------------------- */
-    GByte	*pabyLine;
-
-    pabyLine = (GByte *) CPLCalloc(nBandOffset,nBands);
+    GByte *pabyLine = (GByte *) CPLCalloc(nBandOffset,nBands);
     for( int iLine = 0; iLine < nYSize; iLine++ )
     {
         if( VSIFWrite( pabyLine, 1, nBandOffset, fp ) != (size_t) nBandOffset )
@@ -577,7 +591,7 @@ GDALDataset *ELASDataset::Create( const char * pszFilename,
     }
 
     CPLFree( pabyLine );
-    
+
     VSIFClose( fp );
 
 /* -------------------------------------------------------------------- */
@@ -595,7 +609,7 @@ CPLErr ELASDataset::GetGeoTransform( double * padfTransform )
 {
     memcpy( padfTransform, adfGeoTransform, sizeof(double)*6 );
 
-    return( CE_None );
+    return CE_None;
 }
 
 /************************************************************************/
@@ -618,70 +632,66 @@ CPLErr ELASDataset::SetGeoTransform( double * padfTransform )
 
         return CE_Failure;
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Remember the new transform, and update the header.              */
 /* -------------------------------------------------------------------- */
-    int		nXOff, nYOff;
-    
     memcpy( adfGeoTransform, padfTransform, sizeof(double)*6 );
 
     bHeaderModified = TRUE;
 
-    nXOff = (int) (adfGeoTransform[0] + adfGeoTransform[1]*0.5);
-    nYOff = (int) (adfGeoTransform[3] + adfGeoTransform[5]*0.5);
+    const int nXOff = (int) (adfGeoTransform[0] + adfGeoTransform[1]*0.5);
+    const int nYOff = (int) (adfGeoTransform[3] + adfGeoTransform[5]*0.5);
 
     sHeader.XOffset = CPL_MSBWORD32(nXOff);
     sHeader.YOffset = CPL_MSBWORD32(nYOff);
 
-    sHeader.XPixSize = (float) ABS(adfGeoTransform[1]);
-    sHeader.YPixSize = (float) ABS(adfGeoTransform[5]);
+    sHeader.XPixSize = static_cast<float>(std::abs(adfGeoTransform[1]));
+    sHeader.YPixSize = static_cast<float>(std::abs(adfGeoTransform[5]));
 
     CPL_MSBPTR32(&(sHeader.XPixSize));
     CPL_MSBPTR32(&(sHeader.YPixSize));
 
-    strncpy( sHeader.YLabel, "NOR ", 4 );
-    strncpy( sHeader.XLabel, "EAS ", 4 );
+    memcpy( sHeader.YLabel, "NOR ", 4 );
+    memcpy( sHeader.XLabel, "EAS ", 4 );
 
     sHeader.Matrix[0] = 1.0;
     sHeader.Matrix[1] = 0.0;
     sHeader.Matrix[2] = 0.0;
     sHeader.Matrix[3] = -1.0;
-    
+
     CPL_MSBPTR32(&(sHeader.Matrix[0]));
     CPL_MSBPTR32(&(sHeader.Matrix[1]));
     CPL_MSBPTR32(&(sHeader.Matrix[2]));
     CPL_MSBPTR32(&(sHeader.Matrix[3]));
-    
-    return( CE_None );
+
+    return CE_None;
 }
 
-
 /************************************************************************/
-/*                          GDALRegister_ELAS()                        */
+/*                          GDALRegister_ELAS()                         */
 /************************************************************************/
 
 void GDALRegister_ELAS()
 
 {
-    GDALDriver	*poDriver;
+    if( GDALGetDriverByName( "ELAS" ) != NULL )
+        return;
 
-    if( GDALGetDriverByName( "ELAS" ) == NULL )
-    {
-        poDriver = new GDALDriver();
-        
-        poDriver->SetDescription( "ELAS" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
-                                   "ELAS" );
-        poDriver->SetMetadataItem( GDAL_DMD_CREATIONDATATYPES, 
-                                   "Byte Float32 Float64" );
+    GDALDriver *poDriver = new GDALDriver();
 
-        poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetDescription( "ELAS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "ELAS" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONDATATYPES,
+                               "Byte Float32 Float64" );
 
-        poDriver->pfnOpen = ELASDataset::Open;
-        poDriver->pfnIdentify = ELASDataset::Identify;
-        poDriver->pfnCreate = ELASDataset::Create;
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->pfnOpen = ELASDataset::Open;
+    poDriver->pfnIdentify = ELASDataset::Identify;
+    poDriver->pfnCreate = ELASDataset::Create;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }

@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: pcrasterutil.cpp 15450 2008-10-03 10:59:32Z kdejong $
  *
  * Project:  PCRaster Integration
  * Purpose:  PCRaster driver support functions.
- * Author:   Kor de Jong, k.dejong at geog.uu.nl
+ * Author:   Kor de Jong, Oliver Schmitz
  *
  ******************************************************************************
- * Copyright (c) 2004, Kor de Jong
+ * Copyright (c) PCRaster owners
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,32 +26,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef INCLUDED_IOSTREAM
-#include <iostream>
-#define INCLUDED_IOSTREAM
-#endif
+#include <cfloat>
 
-#ifndef INCLUDED_ALGORITHM
 #include <algorithm>
-#define INCLUDED_ALGORITHM
-#endif
 
-#ifndef INCLUDED_FLOAT
-#include <float.h>
-#define INCLUDED_FLOAT
-#endif
-
-#ifndef INCLUDED_PCRTYPES
-#include "pcrtypes.h"
-#define INCLUDED_PCRTYPES
-#endif
-
-#ifndef INCLUDED_PCRASTERUTIL
 #include "pcrasterutil.h"
-#define INCLUDED_PCRASTERUTIL
-#endif
+#include "pcrtypes.h"
 
-
+CPL_CVSID("$Id: pcrasterutil.cpp 35897 2016-10-24 11:54:24Z goatbar $");
 
 //! Converts PCRaster data type to GDAL data type.
 /*!
@@ -107,8 +88,6 @@ GDALDataType cellRepresentation2GDALType(
   return type;
 }
 
-
-
 CSF_VS string2ValueScale(
          std::string const& string)
 {
@@ -146,8 +125,6 @@ CSF_VS string2ValueScale(
 
   return valueScale;
 }
-
-
 
 std::string valueScale2String(
          CSF_VS valueScale)
@@ -201,8 +178,6 @@ std::string valueScale2String(
   return result;
 }
 
-
-
 std::string cellRepresentation2String(
          CSF_CR cellRepresentation)
 {
@@ -252,8 +227,6 @@ std::string cellRepresentation2String(
   return result;
 }
 
-
-
 //! Converts GDAL data type to PCRaster value scale.
 /*!
   \param     type GDAL data type.
@@ -302,8 +275,6 @@ CSF_VS GDALType2ValueScale(
   return valueScale;
 }
 
-
-
 //! Converts a GDAL type to a PCRaster cell representation.
 /*!
   \param     type GDAL type.
@@ -314,8 +285,8 @@ CSF_VS GDALType2ValueScale(
              complex.
 
   If exact is false, conversion to CSF2.0 types will take place. This is
-  usefull for in file cell representations. If exact is true, and exact match
-  is made. This is usefull for in app cell representations.
+  useful for in file cell representations. If exact is true, and exact match
+  is made. This is useful for in app cell representations.
 
   If exact is false, this function always returns one of CR_UINT1, CR_INT4
   or CR_REAL4.
@@ -362,8 +333,6 @@ CSF_CR GDALType2CellRepresentation(
 
   return cellRepresentation;
 }
-
-
 
 //! Determines a missing value to use for data of \a cellRepresentation.
 /*!
@@ -420,15 +389,14 @@ double missingValue(
       break;
     }
     default: {
-      CPLAssert(false);
+      CPLError(CE_Failure, CPLE_NotSupported,
+               "Unexpected value for cellRepresentation = %d", cellRepresentation);
       break;
     }
   }
 
   return missingValue;
 }
-
-
 
 //! Opens the raster in \a filename using mode \a mode.
 /*!
@@ -446,8 +414,6 @@ MAP* mapOpen(
 
   return map;
 }
-
-
 
 void alterFromStdMV(
          void* buffer,
@@ -513,8 +479,6 @@ void alterFromStdMV(
   }
 }
 
-
-
 void alterToStdMV(
          void* buffer,
          size_t size,
@@ -578,8 +542,6 @@ void alterToStdMV(
     }
   }
 }
-
-
 
 CSF_VS fitValueScale(
          CSF_VS valueScale,
@@ -647,8 +609,6 @@ CSF_VS fitValueScale(
   return result;
 }
 
-
-
 void castValuesToBooleanRange(
          void* buffer,
          size_t size,
@@ -712,3 +672,20 @@ void castValuesToBooleanRange(
   }
 }
 
+void castValuesToDirectionRange(
+         void* buffer,
+         size_t size)
+{
+  std::for_each(static_cast<REAL4*>(buffer),
+       static_cast<REAL4*>(buffer) + size,
+       CastToDirection());
+}
+
+void castValuesToLddRange(
+         void* buffer,
+         size_t size)
+{
+  std::for_each(static_cast<UINT1*>(buffer),
+       static_cast<UINT1*>(buffer) + size,
+       CastToLdd());
+}

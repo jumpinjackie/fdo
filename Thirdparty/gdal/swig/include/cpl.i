@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: cpl.i 25687 2013-02-25 17:41:30Z rouault $
+ * $Id: cpl.i 39224 2017-06-21 08:50:19Z rouault $
  *
  * Name:     cpl.i
  * Project:  GDAL Python Interface
@@ -71,15 +71,21 @@ typedef char retStringAndCPLFree;
 
 #ifdef SWIGPYTHON
 
+%nothread;
+
 %{
 void CPL_STDCALL PyCPLErrorHandler(CPLErr eErrClass, int err_no, const char* pszErrorMsg)
 {
     void* user_data = CPLGetErrorHandlerUserData();
     PyObject *psArgs;
 
+    SWIG_PYTHON_THREAD_BEGIN_BLOCK;
+
     psArgs = Py_BuildValue("(iis)", eErrClass, err_no, pszErrorMsg );
     PyEval_CallObject( (PyObject*)user_data, psArgs);
     Py_XDECREF(psArgs);
+
+    SWIG_PYTHON_THREAD_END_BLOCK;
 }
 %}
 
@@ -93,6 +99,21 @@ void CPL_STDCALL PyCPLErrorHandler(CPLErr eErrClass, int err_no, const char* psz
     return CE_None;
   }
 %}
+
+%inline %{
+  void PopErrorHandler()
+  {
+     void* user_data = CPLGetErrorHandlerUserData();
+     if( user_data != NULL )
+     {
+         Py_XDECREF((PyObject*)user_data);
+     }
+     CPLPopErrorHandler();
+  }
+%}
+
+%thread;
+
 #else
 %inline %{
   CPLErr PushErrorHandler( char const * pszCallbackName = NULL ) {
@@ -139,7 +160,7 @@ void CPL_STDCALL PyCPLErrorHandler(CPLErr eErrClass, int err_no, const char* psz
 %rename (pop_finder_location) CPLPopFinderLocation;
 %rename (finder_clean) CPLFinderClean;
 %rename (find_file) CPLFindFile;
-%rename (read_dir) VSIReadDir;
+%rename (read_dir) wrapper_VSIReadDirEx;
 %rename (read_dir_recursive) VSIReadDirRecursive;
 %rename (mkdir) VSIMkdir;
 %rename (rmdir) VSIRmdir;
@@ -162,7 +183,7 @@ void CPL_STDCALL PyCPLErrorHandler(CPLErr eErrClass, int err_no, const char* psz
 %rename (PopFinderLocation) CPLPopFinderLocation;
 %rename (FinderClean) CPLFinderClean;
 %rename (FindFile) CPLFindFile;
-%rename (ReadDir) VSIReadDir;
+%rename (ReadDir) wrapper_VSIReadDirEx;
 %rename (ReadDirRecursive) VSIReadDirRecursive;
 %rename (Mkdir) VSIMkdir;
 %rename (Rmdir) VSIRmdir;
@@ -189,7 +210,9 @@ GOA2GetAccessToken( const char *pszRefreshToken, const char *pszScope );
 void CPLPushErrorHandler( CPLErrorHandler );
 #endif
 
+#if !defined(SWIGPYTHON)
 void CPLPopErrorHandler();
+#endif
 
 void CPLErrorReset();
 
@@ -202,18 +225,18 @@ void CPLErrorReset();
 %inline %{
 retStringAndCPLFree* EscapeString(int len, unsigned char *bin_string , int scheme) {
     return CPLEscapeString((const char*)bin_string, len, scheme);
-} 
+}
 
 retStringAndCPLFree* EscapeString(const char* str, int scheme) {
     return CPLEscapeString(str, (str) ? strlen(str) : 0, scheme);
-} 
+}
 %}
 %clear (int len, unsigned char *bin_string);
 #elif defined(SWIGCSHARP)
 %inline %{
 retStringAndCPLFree* EscapeString(int len, char *bin_string , int scheme) {
     return CPLEscapeString((const char*)bin_string, len, scheme);
-} 
+}
 %}
 
 retStringAndCPLFree* EscapeString(int len, char *bin_string , int scheme=CPLES_SQL) {
@@ -224,7 +247,7 @@ retStringAndCPLFree* EscapeString(int len, char *bin_string , int scheme=CPLES_S
 %inline %{
 retStringAndCPLFree* EscapeString(int len, char *bin_string , int scheme=CPLES_SQL) {
     return CPLEscapeString(bin_string, len, scheme);
-} 
+}
 %}
 %clear (int len, char *bin_string);
 #else
@@ -232,7 +255,7 @@ retStringAndCPLFree* EscapeString(int len, char *bin_string , int scheme=CPLES_S
 %inline %{
 char* EscapeString(int len, char *bin_string , int scheme=CPLES_SQL) {
     return CPLEscapeString(bin_string, len, scheme);
-} 
+}
 %}
 %clear (int len, char *bin_string);
 #endif
@@ -242,6 +265,11 @@ char* EscapeString(int len, char *bin_string , int scheme=CPLES_SQL) {
 /* call */
 %exception CPLGetLastErrorNo
 {
+#ifdef SWIGPYTHON
+%#ifdef SED_HACKS
+    if( bUseExceptions ) bLocalUseExceptionsCode = FALSE;
+%#endif
+#endif
     result = CPLGetLastErrorNo();
 }
 #endif
@@ -252,6 +280,11 @@ int CPLGetLastErrorNo();
 /* call */
 %exception CPLGetLastErrorType
 {
+#ifdef SWIGPYTHON
+%#ifdef SED_HACKS
+    if( bUseExceptions ) bLocalUseExceptionsCode = FALSE;
+%#endif
+#endif
     result = CPLGetLastErrorType();
 }
 int CPLGetLastErrorType();
@@ -264,10 +297,18 @@ CPLErr CPLGetLastErrorType();
 /* call */
 %exception CPLGetLastErrorMsg
 {
+#ifdef SWIGPYTHON
+%#ifdef SED_HACKS
+    if( bUseExceptions ) bLocalUseExceptionsCode = FALSE;
+%#endif
+#endif
     result = (char*)CPLGetLastErrorMsg();
 }
 #endif
 const char *CPLGetLastErrorMsg();
+
+int VSIGetLastErrorNo();
+const char *VSIGetLastErrorMsg();
 
 void CPLPushFinderLocation( const char * utf8_path );
 
@@ -278,7 +319,12 @@ void CPLFinderClean();
 const char * CPLFindFile( const char *pszClass, const char *utf8_path );
 
 %apply (char **CSL) {char **};
-char **VSIReadDir( const char * utf8_path );
+%inline {
+char **wrapper_VSIReadDirEx( const char * utf8_path, int nMaxFiles = 0 )
+{
+    return VSIReadDirEx(utf8_path, nMaxFiles);
+}
+}
 %clear char **;
 
 %apply (char **CSL) {char **};
@@ -325,10 +371,25 @@ GByte *CPLHexToBinary( const char *pszHex, int *pnBytes );
 
 %apply Pointer NONNULL {const char * pszFilename};
 /* Added in GDAL 1.7.0 */
-#ifdef SWIGJAVA
+
+#if defined(SWIGPYTHON)
+
+%apply (GIntBig nLen, char *pBuf) {( GIntBig nBytes, const GByte *pabyData )};
+%inline {
+void wrapper_VSIFileFromMemBuffer( const char* utf8_path, GIntBig nBytes, const GByte *pabyData)
+{
+    const size_t nSize = static_cast<size_t>(nBytes);
+    GByte* pabyDataDup = (GByte*)VSIMalloc(nSize);
+    if (pabyDataDup == NULL)
+            return;
+    memcpy(pabyDataDup, pabyData, nSize);
+    VSIFCloseL(VSIFileFromMemBuffer(utf8_path, (GByte*) pabyDataDup, nSize, TRUE));
+}
+}
+%clear ( GIntBig nBytes, const GByte *pabyData );
+#else
+#if defined(SWIGJAVA)
 %apply (int nLen, unsigned char *pBuf ) {( int nBytes, const GByte *pabyData )};
-#elif defined(SWIGPYTHON)
-%apply (int nLen, char *pBuf) {( int nBytes, const GByte *pabyData )};
 #endif
 %inline {
 void wrapper_VSIFileFromMemBuffer( const char* utf8_path, int nBytes, const GByte *pabyData)
@@ -341,16 +402,17 @@ void wrapper_VSIFileFromMemBuffer( const char* utf8_path, int nBytes, const GByt
 }
 
 }
-#if defined(SWIGJAVA) || defined(SWIGPYTHON)
+#if defined(SWIGJAVA)
 %clear ( int nBytes, const GByte *pabyData );
+#endif
 #endif
 
 /* Added in GDAL 1.7.0 */
-int VSIUnlink(const char * utf8_path );
+VSI_RETVAL VSIUnlink(const char * utf8_path );
 
 /* Added in GDAL 1.7.0 */
 /* Thread support is necessary for binding languages with threaded GC */
-/* even if the user doesn't explicitely use threads */
+/* even if the user doesn't explicitly use threads */
 %inline {
 int wrapper_HasThreadSupport()
 {
@@ -359,25 +421,30 @@ int wrapper_HasThreadSupport()
 }
 
 /* Added for GDAL 1.8 */
-int VSIMkdir(const char *utf8_path, int mode );
-int VSIRmdir(const char *utf8_path );
-int VSIRename(const char * pszOld, const char *pszNew );
+VSI_RETVAL VSIMkdir(const char *utf8_path, int mode );
+VSI_RETVAL VSIRmdir(const char *utf8_path );
 
-/* Added for GDAL 1.8 
+%apply (const char* utf8_path) {(const char* pszOld)};
+%apply (const char* utf8_path) {(const char* pszNew)};
+VSI_RETVAL VSIRename(const char * pszOld, const char *pszNew );
+%clear (const char* pszOld);
+%clear (const char* pszNew);
+
+/* Added for GDAL 1.8
 
    We do not bother renaming the VSI*L api as this wrapping is not
-   considered "official", or available for use by application code. 
-   It is just for some testing stuff. 
+   considered "official", or available for use by application code.
+   It is just for some testing stuff.
 */
 
 #if !defined(SWIGJAVA)
 
+#if !defined(SWIGCSHARP)
 typedef void VSILFILE;
+#endif
 
 #if defined(SWIGPERL)
-%apply RETURN_NONE_TRUE_IS_ERROR {RETURN_NONE};
-RETURN_NONE VSIStatL( const char * utf8_path, VSIStatBufL *psStatBuf );
-%clear RETURN_NONE;
+VSI_RETVAL VSIStatL( const char * utf8_path, VSIStatBufL *psStatBuf );
 
 #elif defined(SWIGPYTHON)
 
@@ -396,13 +463,11 @@ typedef struct
 
 struct StatBuf
 {
-%apply (GIntBig bigint) { GIntBig };
 %immutable;
   int         mode;
   GIntBig     size;
   GIntBig     mtime;
 %mutable;
-%clear (GIntBig bigint);
 
 %extend {
   StatBuf( StatBuf *psStatBuf ) {
@@ -442,38 +507,65 @@ int wrapper_VSIStatL( const char * utf8_path, StatBuf *psStatBufOut, int nFlags 
 
 #endif
 
-VSILFILE   *VSIFOpenL( const char *utf8_path, const char *pszMode );
-void    VSIFCloseL( VSILFILE * );
+%apply Pointer NONNULL {VSILFILE* fp};
+
+%rename (VSIFOpenL) wrapper_VSIFOpenL;
+%inline %{
+VSILFILE   *wrapper_VSIFOpenL( const char *utf8_path, const char *pszMode )
+{
+    if (!pszMode) /* would lead to segfault */
+        pszMode = "r";
+    return VSIFOpenL( utf8_path, pszMode );
+}
+%}
+
+%rename (VSIFOpenExL) wrapper_VSIFOpenExL;
+%inline %{
+VSILFILE   *wrapper_VSIFOpenExL( const char *utf8_path, const char *pszMode, int bSetError )
+{
+    if (!pszMode) /* would lead to segfault */
+        pszMode = "r";
+    return VSIFOpenExL( utf8_path, pszMode, bSetError );
+}
+%}
+
+VSI_RETVAL VSIFCloseL( VSILFILE* fp );
 
 #if defined(SWIGPYTHON)
-%apply (GIntBig bigint) { GIntBig };
-int     VSIFSeekL( VSILFILE *, GIntBig, int );
-GIntBig    VSIFTellL( VSILFILE * );
-int     VSIFTruncateL( VSILFILE *, GIntBig );
-%clear (GIntBig bigint);
+int     VSIFSeekL( VSILFILE* fp, GIntBig offset, int whence);
+GIntBig    VSIFTellL( VSILFILE* fp );
+int     VSIFTruncateL( VSILFILE* fp, GIntBig length );
+
+int     VSISupportsSparseFiles( const char* utf8_path );
+
+#define VSI_RANGE_STATUS_UNKNOWN    0
+#define VSI_RANGE_STATUS_DATA       1
+#define VSI_RANGE_STATUS_HOLE       2
+
+int     VSIFGetRangeStatusL( VSILFILE* fp, GIntBig offset, GIntBig length );
 #else
-int     VSIFSeekL( VSILFILE *, long, int );
-long    VSIFTellL( VSILFILE * );
-int     VSIFTruncateL( VSILFILE *, long );
+VSI_RETVAL VSIFSeekL( VSILFILE* fp, long offset, int whence);
+long    VSIFTellL( VSILFILE* fp );
+VSI_RETVAL VSIFTruncateL( VSILFILE* fp, long length );
 #endif
 
 #if defined(SWIGPYTHON)
 %rename (VSIFWriteL) wrapper_VSIFWriteL;
 %inline {
-int wrapper_VSIFWriteL( int nLen, char *pBuf, int size, int memb, VSILFILE * f)
+int wrapper_VSIFWriteL( int nLen, char *pBuf, int size, int memb, VSILFILE* fp)
 {
-    if (nLen < size * memb)
+    if (nLen < static_cast<GIntBig>(size) * memb)
     {
-        CPLError(CE_Failure, CPLE_AppDefined, "Inconsistant buffer size with 'size' and 'memb' values");
+        CPLError(CE_Failure, CPLE_AppDefined, "Inconsistent buffer size with 'size' and 'memb' values");
         return 0;
     }
-    return VSIFWriteL(pBuf, size, memb, f);
+    return static_cast<int>(VSIFWriteL(pBuf, size, memb, fp));
 }
 }
 #elif defined(SWIGPERL)
 size_t VSIFWriteL(const void *pBuffer, size_t nSize, size_t nCount, VSILFILE *fp);
 #else
-int     VSIFWriteL( const char *, int, int, VSILFILE * );
+int     VSIFWriteL( const char *, int, int, VSILFILE *fp );
 #endif
 
 #if defined(SWIGPERL)
@@ -481,6 +573,23 @@ size_t VSIFReadL(void *pBuffer, size_t nSize, size_t nCount, VSILFILE *fp);
 #endif
 /* VSIFReadL() handled specially in python/gdal_python.i */
 
+#if defined(SWIGPERL)
+void VSIStdoutSetRedirection( VSIWriteFunction pFct, FILE* stream );
+%inline {
+void VSIStdoutUnsetRedirection()
+{
+    VSIStdoutSetRedirection( fwrite, stdout );
+}
+}
 #endif
 
-#endif
+void VSICurlClearCache();
+
+#endif /* !defined(SWIGJAVA) */
+
+%apply (char **CSL) {char **};
+%rename (ParseCommandLine) CSLParseCommandLine;
+char **CSLParseCommandLine( const char * utf8_path );
+%clear char **;
+
+#endif /* #ifndef SWIGRUBY */

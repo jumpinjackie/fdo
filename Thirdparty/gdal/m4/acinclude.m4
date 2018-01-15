@@ -1,5 +1,5 @@
 dnl ***************************************************************************
-dnl $Id: acinclude.m4 24948 2012-09-22 10:52:03Z rouault $
+dnl $Id: acinclude.m4 38883 2017-06-05 08:08:26Z rouault $
 dnl
 dnl Project:  GDAL
 dnl Purpose:  Configure extra local definitions.
@@ -36,7 +36,7 @@ AC_DEFUN([AC_HAVE_LONG_LONG],
   AC_MSG_CHECKING([for 64bit integer type])
 
   echo 'int main() { long long off=0; }' >> conftest.c
-  if test -z "`${CC} -o conftest conftest.c 2>&1`" ; then
+  if test -z "`${CC} ${CCFLAGS} -o conftest conftest.c 2>&1`" ; then
     AC_DEFINE(HAVE_LONG_LONG, 1, [Define to 1, if your compiler supports long long data type])
     AC_MSG_RESULT([long long])
   else
@@ -62,12 +62,12 @@ void test_f()
 # AC_CHECK_FUNC_CUSTOM(FUNCTION, [INCLUDE], [CODE], 
 #                      [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
 # -----------------------------------------------------------------
-# This function is primariliy added to facilite testing that 
+# This function is primarily added to facilitate testing that 
 # function prototypes are properly found such that functions can
 # be compiled properly in C++.  In particular, we want to include
 # the real include file, not internal define prototypes. 
 #
-# eg.
+# e.g.
 # AC_LANG_PUSH(C++)
 # AC_CHECK_FUNC_CUSTOM(gmtime_r,[#include <time.h>],[time_t t; struct tm ltime; t = time(0); gmtime_r( &t, &ltime );])
 # AC_LANG_POP(C++)
@@ -108,7 +108,7 @@ AC_DEFUN([AC_UNIX_STDIO_64],
     echo '#include <sys/types.h>' >> conftest.c
     echo '#include <sys/stat.h>' >> conftest.c
     echo 'int main() { struct __stat64 buf; _stat64( "", &buf ); return 0; }' >> conftest.c
-    if test -z "`${CC} -o conftest conftest.c 2>&1`" ; then
+    if test -z "`${CC} ${CCFLAGS} -o conftest conftest.c 2>&1`" ; then
         with_unix_stdio_64=no
         AC_DEFINE_UNQUOTED(VSI_STAT64,_stat64, [Define to name of 64bit stat function])
         AC_DEFINE_UNQUOTED(VSI_STAT64_T,__stat64, [Define to name of 64bit stat structure])
@@ -122,9 +122,9 @@ AC_DEFUN([AC_UNIX_STDIO_64],
   fi
 
   if test x"$with_unix_stdio_64" = x"" ; then
-    echo '#include <stdio.h>' > conftest.cpp
+    echo '#include <stdio.h>' > conftest.c
     echo 'int main() { long long off=0; fseek64(NULL, off, SEEK_SET); off = ftell64(NULL); return 0; }' >> conftest.c
-    if test -z "`${CC} -o conftest conftest.c 2>&1`" ; then
+    if test -z "`${CC} ${CCFLAGS} -o conftest conftest.c 2>&1`" ; then
       with_unix_stdio_64=yes
       VSI_FTELL64=ftell64
       VSI_FSEEK64=fseek64
@@ -137,9 +137,9 @@ AC_DEFUN([AC_UNIX_STDIO_64],
   dnl by stdio.h.  With CXX (C++) this becomes a fatal error.
 
   if test x"$with_unix_stdio_64" = x"" ; then
-    echo '#include <stdio.h>' > conftest.c
-    echo 'int main() { long long off=0; fseeko64(NULL, off, SEEK_SET); off = ftello64(NULL); return 0; }' >> conftest.c
-    if test -z "`${CXX} -o conftest conftest.c 2>&1`" ; then
+    echo '#include <stdio.h>' > conftest.cpp
+    echo 'int main() { long long off=0; fseeko64(NULL, off, SEEK_SET); off = ftello64(NULL); return 0; }' >> conftest.cpp
+    if test -z "`${CXX} ${CXXFLAGS} -o conftest conftest.cpp 2>&1`" ; then
       with_unix_stdio_64=yes
       VSI_FTELL64=ftello64
       VSI_FSEEK64=fseeko64
@@ -151,10 +151,10 @@ AC_DEFUN([AC_UNIX_STDIO_64],
   dnl before including stdio.h.  This should work on Linux 2.4 series systems.
 
   if test x"$with_unix_stdio_64" = x"" ; then
-    echo '#define _LARGEFILE64_SOURCE' > conftest.c
-    echo '#include <stdio.h>' >> conftest.c
-    echo 'int main() { long long off=0; fseeko64(NULL, off, SEEK_SET); off = ftello64(NULL); return 0; }' >> conftest.c
-    if test -z "`${CXX} -o conftest conftest.c 2>&1`" ; then
+    echo '#define _LARGEFILE64_SOURCE' > conftest.cpp
+    echo '#include <stdio.h>' >> conftest.cpp
+    echo 'int main() { long long off=0; fseeko64(NULL, off, SEEK_SET); off = ftello64(NULL); return 0; }' >> conftest.cpp
+    if test -z "`${CXX} ${CXXFLAGS} -o conftest conftest.cpp 2>&1`" ; then
       with_unix_stdio_64=yes
       VSI_FTELL64=ftello64
       VSI_FSEEK64=fseeko64
@@ -181,7 +181,7 @@ AC_DEFUN([AC_UNIX_STDIO_64],
   if test x"$with_unix_stdio_64" = x"" ; then
     echo '#include <stdio.h>' > conftest.c
     echo 'int main() { fpos_t off=0; fseeko(NULL, off, SEEK_SET); off = ftello(NULL); return 0; }' >> conftest.c
-    if test -z "`${CC} -o conftest conftest.c 2>&1`" ; then
+    if test -z "`${CC} ${CCFLAGS} -o conftest conftest.c 2>&1`" ; then
       with_unix_stdio_64=yes
       VSI_FTELL64=ftello
       VSI_FSEEK64=fseeko
@@ -192,7 +192,15 @@ AC_DEFUN([AC_UNIX_STDIO_64],
   if test x"$with_unix_stdio_64" = x"yes" ; then
     AC_MSG_RESULT([yes])
 
-    AC_CHECK_FUNC(stat64, VSI_STAT64=stat64 VSI_STAT64_T=stat64, VSI_STAT64=stat VSI_STAT64_T=stat)
+    case "${host_os}" in
+      darwin*)
+        VSI_STAT64=stat
+        VSI_STAT64_T=stat
+        ;;
+      *)      
+        AC_CHECK_FUNC(stat64, VSI_STAT64=stat64 VSI_STAT64_T=stat64, VSI_STAT64=stat VSI_STAT64_T=stat)
+        ;;
+    esac
     AC_CHECK_FUNC(fopen64, VSI_FOPEN64=fopen64, VSI_FOPEN64=fopen)
     AC_CHECK_FUNC(ftruncate64, VSI_FTRUNCATE64=ftruncate64, VSI_FTRUNCATE64=ftruncate)
 
@@ -315,7 +323,9 @@ AC_DEFUN([AC_LD_SHARED],
 
   if test "$with_ld_shared" != "" ; then
     if test "$with_ld_shared" = "no" ; then
-      echo "user disabled shared library support."	
+      echo "user disabled shared library support."
+    elif test "$with_ld_shared" = "yes" ; then
+      AC_MSG_ERROR([--with-ld-shared not supported])
     else
       echo "using user supplied .so link command ... $with_ld_shared"	
     fi
@@ -431,6 +441,36 @@ AC_DEFUN([AC_LD_SHARED],
   AC_SUBST(LD_SHARED,$LD_SHARED)
   AC_SUBST(SO_EXT,$SO_EXT)
 ])
+
+# --------------------------------------------------------
+dnl AC_CHECK_FW_FUNC(FRAMEWORK-BASENAME, FUNCTION,
+dnl              [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND],
+dnl              [OTHER-LIBRARIES])
+dnl ------------------------------------------------------
+dnl
+dnl Duplicate of AC_CHECK_LIB, with small edit to handle -framework $1, i.e.:
+dnl   "-framework JavaVM" instead of "-ljvm"
+dnl See autoconf-src/lib/autoconf/libs.m4 for more information
+
+AC_DEFUN([AC_CHECK_FW_FUNC],
+[m4_ifval([$3], , [AH_CHECK_LIB([$1])])dnl
+AS_LITERAL_WORD_IF([$1],
+	      [AS_VAR_PUSHDEF([ac_Lib], [ac_cv_lib_$1_$2])],
+	      [AS_VAR_PUSHDEF([ac_Lib], [ac_cv_lib_$1''_$2])])dnl
+AC_CACHE_CHECK([for $2 in -framework $1], [ac_Lib],
+[ac_check_fw_func_save_LIBS=$LIBS
+LIBS="-framework $1 $5 $LIBS"
+AC_LINK_IFELSE([AC_LANG_CALL([], [$2])],
+	       [AS_VAR_SET([ac_Lib], [yes])],
+	       [AS_VAR_SET([ac_Lib], [no])])
+LIBS=$ac_check_fw_func_save_LIBS])
+AS_VAR_IF([ac_Lib], [yes],
+      [m4_default([$3], [AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$1))
+  LIBS="-framework $1 $LIBS"
+])],
+      [$4])
+AS_VAR_POPDEF([ac_Lib])dnl
+])# AC_CHECK_FW_FUNC
 
 dnl ---------------------------------------------------------------------------
 dnl Message output

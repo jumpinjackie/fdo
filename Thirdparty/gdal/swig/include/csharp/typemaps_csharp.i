@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: typemaps_csharp.i 21588 2011-01-27 15:42:24Z tamas $
+ * $Id: typemaps_csharp.i 39863 2017-08-18 20:27:45Z tamas $
  *
  * Name:     typemaps_csharp.i
  * Project:  GDAL CSharp Interface
@@ -27,11 +27,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *****************************************************************************/
- 
+
 
 %include "typemaps.i"
 
 /* CSHARP TYPEMAPS */
+
+%apply (int) {VSI_RETVAL};
 
 %fragment("OGRErrMessages","header") %{
 static char const *
@@ -91,7 +93,7 @@ OGRErrMessages( int rc ) {
 %typemap(imtype) (CTYPE *optional_##CTYPE) "IntPtr"
 %typemap(cstype) (CTYPE *optional_##CTYPE) "ref CSTYPE"
 %typemap(csin) (CTYPE *optional_##CTYPE) "(IntPtr)$csinput"
- 
+
 %typemap(in) (CTYPE *optional_##CTYPE)
 {
   /* %typemap(in) (type *optional_##CTYPE) */
@@ -107,7 +109,7 @@ OPTIONAL_POD(int, int);
  ***************************************************/
 
 %typemap(out) (retStringAndCPLFree*)
-%{ 
+%{
     /* %typemap(out) (retStringAndCPLFree*) */
     if($1)
     {
@@ -127,7 +129,9 @@ OPTIONAL_POD(int, int);
 %typemap(ctype, out="GIntBig") GIntBig  %{GIntBig%}
 %typemap(imtype, out="long") GIntBig "long"
 %typemap(cstype) GIntBig %{long%}
+%typemap(in) GIntBig %{ $1 = $input; %}
 %typemap(out) GIntBig %{ $result = $1; %}
+%typemap(csin) GIntBig "$csinput"
 %typemap(csout, excode=SWIGEXCODE) GIntBig {
     long res = $imcall;$excode
     return res;
@@ -179,7 +183,7 @@ OPTIONAL_POD(int, int);
                 ++count;
         }
         string[] ret = new string[count];
-        if (count > 0) {       
+        if (count > 0) {
 	        for(int cx = 0; cx < count; cx++) {
                 objPtr = System.Runtime.InteropServices.Marshal.ReadIntPtr(cPtr, cx * System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)));
                 ret[cx]= (objPtr == IntPtr.Zero) ? null : System.Runtime.InteropServices.Marshal.PtrToStringAnsi(objPtr);
@@ -188,7 +192,7 @@ OPTIONAL_POD(int, int);
         $excode
         return ret;
 }
- 
+
 %typemap(csout, excode=SWIGEXCODE) char** CSL {
         /* %typemap(csout) char** CSL */
         IntPtr cPtr = $imcall;
@@ -199,7 +203,7 @@ OPTIONAL_POD(int, int);
                 ++count;
         }
         string[] ret = new string[count];
-        if (count > 0) {       
+        if (count > 0) {
 	        for(int cx = 0; cx < count; cx++) {
                 objPtr = System.Runtime.InteropServices.Marshal.ReadIntPtr(cPtr, cx * System.Runtime.InteropServices.Marshal.SizeOf(typeof(IntPtr)));
                 ret[cx]= (objPtr == IntPtr.Zero) ? null : System.Runtime.InteropServices.Marshal.PtrToStringAnsi(objPtr);
@@ -219,7 +223,7 @@ OPTIONAL_POD(int, int);
         /* %typemap(csout) int *intList */
         IntPtr cPtr = $imcall;
         int[] ret = new int[count];
-        if (count > 0) {       
+        if (count > 0) {
 	        System.Runtime.InteropServices.Marshal.Copy(cPtr, ret, 0, count);
         }
         $excode
@@ -234,7 +238,7 @@ OPTIONAL_POD(int, int);
         /* %typemap(csout) int *intList */
         IntPtr cPtr = $imcall;
         double[] ret = new double[count];
-        if (count > 0) {       
+        if (count > 0) {
 	        System.Runtime.InteropServices.Marshal.Copy(cPtr, ret, 0, count);
         }
         $excode
@@ -242,12 +246,12 @@ OPTIONAL_POD(int, int);
 }
 
 /*
- * Typemap for char **argout. 
+ * Typemap for char **argout.
  */
 %typemap(imtype) (char **argout), (char **username), (char **usrname), (char **type) "out string"
 %typemap(cstype) (char **argout), (char **username), (char **usrname), (char **type) "out string"
 %typemap(csin) (char** argout), (char **username), (char **usrname), (char **type) "out $csinput"
-  
+
 %typemap(in) (char **argout), (char **username), (char **usrname), (char **type)
 {
   /* %typemap(in) (char **argout) */
@@ -269,17 +273,17 @@ OPTIONAL_POD(int, int);
 }
 
 /*
- * Typemap for char **ignorechange. 
+ * Typemap for char **ignorechange.
  */
- 
+
 %typemap(imtype) (char **ignorechange) "ref string"
 %typemap(cstype) (char **ignorechange) "ref string"
 %typemap(csin) (char** ignorechange) "ref $csinput"
-  
+
 %typemap(in, noblock="1") (char **ignorechange)
 {
   /* %typemap(in) (char **ignorechange) */
-    $*1_type savearg = *(($1_type)$input); 
+    $*1_type savearg = *(($1_type)$input);
 	$1 = ($1_ltype)$input;
 }
 %typemap(argout, noblock="1") (char **ignorechange)
@@ -291,7 +295,7 @@ OPTIONAL_POD(int, int);
 }
 
 /*
- * Typemap for double argout[ANY]. 
+ * Typemap for double argout[ANY].
  */
 %typemap(imtype) (double argout[ANY]) "double[]"
 %typemap(cstype) (double argout[ANY]) "double[]"
@@ -322,7 +326,7 @@ OPTIONAL_POD(int, int);
 %apply double argout[ANY] {double *inout}
 
 /*
- * Typemap for double argin[ANY]. 
+ * Typemap for double argin[ANY].
  */
 
 %typemap(imtype) (double argin[ANY])  "double[]"
@@ -336,7 +340,7 @@ OPTIONAL_POD(int, int);
 }
 
 /*
- * Typemap for int argin[ANY]. 
+ * Typemap for int argin[ANY].
  */
 
 %typemap(imtype) (int argin[ANY])  "int[]"
@@ -350,7 +354,7 @@ OPTIONAL_POD(int, int);
 }
 
 /*
- * Typemap for double inout[ANY]. 
+ * Typemap for double inout[ANY].
  */
 
 %typemap(imtype) (double inout[ANY])  "double[]"
@@ -366,7 +370,7 @@ OPTIONAL_POD(int, int);
 %apply (double inout[ANY]) {double *pList};
 
 /*
- * Typemap for int inout[ANY]. 
+ * Typemap for int inout[ANY].
  */
 
 %typemap(imtype) (int inout[ANY])  "int[]"
@@ -382,12 +386,51 @@ OPTIONAL_POD(int, int);
 %apply (int inout[ANY]) {int *pList};
 
 /*
- * Typemap for const char *utf8_path. 
+ * Helper to marshal utf8 strings.
  */
-%typemap(csin) (const char *utf8_path)  "System.Text.Encoding.Default.GetString(System.Text.Encoding.UTF8.GetBytes($csinput))" 
+
+%pragma(csharp) modulecode=%{
+  internal static byte[] StringToUtf8Bytes(string str)
+  {
+    if (str == null)
+      return null;
+
+    int bytecount = System.Text.Encoding.UTF8.GetMaxByteCount(str.Length);
+    byte[] bytes = new byte[bytecount + 1];
+    System.Text.Encoding.UTF8.GetBytes(str, 0, str.Length, bytes, 0);
+    return bytes;
+  }
+
+  internal static string Utf8BytesToString(IntPtr pNativeData)
+  {
+    if (pNativeData == IntPtr.Zero)
+        return null;
+
+    int length = Marshal.PtrToStringAnsi(pNativeData).Length;
+    byte[] strbuf = new byte[length];
+    Marshal.Copy(pNativeData, strbuf, 0, length);
+    return System.Text.Encoding.UTF8.GetString(strbuf);
+  }
+%}
 
 /*
- * Typemap for double *defaultval. 
+ * Typemap for const char *utf8_path.
+ */
+%typemap(csin) (const char *utf8_path)  "$module.StringToUtf8Bytes($csinput)"
+%typemap(imtype, out="IntPtr") (const char *utf8_path) "byte[]"
+%typemap(out) (const char *utf8_path) %{ $result = $1; %}
+%typemap(csout, excode=SWIGEXCODE) (const char *utf8_path) {
+        /* %typemap(csout) (const char *utf8_path) */
+        IntPtr cPtr = $imcall;
+        string ret = $module.Utf8BytesToString(cPtr);
+        $excode
+        return ret;
+}
+
+%apply ( const char *utf8_path ) { const char* GetFieldAsString };
+
+/*
+ * Typemap for double *defaultval.
  */
 
 %typemap(imtype) (double *defaultval)  "ref double"
@@ -432,7 +475,7 @@ OPTIONAL_POD(int, int);
 %apply (int *hasval) {int *pnBytes};
 
 /*
- * Typemap for int **array_argout. 
+ * Typemap for int **array_argout.
  */
 
 %typemap(imtype) (int **array_argout)  "out int[]"
@@ -448,7 +491,7 @@ OPTIONAL_POD(int, int);
 %apply (int **array_argout) {int **pList};
 
 /*
- * Typemap for double **array_argout. 
+ * Typemap for double **array_argout.
  */
 
 %typemap(imtype) (double **array_argout)  "out double[]"
@@ -466,7 +509,7 @@ OPTIONAL_POD(int, int);
 /******************************************************************************
  * GDAL raster R/W support                                                    *
  *****************************************************************************/
- 
+
 %typemap(imtype, out="IntPtr") void *buffer_ptr "IntPtr"
 %typemap(cstype) void *buffer_ptr %{IntPtr%}
 %typemap(in) void *buffer_ptr %{ $1 = ($1_ltype)$input; %}
@@ -476,8 +519,13 @@ OPTIONAL_POD(int, int);
       IntPtr ret = $imcall;$excode
       return ret;
 }
+%typemap(csvarout, excode=SWIGEXCODE2) (void *buffer_ptr)   %{
+    get {
+      IntPtr ret = $imcall;$excode
+      return ret;
+    } %}
 
-%apply (void *buffer_ptr) {GByte*};
+%apply (void *buffer_ptr) {GByte*, VSILFILE*};
 
 %csmethodmodifiers StringListDestroy "internal";
 %inline %{
@@ -495,3 +543,20 @@ OPTIONAL_POD(int, int);
 %typemap(csin) (CPLErrorHandler)  "$csinput"
 %typemap(in) (CPLErrorHandler) %{ $1 = ($1_ltype)$input; %}
 
+/******************************************************************************
+ * GDALProgressFunc typemaps                                                  *
+ *****************************************************************************/
+%pragma(csharp) modulecode="public delegate int GDALProgressFuncDelegate(double Complete, IntPtr Message, IntPtr Data);"
+
+%typemap(imtype) (GDALProgressFunc callback)  "$module.GDALProgressFuncDelegate"
+%typemap(cstype) (GDALProgressFunc callback) "$module.GDALProgressFuncDelegate"
+%typemap(csin) (GDALProgressFunc callback)  "$csinput"
+%typemap(csvarout, excode=SWIGEXCODE2) (GDALProgressFunc callback)   %{
+    get {
+      Gdal.GDALProgressFuncDelegate ret = $imcall;$excode
+      return ret;
+    } %}
+%typemap(in) (GDALProgressFunc callback) %{ $1 = ($1_ltype)$input; %}
+%typemap(imtype) (void* callback_data) "string"
+%typemap(cstype) (void* callback_data) "string"
+%typemap(csin) (void* callback_data) "$csinput"

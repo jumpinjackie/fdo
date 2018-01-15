@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id$
  *
  * Project:  GDAL
  * Purpose:  Algorithm to apply a transformer to geolocation style bands.
@@ -27,24 +26,30 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
+#include "gdal_alg.h"
+
+#include <cstring>
+
+#include "cpl_conv.h"
+#include "cpl_error.h"
+#include "cpl_progress.h"
+#include "gdal.h"
 #include "gdal_alg_priv.h"
 #include "gdal_priv.h"
-#include "cpl_conv.h"
 
-CPL_CVSID("$Id$");
-
-                                      
+CPL_CVSID("$Id: gdaltransformgeolocs.cpp 36532 2016-11-27 23:13:25Z goatbar $");
 
 /************************************************************************/
 /*                     GDALTransformGeolocations()                      */
 /************************************************************************/
 
-/** 
+/**
  * Transform locations held in bands.
  *
  * The X/Y and possibly Z values in the identified bands are transformed
  * using a spatial transformer.  The changes values are written back to the
- * source bands so they need to updatable.  
+ * source bands so they need to updatable.
  *
  * @param hXBand the band containing the X locations (usually long/easting).
  * @param hYBand the band containing the Y locations (usually lat/northing).
@@ -60,14 +65,14 @@ CPL_CVSID("$Id$");
  */
 
 CPLErr
-GDALTransformGeolocations( GDALRasterBandH hXBand, 
-                           GDALRasterBandH hYBand, 
+GDALTransformGeolocations( GDALRasterBandH hXBand,
+                           GDALRasterBandH hYBand,
                            GDALRasterBandH hZBand,
-                           GDALTransformerFunc pfnTransformer, 
-                           void *pTransformArg, 
-                           GDALProgressFunc pfnProgress, 
+                           GDALTransformerFunc pfnTransformer,
+                           void *pTransformArg,
+                           GDALProgressFunc pfnProgress,
                            void *pProgressArg,
-                           char **papszOptions )
+                           CPL_UNUSED char **papszOptions )
 
 {
     VALIDATE_POINTER1( hXBand, "GDALTransformGeolocations", CE_Failure );
@@ -79,11 +84,11 @@ GDALTransformGeolocations( GDALRasterBandH hXBand,
 /* -------------------------------------------------------------------- */
 /*      Ensure the bands are matching in size.                          */
 /* -------------------------------------------------------------------- */
-    GDALRasterBand *poXBand = (GDALRasterBand *) hXBand;
-    GDALRasterBand *poYBand = (GDALRasterBand *) hYBand;
-    GDALRasterBand *poZBand = (GDALRasterBand *) hZBand;
-    int nXSize = poXBand->GetXSize();
-    int nYSize = poXBand->GetYSize();
+    GDALRasterBand *poXBand = reinterpret_cast<GDALRasterBand *>(hXBand);
+    GDALRasterBand *poYBand = reinterpret_cast<GDALRasterBand *>(hYBand);
+    GDALRasterBand *poZBand = reinterpret_cast<GDALRasterBand *>(hZBand);
+    const int nXSize = poXBand->GetXSize();
+    const int nYSize = poXBand->GetYSize();
 
     if( nXSize != poYBand->GetXSize()
         || nYSize != poYBand->GetYSize()
@@ -98,27 +103,28 @@ GDALTransformGeolocations( GDALRasterBandH hXBand,
 /* -------------------------------------------------------------------- */
 /*      Allocate a buffer large enough to hold one whole row.           */
 /* -------------------------------------------------------------------- */
-    double *padfX = (double*) CPLMalloc(sizeof(double) * nXSize);
-    double *padfY = (double*) CPLMalloc(sizeof(double) * nXSize);
-    double *padfZ = (double*) CPLMalloc(sizeof(double) * nXSize);
-    int    *panSuccess = (int*) CPLMalloc(sizeof(int) * nXSize);
-    int iLine;
+    double *padfX = static_cast<double *>(CPLMalloc(sizeof(double) * nXSize));
+    double *padfY = static_cast<double *>(CPLMalloc(sizeof(double) * nXSize));
+    double *padfZ = static_cast<double *>(CPLMalloc(sizeof(double) * nXSize));
+    int *panSuccess = static_cast<int *>(CPLMalloc(sizeof(int) * nXSize));
     CPLErr eErr = CE_None;
 
     pfnProgress( 0.0, "", pProgressArg );
-    for( iLine = 0; eErr == CE_None && iLine < nYSize; iLine++ )
+    for( int iLine = 0; eErr == CE_None && iLine < nYSize; iLine++ )
     {
         eErr = poXBand->RasterIO( GF_Read, 0, iLine, nXSize, 1,
-                                  padfX, nXSize, 1, GDT_Float64, 0, 0 );
+                                  padfX, nXSize, 1, GDT_Float64, 0, 0, NULL );
         if( eErr == CE_None )
             eErr = poYBand->RasterIO( GF_Read, 0, iLine, nXSize, 1,
-                                      padfY, nXSize, 1, GDT_Float64, 0, 0 );
+                                      padfY, nXSize, 1, GDT_Float64,
+                                      0, 0, NULL );
         if( eErr == CE_None && poZBand != NULL )
             eErr = poZBand->RasterIO( GF_Read, 0, iLine, nXSize, 1,
-                                      padfZ, nXSize, 1, GDT_Float64, 0, 0 );
+                                      padfZ, nXSize, 1, GDT_Float64,
+                                      0, 0, NULL );
         else
             memset( padfZ, 0, sizeof(double) * nXSize);
-        
+
         if( eErr == CE_None )
         {
             pfnTransformer( pTransformArg, FALSE, nXSize,
@@ -127,18 +133,22 @@ GDALTransformGeolocations( GDALRasterBandH hXBand,
 
         if( eErr == CE_None )
             eErr = poXBand->RasterIO( GF_Write, 0, iLine, nXSize, 1,
-                                      padfX, nXSize, 1, GDT_Float64, 0, 0 );
+                                      padfX, nXSize, 1, GDT_Float64,
+                                      0, 0, NULL );
         if( eErr == CE_None )
             eErr = poYBand->RasterIO( GF_Write, 0, iLine, nXSize, 1,
-                                      padfY, nXSize, 1, GDT_Float64, 0, 0 );
+                                      padfY, nXSize, 1, GDT_Float64,
+                                      0, 0, NULL );
         if( eErr == CE_None && poZBand != NULL )
             eErr = poZBand->RasterIO( GF_Write, 0, iLine, nXSize, 1,
-                                      padfZ, nXSize, 1, GDT_Float64, 0, 0 );
+                                      padfZ, nXSize, 1, GDT_Float64,
+                                      0, 0, NULL );
 
         if( eErr == CE_None )
-            pfnProgress( (iLine+1) / (double) nYSize, "", pProgressArg );
+            pfnProgress( (iLine+1) /
+                         static_cast<double>(nYSize), "", pProgressArg );
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Cleanup                                                         */
 /* -------------------------------------------------------------------- */

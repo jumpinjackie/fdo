@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrxlsdriver.cpp 23381 2011-11-17 21:55:45Z rouault $
  *
  * Project:  XLS Translator
  * Purpose:  Implements OGRXLSDriver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,7 +29,7 @@
 #include "ogr_xls.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrxlsdriver.cpp 23381 2011-11-17 21:55:45Z rouault $");
+CPL_CVSID("$Id: ogrxlsdriver.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /*                           ~OGRXLSDriver()                            */
@@ -83,7 +82,7 @@ OGRDataSource *OGRXLSDriver::Open( const char * pszFilename, int bUpdate )
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRXLSDriver::TestCapability( const char * pszCap )
+int OGRXLSDriver::TestCapability( CPL_UNUSED const char * pszCap )
 
 {
     return FALSE;
@@ -96,6 +95,11 @@ int OGRXLSDriver::TestCapability( const char * pszCap )
 void RegisterOGRXLS()
 
 {
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRXLSDriver );
-}
+    OGRSFDriver* poDriver = new OGRXLSDriver;
 
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "MS Excel format" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "xls" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_xls.html" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+}

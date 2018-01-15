@@ -7,9 +7,13 @@ OBJ	=	gdalopeninfo.o gdaldrivermanager.o gdaldriver.o gdaldataset.o \
 		gdaldefaultoverviews.o gdalpamdataset.o gdalpamrasterband.o \
 		gdaljp2metadata.o gdaljp2box.o gdalmultidomainmetadata.o \
 		gdal_rat.o gdalgmlcoverage.o gdalpamproxydb.o \
-		gdalallvalidmaskband.o gdalnodatamaskband.o gdal_rpcimdio.o \
- 		gdalproxydataset.o gdalproxypool.o gdaldefaultasync.o \
-		gdalnodatavaluesmaskband.o gdaldllmain.o gdalexif.o gdalclientserver.o
+                gdalallvalidmaskband.o gdalnodatamaskband.o \
+		gdalproxydataset.o gdalproxypool.o gdaldefaultasync.o \
+		gdalnodatavaluesmaskband.o gdaldllmain.o gdalexif.o gdalclientserver.o \
+		gdalgeorefpamdataset.o gdaljp2abstractdataset.o gdalvirtualmem.o \
+		gdaloverviewdataset.o gdalrescaledalphaband.o gdaljp2structure.o \
+		gdal_mdreader.o gdaljp2metadatagenerator.o gdalabstractbandblockcache.o \
+		gdalarraybandblockcache.o gdalhashsetbandblockcache.o
 
 # Enable the following if you want to use MITAB's code to convert
 # .tab coordinate systems into well known text.  But beware that linking
@@ -22,22 +26,33 @@ XTRA_OPT 	:=	$(XTRA_OPT) -DRENAME_INTERNAL_LIBTIFF_SYMBOLS
 endif
 endif
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(CPPFLAGS) $(PAM_SETTING) $(XTRA_OPT) -I../frmts/gtiff
+CPPFLAGS	:=	 -I../frmts/gtiff -I../frmts/mem -I../frmts/vrt -I../ogr -I../ogr/ogrsf_frmts/generic -I../gnm/ -I../gnm/gnm_frmts/ $(JSON_INCLUDE) -I../ogr/ogrsf_frmts/geojson $(CPPFLAGS) $(PAM_SETTING) $(XTRA_OPT)
 
-default:	$(OBJ:.o=.$(OBJ_EXT))
+ifeq ($(HAVE_SQLITE),yes)
+CXXFLAGS :=	$(CXXFLAGS) -DSQLITE_ENABLED
+endif
+
+ifeq ($(HAVE_LIBXML2),yes)
+CXXFLAGS	:=	$(CXXFLAGS) $(LIBXML2_INC) -DHAVE_LIBXML2
+endif
+
+default: mdreader-target $(OBJ:.o=.$(OBJ_EXT)) rasterio_ssse3.$(OBJ_EXT)
+
+rasterio_ssse3.$(OBJ_EXT):   rasterio_ssse3.cpp
+	$(CXX) $(GDAL_INCLUDE) $(CXXFLAGS_NO_LTO_IF_SSSE3_NONDEFAULT) $(SSSE3FLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(OBJ):	gdal_priv.h gdal_proxy.h
 
-clean:
+clean: mdreader-clean
 	$(RM) *.o $(O_OBJ)
 
-docs:	
+docs:
 	(cd ..; $(MAKE) docs)
 
 gdal_misc.$(OBJ_EXT):	gdal_misc.cpp gdal_version.h
 
 gdaldrivermanager.$(OBJ_EXT):	gdaldrivermanager.cpp ../GDALmake.opt
-	$(CXX) -c $(GDAL_INCLUDE) $(CXXFLAGS) -DINST_DATA=\"$(INST_DATA)\" \
+	$(CXX) -c $(GDAL_INCLUDE) $(CPPFLAGS) $(CXXFLAGS) -DINST_DATA=\"$(INST_DATA)\" \
 		$< -o $@
 
 install:

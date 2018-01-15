@@ -14,7 +14,7 @@ extern "C" {
 void Clock_Epoch2YearDay (sInt4 totDay, int *Day, sInt4 * Yr);
 int Clock_MonthNum (int day, sInt4 year);
 int Clock_NumDay (int month, int day, sInt4 year, char f_tot);
-sChar Clock_GetTimeZone ();
+sChar Clock_GetTimeZone (void);
 int Clock_IsDaylightSaving2 (double clock, sChar TimeZone);
 void Clock_PrintDate (double clock, sInt4 *year, int *month, int *day,
                       int *hour, int *min, double *sec);
@@ -33,8 +33,11 @@ void Clock_PrintMonth (int mon, char *buffer, int buffLen);
 void Clock_ScanDate (double *clock, sInt4 year, int mon, int day);
 int Clock_ScanDateNumber (double *clock, char *buffer);
 void Clock_PrintDateNumber (double clock, char buffer[15]);
-int Clock_Scan (double *clock, char *buffer, char f_gmt);
 
+#if 0  // Unused with GDAL.
+int Clock_Scan (double *clock, char *buffer, char f_gmt);
+#endif
+  
 #ifdef __cplusplus
 }
 #endif  /* __cplusplus */

@@ -1,8 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
   <title>GeoRaster --- Oracle Spatial GeoRaster</title>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
   <meta name="GENERATOR" content="OpenOffice.org 2.4  (Linux)">
   <style type="text/css">
 	<!--
@@ -19,7 +18,7 @@ optionally built as a GDAL plugin, but it requires Oracle client
 libraries.
 </p>
 <p>
-When opening a GeoRaster, it's name should be specified in the form:
+When opening a GeoRaster, its name should be specified in the form:
 </p>
 <p style="font-family: Courier New,Courier,monospace; margin-left: 40px;">
 georaster:&lt;user&gt;{,/}&lt;pwd&gt;{,@}[db],[schema.][table],[column],[where]<br>
@@ -48,7 +47,7 @@ geor:scott/tiger,,rdt_10$,10</p>
 <p>Note: like in the last two examples, the database name field could
 be left empty (",,") and the&nbsp;TNSNAME will be&nbsp;used.</p>
 <p>Note: If &nbsp;the query results in more than one GeoRaster it will
-be treated as a GDAL metadata's list of sub-datasets (see bellow)</p>
+be treated as a GDAL metadata's list of sub-datasets (see below)</p>
 <h3>Browsing the database for GeoRasters
 <br>
 </h3>
@@ -118,23 +117,65 @@ the table, e.g.:</li>
 <span style="font-family: Courier New,Courier,monospace;">%
 gdal_translate -of georaster landsat_825.tif
 geor:scott/tiger@orcl,landsat,raster \<br>
-&nbsp; -co INSERT="ID, RASTER VALUES (2,</span><span style="font-family: Courier New,Courier,monospace;"></span><span style="font-family: Courier New,Courier,monospace;">SDO_GEOR.INIT()</span><span style="font-family: Courier New,Courier,monospace;"></span><span style="font-family: Courier New,Courier,monospace;">)"</span><br>
+&nbsp; -co INSERT="(ID, RASTER) VALUES (2,</span><span style="font-family: Courier New,Courier,monospace;"></span><span style="font-family: Courier New,Courier,monospace;">SDO_GEOR.INIT()</span><span style="font-family: Courier New,Courier,monospace;"></span><span style="font-family: Courier New,Courier,monospace;">)"</span><br>
 <ul>
-  <li><strong>COMPRESS</strong>: Compression options, JPEG-F, JPEG-B,
-DEFLATE or NONE. The two JPEG options are lossy, meaning that the
-original pixel values are changed. The JPEG-F store a full JPEG
-structure on each block while JPEG-B are smaller since they don't store
-Huffman and Quantization tables.</li>
-  <li><strong>QUALITY</strong>: Quality compression option for JPEG 
+  <li><strong>COMPRESS</strong>: Compression options, JPEG-F, JP2-F,
+DEFLATE or NONE. The JPEG-F options is lossy, meaning that the
+original pixel values are changed. The JP2-F compression is lossless
+if JP2_QUALITY=100.</li>
+  <li><strong>GENPYRAMID</strong>: Generate pyramid after a GeoRaster object have been loaded to the database.
+The content of that parameter must be the resampling method of
+choice NN (nearest neighbor) , BILINEAR, BIQUADRATIC, CUBIC, AVERAGE4 or AVERAGE16. If GENPYRLEVELS is not
+informed the PL/SQL function sdo_geor.generatePyramid will calculate the number of levels to generate.</li>
+  <li><strong>GENPYRLEVELS</strong>: Define the number of pyramid levels to be generated.
+If GENPYRAMID is not informed the resample method NN (nearest neighbor) will apply.</li>
+  <li><strong>QUALITY</strong>: Quality compression option for JPEG
 ranging from 0 to 100. The default is 75.</li>
+
+
+<li><p><b>JP2_QUALITY=float_value,float_value,...</b> 
+Only if COMPRESS=JP2-f 
+: Percentage between 0 and 100.
+A value of 50 means the file will be half-size in comparison to uncompressed data,
+33 means 1/3, etc.. Defaults to 25 (unless the dataset is made of a single band
+with color table, in which case the default quality is 100).
+</li>
+
+<li><p><b>JP2_REVERSIBLE=YES/NO</b> 
+Only if COMPRESS=JP2-f 
+: YES means use of reversible 5x3 integer-only
+filter, NO use of the irreversible DWT 9-7. Defaults to NO  (unless the dataset
+is made of a single band with color table, in which case reversible filter is
+used).</p></li>
+
+<li><p><b>JP2_RESOLUTIONS=int_value</b> 
+Only if COMPRESS=JP2-f 
+: Number of resolution levels. Default value
+is selected such the smallest overview of a tile is no bigger than 128x128.</p></li>
+
+<li><p><b>JP2_BLOCKXSIZE=int_value</b> 
+Only if COMPRESS=JP2-f 
+: Tile width. Defaults to 1024.</p></li>
+
+<li><p><b>JP2_BLOCKYSIZE=int_value</b> 
+Only if COMPRESS=JP2-f 
+: Tile height. Defaults to 1024.</p></li>
+
+<li><p><b>JP2_PROGRESSION=LRCP/RLCP/RPCL/PCRL/CPRL</b> 
+Only if COMPRESS=JP2-f 
+: Progession order. Defaults
+to LRCP.</p></li>
+
   <li><strong>NBITS</strong>: Sub byte data type, options: 1, 2 or 4.</li>
-  <li><strong>SPATIALEXTENT</strong>: Generate Spatial Extents. The default for that options is 
-TRUE, that means that this option only need to be informed to force the Spatial Extent to 
-remain as NULL. If EXTENTSRID is not informed the Spatial Extent geometry will be generated with 
+  <li><strong>SPATIALEXTENT</strong>: Generate Spatial Extents. The default for that options is
+TRUE, that means that this option only need to be informed to force the Spatial Extent to
+remain as NULL. If EXTENTSRID is not informed the Spatial Extent geometry will be generated with
 the same SRID as the GeoGeoraster object.</li>
-  <li><strong>EXTENTSRID</strong>: SRID code to be used on the Spatial Extent geometry. 
-If the table/column has already a spatial extent, the value informed should be the same as the 
+  <li><strong>EXTENTSRID</strong>: SRID code to be used on the Spatial Extent geometry.
+If the table/column has already a spatial extent, the value informed should be the same as the
 SRID on the Spatial Extent of the other existing GeoRaster.</li>
+  <li><strong>OBJECTTABLE</strong>: To create RDT as SDO_RASTER object inform TRUE otherwise, the default
+  is FALSE and the RDT will be created as regular relational tables. That does not apply for Oracle version older than 11.</li>
 </ul>
 <strong></strong>
 <h3>Importing GeoRaster</h3>
@@ -153,7 +194,7 @@ MDSYS.SDO_GEORASTER)" \<br>
 </font><font face="Courier, monospace">
 &nbsp; -co "INSERT=VALUES(1,'West fields',&nbsp;</font><span style="font-family: Courier New,Courier,monospace;">SDO_GEOR.INIT()</span><font face="Courier, monospace">)" \<br>
 </font><font face="Courier, monospace">&nbsp; -co "BLOCKXSIZE=512</font><span style="font-family: Courier New,Courier,monospace;"></span><font face="Courier, monospace">" -co "BLOCKYSIZE=512" -co "BLOCKBSIZE=3" \<br>
-&nbsp; -co "INTERLEAVE=PIXEL</font><span style="font-family: Courier New,Courier,monospace;"></span><font face="Courier, monospace">" -co "COMPRESS=JPEG-B"</font></p>
+&nbsp; -co "INTERLEAVE=PIXEL</font><span style="font-family: Courier New,Courier,monospace;"></span><font face="Courier, monospace">" -co "COMPRESS=JPEG-F"</font></p>
 <p style="margin-bottom: 0in;">Note that the create option DESCRIPTION
 requires to inform&nbsp;table name (in bold). And column name
 (underlined) should match the description:</p>
@@ -182,7 +223,7 @@ a default table named GDAL_IMPORT with just one GeoRaster column
 named RASTER and a table GDAL_RDT as the RDT, the RID will be given automatically by the server, example:</p>
 <p style="margin-bottom: 0in;"><font face="Courier, monospace">%
 gdal_translate -of georaster input.tif
-&ldquo;geor:scott/tiger@dbdemo&rdquo;</font><br>
+“geor:scott/tiger@dbdemo”</font><br>
 </p>
 <h3>Exporting GeoRaster</h3>
 A GeoRaster can be identified by a Where clause or by a pair of RDT
@@ -225,8 +266,8 @@ gdal_translate&nbsp;</span><span style="font-family: Courier New,Courier,monospa
 gdal_translate&nbsp;</span><span style="font-family: Courier New,Courier,monospace;">geor:spock/lion@orcl,gdal_rdt,101
 out.tif<br>
 <br>
-</span>Note: On the above example that&nbsp;acessing by RDT/RID doesn't
-need schame name as long as the users is granted full acess to both
+</span>Note: On the above example that&nbsp;accessing by RDT/RID doesn't
+need schame name as long as the users is granted full access to both
 tables.<br>
 <br>
 Loading:<br>
@@ -271,5 +312,6 @@ geor:scott/tiger@dbdemo,landsat,scene,id=54 view_54.vrt<br>
 <br>
 </span><span style="font-family: Courier New,Courier,monospace;"></span><br>
 <h3></h3>
-</body>
-</html>
+
+
+</body></html>

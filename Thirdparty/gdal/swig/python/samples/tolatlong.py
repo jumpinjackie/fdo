@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: tolatlong.py 19386 2010-04-11 19:20:36Z rouault $
+# $Id: tolatlong.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 # Project:  GDAL Python samples
 # Purpose:  Script to read coordinate system and geotransformation matrix
@@ -10,7 +10,8 @@
 #
 ###############################################################################
 # Copyright (c) 2003, Andrey Kiselev <dron@remotesensing.org>
-# 
+# Copyright (c) 2009-2010, Even Rouault <even dot rouault at mines-paris dot org>
+#
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -30,13 +31,8 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-try:
-    from osgeo import gdal
-    from osgeo import osr
-    from osgeo.gdalconst import *
-except ImportError:
-    import gdal
-    from gdalconst import *
+from osgeo import gdal
+from osgeo import osr
 
 import sys
 
@@ -86,7 +82,7 @@ if line is None:
     Usage()
 
 # Open input dataset
-indataset = gdal.Open( infile, GA_ReadOnly )
+indataset = gdal.Open( infile, gdal.GA_ReadOnly )
 
 # Read geotransform matrix and calculate ground coordinates
 geomatrix = indataset.GetGeoTransform()
@@ -100,7 +96,9 @@ Y += geomatrix[5] / 2.0
 # Build Spatial Reference object based on coordinate system, fetched from the
 # opened dataset
 srs = osr.SpatialReference()
-srs.ImportFromWkt(indataset.GetProjection())
+if srs.ImportFromWkt(indataset.GetProjection()) != 0:
+    print("ERROR: Cannot import projection '%s'" % indataset.GetProjection())
+    sys.exit(1)
 
 srsLatLong = srs.CloneGeogCS()
 ct = osr.CoordinateTransformation(srs, srsLatLong)

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_mdb.h 21557 2011-01-22 23:42:14Z rouault $
+ * $Id: ogr_mdb.h 40686 2017-11-10 22:43:51Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private definitions for MDB driver.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_MDB_H_INCLUDED
-#define _OGR_MDB_H_INCLUDED
+#ifndef OGR_MDB_H_INCLUDED
+#define OGR_MDB_H_INCLUDED
 
 #include <jni.h>
 #include <vector>
@@ -43,18 +43,22 @@
 
 class OGRMDBJavaEnv
 {
+    GIntBig nLastPID;
+
+        int Init();
+
     public:
         OGRMDBJavaEnv();
         ~OGRMDBJavaEnv();
 
-        int Init();
-
+    int InitIfNeeded();
+    static void CleanupMutex();
 
     JavaVM *jvm;
     JNIEnv *env;
     int bCalledFromJava;
 
-    int ExceptionOccured();
+    int ExceptionOccurred();
 
     jclass byteArray_class;
 
@@ -105,7 +109,7 @@ class OGRMDBJavaEnv
 
     jclass short_class;
     jmethodID short_shortValue;
-    
+
     jclass integer_class;
     jmethodID integer_intValue;
 
@@ -185,10 +189,9 @@ public:
     int GetColumnAsInt(int iCol);
     double GetColumnAsDouble(int iCol);
     GByte* GetColumnAsBinary(int iCol, int* pnBytes);
-
 };
 
-typedef enum 
+typedef enum
 {
     MDB_Boolean = 0x01,
     MDB_Byte = 0x02,
@@ -219,7 +222,7 @@ typedef enum
 /************************************************************************/
 
 class OGRMDBDataSource;
-    
+
 class OGRMDBLayer : public OGRLayer
 {
   protected:
@@ -268,23 +271,22 @@ class OGRMDBLayer : public OGRLayer
                                     const char *pszGeomCol,
                                     OGRSpatialReference* poSRS );
 
-    virtual void        ResetReading();
-    virtual int         GetFeatureCount( int bForce );
+    virtual void        ResetReading() override;
+    virtual GIntBig     GetFeatureCount( int bForce ) override;
     virtual OGRFeature *GetNextRawFeature();
-    virtual OGRFeature *GetNextFeature();
+    virtual OGRFeature *GetNextFeature() override;
 
-    virtual OGRFeature *GetFeature( long nFeatureId );
-    
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    virtual OGRFeature *GetFeature( GIntBig nFeatureId ) override;
 
-    virtual OGRSpatialReference *GetSpatialRef();
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual int         TestCapability( const char * );
+    virtual int         TestCapability( const char * ) override;
 
-    virtual const char *GetFIDColumn();
-    virtual const char *GetGeometryColumn();
+    virtual const char *GetFIDColumn() override;
 
-    virtual OGRErr      GetExtent( OGREnvelope *psExtent, int bForce );
+    virtual OGRErr      GetExtent( OGREnvelope *psExtent, int bForce ) override;
+    virtual OGRErr      GetExtent(int iGeomField, OGREnvelope *psExtent, int bForce) override
+                { return OGRLayer::GetExtent(iGeomField, psExtent, bForce); }
 };
 
 /************************************************************************/
@@ -314,17 +316,17 @@ class OGRMDBDataSource : public OGRDataSource
                         OGRMDBDataSource();
                         ~OGRMDBDataSource();
 
-    int                 Open( const char *, int bUpdate, int bTestOpen );
-    int                 OpenTable( const char *pszTableName, 
+    int                 Open( const char * );
+    int                 OpenTable( const char *pszTableName,
                                    const char *pszGeomCol,
                                    int bUpdate );
 
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return nLayers; }
-    OGRLayer            *GetLayer( int );
-    OGRLayer            *GetLayerByName( const char* pszLayerName );
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return nLayers; }
+    OGRLayer            *GetLayer( int ) override;
+    OGRLayer            *GetLayerByName( const char* pszLayerName ) override;
 
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -336,10 +338,10 @@ class OGRMDBDriver : public OGRSFDriver
   public:
                 ~OGRMDBDriver();
 
-    const char  *GetName();
-    OGRDataSource *Open( const char *, int );
+    const char  *GetName() override;
+    OGRDataSource *Open( const char *, int ) override;
 
-    int          TestCapability( const char * );
+    int          TestCapability( const char * ) override;
 };
 
-#endif /* ndef _OGR_MDB_H_INCLUDED */
+#endif /* ndef OGR_MDB_H_INCLUDED */

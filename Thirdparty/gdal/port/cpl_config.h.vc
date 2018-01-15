@@ -1,5 +1,5 @@
 
-/* We define this here in general so that a VC++ build will publically
+/* We define this here in general so that a VC++ build will publicly
    declare STDCALL interfaces even if an application is built against it
    using MinGW */
 
@@ -47,7 +47,7 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
-#undef HAVE_LIBDL 
+#undef HAVE_LIBDL
 
 /* Define to 1 if you have the <locale.h> header file. */
 #define HAVE_LOCALE_H 1
@@ -88,7 +88,7 @@
 /* Set the native cpu bit order */
 #define HOST_FILLORDER FILLORDER_LSB2MSB
 
-/* Define as 0 or 1 according to the floating point format suported by the
+/* Define as 0 or 1 according to the floating point format supported by the
    machine */
 #define HAVE_IEEEFP 1
 

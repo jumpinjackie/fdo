@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogr_arcgen.h 23148 2011-10-01 11:55:08Z rouault $
+ * $Id: ogr_arcgen.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  Arc/Info Generate Translator
  * Purpose:  Definition of classes for OGR .arcgen driver.
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_ARCGEN_H_INCLUDED
-#define _OGR_ARCGEN_H_INCLUDED
+#ifndef OGR_ARCGEN_H_INCLUDED
+#define OGR_ARCGEN_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 
@@ -41,7 +41,7 @@ class OGRARCGENLayer : public OGRLayer
     OGRFeatureDefn*    poFeatureDefn;
 
     VSILFILE*          fp;
-    int                bEOF;
+    bool               bEOF;
 
     int                nNextFID;
 
@@ -50,18 +50,14 @@ class OGRARCGENLayer : public OGRLayer
   public:
                         OGRARCGENLayer(const char* pszFilename,
                                     VSILFILE* fp, OGRwkbGeometryType eType);
-                        ~OGRARCGENLayer();
+                        virtual ~OGRARCGENLayer();
 
+    virtual void                ResetReading() override;
+    virtual OGRFeature *        GetNextFeature() override;
 
-    virtual void                ResetReading();
-    virtual OGRFeature *        GetNextFeature();
+    virtual OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    virtual OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
-
-    virtual int                 TestCapability( const char * );
-
-    virtual OGRSpatialReference *GetSpatialRef() { return NULL; }
-
+    virtual int                 TestCapability( const char * ) override;
 };
 
 /************************************************************************/
@@ -77,32 +73,16 @@ class OGRARCGENDataSource : public OGRDataSource
 
   public:
                         OGRARCGENDataSource();
-                        ~OGRARCGENDataSource();
+               virtual ~OGRARCGENDataSource();
 
-    int                 Open( const char * pszFilename,
-                              int bUpdate );
+    int                 Open( const char * pszFilename );
 
-    virtual const char*         GetName() { return pszName; }
+    virtual const char*         GetName() override { return pszName; }
 
-    virtual int                 GetLayerCount() { return nLayers; }
-    virtual OGRLayer*           GetLayer( int );
+    virtual int                 GetLayerCount() override { return nLayers; }
+    virtual OGRLayer*           GetLayer( int ) override;
 
-    virtual int                 TestCapability( const char * );
+    virtual int                 TestCapability( const char * ) override;
 };
 
-/************************************************************************/
-/*                             OGRARCGENDriver                             */
-/************************************************************************/
-
-class OGRARCGENDriver : public OGRSFDriver
-{
-  public:
-                ~OGRARCGENDriver();
-
-    virtual const char*         GetName();
-    virtual OGRDataSource*      Open( const char *, int );
-    virtual int                 TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_ARCGEN_H_INCLUDED */
+#endif /* ndef OGR_ARCGEN_H_INCLUDED */

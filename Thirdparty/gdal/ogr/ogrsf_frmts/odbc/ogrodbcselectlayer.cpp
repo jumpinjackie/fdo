@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrodbcselectlayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRODBCSelectLayer class, layer access to the results
@@ -31,14 +30,14 @@
 #include "cpl_conv.h"
 #include "ogr_odbc.h"
 
-CPL_CVSID("$Id: ogrodbcselectlayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogrodbcselectlayer.cpp 35191 2016-08-24 01:33:06Z goatbar $");
 /************************************************************************/
 /*                          OGRODBCSelectLayer()                         */
 /************************************************************************/
 
 OGRODBCSelectLayer::OGRODBCSelectLayer( OGRODBCDataSource *poDSIn,
-                                        CPLODBCStatement * poStmtIn )
-
+                                        CPLODBCStatement * poStmtIn ) :
+    pszBaseStatement(CPLStrdup(poStmtIn->GetCommand()))
 {
     poDS = poDSIn;
 
@@ -47,7 +46,6 @@ OGRODBCSelectLayer::OGRODBCSelectLayer( OGRODBCDataSource *poDSIn,
     poFeatureDefn = NULL;
 
     poStmt = poStmtIn;
-    pszBaseStatement = CPLStrdup( poStmtIn->GetCommand() );
 
     BuildFeatureDefn( "SELECT", poStmt );
 }
@@ -131,7 +129,7 @@ void OGRODBCSelectLayer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRODBCSelectLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRODBCSelectLayer::GetFeature( GIntBig nFeatureId )
 
 {
     return OGRODBCLayer::GetFeature( nFeatureId );
@@ -169,7 +167,7 @@ OGRErr OGRODBCSelectLayer::GetExtent(OGREnvelope *, int )
 /*      way of counting features matching a spatial query.              */
 /************************************************************************/
 
-int OGRODBCSelectLayer::GetFeatureCount( int bForce )
+GIntBig OGRODBCSelectLayer::GetFeatureCount( int bForce )
 
 {
     return OGRODBCLayer::GetFeatureCount( bForce );

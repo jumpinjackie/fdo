@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogr_rec.h 15583 2008-10-23 00:04:33Z warmerdam $
+ * $Id: ogr_rec.h 36501 2016-11-25 14:09:24Z rouault $
  *
  * Project:  Epi .REC Translator
  * Purpose:  Definition of classes for OGR .REC support.
@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_REC_H_INCLUDED
-#define _OGR_REC_H_INCLUDED
+#ifndef OGR_REC_H_INCLUDED
+#define OGR_REC_H_INCLUDED
 
 #include "ogrsf_frmts.h"
 
@@ -36,12 +36,11 @@ class OGRRECDataSource;
 
 CPL_C_START
 int CPL_DLL RECGetFieldCount( FILE *fp);
-int CPL_DLL RECGetFieldDefinition( FILE *fp, char *pszFieldName, int *pnType, 
+int CPL_DLL RECGetFieldDefinition( FILE *fp, char *pszFieldName, int *pnType,
                                    int *pnWidth, int *pnPrecision );
 int CPL_DLL RECReadRecord( FILE *fp, char *pszRecBuf, int nRecordLength  );
 const char CPL_DLL *RECGetField( const char *pszSrc, int nStart, int nWidth );
 CPL_C_END
-
 
 /************************************************************************/
 /*                             OGRRECLayer                              */
@@ -65,21 +64,18 @@ class OGRRECLayer : public OGRLayer
     OGRFeature *        GetNextUnfilteredFeature();
 
   public:
-                        OGRRECLayer( const char *pszName, FILE *fp, 
+                        OGRRECLayer( const char *pszName, FILE *fp,
                                      int nFieldCount );
                         ~OGRRECLayer();
 
-    void                ResetReading();
-    OGRFeature *        GetNextFeature();
+    void                ResetReading() override;
+    OGRFeature *        GetNextFeature() override;
 
-    OGRFeatureDefn *    GetLayerDefn() { return poFeatureDefn; }
+    OGRFeatureDefn *    GetLayerDefn() override { return poFeatureDefn; }
 
-    void                SetSpatialFilter( OGRGeometry * ) {}
-
-    int                 TestCapability( const char * );
+    int                 TestCapability( const char * ) override;
 
     int                 IsValid() { return bIsValid; }
-
 };
 
 /************************************************************************/
@@ -97,26 +93,11 @@ class OGRRECDataSource : public OGRDataSource
                         ~OGRRECDataSource();
 
     int                 Open( const char * pszFilename );
-    
-    const char          *GetName() { return pszName; }
-    int                 GetLayerCount() { return 1; }
-    OGRLayer            *GetLayer( int );
-    int                 TestCapability( const char * );
+
+    const char          *GetName() override { return pszName; }
+    int                 GetLayerCount() override { return 1; }
+    OGRLayer            *GetLayer( int ) override;
+    int                 TestCapability( const char * ) override;
 };
 
-/************************************************************************/
-/*                             OGRRECDriver                             */
-/************************************************************************/
-
-class OGRRECDriver : public OGRSFDriver
-{
-  public:
-                ~OGRRECDriver();
-                
-    const char *GetName();
-    OGRDataSource *Open( const char *, int );
-    int         TestCapability( const char * );
-};
-
-
-#endif /* ndef _OGR_REC_H_INCLUDED */
+#endif /* ndef OGR_REC_H_INCLUDED */

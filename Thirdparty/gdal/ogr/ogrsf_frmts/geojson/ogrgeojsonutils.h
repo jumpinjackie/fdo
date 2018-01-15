@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: ogrgeojsonutils.h 19489 2010-04-21 21:39:05Z rouault $
+ * $Id: ogrgeojsonutils.h 36477 2016-11-24 01:41:10Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Private utilities within OGR OGRGeoJSON Driver.
@@ -30,23 +30,13 @@
 #define OGR_GEOJSONUTILS_H_INCLUDED
 
 #include <ogr_core.h>
-#include <jsonc/json.h> // JSON-C
+
+#include "ogr_json_header.h"
+
+#include "cpl_vsi.h"
+#include "gdal_priv.h"
 
 class OGRGeometry;
-
-/************************************************************************/
-/*                           mloskot_deleter functor                    */
-/************************************************************************/
-
-template <typename T>
-struct mloskot_deleter
-{
-    void operator()(T*& ptr)
-    {
-        delete ptr;
-        ptr = 0;
-    }
-};
 
 /************************************************************************/
 /*                           GeoJSONSourceType                          */
@@ -60,7 +50,7 @@ enum GeoJSONSourceType
     eGeoJSONSourceService
 };
 
-GeoJSONSourceType GeoJSONGetSourceType( const char* pszSource );
+GeoJSONSourceType GeoJSONGetSourceType( GDALOpenInfo* poOpenInfo );
 
 /************************************************************************/
 /*                           GeoJSONProtocolType                        */
@@ -80,13 +70,21 @@ GeoJSONProtocolType GeoJSONGetProtocolType( const char* pszSource );
 /*                           GeoJSONIsObject                            */
 /************************************************************************/
 
-int GeoJSONIsObject( const char* pszText );
+bool GeoJSONIsObject( const char* pszText );
 
 /************************************************************************/
 /*                           GeoJSONPropertyToFieldType                 */
 /************************************************************************/
 
-OGRFieldType GeoJSONPropertyToFieldType( json_object* poObject );
+OGRFieldType GeoJSONPropertyToFieldType( json_object* poObject,
+                                         OGRFieldSubType& eSubType,
+                                         bool bArrayAsString = false );
+
+/************************************************************************/
+/*                      GeoJSONStringPropertyToFieldType                */
+/************************************************************************/
+
+OGRFieldType GeoJSONStringPropertyToFieldType( json_object* poObject );
 
 /************************************************************************/
 /*                           OGRGeoJSONGetGeometryName                  */
@@ -94,4 +92,4 @@ OGRFieldType GeoJSONPropertyToFieldType( json_object* poObject );
 
 const char* OGRGeoJSONGetGeometryName( OGRGeometry const* poGeometry );
 
-#endif /* OGR_GEOJSONUTILS_H_INCLUDED */
+#endif  // OGR_GEOJSONUTILS_H_INCLUDED

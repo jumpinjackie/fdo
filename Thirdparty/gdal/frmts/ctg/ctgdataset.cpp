@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ctgdataset.cpp 25311 2012-12-15 12:48:14Z rouault $
  *
  * Project:  CTG driver
  * Purpose:  GDALDataset driver for CTG dataset.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2011, Even Rouault
+ * Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,16 +26,13 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "gdal_frmts.h"
 #include "gdal_pam.h"
 #include "ogr_spatialref.h"
 
-CPL_CVSID("$Id: ctgdataset.cpp 25311 2012-12-15 12:48:14Z rouault $");
+CPL_CVSID("$Id: ctgdataset.cpp 36501 2016-11-25 14:09:24Z rouault $");
 
-CPL_C_START
-void    GDALRegister_CTG(void);
-CPL_C_END
-
-#define HEADER_LINE_COUNT 5
+static const int HEADER_LINE_COUNT = 5;
 
 typedef struct
 {
@@ -94,7 +90,7 @@ static const LULCDescStruct asLULCDesc[] =
     {92, "Glaciers" }
 };
 
-static const char* apszBandDescription[] =
+static const char* const apszBandDescription[] =
 {
     "Land Use and Land Cover",
     "Political units",
@@ -133,8 +129,8 @@ class CTGDataset : public GDALPamDataset
                  CTGDataset();
     virtual     ~CTGDataset();
 
-    virtual CPLErr GetGeoTransform( double * );
-    virtual const char* GetProjectionRef();
+    virtual CPLErr GetGeoTransform( double * ) override;
+    virtual const char* GetProjectionRef() override;
 
     static GDALDataset *Open( GDALOpenInfo * );
     static int          Identify( GDALOpenInfo * );
@@ -155,30 +151,27 @@ class CTGRasterBand : public GDALPamRasterBand
   public:
 
                 CTGRasterBand( CTGDataset *, int );
-               ~CTGRasterBand();
+    virtual ~CTGRasterBand();
 
-    virtual CPLErr IReadBlock( int, int, void * );
-    virtual double GetNoDataValue( int *pbSuccess = NULL );
-    virtual char **GetCategoryNames();
+    virtual CPLErr IReadBlock( int, int, void * ) override;
+    virtual double GetNoDataValue( int *pbSuccess = NULL ) override;
+    virtual char **GetCategoryNames() override;
 };
-
 
 /************************************************************************/
 /*                           CTGRasterBand()                            */
 /************************************************************************/
 
-CTGRasterBand::CTGRasterBand( CTGDataset *poDS, int nBand )
-
+CTGRasterBand::CTGRasterBand( CTGDataset *poDSIn, int nBandIn ) :
+    papszCategories(NULL)
 {
-    this->poDS = poDS;
-    this->nBand = nBand;
+    poDS = poDSIn;
+    nBand = nBandIn;
 
     eDataType = GDT_Int32;
 
     nBlockXSize = poDS->GetRasterXSize();
     nBlockYSize = poDS->GetRasterYSize();
-
-    papszCategories = NULL;
 }
 
 /************************************************************************/
@@ -194,9 +187,9 @@ CTGRasterBand::~CTGRasterBand()
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr CTGRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
+CPLErr CTGRasterBand::IReadBlock( CPL_UNUSED int nBlockXOff,
+                                  CPL_UNUSED int nBlockYOff,
                                   void * pImage )
-
 {
     CTGDataset* poGDS = (CTGDataset* ) poDS;
 
@@ -217,7 +210,7 @@ double CTGRasterBand::GetNoDataValue( int *pbSuccess )
     if (pbSuccess)
         *pbSuccess = TRUE;
 
-    return 0.;
+    return 0.0;
 }
 
 /************************************************************************/
@@ -232,15 +225,14 @@ char **CTGRasterBand::GetCategoryNames()
     if (papszCategories != NULL)
         return papszCategories;
 
-    int i;
     int nasLULCDescSize = (int)(sizeof(asLULCDesc) / sizeof(asLULCDesc[0]));
     int nCategoriesSize = asLULCDesc[nasLULCDescSize - 1].nCode;
     papszCategories = (char**)CPLCalloc(nCategoriesSize + 2, sizeof(char*));
-    for(i=0;i<nasLULCDescSize;i++)
+    for(int i=0;i<nasLULCDescSize;i++)
     {
         papszCategories[asLULCDesc[i].nCode] = CPLStrdup(asLULCDesc[i].pszDesc);
     }
-    for(i=0;i<nCategoriesSize;i++)
+    for(int i=0;i<nCategoriesSize;i++)
     {
         if (papszCategories[i] == NULL)
             papszCategories[i] = CPLStrdup("");
@@ -254,13 +246,16 @@ char **CTGRasterBand::GetCategoryNames()
 /*                            ~CTGDataset()                            */
 /************************************************************************/
 
-CTGDataset::CTGDataset()
-{
-    pszProjection = NULL;
-    bHasReadImagery = FALSE;
-    pabyImage = NULL;
-    fp = NULL;
-}
+CTGDataset::CTGDataset() :
+    fp(NULL),
+    nNWEasting(0),
+    nNWNorthing(0),
+    nCellSize(0),
+    nUTMZone(0),
+    pszProjection(NULL),
+    bHasReadImagery(FALSE),
+    pabyImage(NULL)
+{}
 
 /************************************************************************/
 /*                            ~CTGDataset()                            */
@@ -271,7 +266,7 @@ CTGDataset::~CTGDataset()
 {
     CPLFree(pszProjection);
     CPLFree(pabyImage);
-    if (fp != NULL)
+    if( fp != NULL )
         VSIFCloseL(fp);
 }
 
@@ -336,8 +331,7 @@ int CTGDataset::ReadImagery()
                      nLine, szLine);
             return FALSE;
         }
-        int i;
-        for(i=0;i<6;i++)
+        for(int i=0;i<6;i++)
         {
             int nVal = atoi(ExtractField(szField, szLine, 20 + 10*i, 10));
             if (nVal >= 2000000000)
@@ -361,18 +355,18 @@ int CTGDataset::Identify( GDALOpenInfo * poOpenInfo )
 
     GDALOpenInfo* poOpenInfoToDelete = NULL;
     /*  GZipped grid_cell.gz files are common, so automagically open them */
-    /*  if the /vsigzip/ has not been explicitely passed */
+    /*  if the /vsigzip/ has not been explicitly passed */
     const char* pszFilename = CPLGetFilename(poOpenInfo->pszFilename);
     if ((EQUAL(pszFilename, "grid_cell.gz") ||
          EQUAL(pszFilename, "grid_cell1.gz") ||
          EQUAL(pszFilename, "grid_cell2.gz")) &&
-        !EQUALN(poOpenInfo->pszFilename, "/vsigzip/", 9))
+        !STARTS_WITH_CI(poOpenInfo->pszFilename, "/vsigzip/"))
     {
         osFilename = "/vsigzip/";
         osFilename += poOpenInfo->pszFilename;
         poOpenInfo = poOpenInfoToDelete =
                 new GDALOpenInfo(osFilename.c_str(), GA_ReadOnly,
-                                 poOpenInfo->papszSiblingFiles);
+                                 poOpenInfo->GetSiblingFiles());
     }
 
     if (poOpenInfo->nHeaderBytes < HEADER_LINE_COUNT * 80)
@@ -385,8 +379,7 @@ int CTGDataset::Identify( GDALOpenInfo * poOpenInfo )
 /*      Chech that it looks roughly as a CTG dataset                    */
 /* -------------------------------------------------------------------- */
     const char* pszData = (const char*)poOpenInfo->pabyHeader;
-    int i;
-    for(i=0;i<4 * 80;i++)
+    for(int i=0;i<4 * 80;i++)
     {
         if (!((pszData[i] >= '0' && pszData[i] <= '9') ||
               pszData[i] == ' ' || pszData[i] == '-'))
@@ -416,7 +409,6 @@ int CTGDataset::Identify( GDALOpenInfo * poOpenInfo )
     return TRUE;
 }
 
-
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
@@ -424,20 +416,18 @@ int CTGDataset::Identify( GDALOpenInfo * poOpenInfo )
 GDALDataset *CTGDataset::Open( GDALOpenInfo * poOpenInfo )
 
 {
-    int         i;
-
     if (!Identify(poOpenInfo))
         return NULL;
 
     CPLString osFilename(poOpenInfo->pszFilename);
 
     /*  GZipped grid_cell.gz files are common, so automagically open them */
-    /*  if the /vsigzip/ has not been explicitely passed */
+    /*  if the /vsigzip/ has not been explicitly passed */
     const char* pszFilename = CPLGetFilename(poOpenInfo->pszFilename);
     if ((EQUAL(pszFilename, "grid_cell.gz") ||
          EQUAL(pszFilename, "grid_cell1.gz") ||
          EQUAL(pszFilename, "grid_cell2.gz")) &&
-        !EQUALN(poOpenInfo->pszFilename, "/vsigzip/", 9))
+        !STARTS_WITH_CI(poOpenInfo->pszFilename, "/vsigzip/"))
     {
         osFilename = "/vsigzip/";
         osFilename += poOpenInfo->pszFilename;
@@ -466,7 +456,7 @@ GDALDataset *CTGDataset::Open( GDALOpenInfo * poOpenInfo )
         return NULL;
     }
 
-    for(i=HEADER_LINE_COUNT * 80 - 1;i>=0;i--)
+    for(int i=HEADER_LINE_COUNT * 80 - 1;i>=0;i--)
     {
         if (szHeader[i] == ' ')
             szHeader[i] = 0;
@@ -481,9 +471,7 @@ GDALDataset *CTGDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create a corresponding GDALDataset.                             */
 /* -------------------------------------------------------------------- */
-    CTGDataset         *poDS;
-
-    poDS = new CTGDataset();
+    CTGDataset *poDS = new CTGDataset();
     poDS->fp = fp;
     fp = NULL;
     poDS->nRasterXSize = nCols;
@@ -531,7 +519,7 @@ GDALDataset *CTGDataset::Open( GDALOpenInfo * poOpenInfo )
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
     poDS->nBands = 6;
-    for( i = 0; i < poDS->nBands; i++ )
+    for( int i = 0; i < poDS->nBands; i++ )
     {
         poDS->SetBand( i+1, new CTGRasterBand( poDS, i+1 ) );
         poDS->GetRasterBand(i+1)->SetDescription(apszBandDescription[i]);
@@ -548,7 +536,7 @@ GDALDataset *CTGDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -565,7 +553,7 @@ CPLErr CTGDataset::GetGeoTransform( double * padfTransform )
     padfTransform[4] = 0.;
     padfTransform[5] = -nCellSize;
 
-    return( CE_None );
+    return CE_None;
 }
 
 /************************************************************************/
@@ -585,24 +573,22 @@ const char* CTGDataset::GetProjectionRef()
 void GDALRegister_CTG()
 
 {
-    GDALDriver  *poDriver;
+    if( GDALGetDriverByName( "CTG" ) != NULL )
+      return;
 
-    if( GDALGetDriverByName( "CTG" ) == NULL )
-    {
-        poDriver = new GDALDriver();
+    GDALDriver *poDriver = new GDALDriver();
 
-        poDriver->SetDescription( "CTG" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
-                                   "USGS LULC Composite Theme Grid" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
-                                   "frmt_various.html#CTG" );
+    poDriver->SetDescription( "CTG" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "USGS LULC Composite Theme Grid" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
+                               "frmt_various.html#CTG" );
 
-        poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
 
-        poDriver->pfnOpen = CTGDataset::Open;
-        poDriver->pfnIdentify = CTGDataset::Identify;
+    poDriver->pfnOpen = CTGDataset::Open;
+    poDriver->pfnIdentify = CTGDataset::Identify;
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-

@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: osm2osm.c 24671 2012-07-10 18:37:55Z rouault $
+ * $Id: osm2osm.c 33138 2016-01-24 11:18:11Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  * Purpose:  osm2osm
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -48,7 +48,7 @@
 #define DAYSPERLYEAR    366
 
 #define isleap(y) ((((y) % 4) == 0 && ((y) % 100) != 0) || ((y) % 400) == 0)
-#define LEAPS_THRU_END_OF(y)    ((y) / 4 - (y) / 100 + (y) / 400)
+#define LEAPS_THROUGH_END_OF(y)    ((y) / 4 - (y) / 100 + (y) / 400)
 
 static const int mon_lengths[2][MONSPERYEAR] = {
   {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
@@ -107,8 +107,8 @@ struct tm * myCPLUnixTimeToYMDHMS(GIntBig unixTime, struct tm* pRet)
         if (days < 0)
             --newy;
         days -= (newy - y) * DAYSPERNYEAR +
-            LEAPS_THRU_END_OF(newy - 1) -
-            LEAPS_THRU_END_OF(y - 1);
+            LEAPS_THROUGH_END_OF(newy - 1) -
+            LEAPS_THROUGH_END_OF(y - 1);
         y = newy;
     }
     pRet->tm_year = (int) (y - TM_YEAR_BASE);

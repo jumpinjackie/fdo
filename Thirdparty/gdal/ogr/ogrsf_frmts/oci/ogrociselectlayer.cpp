@@ -1,8 +1,7 @@
 /******************************************************************************
- * $Id: ogrociselectlayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $
  *
  * Project:  Oracle Spatial Driver
- * Purpose:  Implementation of the OGROCISelectLayer class.  This class 
+ * Purpose:  Implementation of the OGROCISelectLayer class.  This class
  *           provides read semantics on the result of a SELECT statement.
  * Author:   Frank Warmerdam, warmerdam@pobox.com
  *
@@ -32,13 +31,13 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-CPL_CVSID("$Id: ogrociselectlayer.cpp 10645 2007-01-18 02:22:39Z warmerdam $");
+CPL_CVSID("$Id: ogrociselectlayer.cpp 34819 2016-07-28 22:32:18Z goatbar $");
 
 /************************************************************************/
 /*                          OGROCISelectLayer()                         */
 /************************************************************************/
 
-OGROCISelectLayer::OGROCISelectLayer( OGROCIDataSource *poDSIn, 
+OGROCISelectLayer::OGROCISelectLayer( OGROCIDataSource *poDSIn,
                                       const char * pszQuery,
                                       OGROCIStatement *poDescribedCommand )
 
@@ -48,9 +47,10 @@ OGROCISelectLayer::OGROCISelectLayer( OGROCIDataSource *poDSIn,
     iNextShapeId = 0;
 
     poFeatureDefn = ReadTableDefinition( poDescribedCommand );
+    SetDescription( poFeatureDefn->GetName() );
 
     pszQueryStatement = CPLStrdup(pszQuery);
-    
+
     ResetReading();
 }
 
@@ -79,17 +79,17 @@ OGROCISelectLayer::ReadTableDefinition( OGROCIStatement *poCommand )
 /* -------------------------------------------------------------------- */
 /*      Parse the returned table information.                           */
 /* -------------------------------------------------------------------- */
-    for( int iParm = 0; TRUE; iParm++ )
-    {                                                           
+    for( int iParm = 0; true; iParm++ )
+    {
         OGRFieldDefn oField( "", OFTString );
         int          nStatus;
         OCIParam     *hParmDesc;
         ub2          nOCIType;
         ub4          nOCILen;
 
-        nStatus = 
-            OCIParamGet( poCommand->GetStatement(), OCI_HTYPE_STMT, 
-                         poSession->hError, (dvoid**)&hParmDesc, 
+        nStatus =
+            OCIParamGet( poCommand->GetStatement(), OCI_HTYPE_STMT,
+                         poSession->hError, (dvoid**)&hParmDesc,
                          (ub4) iParm+1 );
 
         if( nStatus == OCI_ERROR )
@@ -114,17 +114,33 @@ OGROCISelectLayer::ReadTableDefinition( OGROCIStatement *poCommand )
     OGRFeatureDefn *poDefn;
 
     poDefn = poCommand->GetResultDefn();
+    if( iGeomColumn >= 0 )
+        poDefn->SetGeomType(wkbUnknown);
     poDefn->Reference();
 
 /* -------------------------------------------------------------------- */
 /*      Do we have an FID?                                              */
 /* -------------------------------------------------------------------- */
-    const char *pszExpectedFIDName = 
+    const char *pszExpectedFIDName =
         CPLGetConfigOption( "OCI_FID", "OGR_FID" );
     if( poDefn->GetFieldIndex(pszExpectedFIDName) > -1 )
     {
         iFIDColumn = poDefn->GetFieldIndex(pszExpectedFIDName);
         pszFIDName = CPLStrdup(poDefn->GetFieldDefn(iFIDColumn)->GetNameRef());
+    }
+
+    if( EQUAL(pszExpectedFIDName, "OGR_FID") && pszFIDName )
+    {
+        for(int i=0;i<poDefn->GetFieldCount();i++)
+        {
+            // This is presumably a Integer since we always create Integer64 with a
+            // defined precision
+            if( poDefn->GetFieldDefn(i)->GetType() == OFTInteger64 &&
+                poDefn->GetFieldDefn(i)->GetWidth() == 0 )
+            {
+                poDefn->GetFieldDefn(i)->SetType(OFTInteger);
+            }
+        }
     }
 
     return poDefn;

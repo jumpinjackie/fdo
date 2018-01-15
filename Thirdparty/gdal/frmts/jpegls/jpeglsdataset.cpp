@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: jpeglsdataset.cpp 21192 2010-12-04 10:49:56Z rouault $
  *
  * Project:  JPEGLS driver based on CharLS library
  * Purpose:  JPEGLS driver based on CharLS library
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault, <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,17 +26,15 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "gdal_pam.h"
 #include "cpl_string.h"
+#include "gdal_frmts.h"
+#include "gdal_pam.h"
 
-/* CharLS header */
-#include <interface.h>
-
-extern "C" void GDALRegister_JPEGLS();
+#include "jpegls_header.h"
 
 /* g++ -Wall -g fmrts/jpegls/jpeglsdataset.cpp -shared -fPIC -o gdal_JPEGLS.so -Iport -Igcore -L. -lgdal -I/home/even/charls-1.0 -L/home/even/charls-1.0/build -lCharLS */
 
-CPL_CVSID("$Id: jpeglsdataset.cpp 21192 2010-12-04 10:49:56Z rouault $");
+CPL_CVSID("$Id: jpeglsdataset.cpp 37526 2017-02-28 23:13:08Z rouault $");
 
 /************************************************************************/
 /* ==================================================================== */
@@ -50,6 +47,7 @@ class JPEGLSDataset : public GDALPamDataset
     friend class JPEGLSRasterBand;
 
     CPLString osFilename;
+    VSILFILE *fpL;
     GByte* pabyUncompressedData;
     int    bHasUncompressed;
     int    nBitsPerSample;
@@ -83,35 +81,31 @@ class JPEGLSRasterBand : public GDALPamRasterBand
   public:
 
                 JPEGLSRasterBand( JPEGLSDataset * poDS, int nBand);
-                ~JPEGLSRasterBand();
+    virtual ~JPEGLSRasterBand();
 
-    virtual CPLErr          IReadBlock( int, int, void * );
-    virtual GDALColorInterp GetColorInterpretation();
+    virtual CPLErr          IReadBlock( int, int, void * ) override;
+    virtual GDALColorInterp GetColorInterpretation() override;
 };
-
 
 /************************************************************************/
 /*                        JPEGLSRasterBand()                            */
 /************************************************************************/
 
-JPEGLSRasterBand::JPEGLSRasterBand( JPEGLSDataset *poDS, int nBand)
+JPEGLSRasterBand::JPEGLSRasterBand( JPEGLSDataset *poDSIn, int nBandIn )
 
 {
-    this->poDS = poDS;
-    this->nBand = nBand;
-    this->eDataType = (poDS->nBitsPerSample <= 8) ? GDT_Byte : GDT_Int16;
-    this->nBlockXSize = poDS->nRasterXSize;
-    this->nBlockYSize = poDS->nRasterYSize;
+    poDS = poDSIn;
+    nBand = nBandIn;
+    eDataType = (poDSIn->nBitsPerSample <= 8) ? GDT_Byte : GDT_Int16;
+    nBlockXSize = poDSIn->nRasterXSize;
+    nBlockYSize = poDSIn->nRasterYSize;
 }
 
 /************************************************************************/
 /*                      ~JPEGLSRasterBand()                             */
 /************************************************************************/
 
-JPEGLSRasterBand::~JPEGLSRasterBand()
-{
-}
-
+JPEGLSRasterBand::~JPEGLSRasterBand() {}
 
 /************************************************************************/
 /*                    JPEGLSGetErrorAsString()                          */
@@ -138,7 +132,7 @@ static const char* JPEGLSGetErrorAsString(JLS_ERROR eCode)
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr JPEGLSRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
+CPLErr JPEGLSRasterBand::IReadBlock( int /*nBlockXOff*/, int /*nBlockYOff*/,
                                       void * pImage )
 {
     JPEGLSDataset *poGDS = (JPEGLSDataset *) poDS;
@@ -178,7 +172,6 @@ CPLErr JPEGLSRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
             }
         }
     }
-    
 
     return CE_None;
 }
@@ -223,12 +216,13 @@ GDALColorInterp JPEGLSRasterBand::GetColorInterpretation()
 /*                        JPEGLSDataset()                          */
 /************************************************************************/
 
-JPEGLSDataset::JPEGLSDataset()
-{
-    pabyUncompressedData = NULL;
-    bHasUncompressed = FALSE;
-    nBitsPerSample = 0;
-}
+JPEGLSDataset::JPEGLSDataset() :
+    fpL(NULL),
+    pabyUncompressedData(NULL),
+    bHasUncompressed(FALSE),
+    nBitsPerSample(0),
+    nOffset(0)
+{}
 
 /************************************************************************/
 /*                         ~JPEGLSDataset()                        */
@@ -237,6 +231,8 @@ JPEGLSDataset::JPEGLSDataset()
 JPEGLSDataset::~JPEGLSDataset()
 
 {
+    if( fpL != NULL )
+        VSIFCloseL(fpL);
     VSIFree(pabyUncompressedData);
 }
 
@@ -251,43 +247,61 @@ CPLErr JPEGLSDataset::Uncompress()
 
     bHasUncompressed = TRUE;
 
-    VSILFILE* fp = VSIFOpenL(osFilename, "rb");
-    if (!fp)
+    CPLAssert( fpL != NULL );
+    VSIFSeekL(fpL, 0, SEEK_END);
+    const vsi_l_offset nFileSizeBig = VSIFTellL(fpL) - nOffset;
+    VSIFSeekL(fpL, 0, SEEK_SET);
+    const size_t nFileSize = static_cast<size_t>(nFileSizeBig);
+#if SIZEOF_VOIDP != 8
+    if( nFileSizeBig != nFileSize )
+    {
         return CE_Failure;
-
-    VSIFSeekL(fp, 0, SEEK_END);
-    int nFileSize = (int)VSIFTellL(fp) - nOffset;
-    VSIFSeekL(fp, 0, SEEK_SET);
+    }
+#endif
 
     GByte* pabyCompressedData = (GByte*)VSIMalloc(nFileSize);
     if (pabyCompressedData == NULL)
     {
-        VSIFCloseL(fp);
+        VSIFCloseL(fpL);
+        fpL = NULL;
         return CE_Failure;
     }
 
-    VSIFSeekL(fp, nOffset, SEEK_SET);
-    VSIFReadL(pabyCompressedData, 1, nFileSize, fp);
-    VSIFCloseL(fp);
-    fp = NULL;
+    VSIFSeekL(fpL, nOffset, SEEK_SET);
+    if( VSIFReadL(pabyCompressedData, 1, nFileSize, fpL) != nFileSize )
+    {
+        VSIFCloseL(fpL);
+        fpL = NULL;
+        return CE_Failure;
+    }
+    VSIFCloseL(fpL);
+    fpL = NULL;
 
-    int nUncompressedSize = nRasterXSize * nRasterYSize *
-                            nBands * (GDALGetDataTypeSize(GetRasterBand(1)->GetRasterDataType()) / 8);
-    pabyUncompressedData = (GByte*)VSIMalloc(nUncompressedSize);
+    const GUIntBig nUncompressedSizeBig = static_cast<GUIntBig>(nRasterXSize) *
+        nRasterYSize * nBands *
+        GDALGetDataTypeSizeBytes(GetRasterBand(1)->GetRasterDataType());
+    const size_t nUncompressedSize = static_cast<size_t>(nUncompressedSizeBig);
+#if SIZEOF_VOIDP != 8
+    if( nUncompressedSizeBig != nUncompressedSize )
+    {
+        VSIFree(pabyCompressedData);
+        return CE_Failure;
+    }
+#endif
+    pabyUncompressedData = (GByte*)VSI_MALLOC_VERBOSE(nUncompressedSize);
     if (pabyUncompressedData == NULL)
     {
-        CPLError(CE_Failure, CPLE_OutOfMemory, "Out of memory");
         VSIFree(pabyCompressedData);
         return CE_Failure;
     }
 
-
-    JLS_ERROR eError = JpegLsDecode(pabyUncompressedData, nUncompressedSize, pabyCompressedData, nFileSize, NULL);
+    JLS_ERROR eError = JpegLsDecode( pabyUncompressedData, nUncompressedSize,
+                                     pabyCompressedData, nFileSize, NULL);
     if (eError != OK)
     {
-        CPLError(CE_Failure, CPLE_AppDefined,
-                    "Uncompression of data failed : %s",
-                    JPEGLSGetErrorAsString(eError));
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "Decompression of data failed : %s",
+                  JPEGLSGetErrorAsString(eError) );
         VSIFree(pabyCompressedData);
         VSIFree(pabyUncompressedData);
         pabyUncompressedData = NULL;
@@ -306,12 +320,12 @@ CPLErr JPEGLSDataset::Uncompress()
 int JPEGLSDataset::Identify( GDALOpenInfo * poOpenInfo, int& bIsDCOM )
 
 {
-    GByte  *pabyHeader = poOpenInfo->pabyHeader;
+    const GByte  *pabyHeader = poOpenInfo->pabyHeader;
     int    nHeaderBytes = poOpenInfo->nHeaderBytes;
 
     bIsDCOM = FALSE;
 
-    if( nHeaderBytes < 10 )
+    if( poOpenInfo->fpL == NULL || nHeaderBytes < 10 )
         return FALSE;
 
     if( pabyHeader[0] != 0xff
@@ -394,12 +408,11 @@ GDALDataset *JPEGLSDataset::Open( GDALOpenInfo * poOpenInfo )
     }
     else
     {
-        VSILFILE* fp = VSIFOpenL(poOpenInfo->pszFilename, "rb");
-        if (fp == NULL)
-            return NULL;
+        VSILFILE* fp = poOpenInfo->fpL;
         GByte abyBuffer[1028];
         GByte abySignature[] = { 0xFF, 0xD8, 0xFF, 0xF7 };
-        while(TRUE)
+        VSIFSeekL(fp, 0, SEEK_SET);
+        while( true )
         {
             if (VSIFReadL(abyBuffer, 1, 1028, fp) != 1028)
             {
@@ -423,8 +436,8 @@ GDALDataset *JPEGLSDataset::Open( GDALOpenInfo * poOpenInfo )
 
         VSIFSeekL(fp, nOffset, SEEK_SET);
         VSIFReadL(abyBuffer, 1, 1024, fp);
+        VSIFSeekL(fp, 0, SEEK_SET);
         eError = JpegLsReadHeader(abyBuffer, 1024, &sParams);
-        VSIFCloseL(fp);
         if (eError == OK)
         {
             CPLDebug("JPEGLS", "JPEGLS image found at offset %d", nOffset);
@@ -449,21 +462,20 @@ GDALDataset *JPEGLSDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create a corresponding GDALDataset.                             */
 /* -------------------------------------------------------------------- */
-    JPEGLSDataset     *poDS;
-    int                 iBand;
-
-    poDS = new JPEGLSDataset();
+    JPEGLSDataset *poDS = new JPEGLSDataset();
     poDS->osFilename = poOpenInfo->pszFilename;
     poDS->nRasterXSize = sParams.width;
     poDS->nRasterYSize = sParams.height;
     poDS->nBands = sParams.components;
     poDS->nBitsPerSample = sParams.bitspersample;
     poDS->nOffset = nOffset;
+    poDS->fpL = poOpenInfo->fpL;
+    poOpenInfo->fpL = NULL;
 
 /* -------------------------------------------------------------------- */
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
-    for( iBand = 1; iBand <= poDS->nBands; iBand++ )
+    for( int iBand = 1; iBand <= poDS->nBands; iBand++ )
     {
         poDS->SetBand( iBand, new JPEGLSRasterBand( poDS, iBand) );
 
@@ -486,7 +498,7 @@ GDALDataset *JPEGLSDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 
-    return( poDS );
+    return poDS;
 }
 
 /************************************************************************/
@@ -496,12 +508,12 @@ GDALDataset *JPEGLSDataset::Open( GDALOpenInfo * poOpenInfo )
 GDALDataset *
 JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
                 int bStrict, char ** papszOptions,
-                GDALProgressFunc pfnProgress, void * pProgressData )
+                GDALProgressFunc /*pfnProgress*/, void * /*pProgressData*/ )
 
 {
-    int  nBands = poSrcDS->GetRasterCount();
-    int  nXSize = poSrcDS->GetRasterXSize();
-    int  nYSize = poSrcDS->GetRasterYSize();
+    const int  nBands = poSrcDS->GetRasterCount();
+    const int  nXSize = poSrcDS->GetRasterXSize();
+    const int  nYSize = poSrcDS->GetRasterYSize();
 
 /* -------------------------------------------------------------------- */
 /*      Some some rudimentary checks                                    */
@@ -539,14 +551,25 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
             return NULL;
     }
 
-    int nWordSize = GDALGetDataTypeSize(eDT) / 8;
-    int nUncompressedSize = nXSize * nYSize * nBands * nWordSize;
-    int nCompressedSize = nUncompressedSize + 256; /* FIXME? bug in charls-1.0beta ?. I needed a "+ something" to avoid erros on byte.tif */
-    GByte* pabyDataCompressed = (GByte*)VSIMalloc(nCompressedSize);
-    GByte* pabyDataUncompressed = (GByte*)VSIMalloc(nUncompressedSize);
+    const int nWordSize = GDALGetDataTypeSizeBytes(eDT);
+    const GUIntBig nUncompressedSizeBig = static_cast<GUIntBig>(nXSize) *
+                                                nYSize * nBands * nWordSize;
+#if SIZEOF_VOIDP != 8
+    if( nUncompressedSizeBig + 256 !=
+                    static_cast<size_t>(nUncompressedSizeBig + 256) )
+    {
+        CPLError(CE_Failure, CPLE_OutOfMemory, "Too big image");
+        return NULL;
+    }
+#endif
+    const size_t nUncompressedSize = static_cast<size_t>(nUncompressedSizeBig);
+    // FIXME? bug in charls-1.0beta ?. I needed a "+ something" to
+    // avoid errors on byte.tif.
+    const size_t nCompressedSize = nUncompressedSize + 256;
+    GByte* pabyDataCompressed = (GByte*)VSI_MALLOC_VERBOSE(nCompressedSize);
+    GByte* pabyDataUncompressed = (GByte*)VSI_MALLOC_VERBOSE(nUncompressedSize);
     if (pabyDataCompressed == NULL || pabyDataUncompressed == NULL)
     {
-        CPLError(CE_Failure, CPLE_OutOfMemory, "Out of memory");
         VSIFree(pabyDataCompressed);
         VSIFree(pabyDataUncompressed);
         return NULL;
@@ -556,7 +579,7 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
     eErr = poSrcDS->RasterIO(GF_Read, 0, 0, nXSize, nYSize,
                       pabyDataUncompressed, nXSize, nYSize,
                       eDT, nBands, NULL,
-                      nBands * nWordSize, nBands * nWordSize * nXSize, nWordSize);
+                      nBands * nWordSize, nBands * nWordSize * nXSize, nWordSize, NULL);
     if (eErr != CE_None)
     {
         VSIFree(pabyDataCompressed);
@@ -605,7 +628,7 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
         if (nBits != 8 && nBits != 16)
             sParams.bitspersample = nBits;
     }
-    
+
     sParams.components = nBands;
     JLS_ERROR eError = JpegLsEncode(pabyDataCompressed, nCompressedSize,
                                     &nWritten,
@@ -627,6 +650,7 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
     VSILFILE* fp = VSIFOpenL(pszFilename, "wb");
     if (fp == NULL)
     {
+        CPLError(CE_Failure, CPLE_FileIO, "Cannot create %s", pszFilename);
         VSIFree(pabyDataCompressed);
         return NULL;
     }
@@ -637,7 +661,7 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
     VSIFCloseL(fp);
 
 /* -------------------------------------------------------------------- */
-/*      Re-open dataset, and copy any auxilary pam information.         */
+/*      Re-open dataset, and copy any auxiliary pam information.         */
 /* -------------------------------------------------------------------- */
     JPEGLSDataset *poDS = (JPEGLSDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 
@@ -654,41 +678,36 @@ JPEGLSDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 void GDALRegister_JPEGLS()
 
 {
-    GDALDriver  *poDriver;
-
-    if (! GDAL_CHECK_VERSION("JPEGLS driver"))
+    if( !GDAL_CHECK_VERSION( "JPEGLS driver" ) )
         return;
 
-    if( GDALGetDriverByName( "JPEGLS" ) == NULL )
-    {
-        poDriver = new GDALDriver();
+    if( GDALGetDriverByName( "JPEGLS" ) != NULL )
+        return;
 
-        poDriver->SetDescription( "JPEGLS" );
-        poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
-                                   "JPEGLS" );
-        poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC,
-                                   "frmt_jpegls.html" );
-        //poDriver->SetMetadataItem( GDAL_DMD_MIMETYPE, "image/jls" );
-        poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "jls" );
-        poDriver->SetMetadataItem( GDAL_DMD_CREATIONDATATYPES,
-                                   "Byte Int16" );
-        poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "JPEGLS" );
+    poDriver->SetMetadataItem( GDAL_DCAP_RASTER, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "JPEGLS" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "frmt_jpegls.html" );
+    // poDriver->SetMetadataItem( GDAL_DMD_MIMETYPE, "image/jls" );
+    poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "jls" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONDATATYPES, "Byte Int16" );
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
 "<CreationOptionList>\n"
 "   <Option name='INTERLEAVE' type='string-select' default='BAND' description='File interleaving'>"
 "       <Value>PIXEL</Value>"
 "       <Value>LINE</Value>"
 "       <Value>BAND</Value>"
 "   </Option>"
-"   <Option name='LOSS_FACTOR' type='int' default='0' description='0 = lossless, 1 = near lossless, > 1 lossless'/>"
+"   <Option name='LOSS_FACTOR' type='int' default='0' description='0 = lossless, 1 = near lossless, >1 = lossy'/>"
 "</CreationOptionList>\n" );
-        
-        poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
 
-        poDriver->pfnIdentify = JPEGLSDataset::Identify;
-        poDriver->pfnOpen = JPEGLSDataset::Open;
-        poDriver->pfnCreateCopy = JPEGLSDataset::CreateCopy;
+    poDriver->SetMetadataItem( GDAL_DCAP_VIRTUALIO, "YES" );
 
-        GetGDALDriverManager()->RegisterDriver( poDriver );
-    }
+    poDriver->pfnIdentify = JPEGLSDataset::Identify;
+    poDriver->pfnOpen = JPEGLSDataset::Open;
+    poDriver->pfnCreateCopy = JPEGLSDataset::CreateCopy;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
 }
-

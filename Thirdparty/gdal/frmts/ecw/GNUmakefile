@@ -3,8 +3,8 @@ include ../../GDALmake.opt
 
 OBJ	=	ecwdataset.o ecwcreatecopy.o jp2userbox.o ecwasyncreader.o
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) -DFRMT_ecw $(CPPFLAGS) \
-	$(ECW_FLAGS) $(ECW_INCLUDE) $(EXTRA_CFLAGS)
+CPPFLAGS	:=	 -DFRMT_ecw $(CPPFLAGS) \
+	$(ECW_FLAGS) $(ECW_INCLUDE) $(EXTRA_CFLAGS) -DDO_NOT_USE_DEBUG_BOOL
 PLUGIN_SO =	gdal_ECW_JP2ECW.so
 
 default:	$(OBJ:.o=.$(OBJ_EXT))

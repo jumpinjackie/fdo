@@ -24,8 +24,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
-#ifndef __INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
-#define __INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
+#ifndef INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
+#define INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
 
 #include "segment/cpcidsksegment.h"
 #include "pcidsk_buffer.h"
@@ -45,7 +45,7 @@ namespace PCIDSK {
         void SetPath(const std::string& oPath);
 
         //synchronize the segment on disk.
-        void Synchronize();
+        void Synchronize() override;
     private:
         // Helper housekeeping functions
         void Load();
@@ -58,4 +58,4 @@ namespace PCIDSK {
     };
 }
 
-#endif // __INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H
+#endif // INCLUDE_PCIDSK_SEGMENT_CLINKSEGMENT_H

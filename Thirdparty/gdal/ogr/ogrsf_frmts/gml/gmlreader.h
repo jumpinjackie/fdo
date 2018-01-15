@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gmlreader.h 25120 2012-10-13 22:38:57Z rouault $
+ * $Id: gmlreader.h 38566 2017-05-21 16:59:47Z rouault $
  *
  * Project:  GML Reader
  * Purpose:  Public Declarations for OGR free GML Reader code.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2002, Frank Warmerdam
+ * Copyright (c) 2008-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -14,27 +15,31 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _GMLREADER_H_INCLUDED
-#define _GMLREADER_H_INCLUDED
+#ifndef GMLREADER_H_INCLUDED
+#define GMLREADER_H_INCLUDED
 
 #include "cpl_port.h"
 #include "cpl_vsi.h"
 #include "cpl_minixml.h"
+#include "gmlutils.h"
 
 #include <vector>
+
+// Special value to map to a NULL field
+#define OGR_GML_NULL "___OGR_GML_NULL___"
 
 typedef enum {
     GMLPT_Untyped = 0,
@@ -43,8 +48,16 @@ typedef enum {
     GMLPT_Real = 3,
     GMLPT_Complex = 4,
     GMLPT_StringList = 5,
-    GMLPT_IntegerList = 6, 
-    GMLPT_RealList = 7
+    GMLPT_IntegerList = 6,
+    GMLPT_RealList = 7,
+    GMLPT_FeatureProperty = 8,
+    GMLPT_FeaturePropertyList = 9,
+    GMLPT_Boolean = 10,
+    GMLPT_BooleanList = 11,
+    GMLPT_Short = 12,
+    GMLPT_Float = 13,
+    GMLPT_Integer64 = 14,
+    GMLPT_Integer64List = 15
 } GMLPropertyType;
 
 /************************************************************************/
@@ -66,16 +79,17 @@ class CPL_DLL GMLPropertyDefn
     int               m_nPrecision;
     char             *m_pszSrcElement;
     size_t            m_nSrcElementLen;
-    int               m_nIndex;
+    char             *m_pszCondition;
+    bool              m_bNullable;
 
 public:
-    
+
         GMLPropertyDefn( const char *pszName, const char *pszSrcElement=NULL );
        ~GMLPropertyDefn();
 
-    const char *GetName() const { return m_pszName; } 
+    const char *GetName() const { return m_pszName; }
 
-    GMLPropertyType GetType() const { return m_eType; } 
+    GMLPropertyType GetType() const { return m_eType; }
     void        SetType( GMLPropertyType eType ) { m_eType = eType; }
     void        SetWidth( int nWidth) { m_nWidth = nWidth; }
     int         GetWidth() const { return m_nWidth; }
@@ -84,13 +98,47 @@ public:
     void        SetSrcElement( const char *pszSrcElement );
     const char *GetSrcElement() const { return m_pszSrcElement; }
     size_t      GetSrcElementLen() const { return m_nSrcElementLen; }
-    void        SetAttributeIndex( int nIndex ) { m_nIndex = nIndex; }
-    int         GetAttributeIndex() const { return m_nIndex; }
 
-    void        AnalysePropertyValue( const GMLProperty* psGMLProperty );
+    void        SetCondition( const char *pszCondition );
+    const char *GetCondition() const { return m_pszCondition; }
+
+    void        SetNullable( bool bNullable ) { m_bNullable = bNullable; }
+    bool        IsNullable() const { return m_bNullable; }
+
+    void        AnalysePropertyValue( const GMLProperty* psGMLProperty,
+                                      bool bSetWidth = true );
 
     static bool IsSimpleType( GMLPropertyType eType )
     { return eType == GMLPT_String || eType == GMLPT_Integer || eType == GMLPT_Real; }
+};
+
+/************************************************************************/
+/*                    GMLGeometryPropertyDefn                           */
+/************************************************************************/
+
+class CPL_DLL GMLGeometryPropertyDefn
+{
+    char       *m_pszName;
+    char       *m_pszSrcElement;
+    int         m_nGeometryType;
+    int         m_nAttributeIndex;
+    bool        m_bNullable;
+
+public:
+        GMLGeometryPropertyDefn( const char *pszName, const char *pszSrcElement,
+                                 int nType, int nAttributeIndex,
+                                 bool bNullable );
+       ~GMLGeometryPropertyDefn();
+
+        const char *GetName() const { return m_pszName; }
+
+        int GetType() const { return m_nGeometryType; }
+        void SetType(int nType) { m_nGeometryType = nType; }
+        const char *GetSrcElement() const { return m_pszSrcElement; }
+
+        int GetAttributeIndex() const { return m_nAttributeIndex; }
+
+        bool IsNullable() const { return m_bNullable; }
 };
 
 /************************************************************************/
@@ -102,76 +150,77 @@ class CPL_DLL GMLFeatureClass
     char        *m_pszElementName;
     int          n_nNameLen;
     int          n_nElementNameLen;
-    char        *m_pszGeometryElement;
     int         m_nPropertyCount;
     GMLPropertyDefn **m_papoProperty;
 
-    int         m_bSchemaLocked;
+    int         m_nGeometryPropertyCount;
+    GMLGeometryPropertyDefn **m_papoGeometryProperty;
 
-    int         m_nFeatureCount;
+    bool        m_bSchemaLocked;
+
+    GIntBig     m_nFeatureCount;
 
     char        *m_pszExtraInfo;
 
-    int         m_bHaveExtents;
+    bool        m_bHaveExtents;
     double      m_dfXMin;
     double      m_dfXMax;
     double      m_dfYMin;
     double      m_dfYMax;
 
-    int         m_nGeometryType;
-    int         m_nGeometryIndex;
-
     char       *m_pszSRSName;
-    int         m_bSRSNameConsistant;
+    bool        m_bSRSNameConsistent;
 
-public:
-            GMLFeatureClass( const char *pszName = "" );
-           ~GMLFeatureClass();
+  public:
+    explicit  GMLFeatureClass( const char *pszName = "" );
+             ~GMLFeatureClass();
 
     const char *GetElementName() const;
     size_t      GetElementNameLen() const;
     void        SetElementName( const char *pszElementName );
-
-    const char *GetGeometryElement() const { return m_pszGeometryElement; }
-    void        SetGeometryElement( const char *pszElementName );
 
     const char *GetName() const { return m_pszName; }
     void        SetName(const char* pszNewName);
     int         GetPropertyCount() const { return m_nPropertyCount; }
     GMLPropertyDefn *GetProperty( int iIndex ) const;
     int GetPropertyIndex( const char *pszName ) const;
-    GMLPropertyDefn *GetProperty( const char *pszName ) const 
+    GMLPropertyDefn *GetProperty( const char *pszName ) const
         { return GetProperty( GetPropertyIndex(pszName) ); }
     int         GetPropertyIndexBySrcElement( const char *pszElement, int nLen ) const;
+    void        StealProperties();
+
+    int         GetGeometryPropertyCount() const { return m_nGeometryPropertyCount; }
+    GMLGeometryPropertyDefn *GetGeometryProperty( int iIndex ) const;
+    int         GetGeometryPropertyIndexBySrcElement( const char *pszElement ) const;
+    void        StealGeometryProperties();
+
+    bool        HasFeatureProperties();
 
     int         AddProperty( GMLPropertyDefn * );
+    int         AddGeometryProperty( GMLGeometryPropertyDefn * );
+    void        ClearGeometryProperties();
 
-    int         IsSchemaLocked() const { return m_bSchemaLocked; }
-    void        SetSchemaLocked( int bLock ) { m_bSchemaLocked = bLock; }
+    bool        IsSchemaLocked() const { return m_bSchemaLocked; }
+    void        SetSchemaLocked( bool bLock ) { m_bSchemaLocked = bLock; }
 
     const char  *GetExtraInfo();
     void        SetExtraInfo( const char * );
 
-    int         GetFeatureCount();
-    void        SetFeatureCount( int );
+    GIntBig     GetFeatureCount();
+    void        SetFeatureCount( GIntBig );
 
-    int         HasExtents() const { return m_bHaveExtents; }
-    void        SetExtents( double dfXMin, double dfXMax, 
+    bool        HasExtents() const { return m_bHaveExtents; }
+    void        SetExtents( double dfXMin, double dfXMax,
                             double dFYMin, double dfYMax );
-    int         GetExtents( double *pdfXMin, double *pdfXMax, 
+    bool        GetExtents( double *pdfXMin, double *pdfXMax,
                             double *pdFYMin, double *pdfYMax );
-
-    int         GetGeometryType() const { return m_nGeometryType; }
-    void        SetGeometryType( int nNewType ) { m_nGeometryType = nNewType; }
-    int         GetGeometryAttributeIndex() const { return m_nGeometryIndex; }
-    void        SetGeometryAttributeIndex( int nGeometryIndex ) { m_nGeometryIndex = nGeometryIndex; }
 
     void        SetSRSName( const char* pszSRSName );
     void        MergeSRSName( const char* pszSRSName );
     const char *GetSRSName() { return m_pszSRSName; }
 
     CPLXMLNode *SerializeToXML();
-    int         InitializeFromXML( CPLXMLNode * );
+    bool        InitializeFromXML( CPLXMLNode * );
 };
 
 /************************************************************************/
@@ -194,18 +243,20 @@ class CPL_DLL GMLFeature
     char           **m_papszOBProperties;
 
 public:
-                    GMLFeature( GMLFeatureClass * );
+    explicit        GMLFeature( GMLFeatureClass * );
                    ~GMLFeature();
 
     GMLFeatureClass*GetClass() const { return m_poClass; }
 
     void            SetGeometryDirectly( CPLXMLNode* psGeom );
+    void            SetGeometryDirectly( int nIdx, CPLXMLNode* psGeom );
     void            AddGeometry( CPLXMLNode* psGeom );
     const CPLXMLNode* const * GetGeometryList() const { return m_papsGeometry; }
+    const CPLXMLNode* GetGeometryRef( int nIdx ) const;
 
     void            SetPropertyDirectly( int i, char *pszValue );
 
-    const GMLProperty*GetProperty( int i ) const { return (i < m_nPropertyCount) ? &m_pasProperties[i] : NULL; }
+    const GMLProperty*GetProperty( int i ) const { return (i >= 0 && i < m_nPropertyCount) ? &m_pasProperties[i] : NULL; }
 
     const char      *GetFID() const { return m_pszFID; }
     void             SetFID( const char *pszFID );
@@ -223,14 +274,14 @@ public:
 /************************************************************************/
 class CPL_DLL IGMLReader
 {
-public:
+  public:
     virtual     ~IGMLReader();
 
-    virtual int  IsClassListLocked() const = 0;
-    virtual void SetClassListLocked( int bFlag ) = 0;
+    virtual bool IsClassListLocked() const = 0;
+    virtual void SetClassListLocked( bool bFlag ) = 0;
 
     virtual void SetSourceFile( const char *pszFilename ) = 0;
-    virtual void SetFP( VSILFILE* fp ) { }
+    virtual void SetFP( CPL_UNUSED VSILFILE* fp ) {}
     virtual const char* GetSourceFileName() = 0;
 
     virtual int  GetClassCount() const = 0;
@@ -243,37 +294,39 @@ public:
     virtual GMLFeature *NextFeature() = 0;
     virtual void       ResetReading() = 0;
 
-    virtual int  LoadClasses( const char *pszFile = NULL ) = 0;
-    virtual int  SaveClasses( const char *pszFile = NULL ) = 0;
+    virtual bool LoadClasses( const char *pszFile = NULL ) = 0;
+    virtual bool SaveClasses( const char *pszFile = NULL ) = 0;
 
-    virtual int  ResolveXlinks( const char *pszFile,
-                                int* pbOutIsTempFile,
+    virtual bool ResolveXlinks( const char *pszFile,
+                                bool* pbOutIsTempFile,
                                 char **papszSkip = NULL,
-                                const int bStrict = FALSE ) = 0;
+                                const bool bStrict = false ) = 0;
 
-    virtual int  HugeFileResolver( const char *pszFile,
-                                   int pbSqlitIsTempFile,
+    virtual bool HugeFileResolver( const char *pszFile,
+                                   bool bSqliteIsTempFile,
                                    int iSqliteCacheMB ) = 0;
 
-    virtual int PrescanForSchema( int bGetExtents = TRUE ) = 0;
-    virtual int PrescanForTemplate( void ) = 0;
+    virtual bool PrescanForSchema( bool bGetExtents = true,
+                                  bool bAnalyzeSRSPerFeature = true,
+                                  bool bOnlyDetectSRS = false ) = 0;
+    virtual bool PrescanForTemplate() = 0;
 
-    virtual int HasStoppedParsing() = 0;
+    virtual bool HasStoppedParsing() = 0;
 
-    virtual void  SetGlobalSRSName( const char* pszGlobalSRSName ) {}
+    virtual void  SetGlobalSRSName( CPL_UNUSED const char* pszGlobalSRSName ) {}
     virtual const char* GetGlobalSRSName() = 0;
-    virtual int CanUseGlobalSRSName() = 0;
+    virtual bool CanUseGlobalSRSName() = 0;
 
-    virtual int SetFilteredClassName(const char* pszClassName) = 0;
+    virtual bool SetFilteredClassName(const char* pszClassName) = 0;
     virtual const char* GetFilteredClassName() = 0;
 
-    virtual int IsSequentialLayers() const { return FALSE; }
+    virtual bool IsSequentialLayers() const { return false; }
 };
 
-IGMLReader *CreateGMLReader(int bUseExpatParserPreferably,
-                            int bInvertAxisOrderIfLatLong,
-                            int bConsiderEPSGAsURN,
-                            int bGetSecondaryGeometryOption);
+IGMLReader *CreateGMLReader(bool bUseExpatParserPreferably,
+                            bool bInvertAxisOrderIfLatLong,
+                            bool bConsiderEPSGAsURN,
+                            GMLSwapCoordinatesEnum eSwapCoordinates,
+                            bool bGetSecondaryGeometryOption);
 
-
-#endif /* _GMLREADER_H_INCLUDED */
+#endif /* GMLREADER_H_INCLUDED */

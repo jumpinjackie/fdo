@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: kmlutility.h 16908 2009-05-02 14:53:26Z rouault $
+ * $Id: kmlutility.h 35516 2016-09-25 14:49:04Z goatbar $
  *
  * Project:  KML Driver
  * Purpose:  KML driver utilities
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2007, Jens Oberender
+ * Copyright (c) 2009, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,9 +34,13 @@
 #include <vector>
 #include "ogr_geometry.h"
 
+namespace OGRKML
+{
+
 enum Nodetype
 {
-    Unknown, Empty, Mixed, Point, LineString, Polygon, Rest, MultiGeometry, MultiPoint, MultiLineString, MultiPolygon
+    Unknown, Empty, Mixed, Point, LineString, Polygon, Rest, MultiGeometry,
+    MultiPoint, MultiLineString, MultiPolygon
 };
 
 struct Attribute
@@ -49,10 +54,13 @@ struct Coordinate
     double dfLongitude;
     double dfLatitude;
     double dfAltitude;
-    int    bHasZ;
+    bool   bHasZ;
 
-    Coordinate()
-        : dfLongitude(0), dfLatitude(0), dfAltitude(0), bHasZ(FALSE)
+    Coordinate() :
+        dfLongitude(0),
+        dfLatitude(0),
+        dfAltitude(0),
+        bHasZ(false)
     {}
 };
 
@@ -66,13 +74,16 @@ struct Feature
     Feature()
         : eType(Unknown), poGeom(NULL)
     {}
-    
+
     ~Feature()
     {
         delete poGeom;
     }
 };
 
+}
+
+using namespace OGRKML;
 
 #endif /* OGR_KMLUTILITY_H_INCLUDED */
 

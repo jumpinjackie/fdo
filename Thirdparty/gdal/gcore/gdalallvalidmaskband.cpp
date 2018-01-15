@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: gdalallvalidmaskband.cpp 15044 2008-07-26 12:04:05Z rouault $
  *
  * Project:  GDAL Core
  * Purpose:  Implementation of GDALAllValidMaskBand, a class implementing all
@@ -28,16 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
+#include "cpl_port.h"
 #include "gdal_priv.h"
 
-CPL_CVSID("$Id: gdalallvalidmaskband.cpp 15044 2008-07-26 12:04:05Z rouault $");
+#include <cstring>
 
+#include "gdal.h"
+#include "cpl_error.h"
+
+CPL_CVSID("$Id: gdalallvalidmaskband.cpp 36522 2016-11-26 16:04:27Z goatbar $");
+
+//! @cond Doxygen_Suppress
 /************************************************************************/
 /*                        GDALAllValidMaskBand()                        */
 /************************************************************************/
 
-GDALAllValidMaskBand::GDALAllValidMaskBand( GDALRasterBand *poParent )
-
+GDALAllValidMaskBand::GDALAllValidMaskBand( GDALRasterBand *poParent ) :
+    GDALRasterBand(FALSE)
 {
     poDS = NULL;
     nBand = 0;
@@ -53,18 +59,15 @@ GDALAllValidMaskBand::GDALAllValidMaskBand( GDALRasterBand *poParent )
 /*                       ~GDALAllValidMaskBand()                        */
 /************************************************************************/
 
-GDALAllValidMaskBand::~GDALAllValidMaskBand()
-
-{
-}
+GDALAllValidMaskBand::~GDALAllValidMaskBand() {}
 
 /************************************************************************/
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr GDALAllValidMaskBand::IReadBlock( int nXBlockOff, int nYBlockOff,
-                                         void * pImage )
-
+CPLErr GDALAllValidMaskBand::IReadBlock( int /* nXBlockOff */,
+                                         int /* nYBlockOff */,
+                                         void *pImage )
 {
     memset( pImage, 255, nBlockXSize * nBlockYSize );
 
@@ -90,3 +93,4 @@ int GDALAllValidMaskBand::GetMaskFlags()
 {
     return GMF_ALL_VALID;
 }
+//! @endcond

@@ -4,11 +4,10 @@
       - Remove old C style function prototypes
       - Add support for ZIP64
 
-   Copyright (C) 2007-2008 Even Rouault
+ * Copyright (c) 2008-2010, Even Rouault <even dot rouault at mines-paris dot org>
 
    Original licence available in port/LICENCE_minizip
 */
-
 
 /* ioapi.c -- IO base function header for compress/uncompress .zip
    files using zlib + zip or unzip API
@@ -18,60 +17,27 @@
    Copyright (C) 1998-2005 Gilles Vollant
 */
 
-#include "cpl_vsi.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "zlib.h"
+#include "cpl_port.h"
 #include "cpl_minizip_ioapi.h"
 
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#if HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+
+#include "cpl_minizip_ioapi.h"
+#include "cpl_vsi.h"
+#include "zconf.h"
+#include "zlib.h"
+
+CPL_CVSID("$Id: cpl_minizip_ioapi.cpp 37090 2017-01-10 17:24:54Z rouault $");
 
 static
-voidpf ZCALLBACK fopen_file_func OF((
-   voidpf opaque,
-   const char* filename,
-   int mode));
-
-static
-uLong ZCALLBACK fread_file_func OF((
-   voidpf opaque,
-   voidpf stream,
-   void* buf,
-   uLong size));
-
-static
-uLong ZCALLBACK fwrite_file_func OF((
-   voidpf opaque,
-   voidpf stream,
-   const void* buf,
-   uLong size));
-
-static
-uLong64 ZCALLBACK ftell_file_func OF((
-   voidpf opaque,
-   voidpf stream));
-
-static
-long ZCALLBACK fseek_file_func OF((
-   voidpf opaque,
-   voidpf stream,
-   uLong64 offset,
-   int origin));
-
-static
-int ZCALLBACK fclose_file_func OF((
-   voidpf opaque,
-   voidpf stream));
-
-static
-int ZCALLBACK ferror_file_func OF((
-   voidpf opaque,
-   voidpf stream));
-
-static
-voidpf ZCALLBACK fopen_file_func (voidpf opaque, const char* filename, int mode)
+voidpf ZCALLBACK fopen_file_func ( voidpf /* opaque */ ,
+                                   const char* filename, int mode )
 {
     VSILFILE* file = NULL;
     const char* mode_fopen = NULL;
@@ -82,7 +48,11 @@ voidpf ZCALLBACK fopen_file_func (voidpf opaque, const char* filename, int mode)
         mode_fopen = "r+b";
     else
     if (mode & ZLIB_FILEFUNC_MODE_CREATE)
+    {
         mode_fopen = "wb";
+        if( filename != NULL )
+            return VSIFOpenExL(filename, mode_fopen, true);
+    }
 
     if ((filename!=NULL) && (mode_fopen != NULL))
         file = VSIFOpenL(filename, mode_fopen);
@@ -90,23 +60,27 @@ voidpf ZCALLBACK fopen_file_func (voidpf opaque, const char* filename, int mode)
 }
 
 static
-uLong ZCALLBACK fread_file_func (voidpf opaque, voidpf stream, void* buf, uLong size)
+uLong ZCALLBACK fread_file_func ( voidpf /* opaque */, voidpf stream,
+                                  void* buf, uLong size )
 {
-    uLong ret;
-    ret = (uLong)VSIFReadL(buf, 1, (size_t)size, (VSILFILE *)stream);
+    uLong ret =
+        static_cast<uLong>(VSIFReadL(buf, 1, static_cast<size_t>(size),
+                                     static_cast<VSILFILE *>(stream)));
     return ret;
 }
 
 static
-uLong ZCALLBACK fwrite_file_func (voidpf opaque, voidpf stream, const void* buf, uLong size)
+uLong ZCALLBACK fwrite_file_func ( voidpf /* opaque */, voidpf stream,
+                                   const void* buf, uLong size )
 {
-    uLong ret;
-    ret = (uLong)VSIFWriteL(buf, 1, (size_t)size, (VSILFILE *)stream);
+    uLong ret =
+        static_cast<uLong>(VSIFWriteL(buf, 1, static_cast<size_t>(size),
+                                      static_cast<VSILFILE *>(stream)));
     return ret;
 }
 
 static
-uLong64 ZCALLBACK ftell_file_func (voidpf opaque, voidpf stream)
+uLong64 ZCALLBACK ftell_file_func ( voidpf /* opaque */, voidpf stream )
 {
     uLong64 ret;
     ret = VSIFTellL((VSILFILE *)stream);
@@ -114,10 +88,10 @@ uLong64 ZCALLBACK ftell_file_func (voidpf opaque, voidpf stream)
 }
 
 static
-long ZCALLBACK fseek_file_func (voidpf  opaque, voidpf stream, uLong64 offset, int origin)
+long ZCALLBACK fseek_file_func ( voidpf /* opaque */, voidpf stream,
+                                 uLong64 offset, int origin )
 {
     int fseek_origin=0;
-    long ret;
     switch (origin)
     {
     case ZLIB_FILEFUNC_SEEK_CUR :
@@ -131,26 +105,20 @@ long ZCALLBACK fseek_file_func (voidpf  opaque, voidpf stream, uLong64 offset, i
         break;
     default: return -1;
     }
-    ret = 0;
-    VSIFSeekL((VSILFILE *)stream, offset, fseek_origin);
-    return ret;
+    return VSIFSeekL((VSILFILE *)stream, offset, fseek_origin);
 }
 
 static
-int ZCALLBACK fclose_file_func (voidpf opaque, voidpf stream)
+int ZCALLBACK fclose_file_func ( voidpf /* opaque */, voidpf stream )
 {
-    int ret;
-    ret = VSIFCloseL((VSILFILE *)stream);
-    return ret;
+    return VSIFCloseL((VSILFILE *)stream);
 }
 
 static
-int ZCALLBACK ferror_file_func (voidpf opaque, voidpf stream)
+int ZCALLBACK ferror_file_func ( voidpf /* opaque */, voidpf /* stream */ )
 {
-    int ret;
-    ret = 0; // FIXME
-    //ret = ferror((FILE *)stream);
-    return ret;
+    // ret = ferror((FILE *)stream);
+    return 0;
 }
 
 void cpl_fill_fopen_filefunc (zlib_filefunc_def*  pzlib_filefunc_def)

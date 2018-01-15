@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: tigerpolygoneconomic.cpp 22961 2011-08-20 17:09:59Z rouault $
  *
  * Project:  TIGER/Line Translator
  * Purpose:  Implements TigerPolygonEconomic, providing access to .RTE files.
@@ -30,13 +29,13 @@
 #include "ogr_tiger.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: tigerpolygoneconomic.cpp 22961 2011-08-20 17:09:59Z rouault $");
+CPL_CVSID("$Id: tigerpolygoneconomic.cpp 35629 2016-10-06 23:39:06Z goatbar $");
 
-#define FILE_CODE       "E"
+static const char FILE_CODE[] = "E";
 
 /* I think this was the expected RTE format, but was never deployed, leaving
-   it in the code in case I am missing something. 
-   
+   it in the code in case I am missing something.
+
 static TigerFieldInfo rtE_fields[] = {
   // fieldname    fmt  type OFTType      beg  end  len  bDefine bSet bWrite
   { "MODULE",     ' ', ' ', OFTString,     0,   0,   8,       1,   0,     0 },
@@ -84,8 +83,8 @@ static const TigerRecordInfo rtE_info =
 /************************************************************************/
 
 TigerPolygonEconomic::TigerPolygonEconomic( OGRTigerDataSource * poDSIn,
-                              const char * pszPrototypeModule ) : TigerFileBase(&rtE_info, FILE_CODE)
-
+                                            CPL_UNUSED const char * pszPrototypeModule ) :
+    TigerFileBase(&rtE_info, FILE_CODE)
 {
     poDS = poDSIn;
     poFeatureDefn = new OGRFeatureDefn( "PolygonEconomic" );

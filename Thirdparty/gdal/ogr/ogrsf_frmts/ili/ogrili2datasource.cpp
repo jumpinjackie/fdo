@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrili2datasource.cpp 24408 2012-05-11 21:31:45Z pka $
  *
  * Project:  Interlis 2 Translator
  * Purpose:  Implements OGRILI2DataSource class.
@@ -7,6 +6,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2004, Pirmin Kalberer, Sourcepole AG
+ * Copyright (c) 2007-2008, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,32 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_ili2.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
 #include "ili2reader.h"
-#include "iomhelper.h"
+
+#include "ogr_ili2.h"
 
 using namespace std;
 
-
-CPL_CVSID("$Id: ogrili2datasource.cpp 24408 2012-05-11 21:31:45Z pka $");
+CPL_CVSID("$Id: ogrili2datasource.cpp 38486 2017-05-19 10:12:42Z rouault $");
 
 /************************************************************************/
 /*                         OGRILI2DataSource()                         */
 /************************************************************************/
 
-OGRILI2DataSource::OGRILI2DataSource()
-
-{
-    pszName = NULL;
-    poReader = NULL;
-    fpTransfer = NULL;
-    basket = NULL;
-    nLayers = 0;
-    papoLayers = NULL;
-}
+OGRILI2DataSource::OGRILI2DataSource() :
+    pszName(NULL),
+    poImdReader(new ImdReader(2)),
+    poReader(NULL),
+    fpOutput(NULL),
+    nLayers(0),
+    papoLayers(NULL)
+{}
 
 /************************************************************************/
 /*                        ~OGRILI2DataSource()                         */
@@ -61,27 +58,22 @@ OGRILI2DataSource::OGRILI2DataSource()
 OGRILI2DataSource::~OGRILI2DataSource()
 
 {
-    int i;
-
-    for(i=0;i<nLayers;i++)
+    for( int i=0; i<nLayers; i++ )
     {
         delete papoLayers[i];
     }
     CPLFree( papoLayers );
 
-    if (basket) iom_releasebasket(basket);
-    if (fpTransfer)
-    {  
-      // write file
-      iom_save(fpTransfer);
-  
-      // clean up
-      iom_close(fpTransfer);
-  
-      iom_end();
-  
+    if ( fpOutput != NULL )
+    {
+        VSIFPrintfL(fpOutput, "</%s>\n", poImdReader->mainBasketName.c_str());
+        VSIFPrintfL(fpOutput, "</DATASECTION>\n");
+        VSIFPrintfL(fpOutput, "</TRANSFER>\n");
+        VSIFCloseL(fpOutput);
     }
+
     DestroyILI2Reader( poReader );
+    delete poImdReader;
     CPLFree( pszName );
 }
 
@@ -89,81 +81,93 @@ OGRILI2DataSource::~OGRILI2DataSource()
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRILI2DataSource::Open( const char * pszNewName, int bTestOpen )
+int OGRILI2DataSource::Open( const char * pszNewName,
+                             char** papszOpenOptionsIn, int bTestOpen )
 
 {
-    FILE        *fp;
-    char        szHeader[1000];
+    CPLString   osBasename;
+    CPLString   osModelFilename;
 
-    char **modelFilenames = NULL;
-    char **filenames = CSLTokenizeString2( pszNewName, ",", 0 );
+    if( CSLFetchNameValue(papszOpenOptionsIn, "MODEL") != NULL )
+    {
+        osBasename = pszNewName;
+        osModelFilename = CSLFetchNameValue(papszOpenOptionsIn, "MODEL");
+    }
+    else
+    {
+        char **filenames = CSLTokenizeString2( pszNewName, ",", 0 );
+        int nCount = CSLCount(filenames);
+        if( nCount == 0 )
+        {
+            CSLDestroy(filenames);
+            return FALSE;
+        }
+        osBasename = filenames[0];
 
-    pszName = CPLStrdup( filenames[0] );
+        if( nCount > 1 )
+            osModelFilename = filenames[1];
 
-    if( CSLCount(filenames) > 1 )
-        modelFilenames = &filenames[1];
+        CSLDestroy( filenames );
+    }
+
+    pszName = CPLStrdup( osBasename );
 
 /* -------------------------------------------------------------------- */
 /*      Open the source file.                                           */
 /* -------------------------------------------------------------------- */
-    fp = VSIFOpen( pszName, "r" );
+    FILE *fp = VSIFOpen( pszName, "r" );
     if( fp == NULL )
     {
         if( !bTestOpen )
-            CPLError( CE_Failure, CPLE_OpenFailed, 
-                      "Failed to open ILI2 file `%s'.", 
+            CPLError( CE_Failure, CPLE_OpenFailed,
+                      "Failed to open ILI2 file `%s'.",
                       pszNewName );
 
-        CSLDestroy( filenames );
         return FALSE;
     }
 
 /* -------------------------------------------------------------------- */
-/*      If we aren't sure it is ILI2, load a header chunk and check      */
-/*      for signs it is ILI2                                             */
+/*      If we aren't sure it is ILI2, load a header chunk and check     */
+/*      for signs it is ILI2                                            */
 /* -------------------------------------------------------------------- */
+    char szHeader[1000];
     if( bTestOpen )
     {
-        int nLen = (int)VSIFRead( szHeader, 1, sizeof(szHeader), fp );
+        int nLen = static_cast<int>(
+            VSIFRead( szHeader, 1, sizeof(szHeader), fp ) );
         if (nLen == sizeof(szHeader))
             szHeader[sizeof(szHeader)-1] = '\0';
         else
             szHeader[nLen] = '\0';
 
-        if( szHeader[0] != '<' 
+        if( szHeader[0] != '<'
             || strstr(szHeader,"interlis.ch/INTERLIS2") == NULL )
-        { // "www.interlis.ch/INTERLIS2.2"
+        {
+            // "www.interlis.ch/INTERLIS2.3"
             VSIFClose( fp );
-            CSLDestroy( filenames );
             return FALSE;
         }
     }
-    
+
 /* -------------------------------------------------------------------- */
-/*      We assume now that it is ILI2.  Close and instantiate a          */
-/*      ILI2Reader on it.                                                */
+/*      We assume now that it is ILI2.  Close and instantiate a         */
+/*      ILI2Reader on it.                                               */
 /* -------------------------------------------------------------------- */
     VSIFClose( fp );
-    
+
     poReader = CreateILI2Reader();
     if( poReader == NULL )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "File %s appears to be ILI2 but the ILI2 reader can't\n"
-                  "be instantiated, likely because Xerces support wasn't\n"
-                  "configured in.", 
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "File %s appears to be ILI2 but the ILI2 reader cannot\n"
+                  "be instantiated, likely because Xerces support was not\n"
+                  "configured in.",
                   pszNewName );
-        CSLDestroy( filenames );
         return FALSE;
     }
 
-    if (modelFilenames)
-        poReader->ReadModel( modelFilenames );
-
-    if( getenv( "ARC_DEGREES" ) != NULL ) {
-      //No better way to pass arguments to the reader (it could even be an -lco arg)
-      poReader->SetArcDegrees( atof( getenv("ARC_DEGREES") ) );
-    }
+    if (!osModelFilename.empty() )
+        poReader->ReadModel( poImdReader, osModelFilename );
 
     poReader->SetSourceFile( pszName );
 
@@ -175,107 +179,123 @@ int OGRILI2DataSource::Open( const char * pszNewName, int bTestOpen )
         (*layerIt)->ResetReading();
     }
 
-    CSLDestroy( filenames );
-
     return TRUE;
 }
-
 
 /************************************************************************/
 /*                               Create()                               */
 /************************************************************************/
 
-int OGRILI2DataSource::Create( const char *pszFilename, 
-                              char **papszOptions )
+int OGRILI2DataSource::Create( const char *pszFilename,
+                               CPL_UNUSED char **papszOptions )
 
 {
     char **filenames = CSLTokenizeString2( pszFilename, ",", 0 );
     pszName = CPLStrdup(filenames[0]);
-    const char  *pszModelFilename = (CSLCount(filenames)>1) ? filenames[1] : NULL;
+    const char *pszModelFilename = (CSLCount(filenames)>1) ? filenames[1] : NULL;
 
     if( pszModelFilename == NULL )
     {
-        CPLError( CE_Warning, CPLE_OpenFailed, 
-                  "Model file '%s' (%s) not found : %s.", 
-                  pszModelFilename, pszFilename, VSIStrerror( errno ) );
+        CPLError( CE_Warning, CPLE_AppDefined,
+                  "Model file not specified." );
         CSLDestroy(filenames);
         return FALSE;
     }
 
-    iom_init();
+/* -------------------------------------------------------------------- */
+/*      Create the output file.                                         */
+/* -------------------------------------------------------------------- */
 
-    // set error listener to a iom provided one, that just 
-    // dumps all errors to stderr
-    iom_seterrlistener(iom_stderrlistener);
-
-    // compile ili model
-    char *iliFiles[1] = {(char *)pszModelFilename};
-    IOM_BASKET model=iom_compileIli(1,iliFiles);
-    if(!model){
-        CPLError( CE_Warning, CPLE_OpenFailed, 
-                    "iom_compileIli %s, %s.", 
-                    pszName, VSIStrerror( errno ) );
-                iom_end();
-        CSLDestroy(filenames);
-        return FALSE;
-    }
-
-    // open new file
-    fpTransfer=iom_open(pszName,IOM_CREATE | IOM_DONTREAD,0);
-    if(!fpTransfer){
-        CPLError( CE_Warning, CPLE_OpenFailed, 
-                    "Failed to open %s.", 
-                    pszName );
-        CSLDestroy(filenames);
-        return FALSE;
-    }
-
-    // set model of new file
-    iom_setmodel(fpTransfer,model);
-
-    iom_setheadsender(fpTransfer, pszModelFilename);
-
-    iom_setheadcomment(fpTransfer,"Created by OGR");
-
-    // create new basket
-    static char basketname[512];
-    basketname[0] = '\0';
-    const char* val = GetAttrObjName(model, "iom04.metamodel.DataModel");
-    if (val)
+    if( strcmp(pszName,"/vsistdout/") == 0 ||
+        STARTS_WITH(pszName, "/vsigzip/") )
     {
-      strcat(basketname, val);
-      strcat(basketname, ".");
-      val = GetAttrObjName(model, "iom04.metamodel.Topic");
-      if (val) strcat(basketname, val);
+        fpOutput = VSIFOpenL(pszName, "wb");
+    }
+    else if ( STARTS_WITH(pszName, "/vsizip/"))
+    {
+        if (EQUAL(CPLGetExtension(pszName), "zip"))
+        {
+            char* pszNewName = CPLStrdup(CPLFormFilename(pszName, "out.xtf", NULL));
+            CPLFree(pszName);
+            pszName = pszNewName;
+        }
+
+        fpOutput = VSIFOpenL(pszName, "wb");
     }
     else
+        fpOutput = VSIFOpenL( pszName, "wb+" );
+    if( fpOutput == NULL )
     {
-      strcat(basketname, "Basket");
+        CPLError( CE_Failure, CPLE_OpenFailed,
+                  "Failed to create XTF file %s.",
+                  pszName );
+        CSLDestroy(filenames);
+        return FALSE;
     }
 
-    CSLDestroy(filenames);
+/* -------------------------------------------------------------------- */
+/*      Parse model                                                     */
+/* -------------------------------------------------------------------- */
+    poImdReader->ReadModel(pszModelFilename);
 
-    basket=iom_newbasket(fpTransfer);
-    iom_setbaskettag(basket, basketname);
-    iom_setbasketoid(basket, "0");
+/* -------------------------------------------------------------------- */
+/*      Write headers                                                   */
+/* -------------------------------------------------------------------- */
+    VSIFPrintfL(fpOutput, "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
+    VSIFPrintfL( fpOutput,
+                 "<TRANSFER xmlns=\"http://www.interlis.ch/INTERLIS2.3\">\n");
+    VSIFPrintfL( fpOutput,
+                 "<HEADERSECTION SENDER=\"OGR/GDAL %s\" VERSION=\"2.3\">\n",
+                 GDAL_RELEASE_NAME);
+    VSIFPrintfL(fpOutput, "<MODELS>\n");
+    for( IliModelInfos::const_iterator it = poImdReader->modelInfos.begin();
+         it != poImdReader->modelInfos.end();
+         ++it)
+    {
+        VSIFPrintfL( fpOutput,
+                     "<MODEL NAME=\"%s\" URI=\"%s\" VERSION=\"%s\"/>\n",
+                     it->name.c_str(), it->uri.c_str(), it->version.c_str() );
+    }
+    VSIFPrintfL(fpOutput, "</MODELS>\n");
+    VSIFPrintfL(fpOutput, "</HEADERSECTION>\n");
+    VSIFPrintfL(fpOutput, "<DATASECTION>\n");
+    const char* basketName = poImdReader->mainBasketName.c_str();
+    VSIFPrintfL(fpOutput, "<%s BID=\"%s\">\n", basketName, basketName);
+
+    CSLDestroy( filenames );
     return TRUE;
 }
 
 /************************************************************************/
-/*                            CreateLayer()                             */
+/*                           ICreateLayer()                             */
 /************************************************************************/
 
 OGRLayer *
-OGRILI2DataSource::CreateLayer( const char * pszLayerName,
-                               OGRSpatialReference *poSRS,
-                               OGRwkbGeometryType eType,
-                               char ** papszOptions )
-
+OGRILI2DataSource::ICreateLayer( const char * pszLayerName,
+                                 OGRSpatialReference * /* poSRS */,
+                                 OGRwkbGeometryType eType,
+                                 char ** /* papszOptions */ )
 {
-    OGRILI2Layer *poLayer = new OGRILI2Layer(pszLayerName, poSRS, TRUE, eType, this);
+    if (fpOutput == NULL)
+        return NULL;
 
-    nLayers ++;
-    papoLayers = (OGRILI2Layer**)CPLRealloc(papoLayers, sizeof(OGRILI2Layer*) * nLayers);
+    FeatureDefnInfo featureDefnInfo
+        = poImdReader->GetFeatureDefnInfo(pszLayerName);
+    OGRFeatureDefn* poFeatureDefn = featureDefnInfo.GetTableDefnRef();
+    if (poFeatureDefn == NULL)
+    {
+        CPLError( CE_Warning, CPLE_AppDefined,
+                  "Layer '%s' not found in model definition. "
+                  "Creating adhoc layer", pszLayerName );
+        poFeatureDefn = new OGRFeatureDefn(pszLayerName);
+        poFeatureDefn->SetGeomType( eType );
+    }
+    OGRILI2Layer *poLayer = new OGRILI2Layer(
+        poFeatureDefn, featureDefnInfo.poGeomFieldInfos, this);
+
+    nLayers++;
+    papoLayers = static_cast<OGRILI2Layer **>(
+        CPLRealloc(papoLayers, sizeof(OGRILI2Layer*) * nLayers) );
     papoLayers[nLayers-1] = poLayer;
 
     return poLayer;
@@ -290,8 +310,10 @@ int OGRILI2DataSource::TestCapability( const char * pszCap )
 {
     if( EQUAL(pszCap,ODsCCreateLayer) )
         return TRUE;
-    else
-        return FALSE;
+    if( EQUAL(pszCap,ODsCCurveGeometries) )
+        return TRUE;
+
+    return FALSE;
 }
 
 /************************************************************************/
@@ -301,16 +323,17 @@ int OGRILI2DataSource::TestCapability( const char * pszCap )
 OGRLayer *OGRILI2DataSource::GetLayer( int iLayer )
 
 {
-  list<OGRLayer *>::const_iterator layerIt = listLayer.begin();
-  int i = 0;
-  while (i < iLayer && layerIt != listLayer.end()) {
-    i++;
-    layerIt++;
-  }
-  
-  if (i == iLayer) {
-    OGRILI2Layer *tmpLayer = (OGRILI2Layer *)*layerIt;
-    return tmpLayer;
-  } else
+    list<OGRLayer *>::const_iterator layerIt = listLayer.begin();
+    int i = 0;
+    while (i < iLayer && layerIt != listLayer.end()) {
+        ++i;
+        ++layerIt;
+    }
+
+    if (i == iLayer && layerIt != listLayer.end()) {
+        OGRILI2Layer *tmpLayer = reinterpret_cast<OGRILI2Layer *>(*layerIt);
+        return tmpLayer;
+    }
+
     return NULL;
 }

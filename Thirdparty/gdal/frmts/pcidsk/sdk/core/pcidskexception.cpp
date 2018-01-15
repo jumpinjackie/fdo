@@ -31,6 +31,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include <cstdarg>
+
+#if !defined(va_copy) && defined(__va_copy)
+#define va_copy __va_copy
+#endif
 
 using PCIDSK::PCIDSKException;
 
@@ -67,6 +72,13 @@ should be caught like this:
 /*                          PCIDSKException()                           */
 /************************************************************************/
 
+#if defined(__clang__) && __clang_major__ == 3 && __clang_minor__ <= 2
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#endif
+
+
 /**
  * Create exception with formatted message.
  *
@@ -86,6 +98,10 @@ PCIDSKException::PCIDSKException( const char *fmt, ... )
     vPrintf( fmt, args );
     va_end( args );
 }
+
+#if defined(__clang__) && __clang_major__ == 3 && __clang_minor__ <= 2
+#pragma clang diagnostic pop
+#endif
 
 /************************************************************************/
 /*                          ~PCIDSKException()                          */
@@ -167,14 +183,20 @@ void PCIDSKException::vPrintf( const char *fmt, std::va_list args )
                || nPR == -1 )
         {
             nWorkBufferSize *= 4;
-            pszWorkBuffer = (char *) realloc(pszWorkBuffer, 
-                                             nWorkBufferSize );
+            char* pszWorkBufferNew = (char *) realloc(pszWorkBuffer, 
+                                                      nWorkBufferSize );
 #ifdef va_copy
             va_end( wrk_args );
             va_copy( wrk_args, args );
 #else
             wrk_args = args;
 #endif
+            if( pszWorkBufferNew == NULL )
+            {
+                strcpy( pszWorkBuffer, "(message too large)" );
+                break;
+            }
+            pszWorkBuffer = pszWorkBufferNew;
         }
         message = pszWorkBuffer;
         free( pszWorkBuffer );
@@ -195,6 +217,12 @@ void PCIDSKException::vPrintf( const char *fmt, std::va_list args )
  * @return a pointer to the internal message associated with the exception.
  */ 
 
+#if defined(__clang__) && __clang_major__ == 3 && __clang_minor__ <= 2
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#endif
+
 /**
  * \brief throw a formatted exception.
  *
@@ -210,7 +238,38 @@ void PCIDSK::ThrowPCIDSKException( const char *fmt, ... )
 
 {
     std::va_list args;
-    PCIDSKException ex("");
+    PCIDSKException ex;
+
+    va_start( args, fmt );
+    ex.vPrintf( fmt, args );
+    va_end( args );
+
+    throw ex;
+}
+
+#if defined(__clang__) && __clang_major__ == 3 && __clang_minor__ <= 2
+#pragma clang diagnostic pop
+#endif
+
+
+int PCIDSK::ThrowPCIDSKException( int /*ret_unused*/, const char *fmt, ... )
+
+{
+    std::va_list args;
+    PCIDSKException ex;
+
+    va_start( args, fmt );
+    ex.vPrintf( fmt, args );
+    va_end( args );
+
+    throw ex;
+}
+
+void* PCIDSK::ThrowPCIDSKExceptionPtr( const char *fmt, ... )
+
+{
+    std::va_list args;
+    PCIDSKException ex;
 
     va_start( args, fmt );
     ex.vPrintf( fmt, args );

@@ -25,8 +25,8 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __INCLUDE_PCIDSK_VECTORSEGMENT_H
-#define __INCLUDE_PCIDSK_VECTORSEGMENT_H
+#ifndef INCLUDE_PCIDSK_VECTORSEGMENT_H
+#define INCLUDE_PCIDSK_VECTORSEGMENT_H
 
 #include <string>
 #include <vector>
@@ -59,7 +59,7 @@ end() methods).
 The PCIDSKSegment interface for the segment can be used to fetch the
 LAYER_TYPE metadata describing how the vertices should be interpreted
 as a geometry.  Some layers will also have a RingStart attribute field
-which is used in conjunction with the LAYER_TYPE to interprete the
+which is used in conjunction with the LAYER_TYPE to interpret the
 geometry.  Some vector segments may have no LAYER_TYPE metadata in which
 case single vertices are interpreted as points, and multiple vertices
 as linestrings.  
@@ -75,10 +75,10 @@ for large vector segments.
 
 */
 
-    class PCIDSK_DLL PCIDSKVectorSegment
-    {
+class PCIDSK_DLL PCIDSKVectorSegment
+{
     public:
-        virtual	~PCIDSKVectorSegment() {}
+        virtual ~PCIDSKVectorSegment() {}
 
 /**
 \brief Fetch RST. 
@@ -306,4 +306,4 @@ The list of fields should match the types and length from the schema
 
 } // end namespace PCIDSK
 
-#endif // __INCLUDE_PCIDSK_VECTORSEGMENT_H
+#endif // INCLUDE_PCIDSK_VECTORSEGMENT_H

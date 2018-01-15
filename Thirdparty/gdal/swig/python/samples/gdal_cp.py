@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 ###############################################################################
-# $Id: gdal_cp.py 23166 2011-10-02 17:48:48Z rouault $
+# $Id: gdal_cp.py 31957 2015-12-02 12:44:54Z goatbar $
 #
 #  Project:  GDAL samples
 #  Purpose:  Copy a virtual file
 #  Author:   Even Rouault <even dot rouault at mines dash paris dot org>
 #
 ###############################################################################
-#  Copyright (c) 2011, Even Rouault <even dot rouault at mines dash paris dot org>
+#  Copyright (c) 2011, Even Rouault <even dot rouault at mines-paris dot org>
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
@@ -28,10 +28,12 @@
 #  DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
-from osgeo import gdal
-import sys
-import os
 import fnmatch
+import os
+import sys
+
+from osgeo import gdal
+
 
 def needsVSICurl(filename):
     return filename.startswith('http://') or filename.startswith('https://') or filename.startswith('ftp://')

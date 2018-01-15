@@ -1,12 +1,12 @@
 /******************************************************************************
- * $Id: ogrsqlitesqlfunctions.h 25406 2012-12-30 20:07:19Z rouault $
+ * $Id: ogrsqlitesqlfunctions.h 31777 2015-11-26 14:14:41Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Extension SQL functions
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2012, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2012, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef _OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
-#define _OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
+#ifndef OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
+#define OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
 
 #include "ogr_sqlite.h"
 
 static void* OGRSQLiteRegisterSQLFunctions(sqlite3* hDB);
 static void OGRSQLiteUnregisterSQLFunctions(void* hHandle);
 
-#endif // _OGR_SQLITE_SQL_FUNCTIONS_INCLUDED
+#endif // OGR_SQLITE_SQL_FUNCTIONS_INCLUDED

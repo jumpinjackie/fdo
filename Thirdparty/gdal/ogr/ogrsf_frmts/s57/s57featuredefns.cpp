@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: s57featuredefns.cpp 21268 2010-12-14 23:33:34Z warmerdam $
  *
  * Project:  S-57 Translator
  * Purpose:  Implements methods to create OGRFeatureDefns for various
@@ -28,13 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "s57.h"
-#include "ogr_api.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogr_api.h"
+#include "s57.h"
 
-CPL_CVSID("$Id: s57featuredefns.cpp 21268 2010-12-14 23:33:34Z warmerdam $");
-
+CPL_CVSID("$Id: s57featuredefns.cpp 38140 2017-04-26 08:41:23Z rouault $");
 
 /************************************************************************/
 /*                     S57GenerateGeomFeatureDefn()                     */
@@ -44,7 +42,6 @@ OGRFeatureDefn *S57GenerateDSIDFeatureDefn()
 
 {
     OGRFeatureDefn      *poFDefn = new OGRFeatureDefn( "DSID" );
-    OGRFieldDefn         oField( "", OFTInteger );
 
     poFDefn->SetGeomType( wkbNone );
     poFDefn->Reference();
@@ -52,122 +49,124 @@ OGRFeatureDefn *S57GenerateDSIDFeatureDefn()
 /* -------------------------------------------------------------------- */
 /*      DSID fields.                                                    */
 /* -------------------------------------------------------------------- */
+    OGRFieldDefn oField( "", OFTInteger );
+
     oField.Set( "DSID_EXPP", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_INTU", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_DSNM", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_EDTN", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_UPDN", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_UADT", OFTString, 8, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_ISDT", OFTString, 8, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_STED", OFTReal, 11, 6 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_PRSP", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_PSDN", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_PRED", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_PROF", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_AGEN", OFTInteger, 5, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSID_COMT", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
 /* -------------------------------------------------------------------- */
 /*      DSSI fields.                                                    */
 /* -------------------------------------------------------------------- */
 
     oField.Set( "DSSI_DSTR", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_AALL", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NALL", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOMR", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOCR", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOGR", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOLR", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOIN", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOCN", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOED", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSSI_NOFA", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
 /* -------------------------------------------------------------------- */
 /*      DSPM fields.                                                    */
 /* -------------------------------------------------------------------- */
 
     oField.Set( "DSPM_HDAT", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_VDAT", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_SDAT", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_CSCL", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_DUNI", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_HUNI", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_PUNI", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_COUN", OFTInteger, 3, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_COMF", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_SOMF", OFTInteger, 10, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     oField.Set( "DSPM_COMT", OFTString, 0, 0 );
     poFDefn->AddFieldDefn( &oField );
-    
+
     return poFDefn;
 }
 
@@ -180,8 +179,8 @@ OGRFeatureDefn *S57GenerateGeomFeatureDefn( OGRwkbGeometryType eGType,
 
 {
     OGRFeatureDefn      *poFDefn = NULL;
-    
-    if( eGType == wkbPoint )                                            
+
+    if( eGType == wkbPoint )
     {
         poFDefn = new OGRFeatureDefn( "Point" );
         poFDefn->SetGeomType( eGType );
@@ -220,11 +219,11 @@ OGRFeatureDefn *S57GenerateGeomFeatureDefn( OGRwkbGeometryType eGType,
 /************************************************************************/
 
 OGRFeatureDefn *
-S57GenerateVectorPrimitiveFeatureDefn( int nRCNM, int nOptionFlags )
-
+S57GenerateVectorPrimitiveFeatureDefn( int nRCNM,
+                                       int /* nOptionFlags */ )
 {
     OGRFeatureDefn      *poFDefn = NULL;
- 
+
     if( nRCNM == RCNM_VI )
     {
         poFDefn = new OGRFeatureDefn( OGRN_VI );
@@ -265,6 +264,15 @@ S57GenerateVectorPrimitiveFeatureDefn( int nRCNM, int nOptionFlags )
     poFDefn->AddFieldDefn( &oField );
 
     oField.Set( "RUIN", OFTInteger, 2, 0 );
+    poFDefn->AddFieldDefn( &oField );
+
+/* -------------------------------------------------------------------- */
+/*      Geometric primitive attributes                                  */
+/* -------------------------------------------------------------------- */
+    oField.Set( "POSACC", OFTReal, 10, 2 );
+    poFDefn->AddFieldDefn( &oField );
+
+    oField.Set( "QUAPOS", OFTInteger, 2, 0 );
     poFDefn->AddFieldDefn( &oField );
 
 /* -------------------------------------------------------------------- */
@@ -317,28 +325,28 @@ S57GenerateVectorPrimitiveFeatureDefn( int nRCNM, int nOptionFlags )
 /*                     S57GenerateObjectClassDefn()                     */
 /************************************************************************/
 
-OGRFeatureDefn *S57GenerateObjectClassDefn( S57ClassRegistrar *poCR,
-                                            int nOBJL, int nOptionFlags )
+OGRFeatureDefn *S57GenerateObjectClassDefn(
+    S57ClassRegistrar *poCR,
+    S57ClassContentExplorer* poClassContentExplorer,
+    int nOBJL, int nOptionFlags )
 
 {
-    OGRFeatureDefn      *poFDefn = NULL;
-    char               **papszGeomPrim;
-
-    if( !poCR->SelectClass( nOBJL ) )
+    if( !poClassContentExplorer->SelectClass( nOBJL ) )
         return NULL;
-    
+
 /* -------------------------------------------------------------------- */
 /*      Create the feature definition based on the object class         */
 /*      acronym.                                                        */
 /* -------------------------------------------------------------------- */
-    poFDefn = new OGRFeatureDefn( poCR->GetAcronym() );
+    OGRFeatureDefn *poFDefn
+        = new OGRFeatureDefn( poClassContentExplorer->GetAcronym() );
     poFDefn->Reference();
 
 /* -------------------------------------------------------------------- */
 /*      Try and establish the geometry type.  If more than one          */
 /*      geometry type is allowed we just fall back to wkbUnknown.       */
 /* -------------------------------------------------------------------- */
-    papszGeomPrim = poCR->GetPrimitives();
+    char **papszGeomPrim = poClassContentExplorer->GetPrimitives();
     if( CSLCount(papszGeomPrim) == 0 )
     {
         poFDefn->SetGeomType( wkbNone );
@@ -349,7 +357,7 @@ OGRFeatureDefn *S57GenerateObjectClassDefn( S57ClassRegistrar *poCR,
     }
     else if( papszGeomPrim[0][0] == 'P' )
     {
-        if( EQUAL(poCR->GetAcronym(),"SOUNDG") )
+        if( EQUAL(poClassContentExplorer->GetAcronym(),"SOUNDG") )
         {
             if( nOptionFlags & S57M_SPLIT_MULTIPOINT )
                 poFDefn->SetGeomType( wkbPoint25D );
@@ -368,7 +376,7 @@ OGRFeatureDefn *S57GenerateObjectClassDefn( S57ClassRegistrar *poCR,
         // unfortunately this could be a multilinestring
         poFDefn->SetGeomType( wkbUnknown );
     }
-    
+
 /* -------------------------------------------------------------------- */
 /*      Add the standard attributes.                                    */
 /* -------------------------------------------------------------------- */
@@ -377,25 +385,25 @@ OGRFeatureDefn *S57GenerateObjectClassDefn( S57ClassRegistrar *poCR,
 /* -------------------------------------------------------------------- */
 /*      Add the attributes specific to this object class.               */
 /* -------------------------------------------------------------------- */
-    char        **papszAttrList = poCR->GetAttributeList();
+    char **papszAttrList = poClassContentExplorer->GetAttributeList();
 
     for( int iAttr = 0;
          papszAttrList != NULL && papszAttrList[iAttr] != NULL;
          iAttr++ )
     {
-        int     iAttrIndex = poCR->FindAttrByAcronym( papszAttrList[iAttr] );
+        const int iAttrIndex = poCR->FindAttrByAcronym( papszAttrList[iAttr] );
 
         if( iAttrIndex == -1 )
         {
             CPLDebug( "S57", "Can't find attribute %s from class %s:%s.",
                       papszAttrList[iAttr],
-                      poCR->GetAcronym(),
-                      poCR->GetDescription() );
+                      poClassContentExplorer->GetAcronym(),
+                      poClassContentExplorer->GetDescription() );
             continue;
         }
 
-        OGRFieldDefn    oField( papszAttrList[iAttr], OFTInteger );
-        
+        OGRFieldDefn oField( papszAttrList[iAttr], OFTInteger );
+
         switch( poCR->GetAttrType( iAttrIndex ) )
         {
           case SAT_ENUM:
@@ -420,14 +428,14 @@ OGRFeatureDefn *S57GenerateObjectClassDefn( S57ClassRegistrar *poCR,
         poFDefn->AddFieldDefn( &oField );
     }
 
-
 /* -------------------------------------------------------------------- */
 /*      Do we need to add DEPTH attributes to soundings?                */
 /* -------------------------------------------------------------------- */
-    if( EQUAL(poCR->GetAcronym(),"SOUNDG") 
+    const char* pszClassAcronym = poClassContentExplorer->GetAcronym();
+    if( pszClassAcronym != NULL && EQUAL(pszClassAcronym, "SOUNDG")
         && (nOptionFlags & S57M_ADD_SOUNDG_DEPTH) )
     {
-        OGRFieldDefn    oField( "DEPTH", OFTReal );
+        OGRFieldDefn oField( "DEPTH", OFTReal );
         poFDefn->AddFieldDefn( &oField );
     }
 
@@ -500,14 +508,14 @@ void S57GenerateStandardAttributes( OGRFeatureDefn *poFDefn, int nOptionFlags )
     {
         oField.Set( "LNAM", OFTString, 16, 0 );
         poFDefn->AddFieldDefn( &oField );
-        
+
         oField.Set( "LNAM_REFS", OFTStringList, 16, 0 );
         poFDefn->AddFieldDefn( &oField );
-        
+
         oField.Set( "FFPT_RIND", OFTIntegerList, 1, 0 );
         poFDefn->AddFieldDefn( &oField );
 
-        // We should likely include FFPT_COMT here. 
+        // We should likely include FFPT_COMT here.
     }
 
 /* -------------------------------------------------------------------- */
@@ -517,13 +525,13 @@ void S57GenerateStandardAttributes( OGRFeatureDefn *poFDefn, int nOptionFlags )
     {
         oField.Set( "NAME_RCNM", OFTIntegerList, 3, 0 );
         poFDefn->AddFieldDefn( &oField );
-        
+
         oField.Set( "NAME_RCID", OFTIntegerList, 10, 0 );
         poFDefn->AddFieldDefn( &oField );
-        
+
         oField.Set( "ORNT", OFTIntegerList, 1, 0 );
         poFDefn->AddFieldDefn( &oField );
-        
+
         oField.Set( "USAG", OFTIntegerList, 1, 0 );
         poFDefn->AddFieldDefn( &oField );
 
@@ -531,4 +539,3 @@ void S57GenerateStandardAttributes( OGRFeatureDefn *poFDefn, int nOptionFlags )
         poFDefn->AddFieldDefn( &oField );
     }
 }
-

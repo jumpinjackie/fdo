@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogridbtablelayer.cpp 14412 2008-05-09 15:02:27Z warmerdam $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRIDBTableLayer class, access to an existing table
@@ -32,7 +31,7 @@
 #include "cpl_string.h"
 #include "ogr_idb.h"
 
-CPL_CVSID("$Id: ogridbtablelayer.cpp 14412 2008-05-09 15:02:27Z warmerdam $");
+CPL_CVSID("$Id: ogridbtablelayer.cpp 37371 2017-02-13 11:41:59Z rouault $");
 /************************************************************************/
 /*                          OGRIDBTableLayer()                         */
 /************************************************************************/
@@ -149,8 +148,8 @@ CPLErr OGRIDBTableLayer::Initialize( const char *pszTableName,
 
     if( poFeatureDefn->GetFieldCount() == 0 )
     {
-        CPLError( CE_Failure, CPLE_AppDefined, 
-                  "No column definitions found for table '%s', layer not usable.", 
+        CPLError( CE_Failure, CPLE_AppDefined,
+                  "No column definitions found for table '%s', layer not usable.",
                   pszTableName );
         return CE_Failure;
     }
@@ -158,9 +157,9 @@ CPLErr OGRIDBTableLayer::Initialize( const char *pszTableName,
 /* -------------------------------------------------------------------- */
 /*      Do we have XMIN, YMIN, XMAX, YMAX extent fields?                */
 /* -------------------------------------------------------------------- */
-    if( poFeatureDefn->GetFieldIndex( "XMIN" ) != -1 
-        && poFeatureDefn->GetFieldIndex( "XMAX" ) != -1 
-        && poFeatureDefn->GetFieldIndex( "YMIN" ) != -1 
+    if( poFeatureDefn->GetFieldIndex( "XMIN" ) != -1
+        && poFeatureDefn->GetFieldIndex( "XMAX" ) != -1
+        && poFeatureDefn->GetFieldIndex( "YMIN" ) != -1
         && poFeatureDefn->GetFieldIndex( "YMAX" ) != -1 )
     {
         bHaveSpatialExtents = TRUE;
@@ -176,8 +175,8 @@ CPLErr OGRIDBTableLayer::Initialize( const char *pszTableName,
         int iColumn = oGetCol.RowType()->ColumnId( pszGeomColumn );
         if( iColumn < 0 )
         {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-                      "Column %s requested for geometry, but it does not exist.", 
+            CPLError( CE_Failure, CPLE_AppDefined,
+                      "Column %s requested for geometry, but it does not exist.",
                       pszGeomColumn );
             CPLFree( pszGeomColumn );
             pszGeomColumn = NULL;
@@ -190,7 +189,6 @@ CPLErr OGRIDBTableLayer::Initialize( const char *pszTableName,
                 bGeomColumnWKB = TRUE;
         }*/
     }
-
 
     return CE_None;
 }
@@ -316,7 +314,7 @@ void OGRIDBTableLayer::ResetReading()
 /*                             GetFeature()                             */
 /************************************************************************/
 
-OGRFeature *OGRIDBTableLayer::GetFeature( long nFeatureId )
+OGRFeature *OGRIDBTableLayer::GetFeature( GIntBig nFeatureId )
 
 {
     if( pszFIDColumn == NULL )
@@ -378,8 +376,11 @@ OGRFeature *OGRIDBTableLayer::GetFeature( long nFeatureId )
 OGRErr OGRIDBTableLayer::SetAttributeFilter( const char *pszQuery )
 
 {
+    CPLFree(m_pszAttrQueryString);
+    m_pszAttrQueryString = (pszQuery) ? CPLStrdup(pszQuery) : NULL;
+
     if( (pszQuery == NULL && this->pszQuery == NULL)
-        || (pszQuery != NULL && this->pszQuery != NULL 
+        || (pszQuery != NULL && this->pszQuery != NULL
             && EQUAL(pszQuery,this->pszQuery)) )
         return OGRERR_NONE;
 
@@ -418,7 +419,7 @@ int OGRIDBTableLayer::TestCapability( const char * pszCap )
 /*      way of counting features matching a spatial query.              */
 /************************************************************************/
 
-int OGRIDBTableLayer::GetFeatureCount( int bForce )
+GIntBig OGRIDBTableLayer::GetFeatureCount( int bForce )
 
 {
     return OGRIDBLayer::GetFeatureCount( bForce );
@@ -480,7 +481,7 @@ OGRSpatialReference *OGRIDBTableLayer::GetSpatialRef()
 }
 
 #if 0
-OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
+OGRErr OGRIDBTableLayer::ISetFeature( OGRFeature *poFeature )
 {
     OGRErr eErr(OGRERR_FAILURE);
 
@@ -536,7 +537,6 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
             bUpdateGeom = FALSE;
             CPLDebug("OGR_IDB", "SetFeature(): Unknown geometry type. Geometry will not be updated.");
     }
-
 
     // Create query
     CPLString osSql;
@@ -617,7 +617,7 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
             return eErr;
         }
 
-        if ( ! poFeature->IsFieldSet( i ) )
+        if ( ! poFeature->IsFieldSetAndNotNull( i ) )
         {
             if ( ! par->SetNull() )
             {
@@ -694,7 +694,7 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
 
 #endif
 
-OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
+OGRErr OGRIDBTableLayer::ISetFeature( OGRFeature *poFeature )
 {
     OGRErr eErr(OGRERR_FAILURE);
 
@@ -754,8 +754,9 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
         }
     }
     else
+    {
         bUpdateGeom = FALSE;
-
+    }
 
     // Create query
     CPLString osSql;
@@ -788,7 +789,7 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
         osFields += pszFieldName;
         osFields += "=";
 
-        if ( ! poFeature->IsFieldSet( i ) )
+        if ( ! poFeature->IsFieldSetAndNotNull( i ) )
         {
             osFields += "NULL";
             continue;
@@ -860,7 +861,7 @@ OGRErr OGRIDBTableLayer::SetFeature( OGRFeature *poFeature )
     return OGRERR_NONE;
 }
 
-OGRErr OGRIDBTableLayer::CreateFeature( OGRFeature *poFeature )
+OGRErr OGRIDBTableLayer::ICreateFeature( OGRFeature *poFeature )
 {
     OGRErr eErr(OGRERR_FAILURE);
 
@@ -942,7 +943,7 @@ OGRErr OGRIDBTableLayer::CreateFeature( OGRFeature *poFeature )
         const char * pszFieldName = poFeatureDefn->GetFieldDefn(i)->GetNameRef();
 
         // Skip NULL fields
-        if ( ! poFeature->IsFieldSet( i ) )
+        if ( ! poFeature->IsFieldSetAndNotNull( i ) )
         {
             continue;
         }

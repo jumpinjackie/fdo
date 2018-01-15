@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrhtflayer.cpp 20766 2010-10-05 09:07:28Z rouault $
  *
  * Project:  HTF Translator
  * Purpose:  Implements OGRHTFLayer class.
  * Author:   Even Rouault, <even dot rouault at mines dash paris dot org>
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010-2013, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,56 +26,56 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_htf.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogr_htf.h"
 #include "ogr_p.h"
 #include "ogr_srs_api.h"
 
-CPL_CVSID("$Id: ogrhtflayer.cpp 20766 2010-10-05 09:07:28Z rouault $");
+CPL_CVSID("$Id: ogrhtflayer.cpp 36415 2016-11-21 22:40:20Z rouault $");
 
 /************************************************************************/
 /*                            OGRHTFLayer()                             */
 /************************************************************************/
 
-OGRHTFLayer::OGRHTFLayer( const char* pszFilename, int nZone, int bIsNorth )
-
+OGRHTFLayer::OGRHTFLayer( const char* pszFilename, int nZone, int bIsNorth ) :
+    poFeatureDefn(NULL),
+    poSRS(new OGRSpatialReference(SRS_WKT_WGS84)),
+    fpHTF(VSIFOpenL(pszFilename, "rb")),
+    bEOF(false),
+    nNextFID(0),
+    bHasExtent(false),
+    dfMinX(0),
+    dfMinY(0),
+    dfMaxX(0),
+    dfMaxY(0)
 {
-    fpHTF = VSIFOpenL(pszFilename, "rb");
-    nNextFID = 0;
-    bEOF = FALSE;
-
-    poSRS = new OGRSpatialReference(SRS_WKT_WGS84);
     poSRS->SetUTM( nZone, bIsNorth );
-
-    bHasExtent = FALSE;
-    dfMinX = 0;
-    dfMinY = 0;
-    dfMaxX = 0;
-    dfMaxY = 0;
 }
 
 /************************************************************************/
 /*                         OGRHTFPolygonLayer()                         */
 /************************************************************************/
 
-OGRHTFPolygonLayer::OGRHTFPolygonLayer( const char* pszFilename, int nZone, int bIsNorth ) :
-                                     OGRHTFLayer(pszFilename, nZone, bIsNorth)
-
+OGRHTFPolygonLayer::OGRHTFPolygonLayer( const char* pszFilename, int nZone,
+                                        int bIsNorth ) :
+    OGRHTFLayer(pszFilename, nZone, bIsNorth)
 {
     poFeatureDefn = new OGRFeatureDefn( "polygon" );
+    SetDescription( poFeatureDefn->GetName() );
     poFeatureDefn->Reference();
     poFeatureDefn->SetGeomType( wkbPolygon  );
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
 
-    OGRFieldDefn    oField1( "DESCRIPTION", OFTString);
+    OGRFieldDefn oField1( "DESCRIPTION", OFTString);
     poFeatureDefn->AddFieldDefn( &oField1 );
-    OGRFieldDefn    oField2( "IDENTIFIER", OFTInteger);
+    OGRFieldDefn oField2( "IDENTIFIER", OFTInteger);
     poFeatureDefn->AddFieldDefn( &oField2 );
-    OGRFieldDefn    oField3( "SEAFLOOR_COVERAGE", OFTString);
+    OGRFieldDefn oField3( "SEAFLOOR_COVERAGE", OFTString);
     poFeatureDefn->AddFieldDefn( &oField3 );
-    OGRFieldDefn    oField4( "POSITION_ACCURACY", OFTReal);
+    OGRFieldDefn oField4( "POSITION_ACCURACY", OFTReal);
     poFeatureDefn->AddFieldDefn( &oField4 );
-    OGRFieldDefn    oField5( "DEPTH_ACCURACY", OFTReal);
+    OGRFieldDefn oField5( "DEPTH_ACCURACY", OFTReal);
     poFeatureDefn->AddFieldDefn( &oField5 );
 
     ResetReading();
@@ -86,28 +85,30 @@ OGRHTFPolygonLayer::OGRHTFPolygonLayer( const char* pszFilename, int nZone, int 
 /*                        OGRHTFSoundingLayer()                         */
 /************************************************************************/
 
-OGRHTFSoundingLayer::OGRHTFSoundingLayer( const char* pszFilename, int nZone, int bIsNorth, int nTotalSoundings ) :
-                                        OGRHTFLayer(pszFilename, nZone, bIsNorth)
-
+OGRHTFSoundingLayer::OGRHTFSoundingLayer( const char* pszFilename, int nZone,
+                                          int bIsNorth,
+                                          int nTotalSoundingsIn ) :
+    OGRHTFLayer(pszFilename, nZone, bIsNorth),
+    bHasFPK(false),
+    nFieldsPresent(0),
+    panFieldPresence(NULL),
+    nEastingIndex(-1),
+    nNorthingIndex(-1),
+    nTotalSoundings(nTotalSoundingsIn)
 {
     poFeatureDefn = new OGRFeatureDefn( "sounding" );
+    SetDescription( poFeatureDefn->GetName() );
     poFeatureDefn->Reference();
     poFeatureDefn->SetGeomType( wkbPoint  );
+    poFeatureDefn->GetGeomFieldDefn(0)->SetSpatialRef(poSRS);
 
-    this->nTotalSoundings = nTotalSoundings;
-    bHasFPK = FALSE;
-    nFieldsPresent = 0;
-    panFieldPresence = NULL;
-    nEastingIndex = -1;
-    nNorthingIndex = -1;
-
-    const char* pszLine;
-    int bSoundingHeader = FALSE;
+    const char* pszLine = NULL;
+    bool bSoundingHeader = false;
     while( fpHTF != NULL &&
            (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
     {
-        if (strncmp(pszLine, "SOUNDING HEADER", strlen("SOUNDING HEADER")) == 0)
-            bSoundingHeader = TRUE;
+        if (STARTS_WITH(pszLine, "SOUNDING HEADER"))
+            bSoundingHeader = true;
         else if (bSoundingHeader && strlen(pszLine) > 10 &&
                  pszLine[0] == '[' && pszLine[3] == ']' &&
                  pszLine[4] == ' ' &&
@@ -147,7 +148,7 @@ OGRHTFSoundingLayer::OGRHTFSoundingLayer( const char* pszFilename, int nZone, in
         }
         else if (strcmp(pszLine, "END OF SOUNDING HEADER") == 0)
         {
-            bSoundingHeader = FALSE;
+            bSoundingHeader = false;
         }
         else if (strcmp(pszLine, "SOUNDING DATA") == 0)
         {
@@ -155,34 +156,32 @@ OGRHTFSoundingLayer::OGRHTFSoundingLayer( const char* pszFilename, int nZone, in
             if (pszLine == NULL)
                 break;
             if (pszLine[0] == '[' &&
-                (int)strlen(pszLine) == 2 + poFeatureDefn->GetFieldCount())
+                static_cast<int>(strlen(pszLine)) ==
+                2 + poFeatureDefn->GetFieldCount())
             {
-                bHasFPK = TRUE;
-                panFieldPresence = (int*)CPLMalloc(sizeof(int) *
-                                            poFeatureDefn->GetFieldCount());
-                int i;
-                for(i=0;i<poFeatureDefn->GetFieldCount();i++)
+                bHasFPK = true;
+                panFieldPresence = static_cast<bool *>(
+                    CPLMalloc(sizeof(int) * poFeatureDefn->GetFieldCount()) );
+                for( int i=0;i<poFeatureDefn->GetFieldCount();i++)
                 {
                     panFieldPresence[i] = pszLine[1 + i] != '0';
-                    nFieldsPresent += panFieldPresence[i];
+                    nFieldsPresent += panFieldPresence[i] ? 1 : 0;
                 }
             }
             break;
         }
     }
 
-    if (!bHasFPK)
+    if( !bHasFPK )
     {
-        panFieldPresence = (int*)CPLMalloc(sizeof(int) *
-                                           poFeatureDefn->GetFieldCount());
-        int i;
-        for(i=0;i<poFeatureDefn->GetFieldCount();i++)
-            panFieldPresence[i] = TRUE;
+        panFieldPresence = static_cast<bool *>(
+            CPLMalloc(sizeof(int) * poFeatureDefn->GetFieldCount()) );
+        for( int i=0; i < poFeatureDefn->GetFieldCount(); i++ )
+            panFieldPresence[i] = true;
         nFieldsPresent = poFeatureDefn->GetFieldCount();
     }
 
-    int nIndex;
-    nIndex = poFeatureDefn->GetFieldIndex("EASTING");
+    int nIndex = poFeatureDefn->GetFieldIndex("EASTING");
     if (nIndex < 0 || !panFieldPresence[nIndex])
     {
         CPLError(CE_Failure, CPLE_NotSupported, "Cannot find EASTING field");
@@ -220,7 +219,6 @@ OGRHTFLayer::~OGRHTFLayer()
         VSIFCloseL( fpHTF );
 }
 
-
 /************************************************************************/
 /*                       ~OGRHTFSoundingLayer()                         */
 /************************************************************************/
@@ -239,13 +237,12 @@ void OGRHTFLayer::ResetReading()
 
 {
     nNextFID = 0;
-    bEOF = FALSE;
+    bEOF = false;
     if (fpHTF)
     {
         VSIFSeekL( fpHTF, 0, SEEK_SET );
     }
 }
-
 
 /************************************************************************/
 /*                            ResetReading()                            */
@@ -257,7 +254,7 @@ void OGRHTFPolygonLayer::ResetReading()
     OGRHTFLayer::ResetReading();
     if (fpHTF)
     {
-        const char* pszLine;
+        const char* pszLine = NULL;
         while( (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
         {
             if (strcmp(pszLine, "POLYGON DATA") == 0)
@@ -266,10 +263,9 @@ void OGRHTFPolygonLayer::ResetReading()
             }
         }
         if (pszLine == NULL)
-            bEOF = TRUE;
+            bEOF = true;
     }
 }
-
 
 /************************************************************************/
 /*                            ResetReading()                            */
@@ -281,7 +277,7 @@ void OGRHTFSoundingLayer::ResetReading()
     OGRHTFLayer::ResetReading();
     if (fpHTF)
     {
-        const char* pszLine;
+        const char* pszLine = NULL;
         while( (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
         {
             if (strcmp(pszLine, "SOUNDING DATA") == 0)
@@ -292,7 +288,7 @@ void OGRHTFSoundingLayer::ResetReading()
             }
         }
         if (pszLine == NULL)
-            bEOF = TRUE;
+            bEOF = true;
     }
 }
 
@@ -302,14 +298,12 @@ void OGRHTFSoundingLayer::ResetReading()
 
 OGRFeature *OGRHTFLayer::GetNextFeature()
 {
-    OGRFeature  *poFeature;
-
     if (fpHTF == NULL || bEOF)
         return NULL;
 
     while(!bEOF)
     {
-        poFeature = GetNextRawFeature();
+        OGRFeature *poFeature = GetNextRawFeature();
         if (poFeature == NULL)
             return NULL;
 
@@ -320,8 +314,8 @@ OGRFeature *OGRHTFLayer::GetNextFeature()
         {
             return poFeature;
         }
-        else
-            delete poFeature;
+
+        delete poFeature;
     }
 
     return NULL;
@@ -335,15 +329,16 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
 {
     OGRFeature* poFeature = new OGRFeature(poFeatureDefn);
 
-    const char* pszLine;
-
     OGRLinearRing oLR;
-    int bHastFirstCoord = FALSE;
-    double dfFirstEasting = 0, dfFirstNorthing = 0;
-    double dfIslandEasting = 0, dfIslandNorthing = 0;
-    int bInIsland = FALSE;
+    bool bHasFirstCoord = false;
+    double dfFirstEasting = 0;
+    double dfFirstNorthing = 0;
+    double dfIslandEasting = 0;
+    double dfIslandNorthing = 0;
+    bool bInIsland = false;
     OGRPolygon* poPoly = new OGRPolygon();
 
+    const char* pszLine = NULL;
     while( (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
     {
         if (pszLine[0] == ';')
@@ -355,32 +350,27 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
             /* end of polygon is marked by a blank line */
             break;
         }
-        else if (strncmp(pszLine, "POLYGON DESCRIPTION: ",
-                         strlen("POLYGON DESCRIPTION: ")) == 0)
+        else if (STARTS_WITH(pszLine, "POLYGON DESCRIPTION: "))
         {
             poFeature->SetField(0, pszLine + strlen("POLYGON DESCRIPTION: "));
         }
-        else if (strncmp(pszLine, "POLYGON IDENTIFIER: ",
-                         strlen("POLYGON IDENTIFIER: ")) == 0)
+        else if (STARTS_WITH(pszLine, "POLYGON IDENTIFIER: "))
         {
             poFeature->SetField(1, pszLine + strlen("POLYGON IDENTIFIER: "));
         }
-        else if (strncmp(pszLine, "SEAFLOOR COVERAGE: ",
-                         strlen("SEAFLOOR COVERAGE:")) == 0)
+        else if (STARTS_WITH(pszLine, "SEAFLOOR COVERAGE: "))
         {
             const char* pszVal = pszLine + strlen("SEAFLOOR COVERAGE: ");
             if (*pszVal != '*')
                 poFeature->SetField(2, pszVal);
         }
-        else if (strncmp(pszLine, "POSITION ACCURACY: ",
-                         strlen("POSITION ACCURACY:")) == 0)
+        else if (STARTS_WITH(pszLine, "POSITION ACCURACY: "))
         {
             const char* pszVal = pszLine + strlen("POSITION ACCURACY: ");
             if (*pszVal != '*')
                 poFeature->SetField(3, pszVal);
         }
-        else if (strncmp(pszLine, "DEPTH ACCURACY: ",
-                         strlen("DEPTH ACCURACY:")) == 0)
+        else if (STARTS_WITH(pszLine, "DEPTH ACCURACY: "))
         {
             const char* pszVal = pszLine + strlen("DEPTH ACCURACY: ");
             if (*pszVal != '*')
@@ -388,7 +378,7 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
         }
         else if (strcmp(pszLine, "END OF POLYGON DATA") == 0)
         {
-            bEOF = TRUE;
+            bEOF = true;
             break;
         }
         else
@@ -396,11 +386,11 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
             char** papszTokens = CSLTokenizeString(pszLine);
             if (CSLCount(papszTokens) == 4)
             {
-                double dfEasting = atof(papszTokens[2]);
-                double dfNorthing = atof(papszTokens[3]);
-                if (!bHastFirstCoord)
+                const double dfEasting = CPLAtof(papszTokens[2]);
+                const double dfNorthing = CPLAtof(papszTokens[3]);
+                if (!bHasFirstCoord)
                 {
-                    bHastFirstCoord = TRUE;
+                    bHasFirstCoord = true;
                     dfFirstEasting = dfEasting;
                     dfFirstNorthing = dfNorthing;
                     oLR.addPoint(dfEasting, dfNorthing);
@@ -413,7 +403,7 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
                         oLR.addPoint(dfEasting, dfNorthing);
                         poPoly->addRing(&oLR);
                         oLR.empty();
-                        bInIsland = TRUE;
+                        bInIsland = true;
                     }
                 }
                 else if (bInIsland && oLR.getNumPoints() == 0)
@@ -439,7 +429,7 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
     }
 
     if (pszLine == NULL)
-        bEOF = TRUE;
+        bEOF = true;
 
     if (oLR.getNumPoints() >= 3)
     {
@@ -453,17 +443,16 @@ OGRFeature *OGRHTFPolygonLayer::GetNextRawFeature()
     return poFeature;
 }
 
-
 /************************************************************************/
 /*                         GetNextRawFeature()                          */
 /************************************************************************/
 
 OGRFeature *OGRHTFSoundingLayer::GetNextRawFeature()
 {
-    const char* pszLine;
 
     OGRLinearRing oLR;
 
+    const char* pszLine = NULL;
     while( (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
     {
         if (pszLine[0] == ';')
@@ -472,12 +461,12 @@ OGRFeature *OGRHTFSoundingLayer::GetNextRawFeature()
         }
         else if (pszLine[0] == 0)
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
         else if (strcmp(pszLine, "END OF SOUNDING DATA") == 0)
         {
-            bEOF = TRUE;
+            bEOF = true;
             return NULL;
         }
         else
@@ -485,15 +474,15 @@ OGRFeature *OGRHTFSoundingLayer::GetNextRawFeature()
     }
     if (pszLine == NULL)
     {
-        bEOF = TRUE;
+        bEOF = true;
         return NULL;
     }
 
-    int i;
-    double dfEasting = 0, dfNorthing = 0;
+    double dfEasting = 0;
+    double dfNorthing = 0;
     OGRFeature* poFeature = new OGRFeature(poFeatureDefn);
-    char* pszStr = (char*)pszLine;
-    for(i=0;i<poFeatureDefn->GetFieldCount();i++)
+    char* pszStr = const_cast<char *>(pszLine);
+    for( int i=0; i < poFeatureDefn->GetFieldCount(); i++ )
     {
         if (!panFieldPresence[i])
             continue;
@@ -524,7 +513,7 @@ OGRFeature *OGRHTFSoundingLayer::GetNextRawFeature()
 /*                          GetFeatureCount()                           */
 /************************************************************************/
 
-int OGRHTFSoundingLayer::GetFeatureCount(int bForce)
+GIntBig OGRHTFSoundingLayer::GetFeatureCount(int bForce)
 {
     if (m_poFilterGeom != NULL || m_poAttrQuery != NULL)
         return OGRHTFLayer::GetFeatureCount(bForce);
@@ -537,7 +526,7 @@ int OGRHTFSoundingLayer::GetFeatureCount(int bForce)
         return 0;
 
     int nCount = 0;
-    const char* pszLine;
+    const char* pszLine = NULL;
     while( (pszLine = CPLReadLine2L(fpHTF, 1024, NULL)) != NULL)
     {
         if (pszLine[0] == ';')
@@ -569,7 +558,6 @@ int OGRHTFLayer::TestCapability( const char * pszCap )
     return FALSE;
 }
 
-
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
@@ -578,7 +566,8 @@ int OGRHTFSoundingLayer::TestCapability( const char * pszCap )
 
 {
     if (EQUAL(pszCap, OLCFastFeatureCount))
-        return m_poFilterGeom == NULL && m_poAttrQuery == NULL && nTotalSoundings != 0;
+        return m_poFilterGeom == NULL && m_poAttrQuery == NULL &&
+            nTotalSoundings != 0;
 
     return OGRHTFLayer::TestCapability(pszCap);
 }
@@ -599,45 +588,45 @@ OGRErr OGRHTFLayer::GetExtent(OGREnvelope *psExtent, int bForce)
     return OGRERR_NONE;
 }
 
-
 /************************************************************************/
 /*                             SetExtent()                              */
 /************************************************************************/
 
-void OGRHTFLayer::SetExtent(double dfMinX, double dfMinY, double dfMaxX, double dfMaxY)
+void OGRHTFLayer::SetExtent( double dfMinXIn, double dfMinYIn, double dfMaxXIn,
+                             double dfMaxYIn )
 {
-    bHasExtent = TRUE;
-    this->dfMinX = dfMinX;
-    this->dfMinY = dfMinY;
-    this->dfMaxX = dfMaxX;
-    this->dfMaxY = dfMaxY;
+    bHasExtent = true;
+    dfMinX = dfMinXIn;
+    dfMinY = dfMinYIn;
+    dfMaxX = dfMaxXIn;
+    dfMaxY = dfMaxYIn;
 }
-
 
 /************************************************************************/
 /*                        OGRHTFMetadataLayer()                         */
 /************************************************************************/
 
-OGRHTFMetadataLayer::OGRHTFMetadataLayer(std::vector<CPLString> aosMD)
+OGRHTFMetadataLayer::OGRHTFMetadataLayer(const std::vector<CPLString>& aosMDIn) :
+    poFeatureDefn(new OGRFeatureDefn( "metadata" )),
+    aosMD(aosMDIn),
+    nNextFID(0)
 {
-    this->aosMD = aosMD;
-    nNextFID = 0;
-
-    poFeatureDefn = new OGRFeatureDefn( "metadata" );
+    SetDescription( poFeatureDefn->GetName() );
     poFeatureDefn->Reference();
     poFeatureDefn->SetGeomType( wkbNone  );
 
-    std::vector<CPLString>::const_iterator iter = aosMD.begin();
-    std::vector<CPLString>::const_iterator eiter = aosMD.end();
-    while(iter != eiter)
+    std::vector<CPLString>::const_iterator oIter = aosMD.begin();
+    std::vector<CPLString>::const_iterator oEndIter = aosMD.end();
+    while(oIter != oEndIter)
     {
-        const CPLString& osStr = *iter;
+        const CPLString& osStr = *oIter;
         char* pszStr = CPLStrdup(osStr.c_str());
         char* pszSep = strstr(pszStr, ": ");
         if (pszSep)
         {
             *pszSep = 0;
-            int i = 0, j = 0;
+            int i = 0;
+            int j = 0;
             for(;pszStr[i];i++)
             {
                 if (pszStr[i] == ' ' || pszStr[i] == '-' || pszStr[i] == '&')
@@ -656,16 +645,16 @@ OGRHTFMetadataLayer::OGRHTFMetadataLayer(std::vector<CPLString> aosMD)
             poFeatureDefn->AddFieldDefn( &oField );
         }
         CPLFree(pszStr);
-        ++iter;
+        ++oIter;
     }
 
     poFeature = new OGRFeature(poFeatureDefn);
-    iter = aosMD.begin();
-    eiter = aosMD.end();
+    oIter = aosMD.begin();
+    oEndIter = aosMD.end();
     int nField = 0;
-    while(iter != eiter)
+    while(oIter != oEndIter)
     {
-        const CPLString& osStr = *iter;
+        const CPLString& osStr = *oIter;
         const char* pszStr = osStr.c_str();
         const char* pszSep = strstr(pszStr, ": ");
         if (pszSep)
@@ -675,7 +664,7 @@ OGRHTFMetadataLayer::OGRHTFMetadataLayer(std::vector<CPLString> aosMD)
 
             nField ++;
         }
-        ++iter;
+        ++oIter;
     }
 }
 

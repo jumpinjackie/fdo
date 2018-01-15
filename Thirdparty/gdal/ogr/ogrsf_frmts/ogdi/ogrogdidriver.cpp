@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrogdidriver.cpp 16861 2009-04-26 19:22:29Z rouault $
  *
  * Project:  OGDI Bridge
  * Purpose:  Implements OGROGDIDriver class.
@@ -31,7 +30,7 @@
 #include "ogrogdi.h"
 #include "cpl_conv.h"
 
-CPL_CVSID("$Id: ogrogdidriver.cpp 16861 2009-04-26 19:22:29Z rouault $");
+CPL_CVSID("$Id: ogrogdidriver.cpp 35911 2016-10-24 15:03:26Z goatbar $");
 
 /************************************************************************/
 /*                           ~OGROGDIDriver()                           */
@@ -49,8 +48,21 @@ OGROGDIDriver::~OGROGDIDriver()
 const char *OGROGDIDriver::GetName()
 
 {
-    return "OGDI";
+    return "OGR_OGDI";
 }
+
+/************************************************************************/
+/*                         MyOGDIReportErrorFunction()                  */
+/************************************************************************/
+
+#if OGDI_RELEASEDATE >= 20160705
+static int MyOGDIReportErrorFunction(int errorcode, const char *error_message)
+{
+    CPLError(CE_Failure, CPLE_AppDefined, "OGDI error %d: %s",
+             errorcode, error_message);
+    return FALSE; // go on
+}
+#endif
 
 /************************************************************************/
 /*                                Open()                                */
@@ -60,11 +72,18 @@ OGRDataSource *OGROGDIDriver::Open( const char * pszFilename,
                                      int bUpdate )
 
 {
-    OGROGDIDataSource   *poDS;
+    if( !STARTS_WITH_CI(pszFilename, "gltp:") )
+        return NULL;
 
-    poDS = new OGROGDIDataSource();
+#if OGDI_RELEASEDATE >= 20160705
+    // Available only in post OGDI 3.2.0beta2
+    // and only called if env variable OGDI_STOP_ON_ERROR is set to NO
+    ecs_SetReportErrorFunction( MyOGDIReportErrorFunction );
+#endif
 
-    if( !poDS->Open( pszFilename, TRUE ) )
+    OGROGDIDataSource *poDS = new OGROGDIDataSource();
+
+    if( !poDS->Open( pszFilename ) )
     {
         delete poDS;
         poDS = NULL;
@@ -77,16 +96,15 @@ OGRDataSource *OGROGDIDriver::Open( const char * pszFilename,
         delete poDS;
         poDS = NULL;
     }
- 
+
     return poDS;
 }
-
 
 /************************************************************************/
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGROGDIDriver::TestCapability( const char * pszCap )
+int OGROGDIDriver::TestCapability( CPL_UNUSED const char * pszCap )
 
 {
     return FALSE;
@@ -99,8 +117,13 @@ int OGROGDIDriver::TestCapability( const char * pszCap )
 void RegisterOGROGDI()
 
 {
-    if (! GDAL_CHECK_VERSION("OGR/OGDI driver"))
+    if( !GDAL_CHECK_VERSION("OGR/OGDI driver") )
         return;
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGROGDIDriver );
-}
 
+    OGRSFDriver* poDriver = new OGROGDIDriver;
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME,
+                               "OGDI Vectors (VPF, VMAP, DCW)" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_ogdi.html" );
+
+    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( poDriver );
+}

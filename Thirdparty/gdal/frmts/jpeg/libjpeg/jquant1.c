@@ -14,6 +14,8 @@
 #include "jinclude.h"
 #include "jpeglib.h"
 
+#include "cpl_port.h"
+
 #ifdef QUANT_1PASS_SUPPORTED
 
 
@@ -105,7 +107,7 @@ static const UINT8 base_dither_matrix[ODITHER_SIZE][ODITHER_SIZE] = {
  * Errors are accumulated into the array fserrors[], at a resolution of
  * 1/16th of a pixel count.  The error at a given pixel is propagated
  * to its not-yet-processed neighbors using the standard F-S fractions,
- *		...	(here)	7/16
+` *		...	(here)	7/16
  *		3/16	5/16	1/16
  * We work left-to-right on even rows, right-to-left on odd rows.
  *
@@ -242,7 +244,7 @@ select_ncolors (j_decompress_ptr cinfo, int Ncolors[])
 
 
 LOCAL(int)
-output_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
+output_value (CPL_UNUSED j_decompress_ptr cinfo, CPL_UNUSED int ci, int j, int maxj)
 /* Return j'th output value, where j will range from 0 to maxj */
 /* The output values must fall in 0..MAXJSAMPLE in increasing order */
 {
@@ -256,7 +258,7 @@ output_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
 
 
 LOCAL(int)
-largest_input_value (j_decompress_ptr cinfo, int ci, int j, int maxj)
+largest_input_value (CPL_UNUSED j_decompress_ptr cinfo, CPL_UNUSED int ci, int j, int maxj)
 /* Return largest input value that should map to j'th output value */
 /* Must have largest(j=0) >= 0, and largest(j=maxj) >= MAXJSAMPLE */
 {
@@ -738,7 +740,7 @@ alloc_fs_workspace (j_decompress_ptr cinfo)
  */
 
 METHODDEF(void)
-start_pass_1_quant (j_decompress_ptr cinfo, boolean is_pre_scan)
+start_pass_1_quant (j_decompress_ptr cinfo, CPL_UNUSED boolean is_pre_scan)
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   size_t arraysize;
@@ -795,7 +797,7 @@ start_pass_1_quant (j_decompress_ptr cinfo, boolean is_pre_scan)
  */
 
 METHODDEF(void)
-finish_pass_1_quant (j_decompress_ptr cinfo)
+finish_pass_1_quant (CPL_UNUSED j_decompress_ptr cinfo)
 {
   /* no work in 1-pass case */
 }

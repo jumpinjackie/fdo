@@ -1,5 +1,4 @@
 /******************************************************************************
- * $Id: ogrmysqldriver.cpp 12396 2007-10-13 10:02:17Z rouault $
  *
  * Project:  OpenGIS Simple Features Reference Implementation
  * Purpose:  Implements OGRMySQLDriver class.
@@ -29,41 +28,70 @@
 
 #include "ogr_mysql.h"
 #include "cpl_conv.h"
+#include "cpl_multiproc.h"
 
-CPL_CVSID("$Id: ogrmysqldriver.cpp 12396 2007-10-13 10:02:17Z rouault $");
+CPL_CVSID("$Id: ogrmysqldriver.cpp 35911 2016-10-24 15:03:26Z goatbar $");
+
+static CPLMutex* hMutex = NULL;
+static int   bInitialized = FALSE;
 
 /************************************************************************/
-/*                          ~OGRMySQLDriver()                           */
+/*                        OGRMySQLDriverUnload()                        */
 /************************************************************************/
 
-OGRMySQLDriver::~OGRMySQLDriver()
-
+static void OGRMySQLDriverUnload( CPL_UNUSED GDALDriver* poDriver )
 {
+    if( bInitialized )
+    {
+        mysql_library_end();
+        bInitialized = FALSE;
+    }
+    if( hMutex != NULL )
+    {
+        CPLDestroyMutex(hMutex);
+        hMutex = NULL;
+    }
 }
 
 /************************************************************************/
-/*                              GetName()                               */
+/*                         OGRMySQLDriverIdentify()                     */
 /************************************************************************/
 
-const char *OGRMySQLDriver::GetName()
+static int OGRMySQLDriverIdentify( GDALOpenInfo* poOpenInfo )
 
 {
-    return "MySQL";
+    return STARTS_WITH_CI(poOpenInfo->pszFilename, "MYSQL:");
 }
 
 /************************************************************************/
 /*                                Open()                                */
 /************************************************************************/
 
-OGRDataSource *OGRMySQLDriver::Open( const char * pszFilename,
-                                     int bUpdate )
+static GDALDataset *OGRMySQLDriverOpen( GDALOpenInfo* poOpenInfo )
 
 {
     OGRMySQLDataSource     *poDS;
 
+    if( !OGRMySQLDriverIdentify(poOpenInfo) )
+        return NULL;
+
+    {
+        CPLMutexHolderD(&hMutex);
+        if( !bInitialized )
+        {
+            if ( mysql_library_init( 0, NULL, NULL ) )
+            {
+                CPLError( CE_Failure, CPLE_AppDefined, "Could not initialize MySQL library" );
+                return NULL;
+            }
+            bInitialized = TRUE;
+        }
+    }
+
     poDS = new OGRMySQLDataSource();
 
-    if( !poDS->Open( pszFilename, bUpdate, TRUE ) )
+    if( !poDS->Open( poOpenInfo->pszFilename, poOpenInfo->papszOpenOptions,
+                     poOpenInfo->eAccess == GA_Update ) )
     {
         delete poDS;
         return NULL;
@@ -72,49 +100,31 @@ OGRDataSource *OGRMySQLDriver::Open( const char * pszFilename,
         return poDS;
 }
 
-
 /************************************************************************/
-/*                          CreateDataSource()                          */
+/*                               Create()                               */
 /************************************************************************/
 
-OGRDataSource *OGRMySQLDriver::CreateDataSource( const char * pszName,
-                                              char ** /* papszOptions */ )
-
+static GDALDataset *OGRMySQLDriverCreate( const char * pszName,
+                                          CPL_UNUSED int nBands,
+                                          CPL_UNUSED int nXSize,
+                                          CPL_UNUSED int nYSize,
+                                          CPL_UNUSED GDALDataType eDT,
+                                          CPL_UNUSED char **papszOptions )
 {
     OGRMySQLDataSource     *poDS;
 
     poDS = new OGRMySQLDataSource();
 
-
-    if( !poDS->Open( pszName, TRUE, TRUE ) )
+    if( !poDS->Open( pszName, NULL, TRUE ) )
     {
         delete poDS;
-        CPLError( CE_Failure, CPLE_AppDefined, 
+        CPLError( CE_Failure, CPLE_AppDefined,
          "MySQL driver doesn't currently support database creation.\n"
                   "Please create database before using." );
         return NULL;
     }
 
     return poDS;
-}
-
-
-/************************************************************************/
-/*                           TestCapability()                           */
-/************************************************************************/
-
-int OGRMySQLDriver::TestCapability( const char * pszCap )
-
-{
-
-    if( EQUAL(pszCap,ODsCCreateLayer) )
-        return TRUE;
-    if( EQUAL(pszCap,ODsCDeleteLayer) )
-        return TRUE;     
-    if( EQUAL(pszCap,ODrCCreateDataSource) )
-        return TRUE;
-        
-    return FALSE;
 }
 
 /************************************************************************/
@@ -126,6 +136,54 @@ void RegisterOGRMySQL()
 {
     if (! GDAL_CHECK_VERSION("MySQL driver"))
         return;
-    OGRSFDriverRegistrar::GetRegistrar()->RegisterDriver( new OGRMySQLDriver );
-}
 
+    if( GDALGetDriverByName( "MySQL" ) != NULL )
+        return;
+
+    GDALDriver *poDriver = new GDALDriver();
+
+    poDriver->SetDescription( "MySQL" );
+    poDriver->SetMetadataItem( GDAL_DCAP_VECTOR, "YES" );
+    poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, "MySQL" );
+    poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, "drv_mysql.html" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_CONNECTION_PREFIX, "MYSQL:" );
+
+    poDriver->SetMetadataItem( GDAL_DMD_OPENOPTIONLIST,
+"<OpenOptionList>"
+"  <Option name='DBNAME' type='string' description='Database name' required='true'/>"
+"  <Option name='PORT' type='int' description='Port'/>"
+"  <Option name='USER' type='string' description='User name'/>"
+"  <Option name='PASSWORD' type='string' description='Password'/>"
+"  <Option name='HOST' type='string' description='Server hostname'/>"
+"  <Option name='TABLES' type='string' description='Restricted set of tables to list (comma separated)'/>"
+"</OpenOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONOPTIONLIST,
+                               "<CreationOptionList/>");
+
+    poDriver->SetMetadataItem( GDAL_DS_LAYER_CREATIONOPTIONLIST,
+    "<LayerCreationOptionList>"
+    "  <Option name='OVERWRITE' type='boolean' description='Whether to overwrite an existing table with the layer name to be created' default='NO'/>"
+    "  <Option name='LAUNDER' type='boolean' description='Whether layer and field names will be laundered' default='YES'/>"
+    "  <Option name='PRECISION' type='boolean' description='Whether fields created should keep the width and precision' default='YES'/>"
+    "  <Option name='GEOMETRY_NAME' type='string' description='Name of geometry column.' default='SHAPE'/>"
+    "  <Option name='SPATIAL_INDEX' type='boolean' description='Whether to create a spatial index' default='YES'/>"
+    "  <Option name='FID' type='string' description='Name of the FID column to create' default='OGR_FID' deprecated_alias='MYSQL_FID'/>"
+    "  <Option name='FID64' type='boolean' description='Whether to create the FID column with BIGINT type to handle 64bit wide ids' default='NO'/>"
+    "  <Option name='ENGINE' type='string' description='Database engine to use.'/>"
+    "</LayerCreationOptionList>");
+
+    poDriver->SetMetadataItem( GDAL_DMD_CREATIONFIELDDATATYPES,
+                               "Integer Integer64 Real String Date DateTime "
+                               "Time Binary" );
+    poDriver->SetMetadataItem( GDAL_DCAP_NOTNULL_FIELDS, "YES" );
+    poDriver->SetMetadataItem( GDAL_DCAP_DEFAULT_FIELDS, "YES" );
+
+    poDriver->pfnOpen = OGRMySQLDriverOpen;
+    poDriver->pfnIdentify = OGRMySQLDriverIdentify;
+    poDriver->pfnCreate = OGRMySQLDriverCreate;
+    poDriver->pfnUnloadDriver = OGRMySQLDriverUnload;
+
+    GetGDALDriverManager()->RegisterDriver( poDriver );
+}

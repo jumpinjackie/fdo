@@ -1,12 +1,11 @@
 /******************************************************************************
- * $Id: ogrhtfdatasource.cpp 23042 2011-09-04 15:07:22Z rouault $
  *
  * Project:  HTF Translator
  * Purpose:  Implements OGRHTFDataSource class
  * Author:   Even Rouault, even dot rouault at mines dash paris dot org
  *
  ******************************************************************************
- * Copyright (c) 2010, Even Rouault <even dot rouault at mines dash paris dot org>
+ * Copyright (c) 2010, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,25 +26,22 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "ogr_htf.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "ogr_htf.h"
 
-CPL_CVSID("$Id: ogrhtfdatasource.cpp 23042 2011-09-04 15:07:22Z rouault $");
+CPL_CVSID("$Id: ogrhtfdatasource.cpp 35013 2016-08-09 16:03:57Z goatbar $");
 
 /************************************************************************/
 /*                          OGRHTFDataSource()                          */
 /************************************************************************/
 
-OGRHTFDataSource::OGRHTFDataSource()
-
-{
-    papoLayers = NULL;
-    nLayers = 0;
-    poMetadataLayer = NULL;
-
-    pszName = NULL;
-}
+OGRHTFDataSource::OGRHTFDataSource() :
+    pszName(NULL),
+    papoLayers(NULL),
+    nLayers(0),
+    poMetadataLayer(NULL)
+{}
 
 /************************************************************************/
 /*                         ~OGRHTFDataSource()                          */
@@ -66,8 +62,7 @@ OGRHTFDataSource::~OGRHTFDataSource()
 /*                           TestCapability()                           */
 /************************************************************************/
 
-int OGRHTFDataSource::TestCapability( const char * pszCap )
-
+int OGRHTFDataSource::TestCapability( const char * /* pszCap */ )
 {
     return FALSE;
 }
@@ -81,8 +76,8 @@ OGRLayer *OGRHTFDataSource::GetLayer( int iLayer )
 {
     if( iLayer < 0 || iLayer >= nLayers )
         return NULL;
-    else
-        return papoLayers[iLayer];
+
+    return papoLayers[iLayer];
 }
 
 /************************************************************************/
@@ -106,17 +101,12 @@ OGRLayer* OGRHTFDataSource::GetLayerByName( const char* pszLayerName )
 /*                                Open()                                */
 /************************************************************************/
 
-int OGRHTFDataSource::Open( const char * pszFilename, int bUpdateIn)
+int OGRHTFDataSource::Open( const char * pszFilename )
 
 {
-    if (bUpdateIn)
-    {
-        return FALSE;
-    }
-
     pszName = CPLStrdup( pszFilename );
 
-// -------------------------------------------------------------------- 
+// --------------------------------------------------------------------
 //      Does this appear to be a .htf file?
 // --------------------------------------------------------------------
 
@@ -124,30 +114,24 @@ int OGRHTFDataSource::Open( const char * pszFilename, int bUpdateIn)
     if (fp == NULL)
         return FALSE;
 
-    char szBuffer[11];
-    int nbRead = (int)VSIFReadL(szBuffer, 1, sizeof(szBuffer) - 1, fp);
-    szBuffer[nbRead] = '\0';
-
-    int bIsHTF = strcmp(szBuffer, "HTF HEADER") == 0;
-    if (!bIsHTF)
-    {
-        VSIFCloseL(fp);
-        return FALSE;
-    }
-
-    VSIFSeekL(fp, 0, SEEK_SET);
-
-    const char* pszLine;
-    int bEndOfHTFHeader = FALSE;
-    int bIsSouth = FALSE;
-    int bGeodeticDatumIsWGS84 = FALSE;
-    int bIsUTM = FALSE;
+    bool bEndOfHTFHeader = false;
+    bool bIsSouth = false;
+    bool bGeodeticDatumIsWGS84 = false;
+    bool bIsUTM = false;
     int nZone = 0;
     int nLines = 0;
-    int bHasSWEasting = FALSE, bHasSWNorthing = FALSE, bHasNEEasting = FALSE, bHasNENorthing = FALSE;
-    double dfSWEasting = 0, dfSWNorthing = 0, dfNEEasting = 0, dfNENorthing = 0;
+    bool bHasSWEasting = false;
+    bool bHasSWNorthing = false;
+    bool bHasNEEasting = false;
+    bool bHasNENorthing = false;
+    double dfSWEasting = 0;
+    double dfSWNorthing = 0;
+    double dfNEEasting = 0;
+    double dfNENorthing = 0;
     std::vector<CPLString> aosMD;
     int nTotalSoundings = 0;
+
+    const char* pszLine = NULL;
     while( (pszLine = CPLReadLine2L(fp, 1024, NULL)) != NULL)
     {
         nLines ++;
@@ -160,17 +144,17 @@ int OGRHTFDataSource::Open( const char * pszFilename, int bUpdateIn)
 
         if (strcmp(pszLine, "END OF HTF HEADER") == 0)
         {
-            bEndOfHTFHeader = TRUE;
+            bEndOfHTFHeader = true;
             break;
         }
 
         aosMD.push_back(pszLine);
 
-        if (strncmp(pszLine, "GEODETIC DATUM: ", 16) == 0)
+        if (STARTS_WITH(pszLine, "GEODETIC DATUM: "))
         {
             if (strcmp(pszLine + 16, "WG84") == 0 ||
                 strcmp(pszLine + 16, "WGS84") == 0)
-                bGeodeticDatumIsWGS84 = TRUE;
+                bGeodeticDatumIsWGS84 = true;
             else
             {
                 VSIFCloseL(fp);
@@ -179,45 +163,45 @@ int OGRHTFDataSource::Open( const char * pszFilename, int bUpdateIn)
                 return FALSE;
             }
         }
-        else if (strncmp(pszLine, "NE LATITUDE: -", 14) == 0)
-            bIsSouth = TRUE;
-        else if (strncmp(pszLine, "GRID REFERENCE SYSTEM: ", 23) == 0)
+        else if (STARTS_WITH(pszLine, "NE LATITUDE: -"))
+            bIsSouth = true;
+        else if (STARTS_WITH(pszLine, "GRID REFERENCE SYSTEM: "))
         {
-            if (strncmp(pszLine + 23, "UTM", 3) == 0)
-                bIsUTM = TRUE;
+            if (STARTS_WITH(pszLine + 23, "UTM"))
+                bIsUTM = true;
             else
             {
                 VSIFCloseL(fp);
                 CPLError(CE_Failure, CPLE_NotSupported,
                          "Unsupported grid : %s", pszLine + 23);
-                return FALSE;
+                return false;
             }
         }
-        else if (strncmp(pszLine, "GRID ZONE: ", 11) == 0)
+        else if (STARTS_WITH(pszLine, "GRID ZONE: "))
         {
             nZone = atoi(pszLine + 11);
         }
-        else if (strncmp(pszLine, "SW GRID COORDINATE - EASTING: ", 30) == 0)
+        else if (STARTS_WITH(pszLine, "SW GRID COORDINATE - EASTING: "))
         {
-            bHasSWEasting = TRUE;
-            dfSWEasting = atof(pszLine + 30);
+            bHasSWEasting = true;
+            dfSWEasting = CPLAtof(pszLine + 30);
         }
-        else if (strncmp(pszLine, "SW GRID COORDINATE - NORTHING: ", 31) == 0)
+        else if (STARTS_WITH(pszLine, "SW GRID COORDINATE - NORTHING: "))
         {
-            bHasSWNorthing = TRUE;
-            dfSWNorthing = atof(pszLine + 31);
+            bHasSWNorthing = true;
+            dfSWNorthing = CPLAtof(pszLine + 31);
         }
-        else if (strncmp(pszLine, "NE GRID COORDINATE - EASTING: ", 30) == 0)
+        else if (STARTS_WITH(pszLine, "NE GRID COORDINATE - EASTING: "))
         {
-            bHasNEEasting = TRUE;
-            dfNEEasting = atof(pszLine + 30);
+            bHasNEEasting = true;
+            dfNEEasting = CPLAtof(pszLine + 30);
         }
-        else if (strncmp(pszLine, "NE GRID COORDINATE - NORTHING: ", 31) == 0)
+        else if (STARTS_WITH(pszLine, "NE GRID COORDINATE - NORTHING: "))
         {
-            bHasNENorthing = TRUE;
-            dfNENorthing = atof(pszLine + 31);
+            bHasNENorthing = true;
+            dfNENorthing = CPLAtof(pszLine + 31);
         }
-        else if (strncmp(pszLine, "TOTAL SOUNDINGS: ", 17) == 0)
+        else if (STARTS_WITH(pszLine, "TOTAL SOUNDINGS: "))
         {
             nTotalSoundings = atoi(pszLine + 17);
         }
@@ -233,16 +217,20 @@ int OGRHTFDataSource::Open( const char * pszFilename, int bUpdateIn)
         return FALSE;
     if (nZone == 0)
         return FALSE;
-  
+
     nLayers = 2;
-    papoLayers = (OGRHTFLayer**) CPLMalloc(sizeof(OGRHTFLayer*) * 2);
+    papoLayers = static_cast<OGRHTFLayer **>(
+        CPLMalloc(sizeof(OGRHTFLayer*) * 2) );
     papoLayers[0] = new OGRHTFPolygonLayer(pszFilename, nZone, !bIsSouth);
-    papoLayers[1] = new OGRHTFSoundingLayer(pszFilename, nZone, !bIsSouth, nTotalSoundings);
+    papoLayers[1] = new OGRHTFSoundingLayer(
+        pszFilename, nZone, !bIsSouth, nTotalSoundings);
 
     if (bHasSWEasting && bHasSWNorthing && bHasNEEasting && bHasNENorthing)
     {
-        papoLayers[0]->SetExtent(dfSWEasting, dfSWNorthing, dfNEEasting, dfNENorthing);
-        papoLayers[1]->SetExtent(dfSWEasting, dfSWNorthing, dfNEEasting, dfNENorthing);
+        papoLayers[0]->SetExtent(
+            dfSWEasting, dfSWNorthing, dfNEEasting, dfNENorthing);
+        papoLayers[1]->SetExtent(
+            dfSWEasting, dfSWNorthing, dfNEEasting, dfNENorthing);
     }
 
     poMetadataLayer = new OGRHTFMetadataLayer(aosMD);
