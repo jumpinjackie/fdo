@@ -379,8 +379,10 @@ void CommonTest::testString()
     s1 = L"\\0Xff";
 	CPPUNIT_ASSERT( s1.ToLong() == 255 );
 
+#ifdef _WIN32
     s1 = L"2555555556";
     CPPUNIT_ASSERT(s1.ToLong() == 2147483647);
+#endif
 
     s1 = L"2555555556";
     CPPUNIT_ASSERT(s1.ToInt64() == 2555555556);
