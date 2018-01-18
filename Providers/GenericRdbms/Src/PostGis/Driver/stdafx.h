@@ -81,8 +81,10 @@
 
 #ifdef _WIN32
     typedef __int64 rdbi_int64_t;
+    typedef unsigned long pgdrv_ulong;
 #else
     typedef long long rdbi_int64_t;
+    typedef unsigned int pgdrv_ulong;
 #endif /* _WIN32 */
 
 
