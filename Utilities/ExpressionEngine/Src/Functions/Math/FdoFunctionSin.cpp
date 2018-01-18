@@ -179,7 +179,7 @@ FdoLiteralValue *FdoFunctionSin::Evaluate (
             return_double_value->SetDouble(sin((double)int32_value->GetInt32()));
         else
             return_double_value->SetNull();
-        return FDO_SAFE_ADDREF(double_value.p);
+        return FDO_SAFE_ADDREF(return_double_value.p);
         break;
 
       case FdoDataType_Int64:
