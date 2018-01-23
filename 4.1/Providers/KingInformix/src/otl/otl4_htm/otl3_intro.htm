@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="Sergei Kuchin">
+  <meta name="GENERATOR"
+ content="Mozilla/4.77 [en] (Win95; U) [Netscape]">
+  <meta name="KeyWords"
+ content="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+  <title>OTL 4.0, Introduction</title>
+</head>
+<body>
+<center>
+<h1>OTL 4.0, Introduction</h1>
+</center>
+<h1>
+<a name="Introduction"></a>Introduction</h1>
+This document describes the Oracle, Odbc and DB2-CLI Template Library,
+Version 4.0 (OTL 4.0). OTL 4.0 is a C++ library based on templates. It
+integrates all of the <a href="otl3_old.htm">previous releases</a>
+into
+one library.
+<p>OTL 4.0 was designed as a combination of a C++ template framework
+and
+OTL-adapters. The framework is a generic implementation of the concept
+of <a href="otl3_str.htm">OTL streams</a>. The OTL-adapters are thin
+wrappers
+around the database APIs and are used as <i>class type</i> parameters
+to
+be substituted into the template framework.
+</p>
+<p>OTL 4.0 covers the functionality of a whole database API with just a
+handful of concrete classes: <a href="otl3_str.htm">otl_stream</a>, <a
+ href="otl3_connect_class.htm">otl_connect</a>,
+<a href="otl3_exception_class.htm">otl_exception</a>,
+<a href="otl3_long_string.htm">otl_long_string</a>,
+and several template PL/SQL (Oracle) table container classes, generated
+from the template framework and the OTL-adapters.
+</p>
+<p>The OTL code gets expanded into direct database API function calls,
+so it provides ultimate performance, reliability and thread safety in
+multi-processor
+environments as well as traditional batch programs. OTL 4.0, being a
+template
+library, is highly portable since it is self-sufficient and compact
+enough.
+</p>
+<p>OTL 4.0 is ANSI C++ compliant (ANSI C++ typecasts, clean templatized
+code, etc.), tightly integrated with the Standard Template Library
+(STL)
+via so-called STL-compliant <a href="otl3_iterators.htm">stream
+iterators</a>,
+and natively supports the STL <i>std::string</i>'s in <a
+ href="otl3_str.htm">otl_stream</a>'s.
+</p>
+<p>The current version of the OTL supports Oracle 7 (natively via
+OCI7),
+Oracle 8 (natively via OCI8), Oracle 8i (natively via OCI8i), Oracle 9i
+(natively via OCI9i), Oracle 10g
+(natively via OCI10g), DB2 (natively via DB2 CLI), ODBC 3.x as well as
+ODBC
+2.5 compliant data sources in MS Windows and Unix (e.g. Oracle, MS SQL
+Server, Sybase, Informix, MySQL, DB2, Interbase / Firebird, PostgreSQL,
+SQLite,
+SAP/DB, TimesTen, MS ACCESS, etc.).
+The list of supported
+database backends is constantly growing.
+</p>
+<p></p>
+<hr width="100%">
+<center>
+<p><a href="otl3_str.htm">Next</a> <a href="otl3.htm">Contents</a><a
+ href="home.htm">Go
+Home</a></p>
+</center>
+<p>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <a
+ href="mailto:skuchin@ispwest.com">skuchin@ispwest.com</a>,
+<a href="mailto:skuchin@gmail.com">skuchin@gmail.com
+<script language="JavaScript"><!-- hide from old browsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i> Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100+".");
+ //-->
+ </script></a>.
+</p>
+<p><i>Permission to use, copy, modify and redistribute this document
+for
+any purpose is hereby granted without fee, provided that the above
+copyright
+notice appear in all copies.</i>
+</p>
+</body>
+</html>
