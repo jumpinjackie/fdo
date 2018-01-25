@@ -146,7 +146,7 @@ find_package(FDOThirdparty REQUIRED)
 find_package(FDOInternal REQUIRED)
 
 # Check Python
-find_package(PythonLibs REQUIRED)
+find_package(PythonLibs)
 
 add_subdirectory(Thirdparty)
 add_subdirectory(Fdo)
