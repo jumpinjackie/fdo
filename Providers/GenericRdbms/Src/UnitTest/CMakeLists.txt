@@ -40,6 +40,7 @@ add_sanitizers( UnitTestMySql )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestMySql
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         rdbi
         mysqldr
@@ -66,6 +67,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestMySql
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         rdbi
         mysqldr
@@ -93,7 +95,6 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestMySql
     ${ZLIB_LIBRARIES}
     ${MYSQL_LIBRARIES}
-    ${CPPUNIT_LIBRARIES}
     FDO${FDO_VERSION_SUFFIX}
     ExpressionEngine${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
@@ -113,6 +114,7 @@ add_sanitizers( UnitTestOdbc )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestOdbc
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         FdoRdbmsODBC_Fdo
         FdoRdbmsODBC_SchemaMgr_Lp
@@ -138,6 +140,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestOdbc
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         FdoRdbmsODBC_Fdo
         FdoRdbmsODBC_SchemaMgr_Lp
@@ -162,7 +165,6 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestOdbc
-    ${CPPUNIT_LIBRARIES}
     ${ODBC_LIBRARY}
     ${ODBCINST_LIBRARY}
     FDO${FDO_VERSION_SUFFIX}
@@ -184,6 +186,7 @@ add_sanitizers( UnitTestPostGis )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestPostGis
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         ProvidersCommon
         SchemaMgr
         FdoRdbms
@@ -210,6 +213,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestPostGis
+        ${CPPUNIT_LIBRARIES}
         ProvidersCommon
         SchemaMgr
         FdoRdbms
@@ -236,7 +240,6 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestPostGis
     ${POSTGRESQL_LIBRARIES}
-    ${CPPUNIT_LIBRARIES}
     FDO${FDO_VERSION_SUFFIX}
     ExpressionEngine${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
