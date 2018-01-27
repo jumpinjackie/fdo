@@ -170,3 +170,25 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/providers.xml DESTINATION ${LIB_INSTAL
 configure_file(cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY)
 # Install the global template, not the internal one used for whole source build
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules)
+
+# If we're using internal xerces/xalan/gdal we must make sure these libs are also installed
+if (INTERNAL_XERCESC)
+    install (FILES ${FDOTHIRDPARTY}/apache/xerces/lib/libxerces-c-3.1.so DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xerces/lib/libxerces-c.so DESTINATION ${LIB_INSTALL_DIR})
+endif (INTERNAL_XERCESC)
+if (INTERNAL_XALANC)
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so.111 DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so.111.0 DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so.111 DESTINATION ${LIB_INSTALL_DIR})
+    install (FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so.111.0 DESTINATION ${LIB_INSTALL_DIR})
+endif (INTERNAL_XALANC)
+if (INTERNAL_GDAL)
+    # The link target doesn't have to exist at this point in time, the symlink will be valid at install time
+    execute_process(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libgdal.so.20.3.2 ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so.20)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so.20 DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${component})
+    execute_process(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libgdal.so.20.3.2 ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${component})
+    install(FILES ${FDOTHIRDPARTY}/gdal/lib/libgdal.so.20.3.2 DESTINATION ${LIB_INSTALL_DIR})
+endif (INTERNAL_GDAL)

@@ -1,5 +1,6 @@
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CPPUNIT_INCLUDE_DIR}
     ${UTILITIES_TESTCOMMON_INCLUDE_DIR}
     ${MYSQL_INCLUDE_DIR}
     Common
@@ -116,15 +117,16 @@ if( CMAKE_COMPILER_IS_GNUCXX )
         -Wl,-whole-archive
         ${CPPUNIT_LIBRARIES}
         FdoRdbms
-        FdoRdbmsODBC_Fdo
-        FdoRdbmsODBC_SchemaMgr_Lp
-        FdoRdbmsODBC_SchemaMgr_Ph
         rdbi
         FdoODBCDriver
         Gdbi
         LTManager
         LockManager
         genericrdbms_util
+        FdoRdbmsODBC_Fdo
+        FdoRdbmsODBC_SchemaMgr
+        FdoRdbmsODBC_SchemaMgr_Lp
+        FdoRdbmsODBC_SchemaMgr_Ph
         geometry_fgf
         SmLpGrd
         SmGrd
@@ -142,15 +144,16 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestOdbc
         ${CPPUNIT_LIBRARIES}
         FdoRdbms
-        FdoRdbmsODBC_Fdo
-        FdoRdbmsODBC_SchemaMgr_Lp
-        FdoRdbmsODBC_SchemaMgr_Ph
         rdbi
         FdoODBCDriver
         Gdbi
         LTManager
         LockManager
         genericrdbms_util
+        FdoRdbmsODBC_Fdo
+        FdoRdbmsODBC_SchemaMgr
+        FdoRdbmsODBC_SchemaMgr_Lp
+        FdoRdbmsODBC_SchemaMgr_Ph
         geometry_fgf
         SmLpGrd
         SmGrd

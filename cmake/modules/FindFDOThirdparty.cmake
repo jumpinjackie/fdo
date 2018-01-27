@@ -62,12 +62,12 @@ else( NOT INTERNAL_CPPUNIT )
     set( LOCAL_CPPUNIT TRUE )
     set( CPPUNIT_LIBRARY_DIR  ${FDOTHIRDPARTY}/linux/cppunit/lib )
     set( CPPUNIT_INCLUDE_DIR  ${FDOTHIRDPARTY}/linux/cppunit/include )
-    find_library ( CPPUNIT_LIBRARIES NAMES cppunit
+    find_library ( CPPUNIT_LIBRARIES NAMES libcppunit.a
         PATHS ${CPPUNIT_LIBRARY_DIR}
         NO_DEFAULT_PATH
     )
     set( CPPUNIT_FOUND TRUE )
-    message (STATUS "Using internal cppunit: ${CPPUNIT_LIBRARIES}")
+    message (STATUS "Using internal cppunit: ${CPPUNIT_INCLUDE_DIR}, ${CPPUNIT_LIBRARIES}")
     mark_as_advanced( CPPUNIT_LIBRARY_DIR CPPUNIT_INCLUDE_DIR )
 endif( NOT INTERNAL_CPPUNIT )
 
@@ -76,7 +76,7 @@ if( NOT INTERNAL_XERCESC )
     find_package( XercesC REQUIRED )
 else( NOT INTERNAL_XERCESC )
     set( LOCAL_XERCESC TRUE )
-    set( XERCESC_LIBRARY_DIR  ${FDOTHIRDPARTY}/apache/xerces/src/.libs )
+    set( XERCESC_LIBRARY_DIR  ${FDOTHIRDPARTY}/apache/xerces/lib/ )
     set( XERCESC_INCLUDE_DIR  ${FDOTHIRDPARTY}/apache/xerces/src/ )
     find_library( XERCESC_LIBRARIES NAMES xerces-c
         PATHS ${XERCESC_LIBRARY_DIR}

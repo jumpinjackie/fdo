@@ -29,8 +29,8 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             INTERNAL_CPPUNIT=TRUE
             INTERNAL_GDAL=TRUE
             INTERNAL_OPENSSL=TRUE
-            INTERNAL_MYSQL=TRUE
-            INTERNAL_POSTGRESQL=TRUE
+            #INTERNAL_MYSQL=TRUE
+            #INTERNAL_POSTGRESQL=TRUE
             INTERNAL_BOOST=TRUE
             INTERNAL_CURL=TRUE
             INTERNAL_XERCESC=TRUE
@@ -45,12 +45,12 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --internal-openssl)
             INTERNAL_OPENSSL=TRUE
             ;;
-        --internal-mysql)
-            INTERNAL_MYSQL=TRUE
-            ;;
-        --internal-postgresql)
-            INTERNAL_POSTGRESQL=TRUE
-            ;;
+        #--internal-mysql)
+        #    INTERNAL_MYSQL=TRUE
+        #    ;;
+        #--internal-postgresql)
+        #    INTERNAL_POSTGRESQL=TRUE
+        #    ;;
         --internal-boost)
             INTERNAL_BOOST=TRUE
             ;;
@@ -72,8 +72,8 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "  --internal-cppunit [Use internal cppunit]"
             echo "  --internal-gdal [Use internal gdal]"
             echo "  --internal-openssl [Use internal openssl]"
-            echo "  --internal-mysql [Use internal mysql]"
-            echo "  --internal-postgresql [Use internal postgresql]"
+            #echo "  --internal-mysql [Use internal mysql]"
+            #echo "  --internal-postgresql [Use internal postgresql]"
             echo "  --internal-boost [Use internal boost]"
             echo "  --internal-curl [Use internal curl]"
             echo "  --internal-xerces [Use internal xerces]"
@@ -148,12 +148,15 @@ cat setenvironment.sh \
     > setenvironment_patched.sh
 source ./setenvironment_patched.sh --noinstall
 
-# Patch boost/build.sh (strip sudo)
+# Patch various build scripts (to strip sudo)
 if test -f "$THIRDPARTY_WORK_DIR/Thirdparty/boost/build.sh"; then
     sed -i "s#sudo ##g" $THIRDPARTY_WORK_DIR/Thirdparty/boost/build.sh
 fi
+if test -f "$THIRDPARTY_WORK_DIR/Thirdparty/apache/build2.sh"; then
+    sed -i "s#sudo ##g" $THIRDPARTY_WORK_DIR/Thirdparty/apache/build2.sh
+fi
 
-CMDEX="-b $BUILD_CPU -a build"
+CMDEX="-b $BUILD_CPU -a buildinstall"
 
 if [[ "$CFLAGS" != *"-m$BUILD_CPU"* ]]; then
     CFLAGS="$CFLAGS -m$BUILD_CPU"
