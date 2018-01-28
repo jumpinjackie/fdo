@@ -13,6 +13,10 @@ if( LOCAL_CURL )
     include_directories( ${FDOTHIRDPARTY}/libcurl/include )
 endif( LOCAL_CURL )
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-pthread)
+endif (CMAKE_COMPILER_IS_GNUCXX)
+
 set( FdoOwsSrc_SRCS
     Src/FdoOwsCapabilities.cpp
     Src/FdoOwsRequest.cpp
@@ -34,7 +38,6 @@ set( FdoOwsSrc_SRCS
     Src/FdoOwsServiceProvider.cpp
 )
 
-
 set( FdoOws_LIB_SRCS
     ${FdoOwsSrc_SRCS}
 )
@@ -55,7 +58,7 @@ target_link_libraries( OWS${FDO_VERSION_SUFFIX}
     ${CURL_LIBRARIES}
     ${OPENSSL_LIBRARIES}
     ${ZLIB_LIBRARIES}
-    pthread
+    rt
 )
 
 install( TARGETS OWS${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
