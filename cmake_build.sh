@@ -21,11 +21,11 @@ ORACLE_LIB=
 ORACLE_OCI_VERSION=110
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
-        --cmake_build_dir)
+        --cmake-build-dir)
             CMAKE_BUILD_DIR="$2"
             shift
             ;;
-        --thirdparty_working_dir)
+        --thirdparty-working-dir)
             THIRDPARTY_WORK_DIR="$2"
             shift
             ;;
@@ -88,8 +88,8 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --help)
             echo "Usage: $0 (options)"
             echo "Options:"
-            echo "  --cmake_build_dir [CMake build directory]"
-            echo "  --thirdparty_working_dir [thirdparty working directory]"
+            echo "  --cmake-build-dir [CMake build directory]"
+            echo "  --thirdparty-working-dir [thirdparty working directory]"
             echo "  --with-asan [build with ASAN]"
             echo "  --ninja [Use ninja build system]"
             echo "  --with-sdf [Enable SDF Provider]"

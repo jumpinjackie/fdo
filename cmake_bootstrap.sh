@@ -13,7 +13,7 @@ INTERNAL_XALANC=FALSE
 
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
-        --working_dir)
+        --working-dir)
             THIRDPARTY_WORK_DIR="$2"
             shift
             ;;
@@ -66,7 +66,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --help)
             echo "Usage: $0 (options)"
             echo "Options:"
-            echo "  --working_dir [build directory]"
+            echo "  --working-dir [build directory]"
             echo "  --build [32(default)|64]"
             echo "  --config [Release(default)|Debug]"
             echo "  --internal-cppunit [Use internal cppunit]"

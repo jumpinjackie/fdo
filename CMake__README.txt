@@ -162,9 +162,9 @@ VI. Using the wrapper scripts
     For example, this will build all thirdparty components and the main CMake build will use all internal thirdparty components 
     instead of looking for system-installed counterparts:
 
-        ./cmake_bootstrap.sh --working_dir ~/fdo_thirdparty_build --all-internal
-        ./cmake_build.sh --thirdparty_working_dir ~/fdo_thirdparty_build \
-            --cmake_build_dir ~/fdo_build \
+        ./cmake_bootstrap.sh --working-dir ~/fdo_thirdparty_build --all-internal
+        ./cmake_build.sh --thirdparty-working-dir ~/fdo_thirdparty_build \
+            --cmake-build-dir ~/fdo_build \
             --with-all-providers \
             --with-oracle-include ~/oracle/instantclient_11_2/sdk/include \
             --with-oracle-lib ~/oracle/instantclient_11_2/sdk/lib \
