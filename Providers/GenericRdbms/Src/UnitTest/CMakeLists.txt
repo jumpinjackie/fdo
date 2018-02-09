@@ -1,5 +1,6 @@
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CPPUNIT_INCLUDE_DIR}
     ${UTILITIES_TESTCOMMON_INCLUDE_DIR}
     ${MYSQL_INCLUDE_DIR}
     Common
@@ -40,6 +41,7 @@ add_sanitizers( UnitTestMySql )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestMySql
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         rdbi
         mysqldr
@@ -66,6 +68,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestMySql
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
         rdbi
         mysqldr
@@ -93,7 +96,6 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestMySql
     ${ZLIB_LIBRARIES}
     ${MYSQL_LIBRARIES}
-    ${CPPUNIT_LIBRARIES}
     FDO${FDO_VERSION_SUFFIX}
     ExpressionEngine${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
@@ -113,16 +115,18 @@ add_sanitizers( UnitTestOdbc )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestOdbc
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
-        FdoRdbmsODBC_Fdo
-        FdoRdbmsODBC_SchemaMgr_Lp
-        FdoRdbmsODBC_SchemaMgr_Ph
         rdbi
         FdoODBCDriver
         Gdbi
         LTManager
         LockManager
         genericrdbms_util
+        FdoRdbmsODBC_Fdo
+        FdoRdbmsODBC_SchemaMgr
+        FdoRdbmsODBC_SchemaMgr_Lp
+        FdoRdbmsODBC_SchemaMgr_Ph
         geometry_fgf
         SmLpGrd
         SmGrd
@@ -138,16 +142,18 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestOdbc
+        ${CPPUNIT_LIBRARIES}
         FdoRdbms
-        FdoRdbmsODBC_Fdo
-        FdoRdbmsODBC_SchemaMgr_Lp
-        FdoRdbmsODBC_SchemaMgr_Ph
         rdbi
         FdoODBCDriver
         Gdbi
         LTManager
         LockManager
         genericrdbms_util
+        FdoRdbmsODBC_Fdo
+        FdoRdbmsODBC_SchemaMgr
+        FdoRdbmsODBC_SchemaMgr_Lp
+        FdoRdbmsODBC_SchemaMgr_Ph
         geometry_fgf
         SmLpGrd
         SmGrd
@@ -162,7 +168,6 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestOdbc
-    ${CPPUNIT_LIBRARIES}
     ${ODBC_LIBRARY}
     ${ODBCINST_LIBRARY}
     FDO${FDO_VERSION_SUFFIX}
@@ -184,6 +189,7 @@ add_sanitizers( UnitTestPostGis )
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestPostGis
         -Wl,-whole-archive
+        ${CPPUNIT_LIBRARIES}
         ProvidersCommon
         SchemaMgr
         FdoRdbms
@@ -210,6 +216,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( UnitTestPostGis
+        ${CPPUNIT_LIBRARIES}
         ProvidersCommon
         SchemaMgr
         FdoRdbms
@@ -236,7 +243,6 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 target_link_libraries( UnitTestPostGis
     ${POSTGRESQL_LIBRARIES}
-    ${CPPUNIT_LIBRARIES}
     FDO${FDO_VERSION_SUFFIX}
     ExpressionEngine${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}

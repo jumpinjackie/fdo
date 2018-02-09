@@ -14,6 +14,10 @@ if( UNIX )
     add_definitions( -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -DENABLE_BINRELOC )
 endif( UNIX )
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions( -pthread )
+endif (CMAKE_COMPILER_IS_GNUCXX)
+
 add_subdirectory( McToMsf )
 add_subdirectory( Message )
 add_subdirectory( FileToHdr )

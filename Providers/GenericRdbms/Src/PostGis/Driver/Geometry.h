@@ -25,12 +25,13 @@
 
 #include <Fdo.h>
 #include <Geometry/Fgf/Factory.h>
+#include "stdafx.h"
 
-extern void* GeometryFromWkb (void *wkb, unsigned long size);
+extern void* GeometryFromWkb (void *wkb, pgdrv_ulong size);
 extern char* WkbFromGeometry (void *geometry, int* size);
 extern void FreeGeometry (void*& geometry);
 
-extern void* GeometryFromExtendedWkb(void *ewkb, unsigned long size);
-extern FdoByteArray *ExtendedWkbFromGeometry (void *geometry, unsigned long srid);
+extern void* GeometryFromExtendedWkb(void *ewkb, pgdrv_ulong size);
+extern FdoByteArray *ExtendedWkbFromGeometry (void *geometry, pgdrv_ulong srid);
 
 #endif /* POSTGIS_GEOMETRY_H */
