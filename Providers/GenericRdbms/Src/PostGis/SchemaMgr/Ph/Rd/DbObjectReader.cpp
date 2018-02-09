@@ -121,11 +121,23 @@ FdoSmPhReaderP FdoSmPhRdPostGisDbObjectReader::MakeQueryReader(
         L" $(AND) $(QUALIFICATION)"
         L" AND t.table_type IN ('BASE TABLE','VIEW') "
         L" AND t.table_name not in ( 'geometry_columns', 'geography_columns','spatial_ref_sys', 'raster_columns', 'raster_overviews') "
+        L" UNION "
+        //This gets all materialized views, we will advertise this out as views
+        L" SELECT ns.nspname || '.' || c.relname AS name, "
+        L" 'view' AS type, "
+        L" %ls AS collate_schema_name, "
+        L" %ls AS collate_table_name "
+        L" FROM pg_class AS c "
+        L" JOIN pg_authid o ON c.relowner = o.oid "
+        L" JOIN pg_namespace ns ON c.relnamespace = ns.oid "
+        L" WHERE c.relkind = 'm' " // m = materialized view. If PG older than 9.3, we'll be unioning against an empty set 
         L" ORDER BY collate_schema_name, collate_table_name ASC ",
         (join ? L"distinct" : L""),
         (FdoString*) pgMgr->FormatCollateColumnSql(L"t.table_schema"),
         (FdoString*) pgMgr->FormatCollateColumnSql(L"t.table_name"),
-        static_cast<FdoString*>(tablesTableName)
+        static_cast<FdoString*>(tablesTableName),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"ns.nspname"),
+        (FdoString*)pgMgr->FormatCollateColumnSql(L"c.relname")
     );
 
     FdoSmPhReaderP reader = FdoSmPhRdDbObjectReader::MakeQueryReader(

@@ -24,7 +24,10 @@
 class PostGisSchemaMgrTests : public SchemaMgrTests
 {
     CPPUNIT_TEST_SUB_SUITE (PostGisSchemaMgrTests, SchemaMgrTests);
+    CPPUNIT_TEST(testMaterializedViews);
     CPPUNIT_TEST_SUITE_END ();
+
+    void testMaterializedViews();
 
     // TestViews N/A since tests views with cross-database dependencies.
     virtual void testViews() {};

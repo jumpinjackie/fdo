@@ -332,3 +332,76 @@ FdoStringP PostGisSchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr, FdoStringP inde
     return mgr->GetDcDbObjectName( indexName );
 }
 
+void PostGisSchemaMgrTests::testMaterializedViews()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_materialized_views"))
+            UnitTestUtil::DropDb(L"_materialized_views");
+
+        UnitTestUtil::CreateDB(false, false, L"_materialized_views", 0, false, false);
+
+        // Connect and create the test schema.
+        connection = UnitTestUtil::GetConnection(L"_materialized_views");
+
+        // Create our user if it doesn't exist and map it to this database
+        printf(" >>> ... creating table \n");
+
+        FdoStringP sql = L"CREATE TABLE vec (id INTEGER PRIMARY KEY, a INTEGER, b INTEGER)";
+        UnitTestUtil::Sql2Db(sql, connection);
+        sql = L"CREATE MATERIALIZED VIEW hypot AS SELECT id, sqrt(a*a + b*b) as c FROM vec";
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        FdoPtr<FdoIDescribeSchema> cmdDescribe = (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDescribe->Execute();
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+        FdoInt32 vecIdx = classes->IndexOf(L"vec");
+        FdoInt32 hypotIdx = classes->IndexOf(L"hypot");
+        CPPUNIT_ASSERT(vecIdx >= 0);
+        CPPUNIT_ASSERT(hypotIdx >= 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected 2 classes (a table and a materialized view)", classes->GetCount() == 2);
+
+        FdoPtr<FdoClassDefinition> klassVec = classes->GetItem(vecIdx);
+        FdoPtr<FdoClassDefinition> klassHypot = classes->GetItem(hypotIdx);
+
+        FdoPtr<FdoPropertyDefinitionCollection> vecProps = klassVec->GetProperties();
+        CPPUNIT_ASSERT(3 == vecProps->GetCount());
+        FdoPtr<FdoPropertyDefinition> idValue = vecProps->FindItem(L"id");
+        CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoPtr<FdoPropertyDefinition> aValue = vecProps->FindItem(L"a");
+        CPPUNIT_ASSERT(aValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoPtr<FdoPropertyDefinition> bValue = vecProps->FindItem(L"b");
+        CPPUNIT_ASSERT(bValue->GetPropertyType() == FdoPropertyType_DataProperty);
+
+        FdoPtr<FdoDataPropertyDefinitionCollection> vecIdProps = klassVec->GetIdentityProperties();
+        CPPUNIT_ASSERT(1 == vecIdProps->GetCount());
+        idValue = vecIdProps->FindItem(L"id");
+        CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
+
+        FdoPtr<FdoPropertyDefinitionCollection> hypotProps = klassHypot->GetProperties();
+        FdoPtr<FdoDataPropertyDefinitionCollection> hypotIdProps = klassHypot->GetIdentityProperties();
+        CPPUNIT_ASSERT(1 == hypotIdProps->GetCount());
+        CPPUNIT_ASSERT(2 == hypotProps->GetCount());
+        FdoPtr<FdoPropertyDefinition> cValue = hypotProps->FindItem(L"c");
+        CPPUNIT_ASSERT(cValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        idValue = vecIdProps->FindItem(L"id");
+        CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
+
+        connection->Close();
+    }
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        if (connection)
+            connection->Close();
+        TestCommonFail(exp);
+    }
+    catch (...)
+    {
+        if (connection) connection->Close();
+        throw;
+    }
+}
