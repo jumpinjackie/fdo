@@ -348,9 +348,12 @@ void PostGisSchemaMgrTests::testMaterializedViews()
 
         // Create our user if it doesn't exist and map it to this database
         printf(" >>> ... creating table \n");
-
         FdoStringP sql = L"CREATE TABLE vec (id INTEGER PRIMARY KEY, a INTEGER, b INTEGER)";
         UnitTestUtil::Sql2Db(sql, connection);
+        printf(" >>> ... creating view \n");
+        sql = L"CREATE VIEW vec_view AS SELECT * FROM vec";
+        UnitTestUtil::Sql2Db(sql, connection);
+        printf(" >>> ... creating materialized view \n");
         sql = L"CREATE MATERIALIZED VIEW hypot AS SELECT id, sqrt(a*a + b*b) as c FROM vec";
         UnitTestUtil::Sql2Db(sql, connection);
 
@@ -359,14 +362,18 @@ void PostGisSchemaMgrTests::testMaterializedViews()
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(0);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses();
         FdoInt32 vecIdx = classes->IndexOf(L"vec");
+        FdoInt32 vecViewIdx = classes->IndexOf(L"vec_view");
         FdoInt32 hypotIdx = classes->IndexOf(L"hypot");
         CPPUNIT_ASSERT(vecIdx >= 0);
+        CPPUNIT_ASSERT(vecViewIdx >= 0);
         CPPUNIT_ASSERT(hypotIdx >= 0);
-        CPPUNIT_ASSERT_MESSAGE("Expected 2 classes (a table and a materialized view)", classes->GetCount() == 2);
+        CPPUNIT_ASSERT_MESSAGE("Expected 3 classes (a table, a view and a materialized view)", classes->GetCount() == 3);
 
         FdoPtr<FdoClassDefinition> klassVec = classes->GetItem(vecIdx);
+        FdoPtr<FdoClassDefinition> klassVecView = classes->GetItem(vecViewIdx);
         FdoPtr<FdoClassDefinition> klassHypot = classes->GetItem(hypotIdx);
 
+        //Test vec
         FdoPtr<FdoPropertyDefinitionCollection> vecProps = klassVec->GetProperties();
         CPPUNIT_ASSERT(3 == vecProps->GetCount());
         FdoPtr<FdoPropertyDefinition> idValue = vecProps->FindItem(L"id");
@@ -381,14 +388,32 @@ void PostGisSchemaMgrTests::testMaterializedViews()
         idValue = vecIdProps->FindItem(L"id");
         CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
 
+        //Test vec_view
+        FdoPtr<FdoPropertyDefinitionCollection> vecViewProps = klassVecView->GetProperties();
+        CPPUNIT_ASSERT(3 == vecViewProps->GetCount());
+        FdoPtr<FdoPropertyDefinition> vvidValue = vecViewProps->FindItem(L"id");
+        CPPUNIT_ASSERT(vvidValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoPtr<FdoPropertyDefinition> vvaValue = vecViewProps->FindItem(L"a");
+        CPPUNIT_ASSERT(vvaValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoPtr<FdoPropertyDefinition> vvbValue = vecViewProps->FindItem(L"b");
+        CPPUNIT_ASSERT(vvbValue->GetPropertyType() == FdoPropertyType_DataProperty);
+
+        FdoPtr<FdoDataPropertyDefinitionCollection> vecViewIdProps = klassVecView->GetIdentityProperties();
+        CPPUNIT_ASSERT(1 == vecViewIdProps->GetCount());
+        vvidValue = vecViewIdProps->FindItem(L"id");
+        CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        
+        //Test hypot
         FdoPtr<FdoPropertyDefinitionCollection> hypotProps = klassHypot->GetProperties();
-        FdoPtr<FdoDataPropertyDefinitionCollection> hypotIdProps = klassHypot->GetIdentityProperties();
-        CPPUNIT_ASSERT(1 == hypotIdProps->GetCount());
         CPPUNIT_ASSERT(2 == hypotProps->GetCount());
         FdoPtr<FdoPropertyDefinition> cValue = hypotProps->FindItem(L"c");
         CPPUNIT_ASSERT(cValue->GetPropertyType() == FdoPropertyType_DataProperty);
-        idValue = vecIdProps->FindItem(L"id");
-        CPPUNIT_ASSERT(idValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoPtr<FdoPropertyDefinition> hypotIdValue = hypotProps->FindItem(L"id");
+        CPPUNIT_ASSERT(hypotIdValue->GetPropertyType() == FdoPropertyType_DataProperty);
+
+        //FdoPtr<FdoDataPropertyDefinitionCollection> hypotIdProps = klassHypot->GetIdentityProperties();
+        //hypotIdValue = hypotIdProps->FindItem(L"id");
+        //CPPUNIT_ASSERT(1 == hypotIdProps->GetCount());
 
         connection->Close();
     }
