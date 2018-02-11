@@ -24,6 +24,7 @@
 #include <Sm/Lp/PropertyMappingConcrete.h>
 #include <Sm/Lp/PropertyMappingSingle.h>
 #include <Sm/Lp/ObjectPropertyClass.h>
+#include <FdoCommonOSUtil.h>
 
 FdoRdbmsPvcProcessor::FdoRdbmsPvcProcessor(  )
 {
@@ -76,14 +77,14 @@ FdoRdbmsCollection<FdoRdbmsPvcOperation>* FdoRdbmsPvcProcessor::RefactorPvc( Fdo
         for (int i=0; i<identities->GetCount(); i++)
         {
             const FdoSmLpDataPropertyDefinition *item = identities->RefItem(i);
-            const wchar_t *identitiyName = item->GetName();
+            const wchar_t *identityName = item->GetName();
 
             for (int j=0; j<inputPropertyValues->GetCount(); j++)
             {
                 FdoPtr<FdoPropertyValue>value = inputPropertyValues->GetItem(j);
                 FdoPtr<FdoIdentifier>identifier = value->GetName();
                 property = identifier->GetText();
-                if ((wcscmp((wchar_t *)property, identitiyName) == 0) || (!mFdoConnection->IsCaseSensitive() && (wcsicmp((wchar_t *)property, identitiyName) == 0)))
+                if ((wcscmp((wchar_t *)property, identityName) == 0) || (!mFdoConnection->IsCaseSensitive() && (FdoCommonOSUtil::wcsicmp((wchar_t *)property, identityName) == 0)))
                 {
                     fdoIdentities->Add(value);
                     break;
