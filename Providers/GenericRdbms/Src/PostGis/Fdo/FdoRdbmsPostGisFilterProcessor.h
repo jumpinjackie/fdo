@@ -193,6 +193,14 @@ protected:
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const;
     
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const;
+    virtual const wchar_t* FilterToSql( FdoFilter *filter,
+                                        const wchar_t *className,
+                                        SqlCommandType cmdType,
+                                        FdoCommandType callerFdoCommand,
+                                        FdoRdbmsFilterUtilConstrainDef *filterConstrain = NULL,
+                                        bool forUpdate = false,
+                                        FdoInt16 callerId = FdoCommandType_Select );
+    virtual void ProcessIdentifier(FdoIdentifier& expr);
 
 private:
     void ProcessSpatialDistanceCondition(FdoGeometricCondition* condition, bool isSpatial );

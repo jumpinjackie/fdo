@@ -37,10 +37,12 @@
 #include "SpatialIndex.h"
 #include <Sm/Ph/TableComponentReader.h>
 #include <FdoCommonStringUtil.h>
+#include "Mgr.h"
 
 FdoSmPhPostGisDbObject::FdoSmPhPostGisDbObject()
 {
-    // idle
+    FdoSmPhPostGisMgrP mgr(GetManager()->SmartCast<FdoSmPhPostGisMgr>());
+    mIsCaseSensitive = mgr->IsCaseSensitive();
 }
 
 FdoSmPhPostGisDbObject::FdoSmPhPostGisDbObject(FdoStringP name,
@@ -48,7 +50,8 @@ FdoSmPhPostGisDbObject::FdoSmPhPostGisDbObject(FdoStringP name,
     FdoSmPhRdDbObjectReader* reader)
     : FdoSmPhDbObject(name, owner)
 {
-    // idle
+    FdoSmPhPostGisMgrP mgr(GetManager()->SmartCast<FdoSmPhPostGisMgr>());
+    mIsCaseSensitive = mgr->IsCaseSensitive();
 }
 
 FdoSmPhPostGisDbObject::~FdoSmPhPostGisDbObject()
@@ -62,15 +65,21 @@ FdoStringP FdoSmPhPostGisDbObject::GetDbQName() const
     FdoStringP userName;
     FdoStringP objectName;
     FdoStringP dbName;
+    FdoStringP dblQuote = L"\"";
+    if(!mIsCaseSensitive)
+    {
+        dblQuote = L"";
+        fullName = fullName.Lower();
+    }
 
     if ( fullName.Contains(L".") ) {
         userName = fullName.Left(L".");
         objectName = fullName.Right(L".");
-        dbName = FdoStringP(L"\"") + userName + L"\".\"" + objectName + L"\"";
+        dbName = dblQuote + userName + dblQuote + L"." + dblQuote + objectName + dblQuote;
     }
     else
     {
-        dbName = FdoStringP(L"\"") + fullName + L"\"";
+        dbName = dblQuote + fullName +dblQuote;
     }
     return dbName;
 }

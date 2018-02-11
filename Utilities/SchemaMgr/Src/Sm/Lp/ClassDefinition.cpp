@@ -1023,7 +1023,9 @@ FdoSmLpDataPropertiesP FdoSmLpClassBase::GetIdentityProperties()
 {
     if ( !mIdentityProperties ) 
         mIdentityProperties = new FdoSmLpDataPropertyDefinitionCollection();
+    bool isCaseSensitive = GetLogicalPhysicalSchema()->GetPhysicalSchema()->IsCaseSensitive();
 
+    mIdentityProperties->SetCaseSensitive(isCaseSensitive);
 	// Finalize not called since caller might add to the id property collection.
     return mIdentityProperties;
 }
@@ -1047,7 +1049,11 @@ FdoSmLpCheckConstraintsP FdoSmLpClassBase::GetCheckConstraints()
 FdoSmLpPropertiesP FdoSmLpClassBase::GetProperties()
 {
     if ( !mProperties ) 
+    {
+        bool isCaseSensitive = GetLogicalPhysicalSchema()->GetPhysicalSchema()->IsCaseSensitive();
         mProperties = new FdoSmLpPropertyDefinitionCollection();
+        mProperties->SetCaseSensitive(isCaseSensitive);
+    }
 
 	// Finalize not called since caller might add to the property collection.
     return mProperties;

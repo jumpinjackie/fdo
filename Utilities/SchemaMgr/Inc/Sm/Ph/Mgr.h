@@ -555,6 +555,8 @@ public:
 
     virtual bool SupportsAnsiQuotes();
 
+    virtual bool IsCaseSensitive();
+
     // Default implementation returns false (one autoincrement column per table).
     // Providers that support multiple autoincrement columns per table must override.
     virtual bool SupportsMultipleAutoIncrementColumns() const;

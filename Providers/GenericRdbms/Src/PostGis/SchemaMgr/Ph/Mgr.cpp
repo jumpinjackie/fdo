@@ -22,6 +22,7 @@
 #include "Rd/ClassReader.h"
 #include "Rd/SchemaReader.h"
 #include <Rdbms/Override/PostGis/PostGisOvPhysicalSchemaMapping.h>
+#include <FdoCommonStringUtil.h>
 
 class FdoSmPhRdPostGisClassReader;
 
@@ -37,7 +38,7 @@ FdoSmPhPostGisMgr::ReservedWordsMap FdoSmPhPostGisMgr::mReservedWords;
 FdoSmPhPostGisMgr::FdoSmPhPostGisMgr() :
     mDbVersion(0)
 {
-    // idle
+    mIsCaseSensitive = true;
 }
 
 FdoSmPhPostGisMgr::FdoSmPhPostGisMgr(GdbiConnection* conn,
@@ -46,6 +47,7 @@ FdoSmPhPostGisMgr::FdoSmPhPostGisMgr(GdbiConnection* conn,
       mDbVersion(0)
 {
     SetDefaultOwnerName(schemaName);
+    mIsCaseSensitive = true;
 }
 
 FdoSmPhPostGisMgr::~FdoSmPhPostGisMgr()
@@ -339,4 +341,26 @@ FdoSmPhPostGisMgr::ReservedWordsMap::ReservedWordsMap()
 FdoSmPhPostGisMgr::ReservedWordsMap::~ReservedWordsMap()
 {
     // idle
+}
+
+bool FdoSmPhPostGisMgr::SupportsAnsiQuotes()
+{
+    if(mIsCaseSensitive)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool FdoSmPhPostGisMgr::IsCaseSensitive()
+{
+    return mIsCaseSensitive;
+}
+
+void FdoSmPhPostGisMgr::SetIsCaseSensitive(bool isCaseSensitive)
+{
+    mIsCaseSensitive = isCaseSensitive;
 }

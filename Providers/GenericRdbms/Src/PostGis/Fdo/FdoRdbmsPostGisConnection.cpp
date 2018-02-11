@@ -47,6 +47,7 @@ FdoRdbmsPostGisConnection::FdoRdbmsPostGisConnection()
     : mFilterProcessor(NULL), mConnectionInfo(NULL)
 {
     // idle
+    mIsCaseSensitive = true;
 }
 
 FdoRdbmsPostGisConnection::~FdoRdbmsPostGisConnection()
@@ -175,6 +176,14 @@ FdoSchemaManagerP FdoRdbmsPostGisConnection::NewSchemaManager(
     // Pass down the location of the COM directory for MetaSchema creation scripts.
 	physMgr->SetHomeDir(FdoStringP(getComDir()));
 
+    FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
+    FdoPtr<FdoCommonConnPropDictionary> dict = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());      
+    FdoPtr<ConnectionProperty> prop = dict->FindProperty(FDO_RDBMS_CONNECTION_CASESENSITIVE);
+    if( prop != NULL && wcslen(prop->GetValue())!=0 )
+    {
+        mIsCaseSensitive = (prop->GetValue() == L"TRUE");
+        physMgr->SetIsCaseSensitive( mIsCaseSensitive );
+    }
     return schMgr;
 }
 
@@ -473,6 +482,4 @@ FdoIExpressionCapabilities* FdoRdbmsPostGisConnection::GetExpressionCapabilities
     FDO_SAFE_ADDREF(mExpressionCapabilities);
     return mExpressionCapabilities;
 }
-
-
 

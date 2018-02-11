@@ -156,6 +156,11 @@ public:
     /// \todo To be documented.
     virtual FdoSize ColNameMaxLen();
 
+    virtual bool SupportsAnsiQuotes();
+
+    virtual bool IsCaseSensitive();
+    void SetIsCaseSensitive(bool isCaseSensitive);
+
 protected:
 
     /// \todo To be documented.
@@ -184,6 +189,7 @@ private:
     /// Lists all reserved words not allowed as database object or
     /// column names in PostgreSQL/PostGIS.
     static ReservedWordsMap mReservedWords;
+    bool mIsCaseSensitive;
 
 };
 

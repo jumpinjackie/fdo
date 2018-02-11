@@ -29,6 +29,7 @@
 #define FDO_RDBMS_CONNECTION_PASSWORD           L"Password"
 #define FDO_RDBMS_CONNECTION_SERVICE            L"Service"
 #define FDO_RDBMS_CONNECTION_DATASTORE          L"DataStore"
+#define FDO_RDBMS_CONNECTION_CASESENSITIVE      L"CaseSensitive"
 #define FDO_RDBMS_CONNECTION_DSN    	        L"DataSourceName"
 #define FDO_RDBMS_CONNECTION_USERID    	        L"UserId"
 #define FDO_RDBMS_CONNECTION_CONNSTRING         L"ConnectionString"

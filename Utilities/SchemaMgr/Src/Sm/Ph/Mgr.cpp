@@ -606,6 +606,11 @@ bool FdoSmPhMgr::SupportsAnsiQuotes()
     return true;
 }
 
+bool FdoSmPhMgr::IsCaseSensitive()
+{
+    return true;
+}
+
 bool FdoSmPhMgr::SupportsMultipleAutoIncrementColumns() const
 {
     return false;

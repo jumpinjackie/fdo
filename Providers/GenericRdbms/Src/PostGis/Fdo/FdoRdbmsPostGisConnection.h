@@ -180,6 +180,8 @@ public:
 
     virtual FdoIExpressionCapabilities* GetExpressionCapabilities();
 
+    virtual bool IsCaseSensitive() { return mIsCaseSensitive; };
+
 protected:
 
     /// Default constructor.
@@ -195,6 +197,8 @@ private:
 
     /// Stores and provides access to connection properties.
     FdoIConnectionInfo* mConnectionInfo;
+
+    bool mIsCaseSensitive;
 };
 
 #endif // FDORDBMSPOSTGISCONNECTION_H

@@ -276,6 +276,14 @@ FdoStringP FdoSmPhPostGisTable::ConvertCkey( FdoDataValue *val )
 FdoStringP FdoSmPhPostGisTable::GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp )
 {
 	FdoStringP	ckey = L"";
+    FdoSmPhPostGisMgrP mgr(GetManager()->SmartCast<FdoSmPhPostGisMgr>());
+    bool isCaseSensitive = mgr->IsCaseSensitive();
+    FdoStringP dblQuote = L"\"";
+    if(!isCaseSensitive)
+    {
+        dblQuote = L"";
+        columnName = columnName.Lower();
+    }
 
 	FdoPtr<FdoPropertyValueConstraint>  valConstr = fdoProp->GetValueConstraint();
 
@@ -285,7 +293,7 @@ FdoStringP FdoSmPhPostGisTable::GetCkeyClause( FdoStringP columnName, FdoDataPro
 		
 		if ( FdoPtr<FdoDataValue>(c->GetMinValue()) != NULL )
 		{
-    		ckey += FdoStringP(L"\"") + columnName + L"\"";
+    		ckey += dblQuote + columnName + dblQuote;
 			ckey += c->GetMinInclusive() ? L" >= " : L" > ";
 			FdoPtr<FdoDataValue>  val = c->GetMinValue();
 	
@@ -297,7 +305,7 @@ FdoStringP FdoSmPhPostGisTable::GetCkeyClause( FdoStringP columnName, FdoDataPro
 		{
 			if ( ckey != L"" )
 				ckey += L" and ";
-    		ckey += FdoStringP(L"\"") + columnName + L"\"";
+    		ckey += dblQuote + columnName + dblQuote;
 			ckey += c->GetMaxInclusive() ? L" <= " : L" < ";
 			FdoPtr<FdoDataValue>  val = c->GetMaxValue();
 
@@ -313,7 +321,7 @@ FdoStringP FdoSmPhPostGisTable::GetCkeyClause( FdoStringP columnName, FdoDataPro
 		if ( lst->GetCount() == 0 )
 			return L"";
 
-   		ckey += FdoStringP(L"\"") + columnName + L"\"";
+   		ckey += dblQuote + columnName + dblQuote;
 		ckey += L" in (";
 
 		for ( int i = 0; i < lst->GetCount(); i++ ) 

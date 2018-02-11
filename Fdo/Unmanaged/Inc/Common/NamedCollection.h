@@ -374,6 +374,11 @@ public:
         return(-1);
     }
 
+    void SetCaseSensitive(bool caseSensitive)
+    {
+        mbCaseSensitive = caseSensitive;
+    }
+
 protected:
     FdoNamedCollection( bool caseSensitive = true )
     {

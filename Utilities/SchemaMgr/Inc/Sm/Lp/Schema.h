@@ -233,6 +233,7 @@ public:
     virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
     const FdoSmLpClassDefinition* RefClass(FdoStringP className) const;
+    void SetCaseSensitive(bool caseSensitive);
 
 protected:
     /// Loads an instance of a LogicalPhysicalSchema from the FDO

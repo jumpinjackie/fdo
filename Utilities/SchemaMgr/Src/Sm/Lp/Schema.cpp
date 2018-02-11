@@ -39,6 +39,8 @@ FdoSmLpSchema::FdoSmLpSchema(FdoSmPhSchemaReaderP rdr,  FdoSmPhMgrP physicalSche
 	// this is the schema 
 	SetLogicalPhysicalSchema(FDO_SAFE_ADDREF(this));
 	mClasses = new FdoSmLpClassCollection();
+    bool isCaseSensitive = mPhysicalSchema->IsCaseSensitive();
+    mClasses->SetCaseSensitive(isCaseSensitive);
 
 	// Read schema-wide default overrides:
     SetDatabase(rdr->GetDatabase());
@@ -61,6 +63,8 @@ FdoSmLpSchema::FdoSmLpSchema(
 	// this is the schema 
 	SetLogicalPhysicalSchema(FDO_SAFE_ADDREF(this));
 	mClasses = new FdoSmLpClassCollection();
+    bool isCaseSensitive = mPhysicalSchema->IsCaseSensitive();
+    mClasses->SetCaseSensitive(isCaseSensitive);
 }	
 
 FdoSmLpSchema::~FdoSmLpSchema(void)
@@ -653,6 +657,9 @@ void FdoSmLpSchema::XMLSerialize( FILE* xmlFp, int ref ) const
 	fprintf( xmlFp, "</schema >\n" );
 }
 
-
+void FdoSmLpSchema::SetCaseSensitive(bool caseSensitive)
+{
+    mClasses->SetCaseSensitive(caseSensitive);
+}
 
 

@@ -988,7 +988,7 @@ bool FdoRdbmsPvcInsertHandler::BindThisValue( FdoString* propName, FdoPropertyVa
                 throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
 
             FdoPtr<FdoIdentifier> identifier = propertyValue->GetName();
-            if (wcscmp(propName, identifier->GetText()) == 0)
+            if ((wcscmp(propName, identifier->GetText()) == 0) || (!mFdoConnection->IsCaseSensitive() && (_wcsicmp(propName, identifier->GetText()) == 0)))
             {
                 ret = true;
                 exp = propertyValue->GetValue();

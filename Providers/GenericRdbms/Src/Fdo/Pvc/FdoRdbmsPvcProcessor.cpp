@@ -83,7 +83,7 @@ FdoRdbmsCollection<FdoRdbmsPvcOperation>* FdoRdbmsPvcProcessor::RefactorPvc( Fdo
                 FdoPtr<FdoPropertyValue>value = inputPropertyValues->GetItem(j);
                 FdoPtr<FdoIdentifier>identifier = value->GetName();
                 property = identifier->GetText();
-                if (wcscmp((wchar_t *)property, identitiyName) == 0)
+                if ((wcscmp((wchar_t *)property, identitiyName) == 0) || (!mFdoConnection->IsCaseSensitive() && (wcsicmp((wchar_t *)property, identitiyName) == 0)))
                 {
                     fdoIdentities->Add(value);
                     break;

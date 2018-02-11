@@ -92,6 +92,14 @@ FdoIConnectionPropertyDictionary* FdoRdbmsPostGisConnectionInfo::GetConnectionPr
                 NlsMsgGet(FDORDBMS_117, "DataStore"), L"",
                 false, false, true, false, false, true, false, 0, NULL); 
         mPropertyDictionary->AddProperty(pProp);
+
+        wchar_t **boolValues = new wchar_t*[2];
+        boolValues[0] = new wchar_t[5];
+        boolValues[1] = new wchar_t[6];
+        wcscpy(boolValues[0], L"TRUE");
+        wcscpy(boolValues[1], L"FALSE");
+        pProp = new ConnectionProperty (FDO_RDBMS_CONNECTION_CASESENSITIVE, L"CaseSensitive", L"TRUE", false, false, true, false, false, false, false, 2, (const wchar_t**)boolValues);
+        mPropertyDictionary->AddProperty(pProp);
     }
 
     FDO_SAFE_ADDREF(mPropertyDictionary.p);

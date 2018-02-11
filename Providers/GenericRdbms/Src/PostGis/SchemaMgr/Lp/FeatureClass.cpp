@@ -25,7 +25,9 @@ FdoSmLpPostGisFeatureClass::FdoSmLpPostGisFeatureClass(
       FdoSmLpPostGisClassDefinition(classReader, parent),
       FdoSmLpClassBase(classReader, parent)
 {
-    // idle
+    bool isCaseSensitive = GetLogicalPhysicalSchema()->GetPhysicalSchema()->IsCaseSensitive();
+    FdoSmLpPropertiesP props = this->GetProperties();
+    props->SetCaseSensitive(isCaseSensitive);
 }
 
 FdoSmLpPostGisFeatureClass::FdoSmLpPostGisFeatureClass(
@@ -36,7 +38,9 @@ FdoSmLpPostGisFeatureClass::FdoSmLpPostGisFeatureClass(
       FdoSmLpPostGisClassDefinition(fdoClass, ignoreStates, parent),
       FdoSmLpClassBase(fdoClass, ignoreStates, parent)
 {
-    // idle
+    bool isCaseSensitive = GetLogicalPhysicalSchema()->GetPhysicalSchema()->IsCaseSensitive();
+    FdoSmLpPropertiesP props = this->GetProperties();
+    props->SetCaseSensitive(isCaseSensitive);
 }
 
 FdoSmLpPostGisFeatureClass::~FdoSmLpPostGisFeatureClass()

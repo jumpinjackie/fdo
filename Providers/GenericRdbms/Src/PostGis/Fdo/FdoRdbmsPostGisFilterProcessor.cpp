@@ -22,6 +22,7 @@
 #include <FdoCommonOSUtil.h>
 #include <cassert>
 #include <cmath>   // floor() and ceil()
+#include "FdoRdbmsPostGisConnection.h"
 
 //
 // Get name of geometry column for the classname                                                                     */
@@ -117,8 +118,13 @@ const FdoSmLpGeometricPropertyDefinition* FdoRdbmsPostGisFilterProcessor::GetGeo
         }
         else
         {
+            FdoStringP geometryPropName = geomPropName;
+            if(!mFdoConnection->IsCaseSensitive())
+            {
+                geometryPropName = geometryPropName.Lower();
+            }
             geom = FdoSmLpGeometricPropertyDefinition::Cast(
-                    currentClass->RefProperties()->RefItem(geomPropName));
+                currentClass->RefProperties()->RefItem(geometryPropName));
         }
 	}
 
@@ -275,7 +281,14 @@ void FdoRdbmsPostGisFilterProcessor::ProcessSpatialDistanceCondition(FdoGeometri
     //
     // Build node of WHERE clause of SQL SELECT query
     //
-    columnName = FdoStringP(L"\"") + columnName + FdoStringP(L"\"");
+    if(mFdoConnection->IsCaseSensitive())
+    {
+        columnName = FdoStringP(L"\"") + columnName + FdoStringP(L"\"");
+    }
+    else
+    {
+        columnName = columnName.Lower();
+    }
     if( isSpatial )
         BuildSpatialFilter( columnName, geomFromText, spatialFilter );
     else
@@ -753,3 +766,46 @@ bool FdoRdbmsPostGisFilterProcessor::HasNativeSupportedFunctionArguments(FdoFunc
 
     return ret;
 }
+
+
+const wchar_t* FdoRdbmsPostGisFilterProcessor::FilterToSql(  FdoFilter                      *filter,
+                                                             const wchar_t                  *className,
+                                                             SqlCommandType                 cmdType,
+                                                             FdoCommandType                 callerFdoCommand,
+                                                             FdoRdbmsFilterUtilConstrainDef *inFilterConstrain,
+                                                             bool                           forUpdate,
+                                                             FdoInt16                       callerId )
+
+{
+    if(!mFdoConnection->IsCaseSensitive())
+    {
+        if( inFilterConstrain != NULL && inFilterConstrain->selectedProperties != NULL)
+        {
+            for( int i=0; i<inFilterConstrain->selectedProperties->GetCount(); i++ )
+            {
+                FdoPtr<FdoIdentifier> prop = inFilterConstrain->selectedProperties->GetItem(i);
+                FdoStringP propName = prop->GetName();
+                prop->SetText(propName.Lower());
+            }
+        }
+    }
+    return FdoRdbmsFilterProcessor::FilterToSql( filter,
+                                                 className,
+                                                 cmdType,
+                                                 callerFdoCommand,
+                                                 inFilterConstrain,
+                                                 forUpdate,
+                                                 callerId );
+
+}
+
+void FdoRdbmsPostGisFilterProcessor::ProcessIdentifier( FdoIdentifier& expr)
+{
+    if(!mFdoConnection->IsCaseSensitive())
+    {
+        FdoStringP propName = expr.GetText();
+        expr.SetText(propName.Lower());
+    }
+    return FdoRdbmsFilterProcessor::ProcessIdentifier(expr);
+}
+

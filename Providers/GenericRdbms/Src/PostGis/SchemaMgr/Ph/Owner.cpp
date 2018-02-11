@@ -62,6 +62,8 @@ void FdoSmPhPostGisOwner::Init()
 
     mTableConstraintsTable = L"information_schema.table_constraints";
     mKeyColumnUsageTable = L"information_schema.key_column_usage";
+    bool isCaseSensitive = GetManager()->IsCaseSensitive();
+    GetDbObjects()->SetCaseSensitive(isCaseSensitive);
 }
 
 FdoStringP FdoSmPhPostGisOwner::GetTablesTable() const

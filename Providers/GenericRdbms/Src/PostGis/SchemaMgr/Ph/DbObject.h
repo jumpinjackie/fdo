@@ -205,6 +205,7 @@ protected:
 
 
 private:
+    bool mIsCaseSensitive;
 };
 
 /// \brief

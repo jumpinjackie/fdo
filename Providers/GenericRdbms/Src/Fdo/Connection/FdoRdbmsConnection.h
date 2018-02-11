@@ -326,6 +326,8 @@ public:
 
     virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
 
+    virtual bool IsCaseSensitive() { return true; }
+
     // This method allows some providers to return a valid SRID for the server
     // depending of the type name. e.g.: SQL Server Spatial will look at typeName
     // and in case it has geography will change the value, in case of geometry will 
