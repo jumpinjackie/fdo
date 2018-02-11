@@ -127,7 +127,7 @@ check_build()
 
 if [ ! -f $THIRDPARTY_WORK_DIR/env_vars.sh ]; then
     echo "ERROR: Could not find env_vars.sh in $THIRDPARTY_WORK_DIR"
-    echo "       This file should exist if you ran cmake_bootstrap.sh with (--oem_working_dir $THIRDPARTY_WORK_DIR)"
+    echo "       This file should exist if you ran cmake_bootstrap.sh with (--thirdparty-working-dir $THIRDPARTY_WORK_DIR)"
     exit 1;
 fi
 

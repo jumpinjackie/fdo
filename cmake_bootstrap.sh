@@ -109,7 +109,7 @@ if test "$BUILD_CONFIG" != "Release" -a "$BUILD_CONFIG" != "Debug"; then
     exit 1;
 fi
 if test -z "$THIRDPARTY_WORK_DIR"; then
-    echo "--working_dir must be specified"
+    echo "--working-dir must be specified"
     exit 1;
 fi
 
@@ -263,4 +263,4 @@ echo "export INTERNAL_XALANC=$INTERNAL_XALANC" >> $THIRDPARTY_WORK_DIR/env_vars.
 chmod +x $THIRDPARTY_WORK_DIR/env_vars.sh
 
 echo "$THIRDPARTY_WORK_DIR/env_vars.sh written"
-echo "Make sure to run cmake_build.sh with --thirdparty_working_dir set to: $THIRDPARTY_WORK_DIR"
+echo "Make sure to run cmake_build.sh with --thirdparty-working-dir set to: $THIRDPARTY_WORK_DIR"
