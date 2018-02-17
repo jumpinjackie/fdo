@@ -140,13 +140,141 @@ echo "Copying root files to working dir"
 cp -f ${SOURCE_DIR}/setenvironment.sh $THIRDPARTY_WORK_DIR
 
 cd $THIRDPARTY_WORK_DIR
-# Patch setenvironment.sh before running it
-cat setenvironment.sh \
-    | sed -e "s#export FDO=\$PWD\/Fdo#export FDO=$SOURCE_DIR/Fdo#g" \
-    | sed -e "s#export FDOUTILITIES=\$PWD\/Utilities#export FDOUTILITIES=$SOURCE_DIR/Utilities#g" \
-    | sed -e "s#export FDOTHIRDPARTY=\$PWD\/Thirdparty#export FDOTHIRDPARTY=$THIRDPARTY_WORK_DIR/Thirdparty#g" \
-    > setenvironment_patched.sh
-source ./setenvironment_patched.sh --noinstall
+
+####################### Begin inline setenvironment.sh ######################
+
+# Fully-qualfied location of the FDO files
+export FDO=$SOURCE_DIR/Fdo
+if test ! -e "$FDO"; then
+   echo ""
+   echo "Invalid FDO path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDO"
+   echo "Please modify the setenvironment.sh script with a valid path."
+   echo ""
+fi
+
+# Fully-qualfied location of the FDO Utility files
+export FDOUTILITIES=$SOURCE_DIR/Utilities
+if test ! -e "$FDOUTILITIES"; then
+   echo ""
+   echo "Invalid FDO Utilities path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOUTILITIES" 
+   echo "Please modify the setenvironment.sh script with a valid path."
+   echo ""
+fi
+
+# Fully-qualfied location of the FDO Thirdparty files
+export FDOTHIRDPARTY=$THIRDPARTY_WORK_DIR/Thirdparty
+if test ! -e "$FDOTHIRDPARTY"; then
+   echo ""
+   echo "Invalid FDO Thirdparty path provided. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY"
+   echo "Please modify the setenvironment.sh script with a valid path."
+   echo ""
+fi
+
+# Fully-qualfied location of the ESRI ArcSDE SDK
+export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient931/Linux
+if test ! -e "$SDEHOME"; then
+   echo ""
+   echo "NOTE: The default location for the ArcSDE client SDK files"
+   echo "was not found. The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux. "
+   echo "If you need to build the FDO ArcSDE Provider, modify the "
+   echo "setenvironment.sh script with a valid path and set SDEHOME to "
+   echo "point to the location of the ArcSDE client installation."
+   echo ""
+fi
+
+# Fully-qualfied location of the GDAL Installation
+export FDOGDAL=$FDOTHIRDPARTY/gdal
+   echo ""
+   echo "NOTE: The setenvironment.sh script sets the installation location for "
+   echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
+   echo "If this value remains unchanged, the FDO build process will"
+   echo "build the version of GDAL located in Thirdparty/gdal and will "
+   echo "install the resulting libraries in /usr/local/fdo-4.2.0. The FDO build"
+   echo "process will then use that location when building the GDAL and"
+   echo "WMS providers. If you wish to build the FDO GDAL or WMS Providers"
+   echo "using a previously installed version of GDAL, modify the setenvironment.sh "
+   echo "script and set FDOGDAL to point to the existing GDAL installation."
+   echo "For example: /user/local (The default GDAL installation path)."
+echo ""
+
+# Fully-qualfied location of the MySQL SDK
+export FDOMYSQL=$FDOTHIRDPARTY/mysql/rhlinux
+if test ! -e "$FDOMYSQL"; then
+   echo ""
+   echo "NOTE: The default location for the MySQL SDK files "
+   echo "was not found. The setenvironment script sets the default value to: "
+   echo "$FDOTHIRDPARTY/mysql/rhlinux "
+   echo "If you need to build the FDO MySQL Provider, and have chosen not "
+   echo "to install the MySQL SDK using the recommended RPM installtion "
+   echo "process, modify the setenvironment.sh script and set FDOMYSQL to point"
+   echo "to the location of the MySQL client installation. If you have chosen "
+   echo "to install the MySQL client using the RPM install, this environment "
+   echo "variable does not need to be set and this warning can be ignored."
+   echo ""
+fi
+
+# Fully-qualfied location of the PostgreSQL SDK
+export FDOPOSTGRESQL=$FDOTHIRDPARTY/pgsql
+if test ! -e "$FDOPOSTGRESQL"; then
+   echo ""
+   echo "NOTE: The default path for the PostgreSQL SDK files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOPOSTGRESQL"
+   echo "If you need to build the PostgreSQL prvovider, modify the setenvironment.sh "
+   echo "script and set FDOPOSTGRESQL to point to the location of the PostgreSQL SDK."
+   echo ""
+fi
+
+# Fully-qualfied location of the ODBC SDK
+export FDOODBC=/usr
+if test ! -e "$FDOODBC"; then
+   echo ""
+   echo "NOTE: The default path for the ODBC SDK files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$FDOODBC"
+   echo "If you need to build the ODBC prvovider, modify the setenvironment.sh "
+   echo "script and set FDOODBC to point to the location of the ODBC SDK."
+   echo ""
+fi
+
+# Location of the PYTHON lib files. Typically in /usr/lib/pythonXXX
+export PYTHON_LIB_PATH=/usr/lib/python2.4
+if test ! -e "$PYTHON_LIB_PATH"; then
+   echo ""
+   echo "NOTE: The default path for the Python SDK lib files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$PYTHON_LIB_PATH"
+   echo "If you need to build the FDO Python wrappers, modify the setenvironment.sh "
+   echo "script and set PYTHON_LIB_PATH to point to the location of the Python "
+   echo "lib files."
+   echo ""
+fi
+
+# Location of the PYTHON include files. Typically in /usr/include/pythonXXX
+export PYTHON_INCLUDE_PATH=/usr/include/python2.4
+if test ! -e "$PYTHON_INCLUDE_PATH"; then
+   echo ""
+   echo "NOTE: The default path for the Python SDK header files was not found. "
+   echo "The setenvironment script sets the default value to: "
+   echo "$PYTHON_INCLUDE_PATH"
+   echo "If you need to build the FDO Python wrappers, modify the setenvironment.sh "
+   echo "script and set PYTHON_INCLUDE_PATH to point to the location of the Python "
+   echo "include files."
+   echo ""
+fi
+
+export XERCESCROOT=$FDOTHIRDPARTY/apache/xerces
+export XALANCROOT=$FDOTHIRDPARTY/apache/xalan
+export NLSDIR=$XALANCROOT/src/xalanc/NLS
+
+####################### End inline setenvironment.sh ######################
 
 # Patch various build scripts (to strip sudo)
 if test -f "$THIRDPARTY_WORK_DIR/Thirdparty/boost/build.sh"; then
@@ -158,27 +286,27 @@ fi
 
 CMDEX="-b $BUILD_CPU -a buildinstall"
 
-if [[ "$CFLAGS" != *"-m$BUILD_CPU"* ]]; then
+if test "$CFLAGS" != *"-m$BUILD_CPU"*; then
     CFLAGS="$CFLAGS -m$BUILD_CPU"
     echo "Exporting CFLAGS: "$CFLAGS""
     export CFLAGS
 fi
 
-if [[ "$CPPFLAGS" != *"-m$BUILD_CPU"* ]]; then
+if test "$CPPFLAGS" != *"-m$BUILD_CPU"*; then
     CPPFLAGS="$CPPFLAGS -m$BUILD_CPU"
     echo "Exporting CPPFLAGS: "$CPPFLAGS""
     export CPPFLAGS
 fi
 
-if [[ "$LDFLAGS" != *"-m$BUILD_CPU"* ]]; then
+if test "$LDFLAGS" != *"-m$BUILD_CPU"*; then
     LDFLAGS="$LDFLAGS -m$BUILD_CPU"
     echo "Exporting LDFLAGS: "$LDFLAGS""
     export LDFLAGS
 fi
 
-if test "$BUILD_CPU" == "32" ; then
-    if test "$HOSTTYPE" == "i686" ; then
-        if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
+if test "$BUILD_CPU" = "32" ; then
+    if test "$HOSTTYPE" = "i686" ; then
+        if test "$CPPFLAGS" != *"-march=i686"*; then
             CPPFLAGS="$CPPFLAGS -march=i686"
             echo "Exporting CPPFLAGS: "$CPPFLAGS""
             export CPPFLAGS
@@ -186,13 +314,13 @@ if test "$BUILD_CPU" == "32" ; then
     fi
 fi
 
-if [[ "$CPPFLAGS" != *"-Wno-write-strings"* ]]; then
+if test "$CPPFLAGS" != *"-Wno-write-strings"*; then
     CPPFLAGS="$CPPFLAGS -Wno-write-strings"
     echo "Exporting CPPFLAGS: "$CPPFLAGS""
     export CPPFLAGS
 fi
 
-if [[ "$CPPFLAGS" != *"-Wno-deprecated"* ]]; then
+if test "$CPPFLAGS" != *"-Wno-deprecated"*; then
     CPPFLAGS="$CPPFLAGS -Wno-deprecated"
     echo "Exporting CPPFLAGS: "$CPPFLAGS""
     export CPPFLAGS
@@ -205,6 +333,8 @@ if test "$INTERNAL_XALANC" = "TRUE" -o "$INTERNAL_XERCESC" = "TRUE"; then
     chmod a+x ./build2.sh
     sh ./build2.sh $CMDEX
     check_build
+else
+    echo "Skipping internal xalan/xerces build"
 fi
 if test "$INTERNAL_CPPUNIT" = "TRUE"; then
     LIB_NAME="cppunit"
@@ -213,6 +343,8 @@ if test "$INTERNAL_CPPUNIT" = "TRUE"; then
     chmod a+x ./build.sh
     sh ./build.sh $CMDEX
     check_build
+else
+    echo "Skipping internal cppunit build"
 fi
 if test "$INTERNAL_GDAL" = "TRUE"; then
     LIB_NAME="gdal"
@@ -221,6 +353,8 @@ if test "$INTERNAL_GDAL" = "TRUE"; then
     chmod a+x ./build.sh
     sh ./build.sh $CMDEX
     check_build
+else
+    echo "Skipping internal gdal build"
 fi
 if test "$INTERNAL_BOOST" = "TRUE"; then
     LIB_NAME="boost"
@@ -229,6 +363,8 @@ if test "$INTERNAL_BOOST" = "TRUE"; then
     chmod a+x ./build.sh
     sh ./build.sh $CMDEX
     check_build
+else
+    echo "Skipping internal boost build"
 fi
 if test "$INTERNAL_CURL" = "TRUE"; then
     LIB_NAME="libcurl"
@@ -237,6 +373,8 @@ if test "$INTERNAL_CURL" = "TRUE"; then
     chmod a+x ./build.sh
     sh ./build.sh $CMDEX
     check_build
+else
+    echo "Skipping internal curl build"
 fi
 if test "$INTERNAL_OPENSSL" = "TRUE"; then
     LIB_NAME="openssl"
@@ -245,6 +383,8 @@ if test "$INTERNAL_OPENSSL" = "TRUE"; then
     chmod a+x ./build.sh
     sh ./build.sh $CMDEX
     check_build
+else
+    echo "Skipping internal openssl build"
 fi
 
 # dump vars to setup script
