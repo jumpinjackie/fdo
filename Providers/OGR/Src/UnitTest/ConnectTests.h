@@ -15,6 +15,8 @@ class ConnectTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_DGN);
     CPPUNIT_TEST(TestCase_E00);
     CPPUNIT_TEST(TestCase_BNA);
+    CPPUNIT_TEST(TestCase_MutableCaps);
+    CPPUNIT_TEST(TestCase_ReadOnlyCaps);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,6 +33,8 @@ public:
     void TestCase_DGN();
     void TestCase_E00();
     void TestCase_BNA();
+    void TestCase_MutableCaps();
+    void TestCase_ReadOnlyCaps();
 };
 
 #endif //CONNECT_TESTS_H

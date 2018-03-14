@@ -133,3 +133,93 @@ void ConnectTests::TestCase_BNA()
         TestCommonFail(ex);
     }
 }
+
+void ConnectTests::TestCase_MutableCaps()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/poly.shp", false);
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoICommandCapabilities> cmdCaps = conn->GetCommandCapabilities();
+        FdoInt32 size = -1;
+        FdoInt32* cmds = cmdCaps->GetCommands(size);
+        CPPUNIT_ASSERT(size > 0);
+
+        bool canInsert = false;
+        bool canUpdate = false;
+        bool canDelete = false;
+        for (FdoInt32 i = 0; i < size; i++)
+        {
+            FdoInt32 cmd = cmds[i];
+            switch (cmd)
+            {
+                case FdoCommandType_Insert:
+                    canInsert = true;
+                    break;
+                case FdoCommandType_Update:
+                    canUpdate = true;
+                    break;
+                case FdoCommandType_Delete:
+                    canDelete = true;
+                    break;
+            }
+        }
+
+        CPPUNIT_ASSERT(canInsert);
+        CPPUNIT_ASSERT(canUpdate);
+        CPPUNIT_ASSERT(canDelete);
+
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
+
+void ConnectTests::TestCase_ReadOnlyCaps()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/poly.shp", true);
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoICommandCapabilities> cmdCaps = conn->GetCommandCapabilities();
+        FdoInt32 size = -1;
+        FdoInt32* cmds = cmdCaps->GetCommands(size);
+        CPPUNIT_ASSERT(size > 0);
+
+        bool canInsert = false;
+        bool canUpdate = false;
+        bool canDelete = false;
+        for (FdoInt32 i = 0; i < size; i++)
+        {
+            FdoInt32 cmd = cmds[i];
+            switch (cmd)
+            {
+                case FdoCommandType_Insert:
+                    canInsert = true;
+                    break;
+                case FdoCommandType_Update:
+                    canUpdate = true;
+                    break;
+                case FdoCommandType_Delete:
+                    canDelete = true;
+                    break;
+            }
+        }
+
+        CPPUNIT_ASSERT(!canInsert);
+        CPPUNIT_ASSERT(!canUpdate);
+        CPPUNIT_ASSERT(!canDelete);
+
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
