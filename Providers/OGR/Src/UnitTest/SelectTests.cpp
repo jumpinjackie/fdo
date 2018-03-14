@@ -363,3 +363,45 @@ void SelectTests::TestCase_EvalQuotedIdentifier()
         CPPUNIT_ASSERT(msg.Contains(L"bla bla"));
     }
 }
+
+void SelectTests::TestCase_SelectMixedAttributeAndSpatialFilter()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        
+        FdoStringP wkt = L"POLYGON ((32.95257287189878781 17.52213437146155073, 17.64294717229646636 15.85994643836187024, 11.95651476958703086 4.22463090666410324, 15.28089063578639184 -1.11186719434013526, 21.5797080664799239 -3.73637445712910932, 32.69012214561989538 -5.22359523937618775, 36.88933376608224535 0.90025504046474225, 40.03874248142901138 9.56112900766834173, 32.95257287189878781 17.52213437146155073))";
+        
+        FdoPtr<FdoFgfGeometryFactory> geometryFactory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIGeometry> geom = geometryFactory->CreateGeometry(wkt);
+        FdoPtr<FdoByteArray> fgf = geometryFactory->GetFgf(geom);
+        FdoPtr<FdoGeometryValue> geomVal = FdoGeometryValue::Create(fgf);
+
+        FdoPtr<FdoSpatialCondition> spatialCondition = FdoSpatialCondition::Create(L"GEOMETRY", FdoSpatialOperations_Intersects, geomVal);
+        FdoPtr<FdoFilter> regularFilter = FdoFilter::Parse(L"NAME LIKE 'C%'");
+        FdoPtr<FdoFilter> combinedFilter = FdoFilter::Combine(regularFilter, FdoBinaryLogicalOperations_And, spatialCondition);
+        selectCmd->SetFilter(combinedFilter);
+
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        FdoInt32 count = 0;
+        while (reader->ReadNext())
+        {
+            CPPUNIT_ASSERT(!reader->IsNull(L"NAME"));
+            FdoString* name = reader->GetString(L"NAME");
+            printf("Country: %S\n", name);
+            count++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(count == 4);
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
