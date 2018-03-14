@@ -32,6 +32,9 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --ninja)
             USE_NINJA=1
             ;;
+        --use-ld-gold)
+            USE_LD_GOLD=ON
+            ;;
         --with-oracle-include)
             ORACLE_INCLUDE="$2"
             shift
@@ -92,6 +95,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "  --thirdparty-working-dir [thirdparty working directory]"
             echo "  --with-asan [build with ASAN]"
             echo "  --ninja [Use ninja build system]"
+            echo "  --use-ld-gold [Link with gold instead of ld (if available)]"
             echo "  --with-sdf [Enable SDF Provider]"
             echo "  --with-shp [Enable SHP Provider]"
             echo "  --with-sqlite [Enable SQLite Provider]"
@@ -127,12 +131,12 @@ check_build()
 
 if [ ! -f $THIRDPARTY_WORK_DIR/env_vars.sh ]; then
     echo "ERROR: Could not find env_vars.sh in $THIRDPARTY_WORK_DIR"
-    echo "       This file should exist if you ran cmake_bootstrap.sh with (--oem_working_dir $THIRDPARTY_WORK_DIR)"
+    echo "       This file should exist if you ran cmake_bootstrap.sh with (--thirdparty-working-dir $THIRDPARTY_WORK_DIR)"
     exit 1;
 fi
 
 echo "Reading variables from thirdparty build"
-source $THIRDPARTY_WORK_DIR/env_vars.sh
+. $THIRDPARTY_WORK_DIR/env_vars.sh
 
 # Validate
 if test "$BUILD_CPU" != "32" -a "$BUILD_CPU" != "64"; then
@@ -148,6 +152,7 @@ echo "Current source dir is: $SOURCE_DIR"
 echo "Building for: $BUILD_CPU-bit"
 echo "Building in: $BUILD_CONFIG"
 echo "Using Ninja build: $USE_NINJA"
+echo "Linking with gold instead of ld (if possible): $USE_LD_GOLD"
 echo "CMake build directory is: $CMAKE_BUILD_DIR" 
 echo "Thirdparty Working Directory is: $THIRDPARTY_WORK_DIR"
 

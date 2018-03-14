@@ -150,6 +150,11 @@ void OgrConnection::SetConnectionString(FdoString* value)
     delete [] valcpy;
 }
 
+bool OgrConnection::IsReadOnly()
+{
+    return _wcsnicmp(GetProperty(PROP_NAME_READONLY), L"TRUE", 4) == 0;
+}
+
 FdoConnectionState OgrConnection::Open()
 {
     //Need to specify DataSource
@@ -159,7 +164,7 @@ FdoConnectionState OgrConnection::Open()
     }
 
     const wchar_t* dsw = GetProperty(PROP_NAME_DATASOURCE);
-    bool readonly = _wcsnicmp(GetProperty(PROP_NAME_READONLY), L"TRUE", 4) == 0;
+    bool readonly = IsReadOnly();
     
     size_t slen = wcslen(dsw);
     if (dsw[slen - 1] == '\\')

@@ -71,6 +71,7 @@ private:                        int m_refCount;
     //-------------------------------------------------------
     // FdoIConnection implementation
     //-------------------------------------------------------
+    bool IsReadOnly();
 
 public:
     
@@ -283,6 +284,14 @@ public:
 
     OGR_API virtual FdoInt32* GetCommands(FdoInt32& size)
     {
+        static const FdoInt32 commandsReadOnly[] =
+        {
+            FdoCommandType_Select,
+            FdoCommandType_DescribeSchema,
+            FdoCommandType_GetSpatialContexts,
+            FdoCommandType_SelectAggregates
+        };
+
     // read-write commands
         static const FdoInt32 commandsReadWrite[] =
         {
@@ -325,8 +334,16 @@ public:
 //        FdoCommandType_DestroyDataStore,
         };
 
-        size = sizeof(commandsReadWrite) / sizeof(FdoCommandType);
-        return (FdoInt32*)commandsReadWrite;
+        if (IsReadOnly())
+        {
+            size = sizeof(commandsReadOnly) / sizeof(FdoCommandType);
+            return (FdoInt32*)commandsReadOnly;
+        }
+        else
+        {
+            size = sizeof(commandsReadWrite) / sizeof(FdoCommandType);
+            return (FdoInt32*)commandsReadWrite;
+        }
     }
     
     OGR_API virtual bool SupportsParameters() { return false; }
