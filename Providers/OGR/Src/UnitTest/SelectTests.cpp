@@ -2,6 +2,8 @@
 #include "UnitTestUtil.h"
 #include "Fdo.h"
 #include "TestCommonMiscUtil.h"
+#include "FdoExpressionEngine.h"
+#include "FdoExpressionEngineFunctionCollection.h"
 #include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "Util/FdoExpressionEngineUtilFeatureReader.h"
 #include <cstdio>
@@ -328,5 +330,36 @@ void SelectTests::TestCase_SelectAggregateSpatialExtent()
     catch (FdoException* ex)
     {
         TestCommonFail(ex);
+    }
+}
+
+void SelectTests::TestCase_EvalQuotedIdentifier()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        FdoPtr<FdoExpressionEngineFunctionCollection> functions = FdoExpressionEngineFunctionCollection::Create();
+        FdoPtr<FdoClassDefinition> clsDef = reader->GetClassDefinition();
+
+        FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(reader, clsDef, functions);
+        // The string that's giving us grief
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse(L"\"Something like this 'bla bla' R. G. 'bla bla'\"");
+        FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expr); //Boom?
+
+        CPPUNIT_FAIL("Should've thrown FdoException (identifier not found)");
+    }
+    catch (FdoException* ex) //The right kind of boom, not segfault boom
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        //It should be complaining about some part of this string
+        CPPUNIT_ASSERT(msg.Contains(L"bla bla"));
     }
 }

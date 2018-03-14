@@ -12,6 +12,7 @@ class SelectTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_SelectAggregateCount);
     CPPUNIT_TEST(TestCase_SelectAggregateDistinct);
     CPPUNIT_TEST(TestCase_SelectAggregateSpatialExtent);
+    CPPUNIT_TEST(TestCase_EvalQuotedIdentifier);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -24,6 +25,7 @@ public:
     void TestCase_SelectAggregateCount();
     void TestCase_SelectAggregateDistinct();
     void TestCase_SelectAggregateSpatialExtent();
+    void TestCase_EvalQuotedIdentifier();
 };
 
 #endif //SELECT_TESTS_H

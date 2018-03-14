@@ -1703,39 +1703,46 @@ FdoPropertyDefinition* FdoExpressionEngineImp::GetProperty(FdoClassDefinition* c
 
 void FdoExpressionEngineImp::ProcessIdentifier (FdoIdentifier& expr)
 {
-	int   length;
-	const wchar_t** scope = expr.GetScope( length );
-	if( length == 0 )
-	{
-		ProcessIdentifier(expr.GetName());
-		return;
-	}
-	// else it must be an association based filter
-	FdoPtr<FdoPropertyDefinition>prop = GetProperty( m_classDefinition, scope[0] );
-	if( prop->GetPropertyType() != FdoPropertyType_AssociationProperty )
-        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_71_DATA_TYPE_NOT_SUPPORTED), expr.GetName()));
+    int   length;
+    const wchar_t** scope = expr.GetScope( length );
+    if( length == 0 )
+    {
+        ProcessIdentifier(expr.GetName());
+        return;
+    }
+    // else it must be an association based filter
+    FdoPtr<FdoPropertyDefinition> prop = GetProperty( m_classDefinition, scope[0] );
+    if (NULL != prop)
+    {
+        if( prop->GetPropertyType() != FdoPropertyType_AssociationProperty )
+            throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_71_DATA_TYPE_NOT_SUPPORTED), expr.GetName()));
 
-	FdoPtr<FdoClassDefinition>assoc_class = ((FdoAssociationPropertyDefinition*)prop.p)->GetAssociatedClass();
-	FdoPtr<FdoIFeatureReader>reader = static_cast<FdoIFeatureReader *>(m_reader)->GetFeatureObject( scope[0] );
-	for(int i=1; i<length; i++ )
-	{
-		if( reader == NULL || ! reader->ReadNext() )
-			break;
-		prop = GetProperty( assoc_class, scope[i] );
-		if( prop->GetPropertyType() != FdoPropertyType_AssociationProperty )
-			return;
-		FdoPtr<FdoClassDefinition>assoc_class = ((FdoAssociationPropertyDefinition*)prop.p)->GetAssociatedClass();
+        FdoPtr<FdoClassDefinition>assoc_class = ((FdoAssociationPropertyDefinition*)prop.p)->GetAssociatedClass();
+        FdoPtr<FdoIFeatureReader>reader = static_cast<FdoIFeatureReader *>(m_reader)->GetFeatureObject( scope[0] );
+        for(int i=1; i<length; i++ )
+        {
+            if( reader == NULL || ! reader->ReadNext() )
+                break;
+            prop = GetProperty( assoc_class, scope[i] );
+            if( prop->GetPropertyType() != FdoPropertyType_AssociationProperty )
+                return;
+            FdoPtr<FdoClassDefinition>assoc_class = ((FdoAssociationPropertyDefinition*)prop.p)->GetAssociatedClass();
 
-		reader = reader->GetFeatureObject( scope[i] );	
-	}
+            reader = reader->GetFeatureObject( scope[i] );	
+        }
 
-	if( reader != NULL && reader->ReadNext() )
-	{
-		prop = GetProperty( assoc_class, expr.GetName() );
+        if( reader != NULL && reader->ReadNext() )
+        {
+            prop = GetProperty( assoc_class, expr.GetName() );
 
-		if( prop->GetPropertyType() == FdoPropertyType_DataProperty )
-			PushIdentifierValue( reader, expr.GetName(), ((FdoDataPropertyDefinition*)prop.p)->GetDataType() );
-	}
+            if( prop->GetPropertyType() == FdoPropertyType_DataProperty )
+                PushIdentifierValue( reader, expr.GetName(), ((FdoDataPropertyDefinition*)prop.p)->GetDataType() );
+        }
+    }
+    else // Parse whatever garbage remains
+    {
+        ProcessIdentifier(expr.GetName());
+    }
 }
 
 void FdoExpressionEngineImp::ProcessComputedIdentifier (FdoComputedIdentifier& expr)
