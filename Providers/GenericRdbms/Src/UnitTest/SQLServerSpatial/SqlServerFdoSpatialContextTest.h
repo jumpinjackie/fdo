@@ -26,6 +26,7 @@ class SqlServerFdoSpatialContextTest : public FdoSpatialContextTest
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSpatialContextTest, FdoSpatialContextTest);
     CPPUNIT_TEST( testAdjustExtents );
     CPPUNIT_TEST( testNumericCoordinateSystemNames );
+    CPPUNIT_TEST( testDottedTables );
     CPPUNIT_TEST_SUITE_END ();
 
 protected:
@@ -34,6 +35,7 @@ protected:
     // Unit test methods:
     virtual void testAdjustExtents ();
     virtual void testNumericCoordinateSystemNames ();
+    virtual void testDottedTables ();
 
     void VldAdjustedExtent( FdoStringP scName, FdoByteArray* ba, double minx, double miny, double maxx, double maxy );
 };

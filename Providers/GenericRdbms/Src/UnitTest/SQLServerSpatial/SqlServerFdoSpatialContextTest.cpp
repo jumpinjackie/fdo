@@ -258,3 +258,57 @@ void SqlServerFdoSpatialContextTest::testNumericCoordinateSystemNames( )
         throw;
     }
 }
+
+void SqlServerFdoSpatialContextTest::testDottedTables()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_dottedtable"))
+            UnitTestUtil::DropDb(L"_dottedtable");
+
+        UnitTestUtil::CreateDB(false, false, L"_dottedtable", 0, false, false);
+
+        // Connect and create the test schema.
+        connection = UnitTestUtil::GetConnection(L"_dottedtable");
+
+        // Create our user if it doesn't exist and map it to this database
+        printf(" >>> ... creating table \n");
+
+        FdoStringP sql = L"CREATE TABLE dbo.[dotted.table] (\n";
+        sql += L"    ID int IDENTITY(1, 1) NOT NULL,\n";
+        sql += L"    geom geography NULL\n";
+        sql += L");";
+
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        // Insert a geography instance to trigger SRID sampling on this table
+        sql = L"INSERT INTO dbo.[dotted.table](geom) VALUES (geography::Point(0, 0, 4326))";
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        FdoPtr<FdoIGetSpatialContexts> getSc = static_cast<FdoIGetSpatialContexts*>(connection->CreateCommand(FdoCommandType_GetSpatialContexts));
+        FdoPtr<FdoISpatialContextReader> scReader = getSc->Execute();
+        FdoInt32 scCount = 0;
+        while (scReader->ReadNext())
+        {
+            scCount++;
+        }
+
+        CPPUNIT_ASSERT(scCount == 1);
+
+        connection->Close();
+    }
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        if (connection)
+            connection->Close();
+        TestCommonFail(exp);
+    }
+    catch (...)
+    {
+        if (connection) connection->Close();
+        throw;
+    }
+}

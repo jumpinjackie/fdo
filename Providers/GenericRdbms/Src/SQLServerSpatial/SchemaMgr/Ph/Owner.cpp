@@ -403,7 +403,11 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
 {
 	// SRID is -1 if table is empty or geometry column has not been populated yet
     FdoInt64 srid = -1;
-    FdoStringP fmtObjectName = FdoStringP(L"\"") + dbObjectName.Replace(L".", L"\".\"") + L"\"";
+	// In the event that this fully qualified object name is a table with dots 
+    // in its name (really?) we only want to replace the first dot with "."
+    FdoStringP leftPart = dbObjectName.Left(L".");
+    FdoStringP rightPart = dbObjectName.Right(L".");
+    FdoStringP fmtObjectName = FdoStringP(L"\"") + leftPart + L"\".\"" + rightPart + L"\"";
 
     // Delimit column name with []. Can't use " when part of function.
 	FdoStringP sqlStmt = FdoStringP::Format(
