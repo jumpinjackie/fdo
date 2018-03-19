@@ -297,6 +297,62 @@ void SqlServerFdoSpatialContextTest::testDottedTables()
 
         CPPUNIT_ASSERT(scCount == 1);
 
+        //Somewhat bleeding (testing) concerns here, but we need to check that the dotted table can be
+        //described and queried from
+        FdoPtr<FdoIDescribeSchema> describe = static_cast<FdoIDescribeSchema*>(connection->CreateCommand(FdoCommandType_DescribeSchema));
+        describe->SetSchemaName(L"dbo");
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute();
+        CPPUNIT_ASSERT(schemas->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> theSchema = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = theSchema->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 1);
+
+        FdoPtr<FdoClassDefinition> daKlass = classes->GetItem(0);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(connection->CreateCommand(FdoCommandType_Select));
+        FdoString* className = daKlass->GetName();
+        selectCmd->SetFeatureClassName(className);
+
+        FdoPtr<FdoIFeatureReader> fr = selectCmd->Execute();
+        FdoInt32 count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+        
+        //Now try qualified
+        FdoStringP qClassName = L"dbo:";
+        qClassName += className;
+        selectCmd->SetFeatureClassName(qClassName);
+
+        fr = selectCmd->Execute();
+        count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+
+        //Finally with explicit property list
+        FdoPtr<FdoIdentifierCollection> idents = selectCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> id = FdoIdentifier::Create(L"ID");
+        FdoPtr<FdoIdentifier> geom = FdoIdentifier::Create(L"geom");
+        idents->Add(id);
+        idents->Add(geom);
+
+        fr = selectCmd->Execute();
+        count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+
         connection->Close();
     }
     catch (FdoException *exp)
