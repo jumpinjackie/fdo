@@ -258,3 +258,113 @@ void SqlServerFdoSpatialContextTest::testNumericCoordinateSystemNames( )
         throw;
     }
 }
+
+void SqlServerFdoSpatialContextTest::testDottedTables()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_dottedtable"))
+            UnitTestUtil::DropDb(L"_dottedtable");
+
+        UnitTestUtil::CreateDB(false, false, L"_dottedtable", 0, false, false);
+
+        // Connect and create the test schema.
+        connection = UnitTestUtil::GetConnection(L"_dottedtable");
+
+        // Create our user if it doesn't exist and map it to this database
+        printf(" >>> ... creating table \n");
+
+        FdoStringP sql = L"CREATE TABLE dbo.[dotted.table] (\n";
+        sql += L"    ID int IDENTITY(1, 1) NOT NULL,\n";
+        sql += L"    geom geography NULL\n";
+        sql += L");";
+
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        // Insert a geography instance to trigger SRID sampling on this table
+        sql = L"INSERT INTO dbo.[dotted.table](geom) VALUES (geography::Point(0, 0, 4326))";
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        FdoPtr<FdoIGetSpatialContexts> getSc = static_cast<FdoIGetSpatialContexts*>(connection->CreateCommand(FdoCommandType_GetSpatialContexts));
+        FdoPtr<FdoISpatialContextReader> scReader = getSc->Execute();
+        FdoInt32 scCount = 0;
+        while (scReader->ReadNext())
+        {
+            scCount++;
+        }
+
+        CPPUNIT_ASSERT(scCount == 1);
+
+        //Somewhat bleeding (testing) concerns here, but we need to check that the dotted table can be
+        //described and queried from
+        FdoPtr<FdoIDescribeSchema> describe = static_cast<FdoIDescribeSchema*>(connection->CreateCommand(FdoCommandType_DescribeSchema));
+        describe->SetSchemaName(L"dbo");
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute();
+        CPPUNIT_ASSERT(schemas->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> theSchema = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = theSchema->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 1);
+
+        FdoPtr<FdoClassDefinition> daKlass = classes->GetItem(0);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(connection->CreateCommand(FdoCommandType_Select));
+        FdoString* className = daKlass->GetName();
+        selectCmd->SetFeatureClassName(className);
+
+        FdoPtr<FdoIFeatureReader> fr = selectCmd->Execute();
+        FdoInt32 count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+        
+        //Now try qualified
+        FdoStringP qClassName = L"dbo:";
+        qClassName += className;
+        selectCmd->SetFeatureClassName(qClassName);
+
+        fr = selectCmd->Execute();
+        count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+
+        //Finally with explicit property list
+        FdoPtr<FdoIdentifierCollection> idents = selectCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> id = FdoIdentifier::Create(L"ID");
+        FdoPtr<FdoIdentifier> geom = FdoIdentifier::Create(L"geom");
+        idents->Add(id);
+        idents->Add(geom);
+
+        fr = selectCmd->Execute();
+        count = 0;
+        while (fr->ReadNext())
+        {
+            count++;
+        }
+
+        CPPUNIT_ASSERT(count == 1);
+
+        connection->Close();
+    }
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        if (connection)
+            connection->Close();
+        TestCommonFail(exp);
+    }
+    catch (...)
+    {
+        if (connection) connection->Close();
+        throw;
+    }
+}
