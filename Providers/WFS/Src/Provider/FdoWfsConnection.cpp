@@ -681,6 +681,14 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     NameFeat += L":";
                     NameFeat += className;
                     pFeat = pFeatColl->FindItem(NameFeat);
+                    if (pFeat == NULL)
+                    {
+                        // Cannot find the class, try to add a "_" to the class name.
+                        // This case happens if the type name is like "AAAA_Type". Fdo XML reader will read the name as "AAAA".
+                        // But the name in feature collection is "AAAA_".
+                        NameFeat += L"_";
+                        pFeat = pFeatColl->FindItem(NameFeat);
+                    }
                 }
                 if (pFeat != NULL)
                 {
