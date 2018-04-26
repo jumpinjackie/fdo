@@ -160,7 +160,7 @@ FdoConnectionState OgrConnection::Open()
     //Need to specify DataSource
     if (m_mProps->find(PROP_NAME_DATASOURCE) == m_mProps->end())
     {
-        throw FdoConnectionException::Create(L"Missing required DataStore property");
+        throw FdoConnectionException::Create(L"Missing required " PROP_NAME_DATASOURCE " property");
     }
 
     const wchar_t* dsw = GetProperty(PROP_NAME_DATASOURCE);

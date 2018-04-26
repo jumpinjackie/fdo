@@ -21,7 +21,9 @@ void ConnectTests::TestCase_Empty()
     }
     catch (FdoException* ex)
     {
-        printf("FdoException caught: %S\n", ex->GetExceptionMessage());
+        FdoStringP msg = ex->GetExceptionMessage();
+        printf("FdoException caught: %S\n", (FdoString*)msg);
+        CPPUNIT_ASSERT(msg == L"Missing required DataSource property");
         FDO_SAFE_RELEASE(ex);
     }
 }
