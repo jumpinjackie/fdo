@@ -7,6 +7,7 @@ class ConnectTests : public CppUnit::TestCase
 {
     CPPUNIT_TEST_SUITE(ConnectTests);
     CPPUNIT_TEST(TestCase_Empty);
+    CPPUNIT_TEST(TestCase_CustomDefaultSchema);
     CPPUNIT_TEST(TestCase_DXF);
     CPPUNIT_TEST(TestCase_MapInfo);
     CPPUNIT_TEST(TestCase_SHP);
@@ -24,6 +25,7 @@ public:
     ~ConnectTests();
 
     void TestCase_Empty();
+    void TestCase_CustomDefaultSchema();
 
     void TestCase_DXF();
     void TestCase_MapInfo();
