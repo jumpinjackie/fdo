@@ -36,6 +36,7 @@
 
 #define PROP_NAME_DATASOURCE L"DataSource"
 #define PROP_NAME_READONLY   L"ReadOnly"
+#define PROP_NAME_SCHEMA     L"DefaultSchemaName"
 #define RDONLY_FALSE         L"FALSE"
 #define RDONLY_TRUE          L"TRUE"
 
@@ -246,9 +247,9 @@ FdoICommand* OgrConnection::CreateCommand(FdoInt32 commandType)
 
 FdoString** OgrConnection::GetPropertyNames(FdoInt32& count)
 {
-    static const wchar_t* PROP_NAMES[] = {PROP_NAME_DATASOURCE, PROP_NAME_READONLY};
+    static const wchar_t* PROP_NAMES[] = { PROP_NAME_DATASOURCE, PROP_NAME_READONLY, PROP_NAME_SCHEMA };
 
-    count = 2;
+    count = 3;
     return (const wchar_t**)PROP_NAMES;
 }
 
@@ -295,6 +296,8 @@ FdoString* OgrConnection::GetPropertyDefault(FdoString* name)
         return L"";
     else if (wcscmp(name, PROP_NAME_READONLY) == 0)
         return RDONLY_TRUE;
+    else if (wcscmp(name, PROP_NAME_SCHEMA) == 0)
+        return L"OGRSchema";
 
     return L"";
 }
@@ -304,6 +307,8 @@ bool OgrConnection::IsPropertyRequired(FdoString* name)
     if (wcscmp(name, PROP_NAME_DATASOURCE) == 0)
         return true;
     else if (wcscmp(name, PROP_NAME_READONLY) == 0)
+        return false;
+    else if (wcscmp(name, PROP_NAME_SCHEMA) == 0)
         return false;
 
     return false;
@@ -363,6 +368,8 @@ FdoString* OgrConnection::GetLocalizedName(FdoString* name)
         return L"DataSource";
     else if (wcscmp(name, PROP_NAME_READONLY) == 0)
         return L"ReadOnly";
+    else if (wcscmp(name, PROP_NAME_SCHEMA) == 0)
+        return L"DefaultSchemaName";
 
     return NULL;
 }
@@ -384,8 +391,19 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
     {
         if (m_poDS)
         {
+            //Use the configured DefaultSchemaName, otherwise fall back to the default value (OGRSchema)
+            //if this is not set
+            FdoString* schemaName = GetPropertyDefault(PROP_NAME_SCHEMA);
+            if (m_mProps->find(PROP_NAME_SCHEMA) != m_mProps->end())
+            {
+                //Only accept this value if it is not an empty string
+                FdoString* sn = GetProperty(PROP_NAME_SCHEMA);
+                if (wcslen(sn) > 0)
+                    schemaName = sn;
+            }
+
             m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
-            FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"OGRSchema", L"");
+            FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(schemaName, L"");
             
             m_pSchema->Add(schema.p);
             

@@ -225,3 +225,26 @@ void ConnectTests::TestCase_ReadOnlyCaps()
         TestCommonFail(ex);
     }
 }
+
+void ConnectTests::TestCase_CustomDefaultSchema()
+{
+    try
+    {
+        FdoString* schemaName = L"DefaultSchema";
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab", true, schemaName);
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoIDescribeSchema> describe = static_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute();
+        CPPUNIT_ASSERT(1 == schemas->GetCount());
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(0);
+        CPPUNIT_ASSERT(0 == wcscmp(schemaName, schema->GetName()));
+
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
