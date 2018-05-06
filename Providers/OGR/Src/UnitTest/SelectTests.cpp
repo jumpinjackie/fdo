@@ -609,8 +609,7 @@ void SelectTests::TestCase_SelectBadReaderProperties()
         selectCmd->SetFeatureClassName(L"World_Countries");
 
         FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
-        FdoInt32 count = 0;
-        while (reader->ReadNext())
+        if (reader->ReadNext())
         {
             try
             {
@@ -622,10 +621,19 @@ void SelectTests::TestCase_SelectBadReaderProperties()
                 FDO_SAFE_RELEASE(ex);
                 CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
             }
-            count++;
+
+            try
+            {
+                reader->GetString(L"Foobar");
+                CPPUNIT_FAIL("Reader should've thrown");
+            }
+            catch (FdoCommandException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+            }
         }
         reader->Close();
-        CPPUNIT_ASSERT_MESSAGE("Expected 419 features", 419 == count);
         conn->Close();
     }
     catch (FdoException* ex)
@@ -646,8 +654,7 @@ void SelectTests::TestCase_SelectAggregateBadReaderProperties()
         selectCmd->SetFeatureClassName(L"World_Countries");
 
         FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
-        FdoInt32 count = 0;
-        while (reader->ReadNext())
+        if (reader->ReadNext())
         {
             try
             {
@@ -659,10 +666,20 @@ void SelectTests::TestCase_SelectAggregateBadReaderProperties()
                 FDO_SAFE_RELEASE(ex);
                 CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
             }
-            count++;
+
+            try
+            {
+                reader->GetString(L"Foobar");
+                CPPUNIT_FAIL("Reader should've thrown");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg == L"The property 'Foobar' was not found. ");
+            }
         }
         reader->Close();
-        CPPUNIT_ASSERT_MESSAGE("Expected 419 features", 419 == count);
         conn->Close();
     }
     catch (FdoException* ex)

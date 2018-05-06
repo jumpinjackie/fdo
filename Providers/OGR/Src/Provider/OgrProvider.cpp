@@ -1148,14 +1148,16 @@ FdoDateTime OgrFeatureReader::GetDateTime(FdoString* propertyName)
     
     int index = m_poFeature->GetFieldIndex(mbpropertyName);
     m_poFeature->GetFieldAsDateTime(index, &yr, &mt, &dy, &hr, &mn, &sc, &tz);
-    
+    CHECK_CPL_ERROR(FdoCommandException);
     return FdoDateTime(yr, mt, dy, hr, mn, (sc==-1) ? 0.0f: (float)sc);
 }
 
 double OgrFeatureReader::GetDouble(FdoString* propertyName)
 {
     W2A_PROPNAME(propertyName);
-    return m_poFeature->GetFieldAsDouble(mbpropertyName);
+    double ret = m_poFeature->GetFieldAsDouble(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 FdoInt16 OgrFeatureReader::GetInt16(FdoString* propertyName)
@@ -1173,7 +1175,9 @@ FdoInt32 OgrFeatureReader::GetInt32(FdoString* propertyName)
          || strcmp(id, mbpropertyName) == 0)
         return m_poFeature->GetFID();
      
-    return m_poFeature->GetFieldAsInteger(mbpropertyName);
+    FdoInt32 ret = m_poFeature->GetFieldAsInteger(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 FdoInt64 OgrFeatureReader::GetInt64(FdoString* propertyName)
@@ -1189,7 +1193,9 @@ FdoInt64 OgrFeatureReader::GetInt64(FdoString* propertyName)
         || strcmp(id, mbpropertyName) == 0)
         return m_poFeature->GetFID();
 
-    return m_poFeature->GetFieldAsInteger64(mbpropertyName);
+    FdoInt64 ret = m_poFeature->GetFieldAsInteger64(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 #endif
 }
 
@@ -1202,7 +1208,7 @@ FdoString* OgrFeatureReader::GetString(FdoString* propertyName)
 {
     W2A_PROPNAME(propertyName);
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
-    
+    CHECK_CPL_ERROR(FdoCommandException);
     m_sprops[(long)val] = A2W_SLOW(val);
     return m_sprops[(long)val].c_str();
 }
@@ -1279,7 +1285,9 @@ const FdoByte* OgrFeatureReader::GetGeometry(OGRGeometry* geom, FdoInt32* len)
 
 const FdoByte* OgrFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
 {
-    return this->GetGeometry(m_poFeature->GetGeometryRef(), len);
+    OGRGeometry* geomRef = m_poFeature->GetGeometryRef();
+    CHECK_CPL_ERROR(FdoCommandException);
+    return this->GetGeometry(geomRef, len);
 }
 
 FdoIRaster* OgrFeatureReader::GetRaster(FdoString* propertyName)
@@ -1301,6 +1309,7 @@ bool OgrFeatureReader::ReadNext()
         //OGR uses envelope intersection testing only, this breaks tooltips and selection
         //If the actual selection was not for envelope intersection, the geometry filtering is done here instead
         if (m_geomFilter != NULL)
+        {
             while (m_poFeature != NULL && m_poFeature->GetGeometryRef() != NULL)
             {
                 FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
@@ -1318,7 +1327,7 @@ bool OgrFeatureReader::ReadNext()
                     m_poFeature = m_poLayer->GetNextFeature();
                 }
             }
-
+        }
         return (m_poFeature != NULL);
     }
     catch(...)
@@ -1457,7 +1466,9 @@ FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
     W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
-    return m_poFeature->GetFieldIndex(mbpropertyName);
+    FdoInt32 ret = m_poFeature->GetFieldIndex(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 FdoDataType OgrDataReader::GetDataType(FdoString* propertyName)
@@ -1514,7 +1525,7 @@ FdoDateTime OgrDataReader::GetDateTime(FdoString* propertyName)
     
     int index = m_poFeature->GetFieldIndex(mbpropertyName);
     m_poFeature->GetFieldAsDateTime(index, &yr, &mt, &dy, &hr, &mn, &sc, &tz);
-    
+    CHECK_CPL_ERROR(FdoCommandException);
     return FdoDateTime(yr, mt, dy, hr, mn, (sc==-1) ? 0.0f: (float)sc);
 }
 
@@ -1523,7 +1534,9 @@ double OgrDataReader::GetDouble(FdoString* propertyName)
     W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
-    return m_poFeature->GetFieldAsDouble(mbpropertyName);
+    double ret = m_poFeature->GetFieldAsDouble(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 FdoInt16 OgrDataReader::GetInt16(FdoString* propertyName)
@@ -1536,7 +1549,9 @@ FdoInt32 OgrDataReader::GetInt32(FdoString* propertyName)
     W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
-    return m_poFeature->GetFieldAsInteger(mbpropertyName);
+    FdoInt32 ret = m_poFeature->GetFieldAsInteger(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 FdoInt64 OgrDataReader::GetInt64(FdoString* propertyName)
@@ -1547,7 +1562,9 @@ FdoInt64 OgrDataReader::GetInt64(FdoString* propertyName)
     W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
-    return m_poFeature->GetFieldAsInteger(mbpropertyName);
+    FdoInt64 ret = m_poFeature->GetFieldAsInteger(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
+    return ret;
 }
 
 float OgrDataReader::GetSingle(FdoString* propertyName)
@@ -1561,6 +1578,7 @@ FdoString* OgrDataReader::GetString(FdoString* propertyName)
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
+    CHECK_CPL_ERROR(FdoCommandException);
     
     m_sprops[(long)val] = A2W_SLOW(val);
     return m_sprops[(long)val].c_str();
