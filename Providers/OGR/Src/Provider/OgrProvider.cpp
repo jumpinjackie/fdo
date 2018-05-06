@@ -443,6 +443,13 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     tilde2dot(mbfc);
     
     OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
+    if (NULL == layer)
+    {
+        FdoStringP msg = "Class not found: ";
+        msg += fc;
+        throw FdoCommandException::Create(msg);
+    }
+
     //In case this layer was queried previously, we need to reset the internal iterator
     layer->ResetReading();
 
@@ -662,6 +669,13 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
 
     // Get other relevant info:
     OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
+    if (NULL == layer)
+    {
+        FdoStringP msg = "Class not found: ";
+        msg += fc;
+        throw FdoCommandException::Create(msg);
+    }
+
     //In case this layer was queried previously, we need to reset the internal iterator
     layer->ResetReading();
     FdoPtr<FdoClassDefinition> originalClassDef = OgrFdoUtil::ConvertClass(this, layer);

@@ -405,3 +405,47 @@ void SelectTests::TestCase_SelectMixedAttributeAndSpatialFilter()
         TestCommonFail(ex);
     }
 }
+
+void SelectTests::TestCase_SelectWithBadClassName()
+{
+    FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+    FdoConnectionState state = conn->Open();
+    CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+    FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+    selectCmd->SetFeatureClassName(L"World_C");
+
+    try 
+    {
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        CPPUNIT_FAIL("Execpted select to throw");
+    }
+    catch (FdoException* ex) 
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+}
+
+void SelectTests::TestCase_SelectAggregatesWithBadClassName()
+{
+    FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+    FdoConnectionState state = conn->Open();
+    CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+    FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+    selectCmd->SetFeatureClassName(L"World_C");
+
+    try
+    {
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        CPPUNIT_FAIL("Execpted select to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+}
