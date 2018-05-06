@@ -7,6 +7,7 @@
 #define LOCATION_SOURCE     L"../../TestData/World_Countries_SHP"
 #define LOCATION_ALL        L"../../TestData/TestDeleteAll"
 #define LOCATION_FILTERED   L"../../TestData/TestDeleteFilter"
+#define LOCATION_BAD        L"../../TestData/TestDeleteBadClassName"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (DeleteTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (DeleteTests, "DeleteTests");
@@ -23,19 +24,20 @@ DeleteTests::~DeleteTests()
 
 void DeleteTests::TestCase_DeleteFiltered()
 {
-    if (FdoCommonFile::FileExists(LOCATION_FILTERED))
-        FdoCommonFile::RmDir(LOCATION_FILTERED);
+    FdoString* dir = LOCATION_FILTERED;
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
 
-    if (!FdoCommonFile::FileExists(LOCATION_FILTERED))
-        FdoCommonFile::MkDir(LOCATION_FILTERED);
+    if (!FdoCommonFile::FileExists(dir))
+        FdoCommonFile::MkDir(dir);
 
-    CopySourceFilesTo(LOCATION_FILTERED);
+    CopySourceFilesTo(dir);
 
     FdoPtr<FdoIConnection> conn;
     
     try
     {
-        conn = UnitTestUtil::CreateOgrConnection(LOCATION_FILTERED, true);
+        conn = UnitTestUtil::CreateOgrConnection(dir, true);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
         FdoPtr<FdoIDelete> deleteCmd = static_cast<FdoIDelete*>(conn->CreateCommand(FdoCommandType_Delete));
         deleteCmd->SetFeatureClassName(L"World_Countries");
@@ -55,7 +57,7 @@ void DeleteTests::TestCase_DeleteFiltered()
 
     try
     {
-        conn = UnitTestUtil::CreateOgrConnection(LOCATION_FILTERED, false);
+        conn = UnitTestUtil::CreateOgrConnection(dir, false);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
         FdoPtr<FdoIDelete> deleteCmd = static_cast<FdoIDelete*>(conn->CreateCommand(FdoCommandType_Delete));
         deleteCmd->SetFeatureClassName(L"World_Countries");
@@ -84,24 +86,25 @@ void DeleteTests::TestCase_DeleteFiltered()
     if (NULL != conn.p)
         conn->Close();
 
-    if (FdoCommonFile::FileExists(LOCATION_FILTERED))
-        FdoCommonFile::RmDir(LOCATION_FILTERED);
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
 }
 
 void DeleteTests::TestCase_DeleteAll()
 {
-    if (FdoCommonFile::FileExists(LOCATION_ALL))
-        FdoCommonFile::RmDir(LOCATION_ALL);
+    FdoString* dir = LOCATION_ALL;
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
 
-    if (!FdoCommonFile::FileExists(LOCATION_ALL))
-        FdoCommonFile::MkDir(LOCATION_ALL);
+    if (!FdoCommonFile::FileExists(dir))
+        FdoCommonFile::MkDir(dir);
 
-    CopySourceFilesTo(LOCATION_ALL);
+    CopySourceFilesTo(dir);
 
     FdoPtr<FdoIConnection> conn;
     try
     {
-        conn = UnitTestUtil::CreateOgrConnection(LOCATION_ALL, true);
+        conn = UnitTestUtil::CreateOgrConnection(dir, true);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
         FdoPtr<FdoIDelete> deleteCmd = static_cast<FdoIDelete*>(conn->CreateCommand(FdoCommandType_Delete));
         deleteCmd->SetFeatureClassName(L"World_Countries");
@@ -120,7 +123,7 @@ void DeleteTests::TestCase_DeleteAll()
 
     try
     {
-        conn = UnitTestUtil::CreateOgrConnection(LOCATION_ALL, false);
+        conn = UnitTestUtil::CreateOgrConnection(dir, false);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
         
         FdoPtr<FdoISelect> countCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
@@ -155,11 +158,47 @@ void DeleteTests::TestCase_DeleteAll()
     if (NULL != conn.p)
         conn->Close();
 
-    if (FdoCommonFile::FileExists(LOCATION_ALL))
-        FdoCommonFile::RmDir(LOCATION_ALL);
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
 }
 
-void DeleteTests::CopySourceFilesTo(FdoString* dir)
+void DeleteTests::TestCase_DeleteBadClassName()
+{
+    FdoString* dir = LOCATION_BAD;
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
+
+    if (!FdoCommonFile::FileExists(dir))
+        FdoCommonFile::MkDir(dir);
+
+    CopySourceFilesTo(dir);
+
+    FdoPtr<FdoIConnection> conn;
+    try
+    {
+        conn = UnitTestUtil::CreateOgrConnection(dir, false);
+        CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
+        FdoPtr<FdoIDelete> deleteCmd = static_cast<FdoIDelete*>(conn->CreateCommand(FdoCommandType_Delete));
+        deleteCmd->SetFeatureClassName(L"World_C");
+
+        FdoInt32 deleted = deleteCmd->Execute();
+        CPPUNIT_FAIL("Delete should fail because ReadOnly = true");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+
+    if (NULL != conn.p)
+        conn->Close();
+
+    if (FdoCommonFile::FileExists(dir))
+        FdoCommonFile::RmDir(dir);
+}
+
+void DeleteTests::CopySourceFilesTo(const wchar_t* dir)
 {
     FdoPtr<FdoStringCollection> fileNames = FdoStringCollection::Create();
     fileNames->Add(L"World_Countries.cpg");

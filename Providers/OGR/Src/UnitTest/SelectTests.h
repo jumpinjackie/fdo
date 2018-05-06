@@ -14,6 +14,15 @@ class SelectTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_SelectAggregateSpatialExtent);
     CPPUNIT_TEST(TestCase_SelectMixedAttributeAndSpatialFilter);
     CPPUNIT_TEST(TestCase_EvalQuotedIdentifier);
+    CPPUNIT_TEST(TestCase_SelectWithBadClassName);
+    CPPUNIT_TEST(TestCase_SelectAggregatesWithBadClassName);
+    CPPUNIT_TEST(TestCase_SelectWithBadPropertyNames);
+    CPPUNIT_TEST(TestCase_SelectWithComputedPropertiesReferencingBadPropertyNames);
+    CPPUNIT_TEST(TestCase_SelectAggregateWithBadPropertyNames);
+    CPPUNIT_TEST(TestCase_SelectAggregateWithBadSpatialExtentExpr);
+    CPPUNIT_TEST(TestCase_SelectAggregateWithBadCountExpr);
+    CPPUNIT_TEST(TestCase_SelectBadReaderProperties);
+    CPPUNIT_TEST(TestCase_SelectAggregateBadReaderProperties);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,6 +36,16 @@ public:
     void TestCase_SelectAggregateDistinct();
     void TestCase_SelectAggregateSpatialExtent();
     void TestCase_SelectMixedAttributeAndSpatialFilter();
+
+    void TestCase_SelectWithBadClassName();
+    void TestCase_SelectAggregatesWithBadClassName();
+    void TestCase_SelectWithBadPropertyNames();
+    void TestCase_SelectWithComputedPropertiesReferencingBadPropertyNames();
+    void TestCase_SelectAggregateWithBadPropertyNames();
+    void TestCase_SelectAggregateWithBadSpatialExtentExpr();
+    void TestCase_SelectAggregateWithBadCountExpr();
+    void TestCase_SelectBadReaderProperties();
+    void TestCase_SelectAggregateBadReaderProperties();
 
     // Test case for: https://trac.osgeo.org/fdo/ticket/946
     // NOTE: Nothing wrong with the OGR provider, the test relates to the expression engine

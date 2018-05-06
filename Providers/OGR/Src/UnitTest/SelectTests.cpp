@@ -405,3 +405,285 @@ void SelectTests::TestCase_SelectMixedAttributeAndSpatialFilter()
         TestCommonFail(ex);
     }
 }
+
+void SelectTests::TestCase_SelectWithBadClassName()
+{
+    try 
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_C");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Execpted select to throw");
+    }
+    catch (FdoException* ex) 
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+}
+
+void SelectTests::TestCase_SelectAggregatesWithBadClassName()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_C");
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Execpted select to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+}
+
+void SelectTests::TestCase_SelectWithBadPropertyNames()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIdentifierCollection> propNames = selectCmd->GetPropertyNames();
+
+        FdoPtr<FdoIdentifier> prop1 = FdoIdentifier::Create(L"Foobar");;
+        propNames->Add(prop1);
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected this to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Property not found: Foobar");
+    }
+}
+
+void SelectTests::TestCase_SelectWithComputedPropertiesReferencingBadPropertyNames()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIdentifierCollection> propNames = selectCmd->GetPropertyNames();
+
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse(L"Area2D(Geom)");
+
+        FdoPtr<FdoComputedIdentifier> comp = FdoComputedIdentifier::Create(L"AREA", expr);
+
+        propNames->Add(comp);
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected this to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Property not found: Geom");
+    }
+}
+
+void SelectTests::TestCase_SelectAggregateWithBadPropertyNames()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIdentifierCollection> propNames = selectCmd->GetPropertyNames();
+
+        FdoPtr<FdoIdentifier> prop1 = FdoIdentifier::Create(L"Foobar");;
+        propNames->Add(prop1);
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected this to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Property not found: Foobar");
+    }
+}
+
+void SelectTests::TestCase_SelectAggregateWithBadSpatialExtentExpr()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoExpression> expr1 = FdoExpression::Parse(L"SpatialExtents(Geom)");
+        FdoPtr<FdoComputedIdentifier> comp1 = FdoComputedIdentifier::Create(L"EXTENTS", expr1);
+
+        FdoPtr<FdoIdentifierCollection> propNames = selectCmd->GetPropertyNames();
+        propNames->Add(comp1);
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected this to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Property not found: Geom");
+    }
+}
+
+void SelectTests::TestCase_SelectAggregateWithBadCountExpr()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoExpression> expr1 = FdoExpression::Parse(L"Count(IDontExist)");
+        FdoPtr<FdoComputedIdentifier> comp1 = FdoComputedIdentifier::Create(L"TOTAL_COUNT", expr1);
+
+        FdoPtr<FdoIdentifierCollection> propNames = selectCmd->GetPropertyNames();
+        propNames->Add(comp1);
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected this to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Property not found: IDontExist");
+    }
+}
+
+void SelectTests::TestCase_SelectBadReaderProperties()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        if (reader->ReadNext())
+        {
+            try
+            {
+                reader->GetPropertyIndex(L"IDontExist");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'IDontExist' was not found."));
+            }
+
+            try
+            {
+                reader->GetString(L"Foobar");
+                CPPUNIT_FAIL("Reader should've thrown");
+            }
+            catch (FdoCommandException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+            }
+        }
+        reader->Close();
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
+
+void SelectTests::TestCase_SelectAggregateBadReaderProperties()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        if (reader->ReadNext())
+        {
+            try
+            {
+                reader->GetDataType(L"IDontExist");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'IDontExist' was not found."));
+            }
+
+            try
+            {
+                reader->GetString(L"Foobar");
+                CPPUNIT_FAIL("Reader should've thrown");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'Foobar' was not found."));
+            }
+        }
+        reader->Close();
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}

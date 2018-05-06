@@ -437,11 +437,11 @@ public:
     OGR_API virtual FdoFunctionDefinitionCollection* GetFunctions()
     {
         if (NULL == m_supportedFunctions)
-	    {
+        {
             m_supportedFunctions = FdoExpressionEngine::GetStandardFunctions();
-	    }
+        }
 
-	    return FDO_SAFE_ADDREF(m_supportedFunctions.p);
+        return FDO_SAFE_ADDREF(m_supportedFunctions.p);
     }
 
     //-------------------------------------------------------
@@ -570,6 +570,8 @@ public:
     FdoInt32 Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals);
     FdoInt32 Delete(FdoIdentifier* fcname, FdoFilter* filter);
     FdoIFeatureReader* Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals);
+
+    OGRLayer* GetLayerByName(FdoString* className, const char* layerName, bool reset);
 
 #if GDAL_VERSION_MAJOR < 2
     OGRDataSource* GetOGRDataSource() { return m_poDS; }

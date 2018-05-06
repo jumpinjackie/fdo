@@ -8,6 +8,7 @@ class UpdateTests : public CppUnit::TestCase
     CPPUNIT_TEST_SUITE(UpdateTests);
     CPPUNIT_TEST(TestCase_Update);
     CPPUNIT_TEST(TestCase_UpdateReadOnly);
+    CPPUNIT_TEST(TestCase_UpdateBadClassName);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -16,6 +17,10 @@ public:
 
     void TestCase_Update();
     void TestCase_UpdateReadOnly();
+    void TestCase_UpdateBadClassName();
+
+private:
+    void CopySourceFilesTo(const wchar_t* dir);
 };
 
 #endif //UPDATE_TESTS_H
