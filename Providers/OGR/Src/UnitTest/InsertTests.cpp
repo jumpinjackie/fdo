@@ -7,6 +7,7 @@
 #define LOCATION_SOURCE     L"../../TestData/World_Countries_SHP"
 #define LOCATION_INSERT     L"../../TestData/TestInsert"
 #define LOCATION_INSERT_RO  L"../../TestData/TestInsertReadOnly"
+#define LOCATION_INSERT_BAD L"../../TestData/TestInsertBadClassNames"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (InsertTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (InsertTests, "InsertTests");
@@ -21,18 +22,17 @@ InsertTests::~InsertTests()
 
 void InsertTests::TestCase_Insert()
 {
+    if (FdoCommonFile::FileExists(LOCATION_INSERT))
+        FdoCommonFile::RmDir(LOCATION_INSERT);
+
+    if (!FdoCommonFile::FileExists(LOCATION_INSERT))
+        FdoCommonFile::MkDir(LOCATION_INSERT);
+
+    CopySourceFilesTo(LOCATION_INSERT);
+
     FdoPtr<FdoIConnection> conn;
     try
     {
-        FdoPtr<FdoStringCollection> fileNames = FdoStringCollection::Create();
-        fileNames->Add(L"World_Countries.cpg");
-        fileNames->Add(L"World_Countries.dbf");
-        fileNames->Add(L"World_Countries.idx");
-        fileNames->Add(L"World_Countries.shp");
-        fileNames->Add(L"World_Countries.shx");
-
-        UnitTestUtil::CopySourceFilesTo(LOCATION_SOURCE, LOCATION_INSERT, fileNames);
-
         conn = UnitTestUtil::CreateOgrConnection(LOCATION_INSERT, false);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
 
@@ -96,22 +96,78 @@ void InsertTests::TestCase_Insert()
 
     if (NULL != conn.p)
         conn->Close();
+
+    if (FdoCommonFile::FileExists(LOCATION_INSERT))
+        FdoCommonFile::RmDir(LOCATION_INSERT);
+}
+
+void InsertTests::TestCase_InsertBadClassName()
+{
+    if (FdoCommonFile::FileExists(LOCATION_INSERT_BAD))
+        FdoCommonFile::RmDir(LOCATION_INSERT_BAD);
+
+    if (!FdoCommonFile::FileExists(LOCATION_INSERT_BAD))
+        FdoCommonFile::MkDir(LOCATION_INSERT_BAD);
+
+    CopySourceFilesTo(LOCATION_INSERT_BAD);
+
+    FdoPtr<FdoIConnection> conn;
+    try
+    {
+        conn = UnitTestUtil::CreateOgrConnection(LOCATION_INSERT_BAD, false);
+        CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
+
+        FdoPtr<FdoIInsert> insertCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        insertCmd->SetFeatureClassName(L"World_C");
+
+        FdoPtr<FdoFgfGeometryFactory> geomFact = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIGeometry> geometry = geomFact->CreateGeometry(L"POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))");
+        FdoPtr<FdoByteArray> fgf = geomFact->GetFgf(geometry);
+
+        FdoPtr<FdoPropertyValueCollection> propVals = insertCmd->GetPropertyValues();
+        FdoPtr<FdoStringValue> key = FdoStringValue::Create(L"TEST1");
+        FdoPtr<FdoStringValue> name = FdoStringValue::Create(L"Test Country");
+        FdoPtr<FdoGeometryValue> geom = FdoGeometryValue::Create(fgf);
+
+        FdoPtr<FdoPropertyValue> pKey = FdoPropertyValue::Create(L"KEY", key);
+        FdoPtr<FdoPropertyValue> pName = FdoPropertyValue::Create(L"NAME", name);
+        FdoPtr<FdoPropertyValue> pGeom = FdoPropertyValue::Create(L"GEOMETRY", geom);
+
+        propVals->Add(pKey);
+        propVals->Add(pName);
+        propVals->Add(pGeom);
+
+        FdoPtr<FdoIFeatureReader> reader = insertCmd->Execute();
+        reader->Close();
+        CPPUNIT_FAIL("Expected insert to throw");
+    }
+    catch (FdoException* ex)
+    {
+        FdoStringP msg = ex->GetExceptionMessage();
+        FDO_SAFE_RELEASE(ex);
+        CPPUNIT_ASSERT(msg == L"Class not found: World_C");
+    }
+
+    if (NULL != conn.p)
+        conn->Close();
+
+    if (FdoCommonFile::FileExists(LOCATION_INSERT_BAD))
+        FdoCommonFile::RmDir(LOCATION_INSERT_BAD);
 }
 
 void InsertTests::TestCase_InsertReadOnly()
 {
+    if (FdoCommonFile::FileExists(LOCATION_INSERT_RO))
+        FdoCommonFile::RmDir(LOCATION_INSERT_RO);
+
+    if (!FdoCommonFile::FileExists(LOCATION_INSERT_RO))
+        FdoCommonFile::MkDir(LOCATION_INSERT_RO);
+
+    CopySourceFilesTo(LOCATION_INSERT_RO);
+
     FdoPtr<FdoIConnection> conn;
     try
     {
-        FdoPtr<FdoStringCollection> fileNames = FdoStringCollection::Create();
-        fileNames->Add(L"World_Countries.cpg");
-        fileNames->Add(L"World_Countries.dbf");
-        fileNames->Add(L"World_Countries.idx");
-        fileNames->Add(L"World_Countries.shp");
-        fileNames->Add(L"World_Countries.shx");
-
-        UnitTestUtil::CopySourceFilesTo(LOCATION_SOURCE, LOCATION_INSERT_RO, fileNames);
-
         conn = UnitTestUtil::CreateOgrConnection(LOCATION_INSERT_RO, true);
         CPPUNIT_ASSERT_MESSAGE("Expected open connection state", conn->Open() == FdoConnectionState_Open);
 
@@ -152,4 +208,18 @@ void InsertTests::TestCase_InsertReadOnly()
         if (NULL != conn.p)
             conn->Close();
     }
+
+    if (FdoCommonFile::FileExists(LOCATION_INSERT_RO))
+        FdoCommonFile::RmDir(LOCATION_INSERT_RO);
+}
+
+void InsertTests::CopySourceFilesTo(const wchar_t* dir)
+{
+    FdoPtr<FdoStringCollection> fileNames = FdoStringCollection::Create();
+    fileNames->Add(L"World_Countries.cpg");
+    fileNames->Add(L"World_Countries.dbf");
+    fileNames->Add(L"World_Countries.idx");
+    fileNames->Add(L"World_Countries.shp");
+    fileNames->Add(L"World_Countries.shx");
+    UnitTestUtil::CopySourceFilesTo(LOCATION_SOURCE, dir, fileNames);
 }
