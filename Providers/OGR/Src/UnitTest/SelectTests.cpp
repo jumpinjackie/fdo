@@ -619,7 +619,7 @@ void SelectTests::TestCase_SelectBadReaderProperties()
             {
                 FdoStringP msg = ex->GetExceptionMessage();
                 FDO_SAFE_RELEASE(ex);
-                CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'IDontExist' was not found."));
             }
 
             try
@@ -664,7 +664,7 @@ void SelectTests::TestCase_SelectAggregateBadReaderProperties()
             {
                 FdoStringP msg = ex->GetExceptionMessage();
                 FDO_SAFE_RELEASE(ex);
-                CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'IDontExist' was not found."));
             }
 
             try
@@ -676,7 +676,7 @@ void SelectTests::TestCase_SelectAggregateBadReaderProperties()
             {
                 FdoStringP msg = ex->GetExceptionMessage();
                 FDO_SAFE_RELEASE(ex);
-                CPPUNIT_ASSERT(msg == L"The property 'Foobar' was not found. ");
+                CPPUNIT_ASSERT(msg.Contains(L"The property 'Foobar' was not found."));
             }
         }
         reader->Close();
