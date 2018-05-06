@@ -596,3 +596,77 @@ void SelectTests::TestCase_SelectAggregateWithBadCountExpr()
         CPPUNIT_ASSERT(msg == L"Property not found: IDontExist");
     }
 }
+
+void SelectTests::TestCase_SelectBadReaderProperties()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        FdoInt32 count = 0;
+        while (reader->ReadNext())
+        {
+            try
+            {
+                reader->GetPropertyIndex(L"IDontExist");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
+            }
+            count++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Expected 419 features", 419 == count);
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
+
+void SelectTests::TestCase_SelectAggregateBadReaderProperties()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/World_Countries/World_Countries.tab");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selectCmd->SetFeatureClassName(L"World_Countries");
+
+        FdoPtr<FdoIDataReader> reader = selectCmd->Execute();
+        FdoInt32 count = 0;
+        while (reader->ReadNext())
+        {
+            try
+            {
+                reader->GetDataType(L"IDontExist");
+            }
+            catch (FdoException* ex)
+            {
+                FdoStringP msg = ex->GetExceptionMessage();
+                FDO_SAFE_RELEASE(ex);
+                CPPUNIT_ASSERT(msg == L"The property 'IDontExist' was not found. ");
+            }
+            count++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Expected 419 features", 419 == count);
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}

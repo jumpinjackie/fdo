@@ -21,6 +21,8 @@ class SelectTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_SelectAggregateWithBadPropertyNames);
     CPPUNIT_TEST(TestCase_SelectAggregateWithBadSpatialExtentExpr);
     CPPUNIT_TEST(TestCase_SelectAggregateWithBadCountExpr);
+    CPPUNIT_TEST(TestCase_SelectBadReaderProperties);
+    CPPUNIT_TEST(TestCase_SelectAggregateBadReaderProperties);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +44,8 @@ public:
     void TestCase_SelectAggregateWithBadPropertyNames();
     void TestCase_SelectAggregateWithBadSpatialExtentExpr();
     void TestCase_SelectAggregateWithBadCountExpr();
+    void TestCase_SelectBadReaderProperties();
+    void TestCase_SelectAggregateBadReaderProperties();
 
     // Test case for: https://trac.osgeo.org/fdo/ticket/946
     // NOTE: Nothing wrong with the OGR provider, the test relates to the expression engine
