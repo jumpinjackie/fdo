@@ -1351,20 +1351,39 @@ FdoDataType OgrFeatureReader::GetDataType( FdoString* propertyName )
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
     
-    OGRFieldDefn* field = fdefn->GetFieldDefn(fdefn->GetFieldIndex(mbpropertyName));
+    int fi = fdefn->GetFieldIndex(mbpropertyName);
+    OGRFieldDefn* field = fdefn->GetFieldDefn(fi);
+
+    if (NULL == field)
+    {
+        FdoStringP msg = L"OGR Field not found: ";
+        msg += A2W_SLOW(mbpropertyName).c_str();
+        throw FdoCommandException::Create(msg);
+    }
     
     FdoDataType dt = (FdoDataType)-1;
     OGRFieldType etype = field->GetType();
  
     switch (etype)
     {
-        case OFTInteger: dt = FdoDataType_Int32;break;
-        case OFTString: dt = FdoDataType_String;break;
-        case OFTWideString: dt = FdoDataType_String;break;
-        case OFTReal: dt = FdoDataType_Double;break;
-        case OFTDate:
-        case OFTTime:
-        case OFTDateTime: dt = FdoDataType_DateTime; break;
+#if GDAL_VERSION_MAJOR < 2
+    case OFTInteger: dt = FdoDataType_Int32; break;
+    case OFTString: dt = FdoDataType_String; break;
+    case OFTWideString: dt = FdoDataType_String; break;
+    case OFTReal: dt = FdoDataType_Double; break;
+    case OFTDate:
+    case OFTTime:
+    case OFTDateTime: dt = FdoDataType_DateTime; break;
+#else
+    case OFTInteger: dt = FdoDataType_Int32; break;
+    case OFTString: dt = FdoDataType_String; break;
+    case OFTWideString: dt = FdoDataType_String; break;
+    case OFTReal: dt = FdoDataType_Double; break;
+    case OFTDate:
+    case OFTTime:
+    case OFTDateTime: dt = FdoDataType_DateTime; break;
+    case OFTInteger64: dt = FdoDataType_Int64; break; //New in GDAL 2.0
+#endif
         default: break; //unknown property type
     }
     
@@ -1478,18 +1497,34 @@ FdoDataType OgrDataReader::GetDataType(FdoString* propertyName)
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
     
-    OGRFieldDefn* field = fdefn->GetFieldDefn(fdefn->GetFieldIndex(mbpropertyName));
-    
+    int fi = fdefn->GetFieldIndex(mbpropertyName);
+    OGRFieldDefn* field = fdefn->GetFieldDefn(fi);
+
+    if (NULL == field)
+    {
+        FdoStringP msg = L"OGR Field not found: ";
+        msg += A2W_SLOW(mbpropertyName).c_str();
+        throw FdoCommandException::Create(msg);
+    }
+
     FdoDataType dt = (FdoDataType)-1;
     OGRFieldType etype = field->GetType();
  
     switch (etype)
     {
-        case OFTInteger: dt = FdoDataType_Int32;break;
-        case OFTString: dt = FdoDataType_String;break;
-        case OFTWideString: dt = FdoDataType_String;break;
-        case OFTReal: dt = FdoDataType_Double;break;
-        default: break; //unknown property type
+#if GDAL_VERSION_MAJOR < 2
+    case OFTInteger: dt = FdoDataType_Int32; break;
+    case OFTString: dt = FdoDataType_String; break;
+    case OFTWideString: dt = FdoDataType_String; break;
+    case OFTReal: dt = FdoDataType_Double; break;
+#else
+    case OFTInteger: dt = FdoDataType_Int32; break;
+    case OFTString: dt = FdoDataType_String; break;
+    case OFTWideString: dt = FdoDataType_String; break;
+    case OFTReal: dt = FdoDataType_Double; break;
+    case OFTInteger64: dt = FdoDataType_Int64; break; //New in GDAL 2.0
+#endif
+    default: break; //unknown property type
     }
     
     return dt;
