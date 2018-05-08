@@ -1446,6 +1446,7 @@ OgrDataReader::OgrDataReader(OgrConnection* conn, OGRLayer* layer, FdoIdentifier
                         sprintf(ogrname, "%s_%s", mbname.c_str(), mbpropname.c_str());
                         
                         m_namemap[cidname] = ogrname;
+                        m_propnames[i] = cidname;
                     }
                 }
             }
@@ -1473,10 +1474,11 @@ FdoString* OgrDataReader::GetPropertyName(FdoInt32 index)
 {
     if (m_propnames[index].empty())
     {
+        //NOTE: I'm certain we should not have to do this as m_propnames should already be pre-loaded in the ctor, and that if
+        //we do reach to this point it's probably a bug
         const char* name = m_poLayer->GetLayerDefn()->GetFieldDefn(index)->GetNameRef();
         m_propnames[index] = A2W_SLOW(name);
     }
-    
     return m_propnames[index].c_str();
 }
 

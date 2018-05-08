@@ -210,6 +210,13 @@ void SelectTests::TestCase_SelectAggregateCount()
         FdoExpressionEngineUtilDataReader* exprReader = dynamic_cast<FdoExpressionEngineUtilDataReader*>(reader.p);
         CPPUNIT_ASSERT_MESSAGE("Expected a plain data reader", NULL == exprReader);
         FdoInt64 total = 0L;
+
+        //Check property names
+        FdoInt32 count = reader->GetPropertyCount();
+        CPPUNIT_ASSERT(1 == count);
+        FdoStringP countPropName = reader->GetPropertyName(0);
+        CPPUNIT_ASSERT(countPropName == L"TOTAL_COUNT");
+
         while (reader->ReadNext())
         {
             total += reader->GetInt64(L"TOTAL_COUNT");
