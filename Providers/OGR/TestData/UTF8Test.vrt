@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<OGRVRTDataSource>
+  <OGRVRTLayer name="nøne_ascii">
+    <SrcDataSource relativeToVRT="1" shared="1">none_ascii/none_ascii.TAB</SrcDataSource>
+    <SrcLayer>none_ascii</SrcLayer>
+  </OGRVRTLayer>
+</OGRVRTDataSource>

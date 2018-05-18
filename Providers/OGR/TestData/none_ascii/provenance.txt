@@ -1,0 +1,3 @@
+This file was provided for testing the OGR Provider by Geograf A/S (http://geograf.dk/)
+
+This file was produced in MapInfo 17.0, feature data was manually created using Bing Maps as a backdrop using a street in Germany as a reference for unicode property names and attribute values.

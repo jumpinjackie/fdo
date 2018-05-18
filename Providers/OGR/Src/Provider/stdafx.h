@@ -47,29 +47,39 @@
 #define PROP_GEOMETRY       "GEOMETRY"
 #define PROP_FID            "FID"
 
-#define W2A_PROPNAME(x)  \
-    size_t wlen = wcslen(x); \
-    size_t clen = wlen*4 + 1; \
-    char* mb##x = (char*)alloca(clen); \
-    W2A_FAST(mb##x, clen, x, wlen);
+#define WCHAR_ENCODING CPL_ENC_UCS2
 
-static std::string W2A_SLOW(const wchar_t* input)
+#define W2A_PROPNAME(x) \
+    std::string sConv##x = W2A_SLOW(x); \
+    const char* mb##x = sConv##x.c_str();
+
+#define W2A_PROPNAME_FROM_ENCODING(x, encoding) \
+    std::string sConv##x = W2A_SLOW(x, encoding); \
+    const char* mb##x = sConv##x.c_str();
+
+#define W2A_PROPNAME_NAMEMAP(x)  \
+    std::string sConv##x; \
+    if (m_bUseNameMap) { \
+        sConv##x = (char*)m_namemap[x].c_str(); \
+    } else { \
+        sConv##x = W2A_SLOW(x); \
+    } \
+    const char* mb##x = sConv##x.c_str();
+
+static std::string W2A_SLOW(const wchar_t* input, const std::string& encoding = CPL_ENC_UTF8)
 {
-    size_t wlen = wcslen(input);
-    int mbslen = (int) wlen * 4 + 1;
-    char* mbs = (char*)alloca(mbslen);
-    //WideCharToMultiByte(CP_UTF8, 0, input, -1, mbs, mbslen, 0, 0);
-    _ut_utf8_from_unicode(input, wlen, mbs, mbslen);
-    return std::string(mbs);
+    char* conv = CPLRecodeFromWChar(input, WCHAR_ENCODING, encoding.c_str());
+    std::string sConv(conv);
+    CPLFree(conv);
+    return sConv;
 }
 
-static std::wstring A2W_SLOW(const char* input)
+static std::wstring A2W_SLOW(const char* input, const std::string& encoding = CPL_ENC_UTF8)
 {
-    int wlen = (int)strlen(input) + 1;
-    wchar_t* ws = (wchar_t*)alloca(sizeof(wchar_t)*wlen);
-    //MultiByteToWideChar(CP_UTF8, 0, input, -1, ws, wlen);
-    _ut_utf8_to_unicode(input, wlen, ws, wlen);
-    return std::wstring(ws);
+    wchar_t* ws = CPLRecodeToWChar(input, encoding.c_str(), WCHAR_ENCODING);
+    std::wstring wConv(ws);
+    CPLFree(ws);
+    return wConv;
 }
 
 static int A2W_FAST(wchar_t* dst, int wlen, const char* src, int clen)

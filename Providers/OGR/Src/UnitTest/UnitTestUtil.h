@@ -8,8 +8,7 @@
 class UnitTestUtil
 {
 public:
-    static FdoIConnection* CreateOgrConnection(FdoString* dataSource, FdoBoolean bReadOnly = true, FdoString* defaultSchema = NULL)
-    {
+    static FdoIConnection* CreateOgrConnection(FdoString* dataSource, FdoBoolean bReadOnly = true, FdoString* defaultSchema = NULL, FdoString* encoding = NULL)    {
         FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
         FdoPtr<FdoIConnection> conn = connMgr->CreateConnection(L"OSGeo.OGR");
 
@@ -18,6 +17,11 @@ public:
         if (NULL != dataSource)
             connDict->SetProperty(L"DataSource", dataSource);
         connDict->SetProperty(L"ReadOnly", bReadOnly ? L"TRUE" : L"FALSE");
+        
+        if (encoding) 
+        {
+            connDict->SetProperty(L"DataSourceEncoding", encoding);
+        }
 
         if (NULL != defaultSchema)
             connDict->SetProperty(L"DefaultSchemaName", defaultSchema);

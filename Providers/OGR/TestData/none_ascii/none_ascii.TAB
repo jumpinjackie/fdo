@@ -1,0 +1,14 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 2
+    Stadt Char (50) ;
+    Straﬂe Char (50) ;
+begin_metadata
+"\MapInfo" = ""
+"\MapInfo\TableID" = "a968212d-feb3-4a67-9837-b9112ed5ec93"
+"\IsReadOnly" = "FALSE"
+end_metadata

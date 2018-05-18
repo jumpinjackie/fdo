@@ -413,6 +413,126 @@ void SelectTests::TestCase_SelectMixedAttributeAndSpatialFilter()
     }
 }
 
+void SelectTests::TestCase_SelectAsciiNone()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/none_ascii/none_ascii.TAB", true, NULL, L"ISO-8859-1");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(L"none_ascii");
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        FdoPtr<FdoClassDefinition> clsDef = reader->GetClassDefinition();
+        FdoPtr<FdoPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
+
+        for (FdoInt32 i = 0; i < clsProps->GetCount(); i++)
+        {
+            FdoPtr<FdoPropertyDefinition> prop = clsProps->GetItem(i);
+            printf("Name: %S\n", prop->GetName());
+        }
+
+        FdoInt32 count = 0;
+        while (reader->ReadNext())
+        {
+            for (FdoInt32 i = 0; i < clsProps->GetCount(); i++)
+            {
+                FdoPtr<FdoPropertyDefinition> prop = clsProps->GetItem(i);
+                if (prop->GetPropertyType() == FdoPropertyType_DataProperty)
+                {
+                    FdoDataPropertyDefinition* dp = static_cast<FdoDataPropertyDefinition*>(prop.p);
+                    if (dp->GetDataType() == FdoDataType_String)
+                    {
+                        FdoString* name = dp->GetName();
+                        FdoString* value = reader->GetString(name);
+
+                        printf(" %S - %S\n", name, value);
+                    }
+                }
+            }
+            count++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 feature", 1 == count);
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
+
+void SelectTests::TestCase_SelectUtf8DataSourceName()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateOgrConnection(L"../../TestData/UTF8Test.vrt", true, NULL, L"ISO-8859-1");
+        FdoConnectionState state = conn->Open();
+        CPPUNIT_ASSERT_MESSAGE("Expected open state", state == FdoConnectionState_Open);
+
+        FdoPtr<FdoIGetSpatialContexts> fetchScs = static_cast<FdoIGetSpatialContexts*>(conn->CreateCommand(FdoCommandType_GetSpatialContexts));
+        FdoPtr<FdoISpatialContextReader> scReader = fetchScs->Execute();
+        while (scReader->ReadNext())
+        {
+            FdoString* scName = scReader->GetName();
+            printf("SC Name: %S\n", scName);
+        }
+
+        FdoPtr<FdoIDescribeSchema> describe = static_cast<FdoIDescribeSchema*>(conn->CreateCommand(FdoCommandType_DescribeSchema));
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute();
+        CPPUNIT_ASSERT(1 == schemas->GetCount());
+
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+        CPPUNIT_ASSERT(1 == classes->GetCount());
+
+        FdoPtr<FdoClassDefinition> clsDef = classes->GetItem(0);
+        FdoString* clsName = clsDef->GetName();
+        printf("Class Name: %S\n", clsName);
+
+        FdoPtr<FdoISelect> selectCmd = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
+        selectCmd->SetFeatureClassName(clsName);
+
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        clsDef = reader->GetClassDefinition();
+        FdoPtr<FdoPropertyDefinitionCollection> clsProps = clsDef->GetProperties();
+
+        for (FdoInt32 i = 0; i < clsProps->GetCount(); i++)
+        {
+            FdoPtr<FdoPropertyDefinition> prop = clsProps->GetItem(i);
+            printf("Name: %S\n", prop->GetName());
+        }
+
+        FdoInt32 count = 0;
+        while (reader->ReadNext())
+        {
+            for (FdoInt32 i = 0; i < clsProps->GetCount(); i++)
+            {
+                FdoPtr<FdoPropertyDefinition> prop = clsProps->GetItem(i);
+                if (prop->GetPropertyType() == FdoPropertyType_DataProperty)
+                {
+                    FdoDataPropertyDefinition* dp = static_cast<FdoDataPropertyDefinition*>(prop.p);
+                    if (dp->GetDataType() == FdoDataType_String)
+                    {
+                        FdoString* name = dp->GetName();
+                        FdoString* value = reader->GetString(name);
+
+                        printf(" %S - %S\n", name, value);
+                    }
+                }
+            }
+            count++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT_MESSAGE("Expected 1 feature", 1 == count);
+    }
+    catch (FdoException* ex)
+    {
+        TestCommonFail(ex);
+    }
+}
+
 void SelectTests::TestCase_SelectWithBadClassName()
 {
     try 
