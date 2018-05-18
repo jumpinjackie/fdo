@@ -45,6 +45,7 @@
 #define PROP_NAME_DATASOURCE L"DataSource"
 #define PROP_NAME_READONLY   L"ReadOnly"
 #define PROP_NAME_SCHEMA     L"DefaultSchemaName"
+#define PROP_NAME_ENCODING   L"DataSourceEncoding"
 #define RDONLY_FALSE         L"FALSE"
 #define RDONLY_TRUE          L"TRUE"
 
@@ -208,6 +209,17 @@ FdoConnectionState OgrConnection::Open()
         str.append(CPLGetLastErrorMsg());
         throw FdoConnectionException::Create(A2W_SLOW(str.c_str()).c_str());
     }
+
+    if (m_mProps->find(PROP_NAME_ENCODING) != m_mProps->end())
+    {
+        const wchar_t* enc = GetProperty(PROP_NAME_ENCODING);
+        m_encoding = W2A_SLOW(enc);
+    }
+    else //Assume UTF-8 for all required string conversions
+    {
+        m_encoding = CPL_ENC_UTF8;
+    }
+
     m_connState = FdoConnectionState_Open;
     
     return m_connState;
@@ -255,9 +267,9 @@ FdoICommand* OgrConnection::CreateCommand(FdoInt32 commandType)
 
 FdoString** OgrConnection::GetPropertyNames(FdoInt32& count)
 {
-    static const wchar_t* PROP_NAMES[] = { PROP_NAME_DATASOURCE, PROP_NAME_READONLY, PROP_NAME_SCHEMA };
+    static const wchar_t* PROP_NAMES[] = { PROP_NAME_DATASOURCE, PROP_NAME_READONLY, PROP_NAME_SCHEMA, PROP_NAME_ENCODING };
 
-    count = 3;
+    count = 4;
     return (const wchar_t**)PROP_NAMES;
 }
 
@@ -439,7 +451,7 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
             for (int i=0; i<count; i++)
             {
                 OGRLayer* layer = m_poDS->GetLayer(i);
-                FdoPtr<FdoClassDefinition> fc = OgrFdoUtil::ConvertClass(this, layer);
+                FdoPtr<FdoClassDefinition> fc = OgrFdoUtil::ConvertClass(this, layer, NULL);
                 classes->Add(fc);
             }
         }
@@ -469,7 +481,7 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
 
     OGRLayer* layer = GetLayerByName(fc, mbfc.c_str(), true);
 
-    FdoPtr<FdoClassDefinition> origClassDef = OgrFdoUtil::ConvertClass(this, layer);
+    FdoPtr<FdoClassDefinition> origClassDef = OgrFdoUtil::ConvertClass(this, layer, NULL);
     FdoPtr<FdoIdentifierCollection> properties;
     if (props == NULL || props->GetCount() == 0)
     {
@@ -560,7 +572,7 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
 
         OgrFdoUtil::ApplyFilter(layer, filter);
 
-        FdoPtr<OgrFeatureReader> rdr = new OgrFeatureReader(this, layer, properties, filter);
+        FdoPtr<OgrFeatureReader> rdr = new OgrFeatureReader(this, layer, properties, filter, m_encoding);
         FdoPtr<FdoClassDefinition> clsDef = rdr->GetClassDefinition();
         return FdoExpressionEngineUtilFeatureReader::Create(NULL,
                                                             rdr,
@@ -571,7 +583,7 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
     else
     {
         OgrFdoUtil::ApplyFilter(layer, filter);
-        return new OgrFeatureReader(this, layer, properties, filter);
+        return new OgrFeatureReader(this, layer, properties, filter, m_encoding);
     }
 }
 
@@ -623,7 +635,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
     else
     {
         layer = GetLayerByName(fc, mbfc.c_str(), true);
-        origClassDef = OgrFdoUtil::ConvertClass(this, layer);
+        origClassDef = OgrFdoUtil::ConvertClass(this, layer, NULL);
 
         //Case 2: Single Count() or SpatialExtents() function, once again un-filtered
         if (properties->GetCount() == 1 && NULL == filter)
@@ -818,7 +830,7 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         //update the feature properties
         //this call is not fast, so if we need
         //fast update for multiple features it should be optimized
-        OgrFdoUtil::ConvertFeature(propvals, feature, layer);
+        OgrFdoUtil::ConvertFeature(propvals, feature, layer, m_encoding);
         
         OGRErr res = layer->SetFeature(feature);
         if (res)
@@ -903,7 +915,7 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
     feature->SetFID(fid);
 
     //set all the properties
-    OgrFdoUtil::ConvertFeature(propvals, feature, layer);
+    OgrFdoUtil::ConvertFeature(propvals, feature, layer, m_encoding);
 
     if (layer->CreateFeature(feature) == OGRERR_NONE)
     {
@@ -922,7 +934,7 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
         snprintf(filter, 32, "FID=" CPL_FRMT_GIB, fid);
 #endif
         layer->SetAttributeFilter(filter);
-        return new OgrFeatureReader(this, layer, NULL, NULL);
+        return new OgrFeatureReader(this, layer, NULL, NULL, m_encoding);
     }
 
     throw FdoCommandException::Create(L"Insert of feature failed.");
@@ -1065,7 +1077,8 @@ bool OgrSpatialContextReader::ReadNext()
 //
 //---------------------------------------------------------------------
 
-OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter)
+OgrFeatureReader::OgrFeatureReader(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter, const std::string& encoding)
+    : m_encoding(encoding)
 {
     m_connection = connection;
     ((FdoIConnection*)m_connection)->AddRef();
@@ -1137,7 +1150,7 @@ FdoByte OgrFeatureReader::GetByte(FdoString* propertyName)
 
 FdoDateTime OgrFeatureReader::GetDateTime(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding); (propertyName);
     int yr = -1;
     int mt = -1;
     int dy = -1;
@@ -1154,7 +1167,7 @@ FdoDateTime OgrFeatureReader::GetDateTime(FdoString* propertyName)
 
 double OgrFeatureReader::GetDouble(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
     double ret = m_poFeature->GetFieldAsDouble(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
     return ret;
@@ -1167,7 +1180,7 @@ FdoInt16 OgrFeatureReader::GetInt16(FdoString* propertyName)
 
 FdoInt32 OgrFeatureReader::GetInt32(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
@@ -1185,7 +1198,7 @@ FdoInt64 OgrFeatureReader::GetInt64(FdoString* propertyName)
 #if GDAL_VERSION_MAJOR < 2
     throw FdoCommandException::Create(L"Int64");
 #else
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
 
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
@@ -1206,10 +1219,10 @@ float OgrFeatureReader::GetSingle(FdoString* propertyName)
 
 FdoString* OgrFeatureReader::GetString(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
-    m_sprops[(long)val] = A2W_SLOW(val);
+    m_sprops[(long)val] = A2W_SLOW(val, m_encoding);
     return m_sprops[(long)val].c_str();
 }
 
@@ -1225,7 +1238,7 @@ FdoIStreamReader* OgrFeatureReader::GetLOBStreamReader(FdoString* propertyName )
 
 bool OgrFeatureReader::IsNull(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
@@ -1347,7 +1360,7 @@ void OgrFeatureReader::Close()
 
 FdoDataType OgrFeatureReader::GetDataType( FdoString* propertyName )
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_FROM_ENCODING(propertyName, m_encoding);
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
     
@@ -1484,8 +1497,7 @@ FdoString* OgrDataReader::GetPropertyName(FdoInt32 index)
 
 FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
 
     FdoInt32 ret = m_poFeature->GetFieldIndex(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
@@ -1494,8 +1506,7 @@ FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
 
 FdoDataType OgrDataReader::GetDataType(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
     
@@ -1549,8 +1560,7 @@ FdoByte OgrDataReader::GetByte(FdoString* propertyName)
 
 FdoDateTime OgrDataReader::GetDateTime(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
     
     int yr = -1;
     int mt = -1;
@@ -1568,8 +1578,7 @@ FdoDateTime OgrDataReader::GetDateTime(FdoString* propertyName)
 
 double OgrDataReader::GetDouble(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
 
     double ret = m_poFeature->GetFieldAsDouble(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
@@ -1583,8 +1592,7 @@ FdoInt16 OgrDataReader::GetInt16(FdoString* propertyName)
 
 FdoInt32 OgrDataReader::GetInt32(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
 
     FdoInt32 ret = m_poFeature->GetFieldAsInteger(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
@@ -1596,8 +1604,7 @@ FdoInt64 OgrDataReader::GetInt64(FdoString* propertyName)
     //HACK: This to honor the contract of Count() expression function which returns an FDO Int64, whether by
     //the provider's internally optimized approach or via the Expression Engine. This allows for the client
     //application to GetInt64() on a Count() expression, the same expected behaviour for other FDO provider
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
 
     FdoInt64 ret = m_poFeature->GetFieldAsInteger(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
@@ -1611,8 +1618,7 @@ float OgrDataReader::GetSingle(FdoString* propertyName)
 
 FdoString* OgrDataReader::GetString(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
-    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+    W2A_PROPNAME_NAMEMAP(propertyName);
 
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
     CHECK_CPL_ERROR(FdoCommandException);
@@ -1633,7 +1639,7 @@ FdoIStreamReader* OgrDataReader::GetLOBStreamReader(FdoString* propertyName )
 
 bool OgrDataReader::IsNull(FdoString* propertyName)
 {
-    W2A_PROPNAME(propertyName);
+    W2A_PROPNAME_NAMEMAP(propertyName);
 #if GDAL_VERSION_MAJOR < 2
     return !m_poFeature->IsFieldSet(m_poFeature->GetFieldIndex(mbpropertyName));
 #else

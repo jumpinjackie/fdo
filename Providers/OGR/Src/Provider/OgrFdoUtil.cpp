@@ -111,9 +111,9 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
     for (int j=0; j<propcount; j++)
     {
         OGRFieldDefn* field = fdefn->GetFieldDefn(j);
-        const char* name = field->GetNameRef();
-        std::wstring wname = A2W_SLOW(name);
-        dot2tilde(wname);
+        const char* pname = field->GetNameRef();
+        std::wstring wpname = A2W_SLOW(pname);
+        dot2tilde(wpname);
 #ifdef DEBUG
         printf("Attribute : %s\n", name);
 #endif
@@ -138,12 +138,12 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         if (add)
         {
             //check if property is on the optional requested property list
-            FdoPtr<FdoIdentifier> found = (requestedProps) ? requestedProps->FindItem(wname.c_str()) : NULL;
+            FdoPtr<FdoIdentifier> found = (requestedProps) ? requestedProps->FindItem(wpname.c_str()) : NULL;
 
             //if it's on the list or there was no list at all, then add the property
             if (!requestedProps || requestedProps->GetCount() == 0 || (requestedProps && found.p))
             {
-                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(wname.c_str(), L"");
+                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(wpname.c_str(), L"");
 
                 dpd->SetDataType(dt);
                 dpd->SetLength(field->GetWidth());
@@ -154,8 +154,8 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
                 const char* defaultVal = field->GetDefault();
                 if (defaultVal)
                 {
-                    std::wstring wname = A2W_SLOW(defaultVal);
-                    dpd->SetDefaultValue(wname.c_str());
+                    std::wstring wDefaultVal = A2W_SLOW(defaultVal);
+                    dpd->SetDefaultValue(wDefaultVal.c_str());
                 }
 #endif
                 pdc->Add(dpd);
@@ -260,7 +260,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
 //copies feature properties from an FDO propety value collection
 //into an OGR feature -- used for inserting new feature and updating
 //existing ones
-void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst, OGRLayer* layer)
+void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst, OGRLayer* layer, const std::string& encoding)
 {
     //update the feature properties
     //this code is not fast at all
@@ -338,7 +338,7 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
                     if (sv && !sv->IsNull())
                     {
                         FdoString* str = sv->GetString();
-                        std::string mbstr = W2A_SLOW(str);
+                        std::string mbstr = W2A_SLOW(str, encoding);
                         dst->SetField(mbpropName, mbstr.c_str());
                     }
                 }

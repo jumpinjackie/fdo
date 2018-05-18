@@ -586,6 +586,7 @@ private :
     FdoConnectionState m_connState;
     FdoFeatureSchemaCollection* m_pSchema;
     FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
+    std::string m_encoding;
 
 #if GDAL_VERSION_MAJOR < 2
     OGRDataSource* m_poDS;
@@ -1032,7 +1033,7 @@ class OgrFeatureReader : public FdoDefaultFeatureReader
 {
     public:
         OGR_API OgrFeatureReader(OgrConnection* connection,
-                                 OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter);
+                                 OGRLayer* layer, FdoIdentifierCollection* props, FdoFilter* filter, const std::string& encoding);
 
     protected:
         OGR_API virtual ~OgrFeatureReader();
@@ -1089,6 +1090,8 @@ class OgrFeatureReader : public FdoDefaultFeatureReader
         unsigned char* m_fgf;
         unsigned char* m_wkb;
         size_t m_fgflen;
+
+        std::string m_encoding;
 };
 
 

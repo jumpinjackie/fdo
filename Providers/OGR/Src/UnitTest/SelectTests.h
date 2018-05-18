@@ -14,6 +14,8 @@ class SelectTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_SelectAggregateSpatialExtent);
     CPPUNIT_TEST(TestCase_SelectMixedAttributeAndSpatialFilter);
     CPPUNIT_TEST(TestCase_EvalQuotedIdentifier);
+    CPPUNIT_TEST(TestCase_SelectAsciiNone);
+    CPPUNIT_TEST(TestCase_SelectUtf8DataSourceName);
     CPPUNIT_TEST(TestCase_SelectWithBadClassName);
     CPPUNIT_TEST(TestCase_SelectAggregatesWithBadClassName);
     CPPUNIT_TEST(TestCase_SelectWithBadPropertyNames);
@@ -37,6 +39,8 @@ public:
     void TestCase_SelectAggregateSpatialExtent();
     void TestCase_SelectMixedAttributeAndSpatialFilter();
 
+    void TestCase_SelectAsciiNone();
+    void TestCase_SelectUtf8DataSourceName();
     void TestCase_SelectWithBadClassName();
     void TestCase_SelectAggregatesWithBadClassName();
     void TestCase_SelectWithBadPropertyNames();
