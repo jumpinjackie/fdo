@@ -491,7 +491,7 @@ void OgrFdoUtil::ApplyFilter(OGRLayer* layer, FdoFilter* filter)
 #if GDAL_VERSION_MAJOR < 2
                 OGRFree(geom);
 #else
-                CPLFree(geom);
+                OGRGeometryFactory::destroyGeometry(geom);
 #endif
             }
         }
