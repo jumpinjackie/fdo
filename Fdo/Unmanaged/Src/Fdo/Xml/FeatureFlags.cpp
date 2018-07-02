@@ -32,7 +32,8 @@ FdoXmlFeatureFlags::FdoXmlFeatureFlags()
       mCollectionName(FdoXml::mFeatureCollectionName),
       mMemberUri(FdoXml::mGmlUri),
       mMemberName(FdoXml::mFeatureMemberName),
-      mTransform(NULL)
+      mTransform(NULL),
+      mInvertAxis(false)
 {
     mNamespaces = FdoStringCollection::Create();
     mSchemaLocations = FdoStringCollection::Create();
@@ -47,7 +48,8 @@ FdoXmlFeatureFlags::FdoXmlFeatureFlags(FdoString* url, ErrorLevel errorLevel, Fd
       mCollectionName(FdoXml::mFeatureCollectionName),
       mMemberUri(FdoXml::mGmlUri),
       mMemberName(FdoXml::mFeatureMemberName),
-      mTransform(NULL)
+      mTransform(NULL),
+      mInvertAxis(false)
 {
     mNamespaces = FdoStringCollection::Create();
     mSchemaLocations = FdoStringCollection::Create();
@@ -238,5 +240,15 @@ FdoIDirectPosition* FdoCoordinateSystemTransform::CoordinateSystemTransform(FdoI
 {
     //coordinate system transformation is not available in FDO, just return the original value.
     return FDO_SAFE_ADDREF(sourceGeometry);
+}
+
+void FdoXmlFeatureFlags::SetInvertAxis(FdoBoolean invertAxis)
+{
+    mInvertAxis = invertAxis;
+}
+
+FdoBoolean FdoXmlFeatureFlags::GetInvertAxis() const
+{
+    return mInvertAxis;
 }
 

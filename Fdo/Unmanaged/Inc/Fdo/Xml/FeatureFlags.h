@@ -397,6 +397,21 @@ public:
     /// 
     FDO_API virtual FdoCoordinateSystemTransform* GetCoordinateSystemTransform();
 
+    /// \brief
+    /// Sets whether to invert axis when getting geometry.
+    /// 
+    /// \param invertAxis 
+    /// 
+    FDO_API virtual void SetInvertAxis(FdoBoolean invertAxis);
+
+    /// \brief
+    /// Gets whether to invert axis when getting geometry.
+    /// 
+    /// \return
+    /// Returns whether to invert axis when getting geometry
+    /// 
+    FDO_API virtual FdoBoolean GetInvertAxis() const;
+
 protected:
 	FdoXmlFeatureFlags();
     FdoXmlFeatureFlags(FdoString* url, ErrorLevel errorLevel, FdoBoolean nameAdjust, ConflictOption conflictOption);
@@ -420,6 +435,7 @@ private:
 	FdoStringP mGmlDescriptionRelatePropertyName;
     FdoStringP mSrsName;
     FdoCoordinateSystemTransform *mTransform;
+    FdoBoolean mInvertAxis;
 };
 
 /// \ingroup (typedefs)

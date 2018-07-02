@@ -37,10 +37,11 @@ protected:
         FdoString* defaultUrl,
         FdoString* userName,
         FdoString* passwd,
-		FdoString* proxyHost = NULL,
-		FdoString* proxyPort = NULL,
-		FdoString* proxyUsername = NULL,
-        FdoString* proxyPassword = NULL
+        FdoString* proxyHost = NULL,
+        FdoString* proxyPort = NULL,
+        FdoString* proxyUsername = NULL,
+        FdoString* proxyPassword = NULL,
+        bool invertAxis = false
         );
     virtual ~FdoWfsDelegate();
     virtual void Dispose() { delete this; }
@@ -48,7 +49,7 @@ protected:
 public:
     typedef bool (FdoWfsCancelExecutationHander)(void*);
     static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
-    static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password);
+    static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password, bool invertAxis = false);
 
     FdoWfsServiceMetadata* GetCapabilities(FdoString* version);
     FdoFeatureSchemaCollection* DescribeFeatureType(FdoStringCollection* typeNames,FdoString* version);
@@ -79,6 +80,7 @@ private:
 	//
 	FdoIoStream* preProcessStream(FdoIoStream* streamm, FdoWfsCancelExecutationHander handler, void* handleData);
 
+    bool invertAxis;
 };
 
 typedef FdoPtr<FdoWfsDelegate> FdoWfsDelegateP;

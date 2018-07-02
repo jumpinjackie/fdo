@@ -32,7 +32,7 @@ class FdoXmlCoordinateGroup : public FdoDisposable
 public:
 	static FdoXmlCoordinateGroup* Create();
 
-	void AddCoordinate(FdoString* coordinate);
+	void AddCoordinate(FdoString* coordinate, FdoBoolean invertAxis = false);
 	void AddCoordX(FdoString* x);
 	void AddCoordY(FdoString* y);
 	void AddCoordZ(FdoString* z);
@@ -52,7 +52,7 @@ protected:
     }
 	
 private:
-	void parseCoordinates(FdoString* value);
+	void parseCoordinates(FdoString* value, FdoBoolean invertAxis = false);
 	bool isCoordinateChar(FdoCharacter c);
 
 	FdoDimensionality m_dimensionality;

@@ -139,6 +139,13 @@ FdoIConnectionPropertyDictionary* FdoWfsConnectionInfo::GetConnectionProperties 
                         NlsMsgGet(WFS_CONNECTION_PROPERTY_PROXYPASSWORD, mbPropName),
                         L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(proxyPasswordProperty);
+
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::InvertAxis);
+        FdoPtr<ConnectionProperty> invertAxisProperty = new ConnectionProperty(
+            FdoWfsGlobals::InvertAxis,
+            FdoWfsGlobals::InvertAxis,
+            L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(invertAxisProperty);
     }
 
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

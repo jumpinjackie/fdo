@@ -48,6 +48,7 @@ FdoXmlGeometryHandler::FdoXmlGeometryHandler()
 	m_parsingStateStack.push_back(ParsingState_Start);
 
 	m_isMultiGeometry = false;
+    m_invertAxis = false;
     m_typeGeomExpected = GmlGeometryType_Unknown;
 }
 
@@ -57,11 +58,15 @@ FdoXmlGeometryHandler::FdoXmlGeometryHandler(FdoXmlFeatureFlags *flags)
 
 	m_gmlVersion = FdoGmlVersion_212;
 
-	if (flags != NULL)
-		m_gmlVersion = flags->GetGmlVersion();
+    if (flags != NULL)
+    {
+        m_gmlVersion = flags->GetGmlVersion();
+        m_invertAxis = flags->GetInvertAxis();
+    }
 
 	m_isMultiGeometry = false;
     m_typeGeomExpected = GmlGeometryType_Unknown;
+    m_flags = FDO_SAFE_ADDREF(flags);
 }
 
 FdoXmlGeometryHandler::~FdoXmlGeometryHandler()
@@ -200,7 +205,7 @@ FdoXmlSaxHandler* FdoXmlGeometryHandler::XmlStartElement(
 	case GmlGeometryType_GeometryAssociation:
 		m_parsingStateStack.push_back(ParsingState_GeometryAssociation);
 	
-		m_nestedHandler = new FdoXmlGeometryHandler();
+		m_nestedHandler = new FdoXmlGeometryHandler(m_flags);
         // Pass down the outer geometry coordinates.
         m_nestedHandler->m_coordinates = m_coordinates;
 
@@ -346,7 +351,7 @@ FdoBoolean FdoXmlGeometryHandler::XmlEndElement(
 	case ParsingState_LowerCorner:
 	case ParsingState_UpperCorner:
 		if(m_coordinates != NULL)
-			m_coordinates->AddCoordinate(m_dataProperty);
+			m_coordinates->AddCoordinate(m_dataProperty, m_invertAxis);
 		break;
 
 	//Coord

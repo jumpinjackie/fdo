@@ -113,6 +113,8 @@ namespace FdoWfsGlobals
     static FdoString* ProxyPort                         = L"ProxyServerPort";
     static FdoString* ProxyUsername                     = L"ProxyServerUsername";
     static FdoString* ProxyPassword                     = L"ProxyServerPassword";
+    static FdoString* InvertAxis                        = L"InvertAxis";
+    static FdoString* TrueString                        = L"True";
 
     static FdoString* PROPERTYNAME                      = L"PROPERTYNAME";
     static FdoString* Filter                            = L"Filter";
