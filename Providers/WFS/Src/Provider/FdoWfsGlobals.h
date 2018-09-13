@@ -38,6 +38,7 @@ namespace FdoWfsGlobals
     static FdoString* Title                             = L"Title";
     static FdoString* SRS                               = L"SRS";
     static FdoString* DefaultSRS                        = L"DefaultSRS";
+    static FdoString* DefaultCRS                        = L"DefaultCRS";
     static FdoString* Abstract                          = L"Abstract";
     static FdoString* Keywords                          = L"Keywords";
     static FdoString* MetadataURL                       = L"MetadataURL";
@@ -112,6 +113,8 @@ namespace FdoWfsGlobals
     static FdoString* ProxyPort                         = L"ProxyServerPort";
     static FdoString* ProxyUsername                     = L"ProxyServerUsername";
     static FdoString* ProxyPassword                     = L"ProxyServerPassword";
+    static FdoString* InvertAxis                        = L"InvertAxis";
+    static FdoString* TrueString                        = L"True";
 
     static FdoString* PROPERTYNAME                      = L"PROPERTYNAME";
     static FdoString* Filter                            = L"Filter";

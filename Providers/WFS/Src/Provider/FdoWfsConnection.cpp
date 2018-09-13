@@ -203,7 +203,9 @@ FdoConnectionState FdoWfsConnection::Open ()
     FdoStringP proxyPort = dictionary->GetProperty (FdoWfsGlobals::ProxyPort);
     FdoStringP proxyUser = dictionary->GetProperty (FdoWfsGlobals::ProxyUsername);
     FdoStringP proxyPassword = dictionary->GetProperty (FdoWfsGlobals::ProxyPassword);
-    
+    FdoStringP invertAxis = dictionary->GetProperty(FdoWfsGlobals::InvertAxis);
+    FdoBoolean isInvertAxis = (invertAxis == FdoWfsGlobals::TrueString);
+
     if (0 == mFeatureServer.GetLength()) 
     {
         throw FdoException::Create (NlsMsgGet(WFS_CONNECTION_REQUIRED_PROPERTY_NULL, 
@@ -222,7 +224,7 @@ FdoConnectionState FdoWfsConnection::Open ()
 	FdoStringP version = _getRequestWFSVersion(mFeatureServer);
 
     // set up the WFS delegate
-    mDelegate = FdoWfsDelegate::Create(mFeatureServer, mUserName, mPassword, proxyHost, proxyPort, proxyUser, proxyPassword);
+    mDelegate = FdoWfsDelegate::Create(mFeatureServer, mUserName, mPassword, proxyHost, proxyPort, proxyUser, proxyPassword, isInvertAxis);
 
     // try to get the service metadata
     mServiceMetadata = mDelegate->GetCapabilities(version);
@@ -681,6 +683,14 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     NameFeat += L":";
                     NameFeat += className;
                     pFeat = pFeatColl->FindItem(NameFeat);
+                    if (pFeat == NULL)
+                    {
+                        // Cannot find the class, try to add a "_" to the class name.
+                        // This case happens if the type name is like "AAAA_Type". Fdo XML reader will read the name as "AAAA".
+                        // But the name in feature collection is "AAAA_".
+                        NameFeat += L"_";
+                        pFeat = pFeatColl->FindItem(NameFeat);
+                    }
                 }
                 if (pFeat != NULL)
                 {

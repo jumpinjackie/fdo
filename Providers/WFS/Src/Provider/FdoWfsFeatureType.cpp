@@ -64,7 +64,8 @@ FdoXmlSaxHandler* FdoWfsFeatureType::XmlStartElement(
             {
                 if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Name) == 0 ||
                     FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0 ||
-					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0 || 
+                    FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0 ||
+                    FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultCRS) == 0 ||
                     FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Title) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Abstract) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Keywords) == 0 ||
@@ -172,8 +173,9 @@ FdoBoolean FdoWfsFeatureType::XmlEndElement(FdoXmlSaxContext* context, FdoString
                 {
                     if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Name) == 0)
                         m_name = charDataHandler->GetString();
-                    else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0
-						|| FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0)
+                    else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0 ||
+                        FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0 ||
+                        FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultCRS) == 0)
                     {
                         m_srs = charDataHandler->GetString();
                         m_srs = m_srs.Upper();

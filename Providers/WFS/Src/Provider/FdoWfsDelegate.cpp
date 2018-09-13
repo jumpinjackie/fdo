@@ -28,8 +28,8 @@
 #include <Fdo/Xml/FeatureFlags.h>
 
 
-FdoWfsDelegate::FdoWfsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password):
-     FdoOwsDelegate(defaultUrl, userName, passwd, proxy_location, proxy_port, proxy_user, proxy_password)
+FdoWfsDelegate::FdoWfsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password, bool invert_axis):
+     FdoOwsDelegate(defaultUrl, userName, passwd, proxy_location, proxy_port, proxy_user, proxy_password), invertAxis(invert_axis)
 {
 }
 
@@ -37,9 +37,9 @@ FdoWfsDelegate::~FdoWfsDelegate()
 {
 }
 
-FdoWfsDelegate* FdoWfsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd,  FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password)
+FdoWfsDelegate* FdoWfsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd,  FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password, bool invert_axis)
 {
-    return new FdoWfsDelegate(defaultUrl, userName, passwd,  proxy_location, proxy_port, proxy_user, proxy_password);
+    return new FdoWfsDelegate(defaultUrl, userName, passwd,  proxy_location, proxy_port, proxy_user, proxy_password, invert_axis);
 }
 
 FdoWfsServiceMetadata* FdoWfsDelegate::GetCapabilities(FdoString* version)
@@ -165,6 +165,7 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
     FdoPtr<FdoXmlReader> xmlReader = FdoXmlReader::Create(tempStream);
 	FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);
 	flags->SetSchemaMappings(schemaMappings);
+    flags->SetInvertAxis(this->invertAxis);
     FdoPtr<FdoXmlFeatureReader> xmlFeatureReader = FdoXmlFeatureReader::Create(xmlReader, flags);
     xmlFeatureReader->SetFeatureSchemas(schemas);
 	FdoPtr<FdoWfsFeatureReader> featureReader = new FdoWfsFeatureReader;	
