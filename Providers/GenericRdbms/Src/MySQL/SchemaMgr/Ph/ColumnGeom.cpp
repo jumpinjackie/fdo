@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2018  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -26,7 +26,7 @@ FdoInt64 FdoSmPhMySqlColumnGeom::GetSRID()
 	{
 		FdoSmPhDbObjectP dbObject = this->GetContainingDbObject();
 		FdoStringP sqlStmt = FdoStringP::Format(
-			L"select SRID(%ls) as srid from %ls", (FdoString*)this->GetDbName(), (FdoString*)dbObject->GetDbName());
+			L"select ST_SRID(%ls) as srid from %ls", (FdoString*)this->GetDbName(), (FdoString*)dbObject->GetDbName());
 		FdoSmPhMySqlMgrP mgr = this->GetManager()->SmartCast<FdoSmPhMySqlMgr>();
 		GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
 		GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const char*)sqlStmt);
