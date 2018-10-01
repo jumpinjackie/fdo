@@ -269,7 +269,7 @@ if not exist ..\..\bin\Win32\$(Configuration) mkdir ..\..\bin\Win32\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -310,7 +310,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -354,7 +354,7 @@ if not exist ..\..\bin\Win32\$(Configuration) mkdir ..\..\bin\Win32\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -401,7 +401,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -437,7 +437,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -476,7 +476,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -518,7 +518,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -563,7 +563,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -601,7 +601,7 @@ if not exist ..\..\bin\Win32\$(Configuration) mkdir ..\..\bin\Win32\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -642,7 +642,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -686,7 +686,7 @@ if not exist ..\..\bin\Win32\$(Configuration) mkdir ..\..\bin\Win32\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -733,7 +733,7 @@ if not exist ..\..\bin\Win64\$(Configuration) mkdir ..\..\bin\Win64\$(Configurat
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>

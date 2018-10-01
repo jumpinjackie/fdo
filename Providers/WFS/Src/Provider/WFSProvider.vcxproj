@@ -111,7 +111,7 @@
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\libcurl\lib\Debug;$(FDOUTILITIES)\OWS\Lib\Win32\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win32\Debug\WFSProvider.lib</ImportLibrary>
@@ -145,7 +145,7 @@
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\libcurl\lib\Debug64;$(FDOUTILITIES)\OWS\Lib\Win64\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win64\Debug\WFSProvider.lib</ImportLibrary>
@@ -173,7 +173,7 @@
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\libcurl\lib\Release;$(FDOUTILITIES)\OWS\Lib\Win32\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win32\Release\WFSProvider.lib</ImportLibrary>
@@ -204,7 +204,7 @@
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\libcurl\lib\Release64;$(FDOUTILITIES)\OWS\Lib\Win64\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win64\Release\WFSProvider.lib</ImportLibrary>

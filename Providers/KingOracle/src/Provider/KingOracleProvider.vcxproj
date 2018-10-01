@@ -254,7 +254,7 @@
       <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -292,7 +292,7 @@
       <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -325,7 +325,7 @@
       <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -361,7 +361,7 @@
       <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win64\Release\;..\..\..\..\Utilities\Common\Lib\Win64\Release\;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -396,7 +396,7 @@
       <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -438,7 +438,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -470,7 +470,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\Release;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -510,7 +510,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\Release;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -544,7 +544,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -582,7 +582,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -615,7 +615,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\Release;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
@@ -651,7 +651,7 @@ call KingStampVersion $(OutDir)
       <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\Release;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>

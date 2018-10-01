@@ -34,9 +34,9 @@ FdoXmlCoordinateGroup* FdoXmlCoordinateGroup::Create()
 	return new FdoXmlCoordinateGroup();
 }
 
-void FdoXmlCoordinateGroup::AddCoordinate(FdoString* coordinate)
+void FdoXmlCoordinateGroup::AddCoordinate(FdoString* coordinate, FdoBoolean invertAxis)
 {
-	parseCoordinates(coordinate);
+	parseCoordinates(coordinate, invertAxis);
 }
 
 void FdoXmlCoordinateGroup::AddCoordX(FdoString* x)
@@ -104,7 +104,7 @@ static double  fdo_wtof(FdoString* w)
 /// Helper functions
 ///////////////////////////////////////////////////////////////
 #include <iostream>
-void FdoXmlCoordinateGroup::parseCoordinates(FdoString* value)
+void FdoXmlCoordinateGroup::parseCoordinates(FdoString* value, FdoBoolean invertAxis)
 {
 	FdoStringP coordString = value;
 
@@ -157,6 +157,16 @@ void FdoXmlCoordinateGroup::parseCoordinates(FdoString* value)
 		startPos = endPos;
 	}
 
+    if (invertAxis)
+    {
+        int dim = m_dimensionality == FdoDimensionality_Z ? 3 : 2;
+        for (int i = 0; i < m_coordinates.size(); i += dim)
+        {
+            double oriX = m_coordinates[i];
+            m_coordinates[i] = m_coordinates[i + 1];
+            m_coordinates[i + 1] = oriX;
+        }
+    }
 }
 
 bool FdoXmlCoordinateGroup::isCoordinateChar(FdoCharacter c)

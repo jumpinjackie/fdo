@@ -146,7 +146,7 @@
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win32\Debug\ExpressionEngine.lib</ImportLibrary>
@@ -177,7 +177,7 @@
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win32\Debug\ExpressionEngine.lib</ImportLibrary>
@@ -211,7 +211,7 @@
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win64\Debug\ExpressionEngine.lib</ImportLibrary>
@@ -245,7 +245,7 @@
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win64\Debug\ExpressionEngine.lib</ImportLibrary>
@@ -275,7 +275,7 @@
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\release;$(FDOUTILITIES)\Common\Lib\Win32\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win32\Release\ExpressionEngine.lib</ImportLibrary>
@@ -306,7 +306,7 @@
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\release;$(FDOUTILITIES)\Common\Lib\Win64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>Lib\Win64\Release\ExpressionEngine.lib</ImportLibrary>

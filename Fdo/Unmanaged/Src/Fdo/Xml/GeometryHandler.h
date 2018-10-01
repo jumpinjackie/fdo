@@ -146,6 +146,9 @@ private:
     GmlGeometryType m_typeGeomExpected;
     FdoXmlSaxHandler* SkipFirstParseStep();
     void RunLastParseStep(FdoString* name, GmlGeometryType typeGeomExpected);
+
+    FdoPtr<FdoXmlFeatureFlags> m_flags;
+    FdoBoolean m_invertAxis;
 };
 
 typedef FdoPtr<FdoXmlGeometryHandler> FdoXmlGeometryHandlerP;
