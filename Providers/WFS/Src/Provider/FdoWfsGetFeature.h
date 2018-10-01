@@ -34,6 +34,7 @@ private:
     FdoStringP m_srsName;
     bool m_encodeWithClassName;
     FdoStringP m_schemaName;
+    FdoBoolean m_invertAxis;
 
 protected:
     FdoWfsGetFeature() {};
@@ -42,7 +43,8 @@ protected:
                                 FdoString* from,
                                 FdoFilter* where,
                                 FdoString* schemaName,
-								FdoString* version);
+                                FdoString* version,
+                                FdoBoolean invertAxis = false);
     virtual ~FdoWfsGetFeature();
     virtual void Dispose() { delete this; }
 
@@ -52,7 +54,8 @@ public:
                                 FdoString* from,
                                 FdoFilter* where,
                                 FdoString* schemaName,
-								FdoString* version);
+                                FdoString* version,
+                                FdoBoolean invertAxis = false);
 
     virtual FdoStringP EncodeKVP();
     virtual FdoStringP EncodeXml();

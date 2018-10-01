@@ -29,10 +29,11 @@ FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsNam
                                     FdoString* from,
                                     FdoFilter* where,
                                     FdoString* schemaName,
-									FdoString* version) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
+                                    FdoString* version,
+                                    FdoBoolean invertAxis) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
                                     m_targetNamespace(targetNamespace), m_srsName(srsName),
                                     m_propertiesToSelect(propertiesToSelect),
-                                    m_from(from), m_where(where), m_schemaName(schemaName)
+                                    m_from(from), m_where(where), m_schemaName(schemaName), m_invertAxis(invertAxis)
 {
     m_encodeWithClassName = false;
 	FdoOwsRequest::SetVersion (version ? version : FdoWfsGlobals::WfsVersion);
@@ -45,9 +46,9 @@ FdoWfsGetFeature::~FdoWfsGetFeature()
 }
 
 FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* srsName, FdoStringCollection* propertiesToSelect,
-                            FdoString* from, FdoFilter* where, FdoString* schemaName,FdoString* version)
+                            FdoString* from, FdoFilter* where, FdoString* schemaName, FdoString* version, FdoBoolean invertAxis)
 {
-    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName,version);
+    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName, version, invertAxis);
 }
 
 FdoStringP FdoWfsGetFeature::EncodeKVP()
@@ -116,7 +117,7 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
         //ns += FdoWfsGlobals::appns;
         //writer->WriteAttribute(ns, m_targetNamespace);
 
-        FdoOwsOgcFilterSerializer::Serialize(m_where, writer, m_srsName, NULL);
+        FdoOwsOgcFilterSerializer::Serialize(m_where, writer, m_srsName, NULL, m_invertAxis);
         
         writer = NULL;
         stream->Reset();

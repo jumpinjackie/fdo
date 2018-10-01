@@ -119,7 +119,8 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                                                 from, 
                                                                 where,
                                                                 schemaName,
-																version);
+                                                                version,
+                                                                invertAxis);
     FdoPtr<FdoOwsResponse> response;
     FdoException* exc1 = NULL;
     try

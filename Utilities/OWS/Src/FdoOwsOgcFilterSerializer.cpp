@@ -39,12 +39,13 @@ void FdoOwsOgcFilterSerializer::Serialize (FdoFilter* filter)
 	filter->Process (this);
 }
 
-void FdoOwsOgcFilterSerializer::Serialize (	FdoFilter* filter, FdoXmlWriter* writer, FdoString* srsName, FdoString* prefix)
+void FdoOwsOgcFilterSerializer::Serialize (	FdoFilter* filter, FdoXmlWriter* writer, FdoString* srsName, FdoString* prefix, FdoBoolean invertAxis)
 {
 	FdoPtr<FdoOwsOgcFilterSerializer> serializer = FdoOwsOgcFilterSerializer::Create ();
 	serializer->SetXmlWriter (writer);
 	serializer->SetSrsName (srsName);
 	serializer->SetPrefix (prefix);
+    serializer->SetInvertAxis(invertAxis);
 
 	serializer->Serialize (filter);
 }
@@ -508,5 +509,5 @@ void FdoOwsOgcFilterSerializer::ProcessGeometryValue(FdoGeometryValue& expr)
 	FdoPtr<FdoByteArray> gba = expr.GetGeometry();
 	FdoPtr<FdoFgfGeometryFactory> geoFactory = FdoFgfGeometryFactory::GetInstance();
 	FdoPtr<FdoIGeometry> geometry = geoFactory->CreateGeometryFromFgf(gba);
-	FdoOwsOgcGeometrySerializer::SerializeGeometry(geometry, mWriter, mSrsName);	
+	FdoOwsOgcGeometrySerializer::SerializeGeometry(geometry, mWriter, mSrsName, mInvertAxis);
 }

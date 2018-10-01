@@ -42,7 +42,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-	FDOOWS_API static void Serialize (FdoFilter* filter, FdoXmlWriter* writer, FdoString* srsName, FdoString* prefix);
+	FDOOWS_API static void Serialize (FdoFilter* filter, FdoXmlWriter* writer, FdoString* srsName, FdoString* prefix, FdoBoolean invertAxis = false);
 
 public:
     /// \brief
@@ -93,6 +93,9 @@ public:
 
 	FDOOWS_API void SetPrefix (FdoString* propPrefix) { mPrefix = propPrefix; }
 	FDOOWS_API FdoString* GetPrefix () { return mPrefix; }
+
+    FDOOWS_API void SetInvertAxis(FdoBoolean invertAxis) { mInvertAxis = invertAxis; }
+    FDOOWS_API FdoBoolean GetInvertAxis() { return mInvertAxis; }
 
     /// Overrides from FdoIFilterProcessor
 
@@ -395,6 +398,7 @@ private:
 	FdoXmlWriter*    mWriter;
 	FdoStringP       mSrsName;
 	FdoStringP       mPrefix;
+    FdoBoolean       mInvertAxis;
 };
 
 #endif//FDOOWSOGCFILTERSERIALIZER_H
