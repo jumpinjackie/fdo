@@ -350,6 +350,7 @@ if "%FDOERROR%"=="1" goto error
 
 :rebuild_postgresql
 if "%POSTGESQLENABLE%"=="no" goto end
+if not exist "%FDOPOSTGRESQL%" goto end
 if not exist Providers\GenericRdbms\Src\PostGis\build.bat goto end
 pushd Providers\GenericRdbms\Src\PostGis
 call build.bat %PROVCALLCMDEXPLTFRM%
