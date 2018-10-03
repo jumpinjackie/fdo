@@ -167,6 +167,14 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
         {
             FdoPtr<FdoWfsServiceMetadata> metadata = mConnection->GetServiceMetadata();
             FdoPtr<FdoWfsFeatureType> featureType = metadata->GetFeatureType(mClassName);
+            if (featureType == NULL)
+            {
+                // handle the case which 'real' class name ends with "_"
+                FdoStringP cName = mClassName->GetText();
+                cName += L"_";
+                FdoPtr<FdoIdentifier> cNameIdentifier = FdoIdentifier::Create(cName);
+                featureType = metadata->GetFeatureType(cNameIdentifier);
+            }
             if (featureType != NULL)
                 srsName = featureType->GetSRS();
 	    }

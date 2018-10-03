@@ -31,6 +31,14 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     FdoPtr<FdoWfsServiceMetadata> serviceMetadata = conn->GetServiceMetadata ();
     FdoPtr<FdoWfsFeatureType> featureType = serviceMetadata->GetFeatureType(className);
     if (featureType == NULL)
+    {
+        // handle the case which 'real' class name ends with "_"
+        FdoStringP cName = className->GetText();
+        cName += L"_";
+        FdoPtr<FdoIdentifier> cNameIdentifier = FdoIdentifier::Create(cName);
+        featureType = serviceMetadata->GetFeatureType(cNameIdentifier);
+    }
+    if (featureType == NULL)
         throw FdoCommandException::Create (
             NlsMsgGet(FDO_NLSID(WFS_NAMED_FEATURETYPE_NOT_FOUND), (FdoString*)className->GetText()));
 
