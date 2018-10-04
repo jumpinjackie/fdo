@@ -107,6 +107,8 @@ static int pkey_gost_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         return 1;
     case EVP_PKEY_CTRL_SET_IV:
         pctx->shared_ukm = OPENSSL_malloc((int)p1);
+        if (pctx->shared_ukm == NULL)
+            return 0;
         memcpy(pctx->shared_ukm, p2, (int)p1);
         return 1;
     case EVP_PKEY_CTRL_PEER_KEY:
@@ -510,7 +512,7 @@ static int pkey_gost_mac_ctrl_str(EVP_PKEY_CTX *ctx,
         long keylen;
         int ret;
         unsigned char *keybuf = string_to_hex(value, &keylen);
-        if (keylen != 32) {
+        if (!keybuf || keylen != 32) {
             GOSTerr(GOST_F_PKEY_GOST_MAC_CTRL_STR,
                     GOST_R_INVALID_MAC_KEY_LENGTH);
             OPENSSL_free(keybuf);
@@ -533,6 +535,8 @@ static int pkey_gost_mac_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         return 0;
     }
     keydata = OPENSSL_malloc(32);
+    if (keydata == NULL)
+        return 0;
     memcpy(keydata, data->key, 32);
     EVP_PKEY_assign(pkey, NID_id_Gost28147_89_MAC, keydata);
     return 1;

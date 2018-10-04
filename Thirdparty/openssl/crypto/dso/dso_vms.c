@@ -1,4 +1,4 @@
-/* dso_vms.c -*- mode:C; c-file-style: "eay" -*- */
+/* dso_vms.c */
 /*
  * Written by Richard Levitte (richard@levitte.org) for the OpenSSL project
  * 2000.
@@ -539,7 +539,7 @@ static char *vms_name_converter(DSO *dso, const char *filename)
 {
     int len = strlen(filename);
     char *not_translated = OPENSSL_malloc(len + 1);
-    if(not_translated)
+    if (not_translated)
         strcpy(not_translated, filename);
     return (not_translated);
 }

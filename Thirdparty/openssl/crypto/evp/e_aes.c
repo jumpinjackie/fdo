@@ -50,6 +50,7 @@
 
 #include <openssl/opensslconf.h>
 #ifndef OPENSSL_NO_AES
+#include <openssl/crypto.h>
 # include <openssl/evp.h>
 # include <openssl/err.h>
 # include <string.h>
@@ -154,10 +155,10 @@ void AES_ctr32_encrypt(const unsigned char *in, unsigned char *out,
                        const unsigned char ivec[AES_BLOCK_SIZE]);
 # endif
 # ifdef AES_XTS_ASM
-void AES_xts_encrypt(const char *inp, char *out, size_t len,
+void AES_xts_encrypt(const unsigned char *inp, unsigned char *out, size_t len,
                      const AES_KEY *key1, const AES_KEY *key2,
                      const unsigned char iv[16]);
-void AES_xts_decrypt(const char *inp, char *out, size_t len,
+void AES_xts_decrypt(const unsigned char *inp, unsigned char *out, size_t len,
                      const AES_KEY *key1, const AES_KEY *key2,
                      const unsigned char iv[16]);
 # endif
@@ -1119,6 +1120,8 @@ BLOCK_CIPHER_generic_pack(NID_aes, 128, EVP_CIPH_FLAG_FIPS)
 static int aes_gcm_cleanup(EVP_CIPHER_CTX *c)
 {
     EVP_AES_GCM_CTX *gctx = c->cipher_data;
+    if (gctx == NULL)
+        return 0;
     OPENSSL_cleanse(&gctx->gcm, sizeof(gctx->gcm));
     if (gctx->iv != c->iv)
         OPENSSL_free(gctx->iv);
@@ -1227,17 +1230,22 @@ static int aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
 
     case EVP_CTRL_AEAD_TLS1_AAD:
         /* Save the AAD for later use */
-        if (arg != 13)
+        if (arg != EVP_AEAD_TLS1_AAD_LEN)
             return 0;
         memcpy(c->buf, ptr, arg);
         gctx->tls_aad_len = arg;
         {
             unsigned int len = c->buf[arg - 2] << 8 | c->buf[arg - 1];
             /* Correct length for explicit IV */
+            if (len < EVP_GCM_TLS_EXPLICIT_IV_LEN)
+                return 0;
             len -= EVP_GCM_TLS_EXPLICIT_IV_LEN;
             /* If decrypting correct for tag too */
-            if (!c->encrypt)
+            if (!c->encrypt) {
+                if (len < EVP_GCM_TLS_TAG_LEN)
+                    return 0;
                 len -= EVP_GCM_TLS_TAG_LEN;
+            }
             c->buf[arg - 2] = len >> 8;
             c->buf[arg - 1] = len & 0xff;
         }
@@ -1455,7 +1463,7 @@ static int aes_gcm_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         /* Retrieve tag */
         CRYPTO_gcm128_tag(&gctx->gcm, ctx->buf, EVP_GCM_TLS_TAG_LEN);
         /* If tag mismatch wipe buffer */
-        if (memcmp(ctx->buf, in + len, EVP_GCM_TLS_TAG_LEN)) {
+        if (CRYPTO_memcmp(ctx->buf, in + len, EVP_GCM_TLS_TAG_LEN)) {
             OPENSSL_cleanse(out, len);
             goto err;
         }
@@ -1770,7 +1778,7 @@ static int aes_ccm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
     case EVP_CTRL_CCM_SET_TAG:
         if ((arg & 1) || arg < 4 || arg > 16)
             return 0;
-        if ((c->encrypt && ptr) || (!c->encrypt && !ptr))
+        if (c->encrypt && ptr)
             return 0;
         if (ptr) {
             cctx->tag_set = 1;
@@ -1895,7 +1903,7 @@ static int aes_ccm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
             !CRYPTO_ccm128_decrypt(ccm, in, out, len)) {
             unsigned char tag[16];
             if (CRYPTO_ccm128_tag(ccm, tag, cctx->M)) {
-                if (!memcmp(tag, ctx->buf, cctx->M))
+                if (!CRYPTO_memcmp(tag, ctx->buf, cctx->M))
                     rv = len;
             }
         }

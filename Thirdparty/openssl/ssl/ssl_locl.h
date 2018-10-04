@@ -436,8 +436,9 @@
 # define SSL_MEDIUM              0x00000040L
 # define SSL_HIGH                0x00000080L
 # define SSL_FIPS                0x00000100L
+# define SSL_NOT_DEFAULT         0x00000200L
 
-/* we have used 000001ff - 23 bits left to go */
+/* we have used 000003ff - 22 bits left to go */
 
 /*-
  * Macros to check the export status and cipher strength for export ciphers.
@@ -490,6 +491,12 @@
 # define SSL_CLIENT_USE_TLS1_2_CIPHERS(s)        \
                 ((SSL_IS_DTLS(s) && s->client_version <= DTLS1_2_VERSION) || \
                 (!SSL_IS_DTLS(s) && s->client_version >= TLS1_2_VERSION))
+/*
+ * Determine if a client should send signature algorithms extension:
+ * as with TLS1.2 cipher we can't rely on method flags.
+ */
+# define SSL_CLIENT_USE_SIGALGS(s)        \
+    SSL_CLIENT_USE_TLS1_2_CIPHERS(s)
 
 /* Mostly for SSLv3 */
 # define SSL_PKEY_RSA_ENC        0
@@ -583,6 +590,8 @@ typedef struct {
  * corresponding ServerHello extension.
  */
 # define SSL_EXT_FLAG_SENT       0x2
+
+# define MAX_WARN_ALERT_COUNT    5
 
 typedef struct {
     custom_ext_method *meths;
@@ -687,6 +696,12 @@ typedef struct cert_st {
     custom_ext_methods cli_ext;
     custom_ext_methods srv_ext;
     int references;             /* >1 only if SSL_copy_session_id is used */
+    /* non-optimal, but here due to compatibility */
+    unsigned char *alpn_proposed;   /* server */
+    unsigned int alpn_proposed_len;
+    int alpn_sent;                  /* client */
+    /* Count of the number of consecutive warning alerts received */
+    unsigned int alert_count;
 } CERT;
 
 typedef struct sess_cert_st {
@@ -1058,6 +1073,7 @@ int ssl_set_peer_cert_type(SESS_CERT *c, int type);
 int ssl_get_new_session(SSL *s, int session);
 int ssl_get_prev_session(SSL *s, unsigned char *session, int len,
                          const unsigned char *limit);
+SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket);
 int ssl_cipher_id_cmp(const SSL_CIPHER *a, const SSL_CIPHER *b);
 DECLARE_OBJ_BSEARCH_GLOBAL_CMP_FN(SSL_CIPHER, SSL_CIPHER, ssl_cipher_id);
 int ssl_cipher_ptr_id_cmp(const SSL_CIPHER *const *ap,
@@ -1142,7 +1158,7 @@ long ssl2_default_timeout(void);
 
 const SSL_CIPHER *ssl3_get_cipher_by_char(const unsigned char *p);
 int ssl3_put_cipher_by_char(const SSL_CIPHER *c, unsigned char *p);
-void ssl3_init_finished_mac(SSL *s);
+int ssl3_init_finished_mac(SSL *s);
 int ssl3_send_server_certificate(SSL *s);
 int ssl3_send_newsession_ticket(SSL *s);
 int ssl3_send_cert_status(SSL *s);
@@ -1230,14 +1246,14 @@ int dtls1_write_app_data_bytes(SSL *s, int type, const void *buf, int len);
 int dtls1_write_bytes(SSL *s, int type, const void *buf, int len);
 
 int dtls1_send_change_cipher_spec(SSL *s, int a, int b);
-int dtls1_send_finished(SSL *s, int a, int b, const char *sender, int slen);
 int dtls1_read_failed(SSL *s, int code);
 int dtls1_buffer_message(SSL *s, int ccs);
 int dtls1_retransmit_message(SSL *s, unsigned short seq,
                              unsigned long frag_off, int *found);
 int dtls1_get_queue_priority(unsigned short seq, int is_ccs);
 int dtls1_retransmit_buffered_messages(SSL *s);
-void dtls1_clear_record_buffer(SSL *s);
+void dtls1_clear_received_buffer(SSL *s);
+void dtls1_clear_sent_buffer(SSL *s);
 void dtls1_get_message_header(unsigned char *data,
                               struct hm_header_st *msg_hdr);
 void dtls1_get_ccs_header(unsigned char *data, struct ccs_header_st *ccs_hdr);
@@ -1366,9 +1382,9 @@ unsigned char *ssl_add_clienthello_tlsext(SSL *s, unsigned char *buf,
 unsigned char *ssl_add_serverhello_tlsext(SSL *s, unsigned char *buf,
                                           unsigned char *limit, int *al);
 int ssl_parse_clienthello_tlsext(SSL *s, unsigned char **data,
-                                 unsigned char *d, int n);
+                                 unsigned char *limit);
 int tls1_set_server_sigalgs(SSL *s);
-int ssl_check_clienthello_tlsext_late(SSL *s);
+int ssl_check_clienthello_tlsext_late(SSL *s, int *al);
 int ssl_parse_serverhello_tlsext(SSL *s, unsigned char **data,
                                  unsigned char *d, int n);
 int ssl_prepare_clienthello_tlsext(SSL *s);
@@ -1414,7 +1430,7 @@ int ssl_parse_clienthello_renegotiate_ext(SSL *s, unsigned char *d, int len,
 long ssl_get_algorithm2(SSL *s);
 int tls1_save_sigalgs(SSL *s, const unsigned char *data, int dsize);
 int tls1_process_sigalgs(SSL *s);
-size_t tls12_get_psigalgs(SSL *s, const unsigned char **psigs);
+size_t tls12_get_psigalgs(SSL *s, int sent, const unsigned char **psigs);
 int tls12_check_peer_sigalg(const EVP_MD **pmd, SSL *s,
                             const unsigned char *sig, EVP_PKEY *pkey);
 void ssl_set_client_disabled(SSL *s);
@@ -1439,15 +1455,15 @@ int tls1_cbc_remove_padding(const SSL *s,
                             SSL3_RECORD *rec,
                             unsigned block_size, unsigned mac_size);
 char ssl3_cbc_record_digest_supported(const EVP_MD_CTX *ctx);
-void ssl3_cbc_digest_record(const EVP_MD_CTX *ctx,
-                            unsigned char *md_out,
-                            size_t *md_out_size,
-                            const unsigned char header[13],
-                            const unsigned char *data,
-                            size_t data_plus_mac_size,
-                            size_t data_plus_mac_plus_padding_size,
-                            const unsigned char *mac_secret,
-                            unsigned mac_secret_length, char is_sslv3);
+int ssl3_cbc_digest_record(const EVP_MD_CTX *ctx,
+                           unsigned char *md_out,
+                           size_t *md_out_size,
+                           const unsigned char header[13],
+                           const unsigned char *data,
+                           size_t data_plus_mac_size,
+                           size_t data_plus_mac_plus_padding_size,
+                           const unsigned char *mac_secret,
+                           unsigned mac_secret_length, char is_sslv3);
 
 void tls_fips_digest_extra(const EVP_CIPHER_CTX *cipher_ctx,
                            EVP_MD_CTX *mac_ctx, const unsigned char *data,
@@ -1466,6 +1482,8 @@ int custom_ext_add(SSL *s, int server,
                    unsigned char **pret, unsigned char *limit, int *al);
 
 int custom_exts_copy(custom_ext_methods *dst, const custom_ext_methods *src);
+int custom_exts_copy_flags(custom_ext_methods *dst,
+                           const custom_ext_methods *src);
 void custom_exts_free(custom_ext_methods *exts);
 
 # else

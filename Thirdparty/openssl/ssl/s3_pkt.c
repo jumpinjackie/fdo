@@ -136,6 +136,9 @@ static int do_ssl3_write(SSL *s, int type, const unsigned char *buf,
                          unsigned int len, int create_empty_fragment);
 static int ssl3_get_record(SSL *s);
 
+/*
+ * Return values are as per SSL_read()
+ */
 int ssl3_read_n(SSL *s, int n, int max, int extend)
 {
     /*
@@ -361,11 +364,22 @@ static int ssl3_get_record(SSL *s)
             if (version != s->version) {
                 SSLerr(SSL_F_SSL3_GET_RECORD, SSL_R_WRONG_VERSION_NUMBER);
                 if ((s->version & 0xFF00) == (version & 0xFF00)
-                    && !s->enc_write_ctx && !s->write_hash)
+                    && !s->enc_write_ctx && !s->write_hash) {
+                    if (rr->type == SSL3_RT_ALERT) {
+                        /*
+                         * The record is using an incorrect version number, but
+                         * what we've got appears to be an alert. We haven't
+                         * read the body yet to check whether its a fatal or
+                         * not - but chances are it is. We probably shouldn't
+                         * send a fatal alert back. We'll just end.
+                         */
+                         goto err;
+                    }
                     /*
                      * Send back error using their minor version number :-)
                      */
                     s->version = (unsigned short)version;
+                }
                 al = SSL_AD_PROTOCOL_VERSION;
                 goto f_err;
             }
@@ -656,7 +670,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, int len)
      * promptly send beyond the end of the users buffer ... so we trap and
      * report the error in a way the user will notice
      */
-    if (len < tot) {
+    if ((len < tot) || ((wb->left != 0) && (len < (tot + s->s3->wpend_tot)))) {
         SSLerr(SSL_F_SSL3_WRITE_BYTES, SSL_R_BAD_LENGTH);
         return (-1);
     }
@@ -685,6 +699,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, int len)
         len >= 4 * (int)(max_send_fragment = s->max_send_fragment) &&
         s->compress == NULL && s->msg_callback == NULL &&
         SSL_USE_EXPLICIT_IV(s) &&
+        s->enc_write_ctx != NULL &&
         EVP_CIPHER_flags(s->enc_write_ctx->cipher) &
         EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK) {
         unsigned char aad[13];
@@ -708,7 +723,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, int len)
                 packlen *= 4;
 
             wb->buf = OPENSSL_malloc(packlen);
-            if(!wb->buf) {
+            if (!wb->buf) {
                 SSLerr(SSL_F_SSL3_WRITE_BYTES, ERR_R_MALLOC_FAILURE);
                 return -1;
             }
@@ -1071,7 +1086,10 @@ static int do_ssl3_write(SSL *s, int type, const unsigned char *buf,
     return -1;
 }
 
-/* if s->s3->wbuf.left != 0, we need to call this */
+/* if s->s3->wbuf.left != 0, we need to call this
+ *
+ * Return values are as per SSL_write(), i.e.
+ */
 int ssl3_write_pending(SSL *s, int type, const unsigned char *buf,
                        unsigned int len)
 {
@@ -1104,14 +1122,14 @@ int ssl3_write_pending(SSL *s, int type, const unsigned char *buf,
             s->rwstate = SSL_NOTHING;
             return (s->s3->wpend_ret);
         } else if (i <= 0) {
-            if (s->version == DTLS1_VERSION || s->version == DTLS1_BAD_VER) {
+            if (SSL_IS_DTLS(s)) {
                 /*
                  * For DTLS, just drop it. That's kind of the whole point in
                  * using a datagram service
                  */
                 wb->left = 0;
             }
-            return (i);
+            return i;
         }
         wb->offset += i;
         wb->left -= i;
@@ -1217,6 +1235,13 @@ int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
         if (ret <= 0)
             return (ret);
     }
+
+    /*
+     * Reset the count of consecutive warning alerts if we've got a non-empty
+     * record that isn't an alert.
+     */
+    if (rr->type != SSL3_RT_ALERT && rr->length != 0)
+        s->cert->alert_count = 0;
 
     /* we now have a packet which can be read and processed */
 
@@ -1402,7 +1427,7 @@ int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
         (s->s3->handshake_fragment_len >= 4) &&
         (s->s3->handshake_fragment[0] == SSL3_MT_CLIENT_HELLO) &&
         (s->session != NULL) && (s->session->cipher != NULL) &&
-        !(s->ctx->options & SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION)) {
+        !(s->options & SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION)) {
         /*
          * s->s3->handshake_fragment_len = 0;
          */
@@ -1432,6 +1457,14 @@ int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
 
         if (alert_level == SSL3_AL_WARNING) {
             s->s3->warn_alert = alert_descr;
+
+            s->cert->alert_count++;
+            if (s->cert->alert_count == MAX_WARN_ALERT_COUNT) {
+                al = SSL_AD_UNEXPECTED_MESSAGE;
+                SSLerr(SSL_F_SSL3_READ_BYTES, SSL_R_TOO_MANY_WARN_ALERTS);
+                goto f_err;
+            }
+
             if (alert_descr == SSL_AD_CLOSE_NOTIFY) {
                 s->shutdown |= SSL_RECEIVED_SHUTDOWN;
                 return (0);
@@ -1462,7 +1495,7 @@ int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
             BIO_snprintf(tmp, sizeof tmp, "%d", alert_descr);
             ERR_add_error_data(2, "SSL alert number ", tmp);
             s->shutdown |= SSL_RECEIVED_SHUTDOWN;
-            SSL_CTX_remove_session(s->ctx, s->session);
+            SSL_CTX_remove_session(s->session_ctx, s->session);
             return (0);
         } else {
             al = SSL_AD_ILLEGAL_PARAMETER;
@@ -1567,16 +1600,13 @@ int ssl3_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
 
     switch (rr->type) {
     default:
-#ifndef OPENSSL_NO_TLS
         /*
-         * TLS up to v1.1 just ignores unknown message types: TLS v1.2 give
-         * an unexpected message alert.
+         * TLS 1.0 and 1.1 say you SHOULD ignore unrecognised record types, but
+         * TLS 1.2 says you MUST send an unexpected message alert. We use the
+         * TLS 1.2 behaviour for all protocol versions to prevent issues where
+         * no progress is being made and the peer continually sends unrecognised
+         * record types, using up resources processing them.
          */
-        if (s->version >= TLS1_VERSION && s->version <= TLS1_1_VERSION) {
-            rr->length = 0;
-            goto start;
-        }
-#endif
         al = SSL_AD_UNEXPECTED_MESSAGE;
         SSLerr(SSL_F_SSL3_READ_BYTES, SSL_R_UNEXPECTED_RECORD);
         goto f_err;
@@ -1687,7 +1717,7 @@ int ssl3_send_alert(SSL *s, int level, int desc)
         return -1;
     /* If a fatal one, remove from cache */
     if ((level == 2) && (s->session != NULL))
-        SSL_CTX_remove_session(s->ctx, s->session);
+        SSL_CTX_remove_session(s->session_ctx, s->session);
 
     s->s3->alert_dispatch = 1;
     s->s3->send_alert[0] = level;

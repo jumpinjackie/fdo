@@ -60,6 +60,7 @@
 # include <openssl/sha.h>
 # include <openssl/rand.h>
 # include "modes_lcl.h"
+# include "constant_time_locl.h"
 
 # ifndef EVP_CIPH_FLAG_AEAD_CIPHER
 #  define EVP_CIPH_FLAG_AEAD_CIPHER       0x200000
@@ -94,7 +95,7 @@ typedef struct {
         defined(_M_AMD64)       || defined(_M_X64)      || \
         defined(__INTEL__)      )
 
-extern unsigned int OPENSSL_ia32cap_P[3];
+extern unsigned int OPENSSL_ia32cap_P[];
 #  define AESNI_CAPABLE   (1<<(57-32))
 
 int aesni_set_encrypt_key(const unsigned char *userKey, int bits,
@@ -578,10 +579,17 @@ static int aesni_cbc_hmac_sha1_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
             maxpad |= (255 - maxpad) >> (sizeof(maxpad) * 8 - 8);
             maxpad &= 255;
 
+            mask = constant_time_ge(maxpad, pad);
+            ret &= mask;
+            /*
+             * If pad is invalid then we will fail the above test but we must
+             * continue anyway because we are in constant time code. However,
+             * we'll use the maxpad value instead of the supplied pad to make
+             * sure we perform well defined pointer arithmetic.
+             */
+            pad = constant_time_select(mask, pad, maxpad);
+
             inp_len = len - (SHA_DIGEST_LENGTH + pad + 1);
-            mask = (0 - ((inp_len - len) >> (sizeof(inp_len) * 8 - 1)));
-            inp_len &= mask;
-            ret &= (int)mask;
 
             key->aux.tls_aad[plen - 2] = inp_len >> 8;
             key->aux.tls_aad[plen - 1] = inp_len;
@@ -845,12 +853,19 @@ static int aesni_cbc_hmac_sha1_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
     case EVP_CTRL_AEAD_TLS1_AAD:
         {
             unsigned char *p = ptr;
-            unsigned int len = p[arg - 2] << 8 | p[arg - 1];
+            unsigned int len;
+
+            if (arg != EVP_AEAD_TLS1_AAD_LEN)
+                return -1;
+ 
+            len = p[arg - 2] << 8 | p[arg - 1];
 
             if (ctx->encrypt) {
                 key->payload_length = len;
                 if ((key->aux.tls_ver =
                      p[arg - 4] << 8 | p[arg - 3]) >= TLS1_1_VERSION) {
+                    if (len < AES_BLOCK_SIZE)
+                        return 0;
                     len -= AES_BLOCK_SIZE;
                     p[arg - 2] = len >> 8;
                     p[arg - 1] = len;
@@ -862,8 +877,6 @@ static int aesni_cbc_hmac_sha1_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
                                AES_BLOCK_SIZE) & -AES_BLOCK_SIZE)
                              - len);
             } else {
-                if (arg > 13)
-                    arg = 13;
                 memcpy(key->aux.tls_aad, ptr, arg);
                 key->payload_length = arg;
 

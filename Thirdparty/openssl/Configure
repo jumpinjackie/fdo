@@ -7,6 +7,7 @@ eval 'exec perl -S $0 ${1+"$@"}'
 
 require 5.000;
 use strict;
+use File::Compare;
 
 # see INSTALL for instructions.
 
@@ -57,8 +58,13 @@ my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [experimenta
 # zlib-dynamic	Like "zlib", but the zlib library is expected to be a shared
 #		library and will be loaded in run-time by the OpenSSL library.
 # sctp          include SCTP support
-# 386           generate 80386 code
-# no-sse2	disables IA-32 SSE2 code, above option implies no-sse2
+# enable-weak-ssl-ciphers
+#		Enable EXPORT and LOW SSLv3 ciphers that are disabled by
+#		default.  Note, weak SSLv2 ciphers are unconditionally
+#		disabled.
+# 386		generate 80386 code in assembly modules
+# no-sse2	disables IA-32 SSE2 code in assembly modules, the above
+#		mentioned '386' option implies this one
 # no-<cipher>   build without specified algorithm (rsa, idea, rc5, ...)
 # -<xxx> +<xxx> compiler options are passed through 
 #
@@ -103,9 +109,29 @@ my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [experimenta
 # Minimum warning options... any contributions to OpenSSL should at least get
 # past these. 
 
-my $gcc_devteam_warn = "-Wall -pedantic -DPEDANTIC -Wno-long-long -Wsign-compare -Wmissing-prototypes -Wshadow -Wformat -Werror -DCRYPTO_MDEBUG_ALL -DCRYPTO_MDEBUG_ABORT -DREF_CHECK -DOPENSSL_NO_DEPRECATED";
+my $gcc_devteam_warn = "-Wall -pedantic -DPEDANTIC -Wno-long-long -Wsign-compare -Wmissing-prototypes -Wshadow -Wformat -Wundef -Werror -DCRYPTO_MDEBUG_ALL -DCRYPTO_MDEBUG_ABORT -DREF_CHECK -DOPENSSL_NO_DEPRECATED";
 
-my $clang_disabled_warnings = "-Wno-language-extension-token -Wno-extended-offsetof -Wno-padded -Wno-shorten-64-to-32 -Wno-format-nonliteral -Wno-missing-noreturn -Wno-unused-parameter -Wno-sign-conversion -Wno-unreachable-code -Wno-conversion -Wno-documentation -Wno-missing-variable-declarations -Wno-cast-align -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-variable-declarations -Wno-missing-field-initializers -Wno-unused-macros -Wno-disabled-macro-expansion -Wno-conditional-uninitialized -Wno-switch-enum";
+# TODO(openssl-team): fix problems and investigate if (at least) the following
+# warnings can also be enabled:
+# -Wconditional-uninitialized, -Wswitch-enum, -Wunused-macros,
+# -Wmissing-field-initializers, -Wmissing-variable-declarations,
+# -Wincompatible-pointer-types-discards-qualifiers, -Wcast-align,
+# -Wunreachable-code -Wunused-parameter -Wlanguage-extension-token
+# -Wextended-offsetof
+my $clang_disabled_warnings = "-Wno-unused-parameter -Wno-missing-field-initializers -Wno-language-extension-token  -Wno-extended-offsetof";
+
+# These are used in addition to $gcc_devteam_warn when the compiler is clang.
+# TODO(openssl-team): fix problems and investigate if (at least) the
+# following warnings can also be enabled: -Wconditional-uninitialized,
+# -Wswitch-enum, -Wunused-macros, -Wmissing-field-initializers,
+# -Wmissing-variable-declarations,
+# -Wincompatible-pointer-types-discards-qualifiers, -Wcast-align,
+# -Wunreachable-code -Wunused-parameter -Wlanguage-extension-token
+# -Wextended-offsetof
+my $clang_devteam_warn = "-Wno-unused-parameter -Wno-missing-field-initializers -Wno-language-extension-token -Wno-extended-offsetof -Qunused-arguments";
+
+# Warn that "make depend" should be run?
+my $warn_make_depend = 0;
 
 my $strict_warnings = 0;
 
@@ -233,12 +259,12 @@ my %table=(
 
 #### SPARC Solaris with GNU C setups
 "solaris-sparcv7-gcc","gcc:-O3 -fomit-frame-pointer -Wall -DB_ENDIAN -DBN_DIV2W::-D_REENTRANT::-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${no_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-"solaris-sparcv8-gcc","gcc:-mv8 -O3 -fomit-frame-pointer -Wall -DB_ENDIAN -DBN_DIV2W::-D_REENTRANT::-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+"solaris-sparcv8-gcc","gcc:-mcpu=v8 -O3 -fomit-frame-pointer -Wall -DB_ENDIAN -DBN_DIV2W::-D_REENTRANT::-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 # -m32 should be safe to add as long as driver recognizes -mcpu=ultrasparc
 "solaris-sparcv9-gcc","gcc:-m32 -mcpu=ultrasparc -O3 -fomit-frame-pointer -Wall -DB_ENDIAN -DBN_DIV2W::-D_REENTRANT:ULTRASPARC:-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv9_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "solaris64-sparcv9-gcc","gcc:-m64 -mcpu=ultrasparc -O3 -Wall -DB_ENDIAN::-D_REENTRANT:ULTRASPARC:-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_PTR DES_RISC1 DES_UNROLL BF_PTR:${sparcv9_asm}:dlfcn:solaris-shared:-fPIC:-m64 -shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::/64",
 ####
-"debug-solaris-sparcv8-gcc","gcc:-DBN_DEBUG -DREF_CHECK -DCONF_DEBUG -DBN_CTX_DEBUG -DCRYPTO_MDEBUG_ALL -O -g -mv8 -Wall -DB_ENDIAN::-D_REENTRANT::-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+"debug-solaris-sparcv8-gcc","gcc:-DBN_DEBUG -DREF_CHECK -DCONF_DEBUG -DBN_CTX_DEBUG -DCRYPTO_MDEBUG_ALL -O -g -mcpu=v8 -Wall -DB_ENDIAN::-D_REENTRANT::-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "debug-solaris-sparcv9-gcc","gcc:-DBN_DEBUG -DREF_CHECK -DCONF_DEBUG -DBN_CTX_DEBUG -DCRYPTO_MDEBUG_ALL -DPEDANTIC -O -g -mcpu=ultrasparc -pedantic -ansi -Wall -Wshadow -Wno-long-long -D__EXTENSIONS__ -DB_ENDIAN -DBN_DIV2W::-D_REENTRANT:ULTRASPARC:-lsocket -lnsl -ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv9_asm}:dlfcn:solaris-shared:-fPIC:-shared:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 
 #### SPARC Solaris with Sun C setups
@@ -255,7 +281,7 @@ my %table=(
 
 #### SunOS configs, assuming sparc for the gcc one.
 #"sunos-cc", "cc:-O4 -DNOPROTO -DNOCONST::(unknown):SUNOS::DES_UNROLL:${no_asm}::",
-"sunos-gcc","gcc:-O3 -mv8 -Dssize_t=int::(unknown):SUNOS::BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL DES_PTR DES_RISC1:${no_asm}::",
+"sunos-gcc","gcc:-O3 -mcpu=v8 -Dssize_t=int::(unknown):SUNOS::BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL DES_PTR DES_RISC1:${no_asm}::",
 
 #### IRIX 5.x configs
 # -mips2 flag is added by ./config when appropriate.
@@ -398,7 +424,8 @@ my %table=(
 "linux-ia64",	"gcc:-DL_ENDIAN -DTERMIO -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_UNROLL DES_INT:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "linux-ia64-icc","icc:-DL_ENDIAN -O2 -Wall::-D_REENTRANT::-ldl -no_cpprt:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_INT:${ia64_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "linux-x86_64",	"gcc:-m64 -DL_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
-"linux-x86_64-clang",	"clang: -m64 -DL_ENDIAN -O3 -Weverything $clang_disabled_warnings -Qunused-arguments::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+"linux-x86_64-clang",	"clang: -m64 -DL_ENDIAN -O3 -Wall -Wextra $clang_disabled_warnings -Qunused-arguments::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
+"debug-linux-x86_64-clang",	"clang: -DBN_DEBUG -DREF_CHECK -DCONF_DEBUG -DCRYPTO_MDEBUG -m64 -DL_ENDIAN -g -Wall -Wextra $clang_disabled_warnings -Qunused-arguments::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
 "linux-x86_64-icc", "icc:-DL_ENDIAN -O2::-D_REENTRANT::-ldl -no_cpprt:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
 "linux-x32",	"gcc:-mx32 -DL_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT RC4_CHUNK_LL DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:linux-shared:-fPIC:-mx32:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::x32",
 "linux64-s390x",	"gcc:-m64 -DB_ENDIAN -O3 -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL:${s390x_asm}:64:dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR):::64",
@@ -419,7 +446,7 @@ my %table=(
 #### SPARC Linux setups
 # Ray Miller <ray.miller@computing-services.oxford.ac.uk> has patiently
 # assisted with debugging of following two configs.
-"linux-sparcv8","gcc:-mv8 -DB_ENDIAN -O3 -fomit-frame-pointer -Wall -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+"linux-sparcv8","gcc:-mcpu=v8 -DB_ENDIAN -O3 -fomit-frame-pointer -Wall -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv8_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 # it's a real mess with -mcpu=ultrasparc option under Linux, but
 # -Wa,-Av8plus should do the trick no matter what.
 "linux-sparcv9","gcc:-m32 -mcpu=ultrasparc -DB_ENDIAN -O3 -fomit-frame-pointer -Wall -Wa,-Av8plus -DBN_DIV2W::-D_REENTRANT:ULTRASPARC:-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:${sparcv9_asm}:dlfcn:linux-shared:-fPIC:-m32:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
@@ -454,7 +481,7 @@ my %table=(
 "BSD-x86",	"gcc:-DL_ENDIAN -O3 -fomit-frame-pointer -Wall::${BSDthreads}:::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_asm}:a.out:dlfcn:bsd-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "BSD-x86-elf",	"gcc:-DL_ENDIAN -O3 -fomit-frame-pointer -Wall::${BSDthreads}:::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:bsd-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "debug-BSD-x86-elf",	"gcc:-DL_ENDIAN -O3 -Wall -g::${BSDthreads}:::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:bsd-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-"BSD-sparcv8",	"gcc:-DB_ENDIAN -O3 -mv8 -Wall::${BSDthreads}:::BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL:${sparcv8_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+"BSD-sparcv8",	"gcc:-DB_ENDIAN -O3 -mcpu=v8 -Wall::${BSDthreads}:::BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL:${sparcv8_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 
 "BSD-generic64","gcc:-O3 -Wall::${BSDthreads}:::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${no_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 # -DMD32_REG_T=int doesn't actually belong in sparc64 target, it
@@ -462,7 +489,7 @@ my %table=(
 # triggered by RIPEMD160 code.
 "BSD-sparc64",	"gcc:-DB_ENDIAN -O3 -DMD32_REG_T=int -Wall::${BSDthreads}:::BN_LLONG RC2_CHAR RC4_CHUNK DES_INT DES_PTR DES_RISC2 BF_PTR:${sparcv9_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 "BSD-ia64",	"gcc:-DL_ENDIAN -O3 -Wall::${BSDthreads}:::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_UNROLL DES_INT:${ia64_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-"BSD-x86_64",	"gcc:-DL_ENDIAN -O3 -Wall::${BSDthreads}:::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+"BSD-x86_64",	"cc:-DL_ENDIAN -O3 -Wall::${BSDthreads}:::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_UNROLL:${x86_64_asm}:elf:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 
 "bsdi-elf-gcc",     "gcc:-DPERL5 -DL_ENDIAN -fomit-frame-pointer -O3 -march=i486 -Wall::(unknown)::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 
@@ -760,11 +787,13 @@ my %disabled = ( # "what"         => "comment" [or special keyword "experimental
 		 "md2"            => "default",
 		 "rc5"            => "default",
 		 "rfc3779"	  => "default",
-		 "sctp"       => "default",
+		 "sctp"           => "default",
 		 "shared"         => "default",
 		 "ssl-trace"	  => "default",
+		 "ssl2"           => "default",
 		 "store"	  => "experimental",
 		 "unit-test"	  => "default",
+		 "weak-ssl-ciphers" => "default",
 		 "zlib"           => "default",
 		 "zlib-dynamic"   => "default"
 	       );
@@ -772,7 +801,7 @@ my @experimental = ();
 
 # This is what $depflags will look like with the above defaults
 # (we need this to see if we should advise the user to run "make depend"):
-my $default_depflags = " -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_LIBUNBOUND -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SSL_TRACE -DOPENSSL_NO_STORE -DOPENSSL_NO_UNIT_TEST";
+my $default_depflags = " -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_LIBUNBOUND -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SSL_TRACE -DOPENSSL_NO_SSL2 -DOPENSSL_NO_STORE -DOPENSSL_NO_UNIT_TEST -DOPENSSL_NO_WEAK_SSL_CIPHERS";
 
 # Explicit "no-..." options will be collected in %disabled along with the defaults.
 # To remove something from %disabled, use "enable-foo" (unless it's experimental).
@@ -1055,11 +1084,6 @@ if (defined($disabled{"md5"}) || defined($disabled{"sha"})
 	$disabled{"tls1"} = "forced";
 	}
 
-if (defined($disabled{"tls1"}))
-	{
-	$disabled{"tlsext"} = "forced";
-	}
-
 if (defined($disabled{"ec"}) || defined($disabled{"dsa"})
     || defined($disabled{"dh"}))
 	{
@@ -1195,6 +1219,7 @@ my $cc = $fields[$idx_cc];
 if($ENV{CC}) {
     $cc = $ENV{CC};
 }
+
 my $cflags = $fields[$idx_cflags];
 my $unistd = $fields[$idx_unistd];
 my $thread_cflag = $fields[$idx_thread_cflag];
@@ -1226,6 +1251,7 @@ my $shared_extension = $fields[$idx_shared_extension];
 my $ranlib = $ENV{'RANLIB'} || $fields[$idx_ranlib];
 my $ar = $ENV{'AR'} || "ar";
 my $arflags = $fields[$idx_arflags];
+my $windres = $ENV{'RC'} || $ENV{'WINDRES'} || "windres";
 my $multilib = $fields[$idx_multilib];
 
 # if $prefix/lib$multilib is not an existing directory, then
@@ -1494,7 +1520,7 @@ if ($target =~ /\-icc$/)	# Intel C compiler
 # linker only when --prefix is not /usr.
 if ($target =~ /^BSD\-/)
 	{
-	$shared_ldflag.=" -Wl,-rpath,\$(LIBRPATH)" if ($prefix !~ m|^/usr[/]*$|);
+	$shared_ldflag.=" -Wl,-rpath,\$\$(LIBRPATH)" if ($prefix !~ m|^/usr[/]*$|);
 	}
 
 if ($sys_id ne "")
@@ -1534,8 +1560,15 @@ $cpuid_obj="mem_clr.o"	unless ($cpuid_obj =~ /\.o$/);
 $des_obj=$des_enc	unless ($des_obj =~ /\.o$/);
 $bf_obj=$bf_enc		unless ($bf_obj =~ /\.o$/);
 $cast_obj=$cast_enc	unless ($cast_obj =~ /\.o$/);
-$rc4_obj=$rc4_enc	unless ($rc4_obj =~ /\.o$/);
 $rc5_obj=$rc5_enc	unless ($rc5_obj =~ /\.o$/);
+if ($rc4_obj =~ /\.o$/)
+	{
+	$cflags.=" -DRC4_ASM";
+	}
+else
+	{
+	$rc4_obj=$rc4_enc;
+	}
 if ($sha1_obj =~ /\.o$/)
 	{
 #	$sha1_obj=$sha1_enc;
@@ -1628,13 +1661,23 @@ if ($shlib_version_number =~ /(^[0-9]*)\.([0-9\.]*)/)
 	$shlib_minor=$2;
 	}
 
+my $ecc = $cc;
+$ecc = "clang" if `$cc --version 2>&1` =~ /clang/;
+
 if ($strict_warnings)
 	{
 	my $wopt;
-	die "ERROR --strict-warnings requires gcc or clang" unless ($cc =~ /gcc$/ or $cc =~ /clang$/);
+	die "ERROR --strict-warnings requires gcc or clang" unless ($ecc =~ /gcc$/ or $ecc =~ /clang$/);
 	foreach $wopt (split /\s+/, $gcc_devteam_warn)
 		{
-		$cflags .= " $wopt" unless ($cflags =~ /$wopt/)
+		$cflags .= " $wopt" unless ($cflags =~ /(^|\s)$wopt(\s|$)/)
+		}
+	if ($ecc eq "clang")
+		{
+		foreach $wopt (split /\s+/, $clang_devteam_warn)
+			{
+			$cflags .= " $wopt" unless ($cflags =~ /(^|\s)$wopt(\s|$)/)
+			}
 		}
 	}
 
@@ -1679,13 +1722,16 @@ while (<IN>)
 		s/^AR=\s*/AR= \$\(CROSS_COMPILE\)/;
 		s/^NM=\s*/NM= \$\(CROSS_COMPILE\)/;
 		s/^RANLIB=\s*/RANLIB= \$\(CROSS_COMPILE\)/;
+		s/^RC=\s*/RC= \$\(CROSS_COMPILE\)/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= \$\(CROSS_COMPILE\)$cc/ if $cc eq "gcc";
 		}
 	else	{
 		s/^CC=.*$/CC= $cc/;
 		s/^AR=\s*ar/AR= $ar/;
 		s/^RANLIB=.*/RANLIB= $ranlib/;
+		s/^RC=.*/RC= $windres/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
+		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $ecc eq "gcc" || $ecc eq "clang";
 		}
 	s/^CFLAG=.*$/CFLAG= $cflags/;
 	s/^DEPFLAG=.*$/DEPFLAG=$depflags/;
@@ -1748,8 +1794,16 @@ while (<IN>)
 	}
 close(IN);
 close(OUT);
-rename($Makefile,"$Makefile.bak") || die "unable to rename $Makefile\n" if -e $Makefile;
-rename("$Makefile.new",$Makefile) || die "unable to rename $Makefile.new\n";
+if ((compare($Makefile, "$Makefile.new"))
+	or file_newer('Configure', $Makefile)
+	or file_newer('config', $Makefile)
+	or file_newer('Makefile.org', $Makefile))
+	{
+	rename($Makefile,"$Makefile.bak") || die "unable to rename $Makefile\n" if -e $Makefile;
+	rename("$Makefile.new",$Makefile) || die "unable to rename $Makefile.new\n";
+	}
+else
+	{ unlink("$Makefile.new"); }
 
 print "CC            =$cc\n";
 print "CFLAG         =$cflags\n";
@@ -1941,9 +1995,13 @@ print OUT "#ifdef  __cplusplus\n";
 print OUT "}\n";
 print OUT "#endif\n";
 close(OUT);
-rename("crypto/opensslconf.h","crypto/opensslconf.h.bak") || die "unable to rename crypto/opensslconf.h\n" if -e "crypto/opensslconf.h";
-rename("crypto/opensslconf.h.new","crypto/opensslconf.h") || die "unable to rename crypto/opensslconf.h.new\n";
-
+if (compare("crypto/opensslconf.h.new","crypto/opensslconf.h"))
+	{
+	rename("crypto/opensslconf.h","crypto/opensslconf.h.bak") || die "unable to rename crypto/opensslconf.h\n" if -e "crypto/opensslconf.h";
+	rename("crypto/opensslconf.h.new","crypto/opensslconf.h") || die "unable to rename crypto/opensslconf.h.new\n";
+	}
+else
+	{ unlink("crypto/opensslconf.h.new"); }
 
 # Fix the date
 
@@ -1983,12 +2041,13 @@ EOF
 	close(OUT);
 } else {
 	my $make_command = "$make PERL=\'$perl\'";
-	my $make_targets = "";
-	$make_targets .= " links" if $symlink;
-	$make_targets .= " depend" if $depflags ne $default_depflags && $make_depend;
-	$make_targets .= " gentests" if $symlink;
-	(system $make_command.$make_targets) == 0 or exit $?
-		if $make_targets ne "";
+	my @make_targets = ();
+	push @make_targets, "links" if $symlink;
+	push @make_targets, "depend" if $depflags ne $default_depflags && $make_depend;
+	push @make_targets, "gentests" if $symlink;
+	foreach my $make_target (@make_targets) {
+	    (system "$make_command $make_target") == 0 or exit $?;
+	}
 	if ( $perl =~ m@^/@) {
 	    &dofile("tools/c_rehash",$perl,'^#!/', '#!%s','^my \$dir;$', 'my $dir = "' . $openssldir . '";', '^my \$prefix;$', 'my $prefix = "' . $prefix . '";');
 	    &dofile("apps/CA.pl",$perl,'^#!/', '#!%s');
@@ -1998,13 +2057,7 @@ EOF
 	    &dofile("apps/CA.pl",'/usr/local/bin/perl','^#!/', '#!%s');
 	}
 	if ($depflags ne $default_depflags && !$make_depend) {
-		print <<EOF;
-
-Since you've disabled or enabled at least one algorithm, you need to do
-the following before building:
-
-	make depend
-EOF
+	    $warn_make_depend++;
 	}
 }
 
@@ -2084,12 +2137,18 @@ EOF
 
 print <<\EOF if ($no_shared_warn);
 
-You gave the option 'shared'.  Normally, that would give you shared libraries.
-Unfortunately, the OpenSSL configuration doesn't include shared library support
-for this platform yet, so it will pretend you gave the option 'no-shared'.  If
-you can inform the developpers (openssl-dev\@openssl.org) how to support shared
-libraries on this platform, they will at least look at it and try their best
-(but please first make sure you have tried with a current version of OpenSSL).
+You gave the option 'shared', which is not supported on this platform, so
+we will pretend you gave the option 'no-shared'.  If you know how to implement
+shared libraries, please let us know (but please first make sure you have
+tried with a current version of OpenSSL).
+EOF
+
+print <<EOF if ($warn_make_depend);
+
+*** Because of configuration changes, you MUST do the following before
+*** building:
+
+	make depend
 EOF
 
 exit(0);
@@ -2244,4 +2303,10 @@ sub test_sanity
 		}
 	print STDERR "No sanity errors detected!\n" if $errorcnt == 0;
 	return $errorcnt;
+	}
+
+sub file_newer
+	{
+	my ($file1, $file2) = @_;
+	return (stat($file1))[9] > (stat($file2))[9]
 	}

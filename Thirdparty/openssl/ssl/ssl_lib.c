@@ -244,7 +244,16 @@ int SSL_clear(SSL *s)
     ssl_clear_hash_ctx(&s->write_hash);
 
     s->first_packet = 0;
-
+#ifndef OPENSSL_NO_TLSEXT
+    if (s->cert != NULL) {
+        if (s->cert->alpn_proposed) {
+            OPENSSL_free(s->cert->alpn_proposed);
+            s->cert->alpn_proposed = NULL;
+        }
+        s->cert->alpn_proposed_len = 0;
+        s->cert->alpn_sent = 0;
+    }
+#endif
 #if 1
     /*
      * Check to see if we were changed into a different method, if so, revert
@@ -307,6 +316,7 @@ SSL *SSL_new(SSL_CTX *ctx)
     s->options = ctx->options;
     s->mode = ctx->mode;
     s->max_cert_list = ctx->max_cert_list;
+    s->references = 1;
 
     if (ctx->cert != NULL) {
         /*
@@ -405,7 +415,6 @@ SSL *SSL_new(SSL_CTX *ctx)
     if (!s->method->ssl_new(s))
         goto err;
 
-    s->references = 1;
     s->server = (ctx->method->ssl_accept == ssl_undefined_function) ? 0 : 1;
 
     SSL_clear(s);
@@ -1060,10 +1069,12 @@ int SSL_shutdown(SSL *s)
         return -1;
     }
 
-    if ((s != NULL) && !SSL_in_init(s))
-        return (s->method->ssl_shutdown(s));
-    else
-        return (1);
+    if (!SSL_in_init(s)) {
+        return s->method->ssl_shutdown(s);
+    } else {
+        SSLerr(SSL_F_SSL_SHUTDOWN, SSL_R_SHUTDOWN_WHILE_IN_INIT);
+        return -1;
+    }
 }
 
 int SSL_renegotiate(SSL *s)
@@ -1510,9 +1521,13 @@ STACK_OF(SSL_CIPHER) *ssl_bytes_to_cipher_list(SSL *s, unsigned char *p,
                SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST);
         return (NULL);
     }
-    if ((skp == NULL) || (*skp == NULL))
+    if ((skp == NULL) || (*skp == NULL)) {
         sk = sk_SSL_CIPHER_new_null(); /* change perhaps later */
-    else {
+        if(sk == NULL) {
+            SSLerr(SSL_F_SSL_BYTES_TO_CIPHER_LIST, ERR_R_MALLOC_FAILURE);
+            return NULL;
+        }
+    } else {
         sk = *skp;
         sk_SSL_CIPHER_zero(sk);
     }
@@ -1810,26 +1825,34 @@ void SSL_get0_alpn_selected(const SSL *ssl, const unsigned char **data,
 
 int SSL_export_keying_material(SSL *s, unsigned char *out, size_t olen,
                                const char *label, size_t llen,
-                               const unsigned char *p, size_t plen,
+                               const unsigned char *context, size_t contextlen,
                                int use_context)
 {
-    if (s->version < TLS1_VERSION)
+    if (s->version < TLS1_VERSION && s->version != DTLS1_BAD_VER)
         return -1;
 
     return s->method->ssl3_enc->export_keying_material(s, out, olen, label,
-                                                       llen, p, plen,
-                                                       use_context);
+                                                       llen, context,
+                                                       contextlen, use_context);
 }
 
 static unsigned long ssl_session_hash(const SSL_SESSION *a)
 {
+    const unsigned char *session_id = a->session_id;
     unsigned long l;
+    unsigned char tmp_storage[4];
+
+    if (a->session_id_length < sizeof(tmp_storage)) {
+        memset(tmp_storage, 0, sizeof(tmp_storage));
+        memcpy(tmp_storage, a->session_id, a->session_id_length);
+        session_id = tmp_storage;
+    }
 
     l = (unsigned long)
-        ((unsigned int)a->session_id[0]) |
-        ((unsigned int)a->session_id[1] << 8L) |
-        ((unsigned long)a->session_id[2] << 16L) |
-        ((unsigned long)a->session_id[3] << 24L);
+        ((unsigned long)session_id[0]) |
+        ((unsigned long)session_id[1] << 8L) |
+        ((unsigned long)session_id[2] << 16L) |
+        ((unsigned long)session_id[3] << 24L);
     return (l);
 }
 
@@ -1976,7 +1999,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
 
     ret->extra_certs = NULL;
     /* No compression for DTLS */
-    if (meth->version != DTLS1_VERSION)
+    if (!(meth->ssl3_enc->enc_flags & SSL_ENC_FLAG_DTLS))
         ret->comp_methods = SSL_COMP_get_compression_methods();
 
     ret->max_send_fragment = SSL3_RT_MAX_PLAIN_LENGTH;
@@ -1985,7 +2008,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     ret->tlsext_servername_callback = 0;
     ret->tlsext_servername_arg = NULL;
     /* Setup RFC4507 ticket keys */
-    if ((RAND_pseudo_bytes(ret->tlsext_tick_key_name, 16) <= 0)
+    if ((RAND_bytes(ret->tlsext_tick_key_name, 16) <= 0)
         || (RAND_bytes(ret->tlsext_tick_hmac_key, 16) <= 0)
         || (RAND_bytes(ret->tlsext_tick_aes_key, 16) <= 0))
         ret->options |= SSL_OP_NO_TICKET;
@@ -2015,10 +2038,8 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     ret->rbuf_freelist->len = 0;
     ret->rbuf_freelist->head = NULL;
     ret->wbuf_freelist = OPENSSL_malloc(sizeof(SSL3_BUF_FREELIST));
-    if (!ret->wbuf_freelist) {
-        OPENSSL_free(ret->rbuf_freelist);
+    if (!ret->wbuf_freelist)
         goto err;
-    }
     ret->wbuf_freelist->chunklen = 0;
     ret->wbuf_freelist->len = 0;
     ret->wbuf_freelist->head = NULL;
@@ -2047,6 +2068,13 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
      * deployed might change this.
      */
     ret->options |= SSL_OP_LEGACY_SERVER_CONNECT;
+
+    /*
+     * Disable SSLv2 by default, callers that want to enable SSLv2 will have to
+     * explicitly clear this option via either of SSL_CTX_clear_options() or
+     * SSL_clear_options().
+     */
+    ret->options |= SSL_OP_NO_SSLv2;
 
     return (ret);
  err:
@@ -2326,7 +2354,7 @@ void ssl_set_cert_masks(CERT *c, const SSL_CIPHER *cipher)
     if (dh_dsa_export)
         emask_k |= SSL_kDHd;
 
-    if (emask_k & (SSL_kDHr | SSL_kDHd))
+    if (mask_k & (SSL_kDHr | SSL_kDHd))
         mask_a |= SSL_aDH;
 
     if (rsa_enc || rsa_sign) {
@@ -2832,6 +2860,12 @@ const char *SSL_get_version(const SSL *s)
         return ("SSLv3");
     else if (s->version == SSL2_VERSION)
         return ("SSLv2");
+    else if (s->version == DTLS1_BAD_VER)
+        return ("DTLSv0.9");
+    else if (s->version == DTLS1_VERSION)
+        return ("DTLSv1");
+    else if (s->version == DTLS1_2_VERSION)
+        return ("DTLSv1.2");
     else
         return ("unknown");
 }
@@ -3022,12 +3056,12 @@ const SSL_CIPHER *SSL_get_current_cipher(const SSL *s)
 }
 
 #ifdef OPENSSL_NO_COMP
-const void *SSL_get_current_compression(SSL *s)
+const COMP_METHOD *SSL_get_current_compression(SSL *s)
 {
     return NULL;
 }
 
-const void *SSL_get_current_expansion(SSL *s)
+const COMP_METHOD *SSL_get_current_expansion(SSL *s)
 {
     return NULL;
 }
@@ -3146,6 +3180,7 @@ SSL_CTX *SSL_set_SSL_CTX(SSL *ssl, SSL_CTX *ctx)
 #endif
     ssl->cert = ssl_cert_dup(ctx->cert);
     if (ocert) {
+        int i;
         /* Preserve any already negotiated parameters */
         if (ssl->server) {
             ssl->cert->peer_sigalgs = ocert->peer_sigalgs;
@@ -3155,6 +3190,18 @@ SSL_CTX *SSL_set_SSL_CTX(SSL *ssl, SSL_CTX *ctx)
             ssl->cert->ciphers_rawlen = ocert->ciphers_rawlen;
             ocert->ciphers_raw = NULL;
         }
+        for (i = 0; i < SSL_PKEY_NUM; i++) {
+            ssl->cert->pkeys[i].digest = ocert->pkeys[i].digest;
+        }
+#ifndef OPENSSL_NO_TLSEXT
+        ssl->cert->alpn_proposed = ocert->alpn_proposed;
+        ssl->cert->alpn_proposed_len = ocert->alpn_proposed_len;
+        ocert->alpn_proposed = NULL;
+        ssl->cert->alpn_sent = ocert->alpn_sent;
+
+        if (!custom_exts_copy_flags(&ssl->cert->srv_ext, &ocert->srv_ext))
+            return NULL;
+#endif
         ssl_cert_free(ocert);
     }
 
@@ -3497,8 +3544,11 @@ EVP_MD_CTX *ssl_replace_hash(EVP_MD_CTX **hash, const EVP_MD *md)
 {
     ssl_clear_hash_ctx(hash);
     *hash = EVP_MD_CTX_create();
-    if (md)
-        EVP_DigestInit_ex(*hash, md, NULL);
+    if (*hash == NULL || (md && EVP_DigestInit_ex(*hash, md, NULL) <= 0)) {
+        EVP_MD_CTX_destroy(*hash);
+        *hash = NULL;
+        return NULL;
+    }
     return *hash;
 }
 

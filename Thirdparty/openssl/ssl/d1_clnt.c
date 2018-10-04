@@ -133,12 +133,14 @@ static int dtls1_get_hello_verify(SSL *s);
 
 static const SSL_METHOD *dtls1_get_client_method(int ver)
 {
-    if (ver == DTLS1_VERSION || ver == DTLS1_BAD_VER)
-        return (DTLSv1_client_method());
+    if (ver == DTLS_ANY_VERSION)
+        return DTLS_client_method();
+    else if (ver == DTLS1_VERSION || ver == DTLS1_BAD_VER)
+        return DTLSv1_client_method();
     else if (ver == DTLS1_2_VERSION)
-        return (DTLSv1_2_client_method());
+        return DTLSv1_2_client_method();
     else
-        return (NULL);
+        return NULL;
 }
 
 IMPLEMENT_dtls1_meth_func(DTLS1_VERSION,
@@ -147,13 +149,13 @@ IMPLEMENT_dtls1_meth_func(DTLS1_VERSION,
                           dtls1_connect,
                           dtls1_get_client_method, DTLSv1_enc_data)
 
-    IMPLEMENT_dtls1_meth_func(DTLS1_2_VERSION,
+IMPLEMENT_dtls1_meth_func(DTLS1_2_VERSION,
                           DTLSv1_2_client_method,
                           ssl_undefined_function,
                           dtls1_connect,
                           dtls1_get_client_method, DTLSv1_2_enc_data)
 
-    IMPLEMENT_dtls1_meth_func(DTLS_ANY_VERSION,
+IMPLEMENT_dtls1_meth_func(DTLS_ANY_VERSION,
                           DTLS_client_method,
                           ssl_undefined_function,
                           dtls1_connect,
@@ -228,6 +230,7 @@ int dtls1_connect(SSL *s)
                 (s->version & 0xff00) != (DTLS1_BAD_VER & 0xff00)) {
                 SSLerr(SSL_F_DTLS1_CONNECT, ERR_R_INTERNAL_ERROR);
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
 
@@ -237,10 +240,12 @@ int dtls1_connect(SSL *s)
             if (s->init_buf == NULL) {
                 if ((buf = BUF_MEM_new()) == NULL) {
                     ret = -1;
+                    s->state = SSL_ST_ERR;
                     goto end;
                 }
                 if (!BUF_MEM_grow(buf, SSL3_RT_MAX_PLAIN_LENGTH)) {
                     ret = -1;
+                    s->state = SSL_ST_ERR;
                     goto end;
                 }
                 s->init_buf = buf;
@@ -249,12 +254,14 @@ int dtls1_connect(SSL *s)
 
             if (!ssl3_setup_buffers(s)) {
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
 
             /* setup buffing BIO */
             if (!ssl_init_wbio_buffer(s, 0)) {
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
 
@@ -310,13 +317,17 @@ int dtls1_connect(SSL *s)
 #endif
 
         case SSL3_ST_CW_CLNT_HELLO_A:
-        case SSL3_ST_CW_CLNT_HELLO_B:
-
             s->shutdown = 0;
 
             /* every DTLS ClientHello resets Finished MAC */
-            ssl3_init_finished_mac(s);
+            if (!ssl3_init_finished_mac(s)) {
+                ret = -1;
+                s->state = SSL_ST_ERR;
+                goto end;
+            }
 
+            /* fall thru */
+        case SSL3_ST_CW_CLNT_HELLO_B:
             dtls1_start_timer(s);
             ret = ssl3_client_hello(s);
             if (ret <= 0)
@@ -361,11 +372,15 @@ int dtls1_connect(SSL *s)
                              sizeof(DTLS1_SCTP_AUTH_LABEL),
                              DTLS1_SCTP_AUTH_LABEL);
 
-                    SSL_export_keying_material(s, sctpauthkey,
+                    if (SSL_export_keying_material(s, sctpauthkey,
                                                sizeof(sctpauthkey),
                                                labelbuffer,
                                                sizeof(labelbuffer), NULL, 0,
-                                               0);
+                                               0) <= 0) {
+                        ret = -1;
+                        s->state = SSL_ST_ERR;
+                        goto end;
+                    }
 
                     BIO_ctrl(SSL_get_wbio(s),
                              BIO_CTRL_DGRAM_SCTP_ADD_AUTH_KEY,
@@ -373,6 +388,10 @@ int dtls1_connect(SSL *s)
 #endif
 
                     s->state = SSL3_ST_CR_FINISHED_A;
+                    if (s->tlsext_ticket_expected) {
+                        /* receive renewed session ticket */
+                        s->state = SSL3_ST_CR_SESSION_TICKET_A;
+                    }
                 } else
                     s->state = DTLS1_ST_CR_HELLO_VERIFY_REQUEST_A;
             }
@@ -433,6 +452,7 @@ int dtls1_connect(SSL *s)
              */
             if (!ssl3_check_cert_and_algorithm(s)) {
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
             break;
@@ -494,9 +514,13 @@ int dtls1_connect(SSL *s)
             snprintf((char *)labelbuffer, sizeof(DTLS1_SCTP_AUTH_LABEL),
                      DTLS1_SCTP_AUTH_LABEL);
 
-            SSL_export_keying_material(s, sctpauthkey,
+            if (SSL_export_keying_material(s, sctpauthkey,
                                        sizeof(sctpauthkey), labelbuffer,
-                                       sizeof(labelbuffer), NULL, 0, 0);
+                                       sizeof(labelbuffer), NULL, 0, 0) <= 0) {
+                ret = -1;
+                s->state = SSL_ST_ERR;
+                goto end;
+            }
 
             BIO_ctrl(SSL_get_wbio(s), BIO_CTRL_DGRAM_SCTP_ADD_AUTH_KEY,
                      sizeof(sctpauthkey), sctpauthkey);
@@ -564,6 +588,7 @@ int dtls1_connect(SSL *s)
 #endif
             if (!s->method->ssl3_enc->setup_key_block(s)) {
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
 
@@ -571,6 +596,7 @@ int dtls1_connect(SSL *s)
                                                           SSL3_CHANGE_CIPHER_CLIENT_WRITE))
             {
                 ret = -1;
+                s->state = SSL_ST_ERR;
                 goto end;
             }
 #ifndef OPENSSL_NO_SCTP
@@ -748,9 +774,11 @@ int dtls1_connect(SSL *s)
             /* done with handshaking */
             s->d1->handshake_read_seq = 0;
             s->d1->next_handshake_write_seq = 0;
+            dtls1_clear_received_buffer(s);
             goto end;
             /* break; */
 
+        case SSL_ST_ERR:
         default:
             SSLerr(SSL_F_DTLS1_CONNECT, SSL_R_UNKNOWN_STATE);
             ret = -1;
@@ -842,5 +870,6 @@ static int dtls1_get_hello_verify(SSL *s)
 
  f_err:
     ssl3_send_alert(s, SSL3_AL_FATAL, al);
+    s->state = SSL_ST_ERR;
     return -1;
 }

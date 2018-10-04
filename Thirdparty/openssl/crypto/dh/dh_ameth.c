@@ -160,7 +160,7 @@ static int dh_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
     dh = pkey->pkey.dh;
 
     str = ASN1_STRING_new();
-    if(!str) {
+    if (!str) {
         DHerr(DH_F_DH_PUB_ENCODE, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -519,7 +519,7 @@ static int dh_copy_parameters(EVP_PKEY *to, const EVP_PKEY *from)
 
 static int dh_missing_parameters(const EVP_PKEY *a)
 {
-    if (!a->pkey.dh->p || !a->pkey.dh->g)
+    if (a->pkey.dh == NULL || a->pkey.dh->p == NULL || a->pkey.dh->g == NULL)
         return 1;
     return 0;
 }
