@@ -199,9 +199,6 @@ if "%FDOERROR%"=="1" goto error
 msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -263,9 +260,6 @@ echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS files
 msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 
 if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
@@ -282,9 +276,6 @@ if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS files
 msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
