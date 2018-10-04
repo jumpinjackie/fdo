@@ -1,15 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestRunner", "cppunit\src\msvc6\testrunner\TestRunner.vcxproj", "{667FBBFF-9067-4AD7-A36C-E579EB2C7E28}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppunit", "cppunit\src\cppunit\cppunit.vcxproj", "{A405DD58-4EB3-43A5-AFD6-508417A57CF7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppunit_dll", "cppunit\src\cppunit\cppunit_dll.vcxproj", "{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "libcurl\lib\curllib.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
-	ProjectSection(ProjectDependencies) = postProject
-		{00D47558-B06D-4CC5-AF16-61940361BCE3} = {00D47558-B06D-4CC5-AF16-61940361BCE3}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openssl", "openssl\openssl.vcxproj", "{00D47558-B06D-4CC5-AF16-61940361BCE3}"
 EndProject
@@ -22,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sqlite3", "Sqlite3.3.13\Sql
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "boost\boost.vcxproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
 	ProjectSection(ProjectDependencies) = postProject
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588} = {87EE9DA4-DE1E-4448-8324-183C98DCA588}
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB} = {DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AllInOne", "apache\xalan\projects\Win32\VC9\AllInOne\AllInOne.vcxproj", "{E1D6306E-4FF8-474A-BE7F-45DCBA4888B6}"
@@ -34,6 +31,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XalanMsgLib", "apache\xalan\projects\Win32\VC9\Utils\XalanMsgLib\XalanMsgLib.vcxproj", "{E16EB6C5-A40A-4ACC-A9A0-D4DB5C551092}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XercesLib", "apache\xerces\projects\Win32\VC9\xerces-all\XercesLib\XercesLib.vcxproj", "{152CE948-F659-4206-A50A-1D2B9658EF96}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcurl", "libcurl\projects\Windows\VC14\lib\libcurl.vcxproj", "{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00D47558-B06D-4CC5-AF16-61940361BCE3} = {00D47558-B06D-4CC5-AF16-61940361BCE3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,14 +65,6 @@ Global
 		{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}.Release|Win32.Build.0 = Release|Win32
 		{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}.Release|x64.ActiveCfg = Release|x64
 		{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}.Release|x64.Build.0 = Release|x64
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Debug|Win32.ActiveCfg = Debug|Win32
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Debug|Win32.Build.0 = Debug|Win32
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Debug|x64.ActiveCfg = Debug|x64
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Debug|x64.Build.0 = Debug|x64
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Release|Win32.ActiveCfg = Release|Win32
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Release|Win32.Build.0 = Release|Win32
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Release|x64.ActiveCfg = Release|x64
-		{87EE9DA4-DE1E-4448-8324-183C98DCA588}.Release|x64.Build.0 = Release|x64
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Debug|Win32.Build.0 = Debug|Win32
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Debug|x64.ActiveCfg = Debug|x64
@@ -143,6 +137,14 @@ Global
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|Win32.Build.0 = Release|Win32
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x64.ActiveCfg = Release|x64
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|x64.Build.0 = Release|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|Win32.Build.0 = Debug|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|x64.ActiveCfg = Debug|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Debug|x64.Build.0 = Debug|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Win32.ActiveCfg = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|Win32.Build.0 = Release|Win32
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|x64.ActiveCfg = Release|x64
+		{DA6F56B4-06A4-441D-AD70-AC5A7D51FADB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
