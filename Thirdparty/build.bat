@@ -1,7 +1,7 @@
 @echo off
 
 rem 
-rem Copyright (C) 2013  Autodesk, Inc.
+rem Copyright (C) 2018  Autodesk, Inc.
 rem 
 rem This library is free software; you can redistribute it and/or
 rem modify it under the terms of version 2.1 of the GNU Lesser
@@ -202,9 +202,6 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -222,10 +219,6 @@ copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_11%TY
 copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xerces\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_3_1%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal202.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
 
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo
@@ -273,9 +266,6 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 
 if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
@@ -283,10 +273,6 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
 rem # Install WFS Provider Thirdparty Files
 :install_wfs_files
 echo copy %TYPEBUILDTHR% Thirdparty WFS files
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
 rem # End WFS part #
 
 rem # Build WMS Provider Thirdparty Files
@@ -304,9 +290,6 @@ if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 
 if "%TYPEACTIONTHR%"=="build" goto end
 if "%TYPEACTIONTHR%"=="clean" goto end
@@ -315,10 +298,6 @@ rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS files
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal202.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
 rem # Build GDAL Provider Thirdparty Files
@@ -346,7 +325,6 @@ if "%POSTGISENABLETHR%"=="no" goto end
 if "%TYPEACTIONTHR%"=="install" goto install_postgis_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty PostGIS dlls
-msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -357,10 +335,6 @@ rem # Install PostGIS Provider Thirdparty Files
 :install_postgis_files
 
 echo copy %TYPEBUILDTHR% Thirdparty PostGIS dlls
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATHTHR%"
 rem # End PostGIS part 
 
 :end

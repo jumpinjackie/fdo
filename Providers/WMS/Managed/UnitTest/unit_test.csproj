@@ -131,12 +131,6 @@
       Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\XalanMessages_1_11D.dll .\
       Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\XalanMessages_1_11D.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\boost\stage\Win64\debug\lib\boost_date_time-vc140-mt-gd-1_59.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\Win64\debug\lib\boost_thread-vc140-mt-gd-1_59.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\Win64\debug\lib\boost_system-vc140-mt-gd-1_59.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\Win64\debug\lib\boost_chrono-vc140-mt-gd-1_59.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\Win64\debug\lib\boost_program_options-vc140-mt-gd-1_59.dll .\
-
       Copy $(FDOTHIRDPARTY)\gdal\bin\Win64\debug\gdal202.dll .\
 
       Copy  ..\..\..\..\..\..\Utilities\OWS\bin\Win64\debug\OWS.dll .\

@@ -37,7 +37,6 @@ I. Requirements
     For system libraries, development packages for:
         openssl
         curl
-        boost
         gdal
         cppunit
         xerces-c
@@ -55,11 +54,6 @@ I. Requirements
         libcppunit-dev
         libxalan-c-dev
         libxerces-c-dev
-        libboost-date-time-dev
-        libboost-thread-dev
-        libboost-system-dev
-        libboost-chrono-dev
-        libboost-program-options-dev
         libgdal-dev
 
 II. Usage
@@ -82,7 +76,6 @@ III. Using internal provided Thirdparty libraries
     - GDAL - gdal library
     - CPPUNIT - Old cppunit version
     - CURL - curl library
-    - BOOST - Boost libraries
     If you desire buils all third party dependencies, use:
     -DALL_THIRDPARTY=TRUE
     

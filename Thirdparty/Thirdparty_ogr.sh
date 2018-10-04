@@ -1,6 +1,6 @@
 #!/bin/sh
 ##
-## Copyright (C) 2013  Autodesk, Inc.
+## Copyright (C) 2018  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -90,18 +90,6 @@ if test "$SHOWHELP" == yes; then
 fi
 
 CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
-
-## Boost
-pushd . >& /dev/null
-cd boost
-echo Building boost
-chmod a+x ./build.sh
-sh ./build.sh $CMDEX
-if [ "$?" -ne 0 ] ; then
-exit 1
-fi
-popd >& /dev/null
-
 
 ## GDAL
 pushd . >& /dev/null

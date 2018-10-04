@@ -1,7 +1,7 @@
 @echo off
 
 rem 
-rem Copyright (C) 2004-2006  Autodesk, Inc.
+rem Copyright (C) 2018  Autodesk, Inc.
 rem 
 rem This library is free software; you can redistribute it and/or
 rem modify it under the terms of version 2.1 of the GNU Lesser
@@ -163,10 +163,6 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsProvider.pdb" "%FDOBINPATH%"
 copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATH%"
 copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.pdb" "%FDOBINPATH%"
 copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\WMSOverrides.lib" "%FDOLIBPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATH%\WMS\"

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2018  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -22,9 +22,9 @@
 #pragma warning(push)
 #pragma warning(disable: 4275)  // Disable warning C4275: non dll-interface class
 #pragma warning(disable: 4251)  // Disable warning C4251: needs to have dll-interface to be used by clients of class
-#include <boost/bind.hpp>
-#include <boost/algorithm/string.hpp>
 #pragma warning(pop) // Enable warnings
+
+#include <assert.h>
 
 #include "FdoOwsHttpHandler.h"
 #include <FdoCommonOSUtil.h>
@@ -87,7 +87,7 @@ FdoOwsHttpHandler::~FdoOwsHttpHandler()
 void FdoOwsHttpHandler::Dispose()
 {
     {
-        boost::mutex::scoped_lock lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         m_disposed = true;
         // wait till the thread stops
         while (m_bRunning)
@@ -178,7 +178,7 @@ size_t FdoOwsHttpHandler::_headerCallback( void *ptr, size_t size, size_t nmemb)
 size_t FdoOwsHttpHandler::_writeCallback( void *ptr, size_t size, size_t nmemb)
 {
     // this function may be called by multi threads
-    boost::mutex::scoped_lock lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
     if (m_disposed) // this object is already disposed by the main thread
         return 0;
     size_t len = size * nmemb;
@@ -356,9 +356,9 @@ FdoException* FdoOwsHttpHandler::_translateError(CURLcode curlCode, FdoString *e
 void FdoOwsHttpHandler::Perform()
 {
     // run this object
-    m_thread = std::auto_ptr<boost::thread>(
-        new boost::thread(boost::bind(&FdoOwsHttpHandler::Proc, this)));
-    boost::mutex::scoped_lock lock(m_mutex);
+    m_thread = std::auto_ptr<std::thread>(
+        new std::thread(std::bind(&FdoOwsHttpHandler::Proc, this)));
+    std::unique_lock<std::mutex> lock(m_mutex);
     // wait for Receiving_Content
     m_condition.wait(lock);
     // check whether current state is expected
@@ -374,7 +374,7 @@ void FdoOwsHttpHandler::Perform()
 void FdoOwsHttpHandler::Proc()
 {
     {
-        boost::mutex::scoped_lock lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         m_bRunning = true;
         m_connectionState = ConnectionState_BeforeConnect;
     }
@@ -542,7 +542,7 @@ void FdoOwsHttpHandler::Proc()
         if (rv != CURLE_OK) break;
 
         // we are done, set the state to Terminated
-        boost::mutex::scoped_lock lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         m_connectionState = ConnectionState_Terminated;
         break;
     } // end of for (;;)
@@ -550,7 +550,7 @@ void FdoOwsHttpHandler::Proc()
     if (rv != CURLE_OK) {
         // error occurs, set the state to BeforeConnect
         m_curlCode = rv;
-        boost::mutex::scoped_lock lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         m_connectionState = ConnectionState_BeforeConnect;
     }
 
@@ -559,7 +559,7 @@ void FdoOwsHttpHandler::Proc()
 
     
     {
-        boost::mutex::scoped_lock lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         // we still need to nofity other processes in case it is waiting for us
         m_condition.notify_all();
         m_bRunning = false;
@@ -570,7 +570,7 @@ void FdoOwsHttpHandler::Proc()
 
 FdoSize FdoOwsHttpHandler::Read( FdoByte* buffer, FdoSize toRead )
 {
-    boost::mutex::scoped_lock lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
     while (m_currentRead >= m_currentSize) // no data available, we must wait if still connected
     {
 		if (m_connectionState == ConnectionState_BeforeConnect) // something bad happened
@@ -625,13 +625,13 @@ FdoInt64 FdoOwsHttpHandler::GetLength()
 
 FdoInt64 FdoOwsHttpHandler::GetIndex()
 {
-    boost::mutex::scoped_lock lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
     return m_currentRead;
 }
 
 void FdoOwsHttpHandler::Skip( FdoInt64 offset )
 {
-    boost::mutex::scoped_lock lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
     if (offset < 0 && -offset > m_currentRead)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INDEXOUTOFBOUNDS)));
     m_currentRead += (size_t)offset;
@@ -639,7 +639,7 @@ void FdoOwsHttpHandler::Skip( FdoInt64 offset )
 
 void FdoOwsHttpHandler::Reset()
 {
-    boost::mutex::scoped_lock lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex);
     m_currentRead = 0;
 }
 

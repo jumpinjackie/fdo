@@ -5,10 +5,6 @@ include_directories(
     ${UTILITIES_COMMON_INCLUDE_DIR}
 )
 
-if( LOCAL_BOOST )
-    include_directories( ${FDOTHIRDPARTY}/boost )
-endif( LOCAL_BOOST )
-
 if( LOCAL_CURL )
     include_directories( ${FDOTHIRDPARTY}/libcurl/include )
 endif( LOCAL_CURL )
@@ -42,24 +38,27 @@ set( FdoOws_LIB_SRCS
     ${FdoOwsSrc_SRCS}
 )
 
-if( NOT LOCAL_BOOST )
-    link_directories( ${Boost_LIBRARY_DIRS} )
-endif( NOT LOCAL_BOOST )
-
 add_library( OWS${FDO_VERSION_SUFFIX} SHARED ${FdoOws_LIB_SRCS} )
 
-target_link_libraries( OWS${FDO_VERSION_SUFFIX}
-    FDO${FDO_VERSION_SUFFIX}
-    ProvidersCommon
-    ${Boost_THREAD_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_CHRONO_LIBRARY}
-    ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    ${CURL_LIBRARIES}
-    ${OPENSSL_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    rt
-)
+if( LOCAL_OPENSSL )
+target_link_libraries( FdoOws-${FDO_VERSION}
+	FDO-${FDO_VERSION}
+	ProvidersCommon
+	${CURL_LIBRARIES}
+	${OPENSSL_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	pthread
+ )
+else ( LOCAL_OPENSSL )
+target_link_libraries( FdoOws-${FDO_VERSION}
+	FDO-${FDO_VERSION}
+	ProvidersCommon
+	${CURL_LIBRARIES}
+	${OPENSSL_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	pthread
+ )
+endif ( LOCAL_OPENSSL )
 
 install( TARGETS OWS${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
 install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOWS${FDO_VERSION_SUFFIX}.so libOWS.so COMPONENT ${FDO_COMPONENT} )

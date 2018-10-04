@@ -1,7 +1,7 @@
 @echo off
 
 rem 
-rem Copyright (C) 2004-2006  Autodesk, Inc.
+rem Copyright (C) 2018  Autodesk, Inc.
 rem 
 rem This library is free software; you can redistribute it and/or
 rem modify it under the terms of version 2.1 of the GNU Lesser
@@ -151,10 +151,6 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.pdb" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.pdb" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_59.dll" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"

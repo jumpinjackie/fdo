@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "libcurl\lib\curl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openssl", "openssl\openssl.vcproj", "{00D47558-B06D-4CC5-AF16-61940361BCE3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "boost\boost.vcproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,14 +31,6 @@ Global
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Release|Win32.Build.0 = Release|Win32
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Release|x64.ActiveCfg = Release|x64
 		{00D47558-B06D-4CC5-AF16-61940361BCE3}.Release|x64.Build.0 = Release|x64
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.ActiveCfg = Debug|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|Win32.Build.0 = Debug|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|x64.ActiveCfg = Debug|x64
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Debug|x64.Build.0 = Debug|x64
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.ActiveCfg = Release|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|Win32.Build.0 = Release|Win32
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|x64.ActiveCfg = Release|x64
-		{317315E2-24B6-490C-967D-4B77B7DF5C34}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

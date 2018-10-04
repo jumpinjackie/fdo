@@ -2,15 +2,14 @@
 # libraries
 
 if( ALL_THIRDPARTY )
-    set( INTERNAL_CPPUNIT true )
-    set( INTERNAL_GDAL true )
-    set( INTERNAL_OPENSSL true )
-    set( INTERNAL_MYSQL true )
-    set( INTERNAL_POSTGRESQL true )
-    set( INTERNAL_BOOST true )
-    set( INTERNAL_CURL true )
-    set( INTERNAL_XERCESC true )
-    set( INTERNAL_XALANC true )
+	set( INTERNAL_CPPUNIT true )
+	set( INTERNAL_GDAL true )
+	set( INTERNAL_OPENSSL true )
+	set( INTERNAL_MYSQL true )
+	set( INTERNAL_POSTGRESQL true )
+	set( INTERNAL_CURL true )
+	set( INTERNAL_XERCESC true )
+	set( INTERNAL_XALANC true )
 endif( ALL_THIRDPARTY )
 
 # Check GDAL or add ThirdParty
@@ -109,49 +108,6 @@ endif( NOT INTERNAL_XALANC )
 set( SQLITE_INCLUDE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
 set( SQLITE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
 mark_as_advanced( SQLITE_INCLUDE_DIR SQLITE_DIR )
-
-# Check for Boost or ThirdParty
-if( NOT INTERNAL_BOOST )
-    set (Boost_USE_MULTITHREADED ON) # be specific, we're after -mt versions of boost libs
-    find_package( Boost COMPONENTS thread date_time chrono system program_options REQUIRED )
-else( NOT INTERNAL_BOOST )
-    set( LOCAL_BOOST TRUE )
-    set( Boost_INCLUDE_DIRS ${FDOTHIRDPARTY}/boost/ )
-    exec_program(
-          ${CMAKE_CXX_COMPILER}
-          ARGS                    -dumpversion
-          OUTPUT_VARIABLE _compiler_output)
-    string(REGEX REPLACE ".* ([0-9]\\.[0-9]\\.[0-9]) .*" "\\1"
-             gcc_compiler_version ${_compiler_output})
-    message (STATUS "GCC Version is: ${gcc_compiler_version}")
-    find_library(Boost_THREAD_LIBRARY
-        NAMES boost_thread
-        PATHS ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi
-        NO_DEFAULT_PATH
-    )
-    find_library(Boost_DATE_TIME_LIBRARY
-        NAMES boost_date_time
-        PATHS ${FDOTHIRDPARTY}/boost/bin.v2/libs/date_time/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi
-        NO_DEFAULT_PATH
-    )
-    find_library(Boost_SYSTEM_LIBRARY
-        NAMES boost_system
-        PATHS ${FDOTHIRDPARTY}/boost/bin.v2/libs/system/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi
-        NO_DEFAULT_PATH
-    )
-    find_library(Boost_CHRONO_LIBRARY
-        NAMES boost_chrono
-        PATHS ${FDOTHIRDPARTY}/boost/bin.v2/libs/chrono/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi
-        NO_DEFAULT_PATH
-    )
-    find_library(Boost_PROGRAM_OPTIONS_LIBRARY
-        NAMES boost_program_options
-        PATHS ${FDOTHIRDPARTY}/boost/bin.v2/libs/program_options/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi
-        NO_DEFAULT_PATH
-    )
-    message (STATUS "Using internal boost: ${Boost_THREAD_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_CHRONO_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY}")
-    mark_as_advanced ( Boost_INCLUDE_DIRS Boost_THREAD_LIBRARY Boost_DATE_TIME_LIBRARY Boost_SYSTEM_LIBRARY Boost_CHRONO_LIBRARY Boost_PROGRAM_OPTIONS_LIBRARY)
-endif( NOT INTERNAL_BOOST )
 
 # Check for Curl or ThirdParty
 if( NOT INTERNAL_CURL )

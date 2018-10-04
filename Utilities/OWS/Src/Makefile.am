@@ -1,5 +1,5 @@
 ##
-## Copyright (C) 2004-2006  Autodesk, Inc.
+## Copyright (C) 2018  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -50,7 +50,6 @@ INCLUDES = \
   -I../Inc \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
-  -I$(FDOTHIRDPARTY)/boost \
   -I$(FDOTHIRDPARTY)/libcurl/include
 
 libFdoOwsSrc_la_LDFLAGS =

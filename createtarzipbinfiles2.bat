@@ -1,7 +1,7 @@
 @echo off
 
 rem 
-rem Copyright (C) 2004-2006  Autodesk, Inc.
+rem Copyright (C) 2018  Autodesk, Inc.
 rem 
 rem This library is free software; you can redistribute it and/or
 rem modify it under the terms of version 2.1 of the GNU Lesser
@@ -226,10 +226,6 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    copy "%FDOROOT%\Bin\xerces-c_3_1.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\Xalan-C_1_11.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\XalanMessages_1_11.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_date_time-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_thread-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_system-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_chrono-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\gdal202.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOMessage.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOCommon.dll" %FDOZIPTEMP%\Bin\

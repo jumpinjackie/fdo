@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2018  Autodesk, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -26,8 +26,8 @@
 #pragma warning(push)
 #pragma warning(disable: 4275)  // Disable warning C4275: non dll-interface class
 #pragma warning(disable: 4251)  // Disable warning C4251: needs to have dll-interface to be used by clients of class
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition.hpp>
+#include <thread>
+#include <condition_variable>
 #pragma warning(pop) // Enable warning C4275: non dll-interface class
 
 #include <curl/curl.h>
@@ -63,9 +63,9 @@ private:
     std::string m_proxyPassword;
 
     // thread related variables
-    std::auto_ptr<boost::thread> m_thread;
-    boost::mutex m_mutex;
-    boost::condition m_condition;
+    std::auto_ptr<std::thread> m_thread;
+    std::mutex m_mutex;
+    std::condition_variable m_condition;
 
     //error related
     CURLcode m_curlCode;
