@@ -196,10 +196,8 @@ if "%FDOERROR%"=="1" goto error
 msbuild Thirdparty_sdf%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
-msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
+rem # WFS or WMS both have gdal/openssl/curl
+msbuild Thirdparty_wms%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -257,7 +255,7 @@ if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS files
-msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
+msbuild Thirdparty_wfs%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -275,10 +273,7 @@ if "%WMSENABLETHR%"=="no" goto rebuild_gdal
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS files
-msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
-msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
+msbuild Thirdparty_wms%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -297,7 +292,7 @@ if "%GDALENABLETHR%"=="no" goto rebuild_postgis
 if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL files
-msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
+msbuild Thirdparty_gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
