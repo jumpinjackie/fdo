@@ -294,6 +294,9 @@ void XmlTest::testXsl()
 #endif
             //Strip file URI
             FdoStringP leftPart = pMessage.Left(L"file:///");
+            //NOTE: The unit test executable is expected to be run from $FDOROOT/Fdo/UnitTest as the
+            //working directory, otherwise this path fragment will not exist, failing this test case
+            //as a whole
             FdoStringP rightPart = pMessage.Right(L"Fdo/UnitTest/");
             FdoStringP combined = leftPart + rightPart;
             FDO_CPPUNIT_ASSERT(wcsncmp((FdoString*)combined, L"XSLTProcessorException: 'xsl:variable' has an invalid 'junk' attribute. (Occurred in entity 'sheet', at line 1, column 225.) ", 100) == 0);
