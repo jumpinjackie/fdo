@@ -99,7 +99,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;__CPPUNIT_MFC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
       <PreprocessKeepComments>false</PreprocessKeepComments>
