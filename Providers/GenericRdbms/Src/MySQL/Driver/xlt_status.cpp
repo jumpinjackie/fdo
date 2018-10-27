@@ -18,7 +18,7 @@
 
 #include "stdafx.h"
 #include <wchar.h>
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 #include "nls.h"
 

@@ -791,7 +791,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\errno.h"
+				RelativePath=".\drv_errno.h"
 				>
 			</File>
 			<File

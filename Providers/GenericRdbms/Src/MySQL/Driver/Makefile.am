@@ -59,7 +59,7 @@ noinst_HEADERS = $(libmysqldr_la_SOURCES) \
   desc_bind.h \
   desc_slct.h \
   disconnect.h \
-  errno.h \
+  drv_errno.h \
   est_cursor.h \
   execute.h \
   fetch.h \

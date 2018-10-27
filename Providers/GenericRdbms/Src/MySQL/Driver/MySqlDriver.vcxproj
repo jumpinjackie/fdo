@@ -364,7 +364,7 @@
     <ClInclude Include="desc_bind.h" />
     <ClInclude Include="desc_slct.h" />
     <ClInclude Include="disconnect.h" />
-    <ClInclude Include="errno.h" />
+    <ClInclude Include="drv_errno.h" />
     <ClInclude Include="est_cursor.h" />
     <ClInclude Include="execute.h" />
     <ClInclude Include="fetch.h" />

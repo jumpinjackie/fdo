@@ -20,7 +20,7 @@
 
 #include "fre_cursor.h"
 #include "sql.h"
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 
 static void print_st_error (MYSQL_STMT *stmt, const char *msg)

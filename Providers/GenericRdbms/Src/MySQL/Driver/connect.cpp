@@ -27,7 +27,7 @@
 #include "connect.h"
 #include "Inc/ut.h"
 #include "run_sql.h"
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 #include <malloc.h>
 #include <wchar.h>

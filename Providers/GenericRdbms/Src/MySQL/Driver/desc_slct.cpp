@@ -21,7 +21,7 @@
 #include "local.h"
 #include "define.h"
 #include "type.h"
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 
 #ifdef _WIN32

@@ -19,7 +19,7 @@
 #include "stdafx.h"
 
 #include "commit.h"
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 
 int mysql_commitx (

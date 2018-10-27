@@ -40,25 +40,14 @@ set( FdoOws_LIB_SRCS
 
 add_library( OWS${FDO_VERSION_SUFFIX} SHARED ${FdoOws_LIB_SRCS} )
 
-if( LOCAL_OPENSSL )
-target_link_libraries( FdoOws-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ProvidersCommon
-	${CURL_LIBRARIES}
-	${OPENSSL_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	pthread
- )
-else ( LOCAL_OPENSSL )
-target_link_libraries( FdoOws-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ProvidersCommon
-	${CURL_LIBRARIES}
-	${OPENSSL_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	pthread
- )
-endif ( LOCAL_OPENSSL )
+target_link_libraries( OWS${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
+    ProvidersCommon
+    ${CURL_LIBRARIES}
+    ${OPENSSL_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    rt
+)
 
 install( TARGETS OWS${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
 install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOWS${FDO_VERSION_SUFFIX}.so libOWS.so COMPONENT ${FDO_COMPONENT} )

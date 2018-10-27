@@ -19,7 +19,7 @@
 #include "stdafx.h"
 
 #include "est_cursor.h"
-#include "errno.h"
+#include "drv_errno.h"
 #include "xlt_status.h"
 
 int mysql_est_cursor (mysql_context_def *context, char **cursor)
