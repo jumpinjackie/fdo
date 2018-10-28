@@ -38,28 +38,14 @@ II. Build Notes
   In preparation for building the Windows Open Source FDO Binaries:
 
   1. The FDO open source build process supports the usage of either the Visual 
-     Studio 2010 Express, Standard or Professional editions. 
+     Studio 2017 Community, Professional or Enterprise editions. 
 
-     The Visual Studio 2010 Express software can be download and installed for 
-     free from the following sites.
-
-     Visual Studio 2010 C# Express Edition:
-
-        http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
-
-     Visual Studio 2010 C++ Express Edition: 
+        https://visualstudio.microsoft.com/
  
-        http://www.microsoft.com/visualstudio/en-us/products/2010-editions/visual-cpp-express
-        
-     You will need to download and install Windows .NET Framework 4.0 Service Pack 1.
-     You can download it from the following location:
-     
-        http://msdn.microsoft.com/en-us/netframework/default.aspx
-     
   2. Install ActiveState Perl, available from:
      
         http://www.activestate.com/ActivePerl
-		
+
   2a. Install NASM, available from:
   
         http://www.nasm.us/
@@ -77,29 +63,27 @@ II. Build Notes
      MsBuild tool that is used by the the FDO build process is included in 
      the Windows system PATH.
 
-        set PATH=%PATH%;c:\WINDOWS\Microsoft.NET\Framework\v3.5
- 
   5. In order to build the ArcSDE 9.2 Provider, you will need to have the ArcSDE
      9.2/9.3 Client SDK installed and the following environment variable
-	 set to point to the ArcSDE SDK installation location:
+     set to point to the ArcSDE SDK installation location:
 
         set SDEHOME=[ArcSDE 9.2/9.3 Developer Components Path]
 		
      In order to build the unit tests for the ArcSDE 9.2 provider, set the following 
-	 environment variable value:
+     environment variable value:
 		
-        set SDEVER_ARCUNITTEST=92  - will build unit test using ArcSDE 9.2 SDK
+        set SDEVER_ARCUNITTEST=92  -  will build unit test using ArcSDE 9.2 SDK
 
      In case user needs to build both the 91 and 92 versions of the ArcSDE Provider on Windows,
-	 they will need to install both the ArcSDE 9.1 Client SDK and the ArcSDE 9.2/9.3 Client SDK,
-	 set the environment variable SDEHOME to point to the location of the 9.2/9.3 Client SDK as 
+     they will need to install both the ArcSDE 9.1 Client SDK and the ArcSDE 9.2/9.3 Client SDK,
+     set the environment variable SDEHOME to point to the location of the 9.2/9.3 Client SDK as 
      specified above, and copy the "bin", "include" and "lib" directory from the ArcSDE 9.1 
      Client SDK into: %FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
 	 
      In order to build the unit tests for the ArcSDE 9.1 provider using the AcSDE 9.1 SDK,
-	 set the following environment variable value:
+     set the following environment variable value:
 	 
-		set SDEVER_ARCUNITTEST=91   - will build unit test using ArcSDE 9.1 SDK
+	set SDEVER_ARCUNITTEST=91   -  will build unit test using ArcSDE 9.1 SDK
 	 
      The ArcSDE provider build script will attempt to build both the ArcSDE 9.1 and 9.2 providers.
      In case user has only one version of the ArcSDE client installed, the location must be
@@ -126,7 +110,7 @@ II. Build Notes
 
      Specific Instant Client Downloads are available at:
 	 
-		http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html
+        http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html
      
      Following the installation, set the following FDO Windows environment variable:
 
@@ -210,11 +194,6 @@ II. Build Notes
         Doxygen    -- e.g. C:\Program Files\doxygen\bin
         Dot        -- e.g. C:\Program Files\Graphviz\bin
 
-        e.g.
-        
-        set PATH=%PATH%;C:\Program Files\doxygen\bin
-        set PATH=%PATH%;C:\Program Files\Graphviz\bin
-
  10. OPTIONAL: The FDO build process supports the generation of a set of python 
      wrapper scripts for the FDO API. The python scripts are generated using SWIG. To
      generate the python scripts, you must have Python and SWIG installed.
@@ -226,12 +205,7 @@ II. Build Notes
      
      Once SWIG and python have been installed set the PYTHON_HOME and SWIG_HOME environment
      variables to point to the respective installation locations.
-     
-        e.g.
-          
-        SET PYTHON_HOME=C:\progra~1\Python24
-        SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
-        
+             
      ** NOTE: These variables are maintained in the setenvironment.bat script. 
 
  11. Use the [FDO OpenSource]\setenvironment.bat script to assist in setting and

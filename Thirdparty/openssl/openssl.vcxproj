@@ -20,8 +20,6 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{00D47558-B06D-4CC5-AF16-61940361BCE3}</ProjectGuid>
-    <RootNamespace>boost_1_32_0</RootNamespace>
-    <Keyword>MakeFileProj</Keyword>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,22 +67,21 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      mkdir lib\Debug
-      perl Configure no-asm no-ssl3 VC-WIN32
-      call ms\do_ms debug
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug
+      call del /F /S /Q sdk\debug
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN32 --debug --prefix=$(FDOTHIRDPARTY)\openssl\sdk\debug --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\debug
+      nmake
+	  nmake install
     </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      mkdir lib\Debug
-      perl Configure no-asm no-ssl3 VC-WIN32
-      call ms\do_ms debug
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug
+      call del /F /S /Q sdk\debug
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 --d no-shared VC-WIN32 --debug --prefix=$(FDOTHIRDPARTY)\openssl\sdk\debug --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\debug
+      nmake clean
+	  nmake
+	  nmake install
     </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      call del /F /S /Q inc32
-      call del /F /S /Q tmp32
-      call del /F /S /Q lib\Debug
-      call del /F /S /Q obj
+      call del /F /S /Q sdk\debug
+      nmake clean
     </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -95,22 +92,21 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      mkdir lib\Debug64
-      perl Configure no-asm no-ssl3 VC-WIN64A
-      call ms\do_win64a debug64
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64
+      call del /F /S /Q sdk\debug64
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN64A --debug --prefix=$(FDOTHIRDPARTY)\openssl\sdk\debug64 --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\debug64
+      nmake
+	  nmake install
     </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      mkdir lib\Debug64
-      perl Configure no-asm no-ssl3 VC-WIN64A
-      call ms\do_win64a debug64
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64
+      call del /F /S /Q sdk\debug64
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN64A --debug --prefix=$(FDOTHIRDPARTY)\openssl\sdk\debug64 --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\debug64
+      nmake clean
+	  nmake
+	  nmake install
     </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      call del /F /S /Q inc32
-      call del /F /S /Q tmp32
-      call del /F /S /Q lib\Debug64
-      call del /F /S /Q obj
+      call del /F /S /Q sdk\debug64
+      nmake clean
     </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -121,22 +117,21 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      mkdir lib\Release
-      perl Configure no-asm no-ssl3 VC-WIN32
-      call ms\do_ms
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release
+      call del /F /S /Q sdk\release
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN32 --prefix=$(FDOTHIRDPARTY)\openssl\sdk\release --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\release
+      nmake
+	  nmake install
     </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      mkdir lib\Release
-      perl Configure no-asm no-ssl3 VC-WIN32
-      call ms\do_ms
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release
+      call del /F /S /Q sdk\release
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN32 --prefix=$(FDOTHIRDPARTY)\openssl\sdk\release --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\release
+      nmake clean
+	  nmake
+	  nmake install
     </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      call del /F /S /Q inc32
-      call del /F /S /Q tmp32
-      call del /F /S /Q lib\Release
-      call del /F /S /Q obj
+      call del /F /S /Q sdk\release
+      nmake clean
     </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -147,22 +142,21 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      mkdir lib\Release64
-      perl Configure no-asm no-ssl3 VC-WIN64A
-      call ms\do_win64a
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64
+      call del /F /S /Q sdk\release64
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN64A --prefix=$(FDOTHIRDPARTY)\openssl\sdk\release64 --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\release64
+      nmake
+	  nmake install
     </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      mkdir lib\Release64
-      perl Configure no-asm no-ssl3 VC-WIN64A
-      call ms\do_win64a
-      nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64
+      call del /F /S /Q sdk\release64
+	  perl Configure no-asm no-ssl2 no-weak-ssl-ciphers no-ssl3 no-shared VC-WIN64A --prefix=$(FDOTHIRDPARTY)\openssl\sdk\release64 --openssldir=$(FDOTHIRDPARTY)\openssl\sdk\release64
+      nmake clean
+	  nmake
+	  nmake install
     </NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      call del /F /S /Q inc32
-      call del /F /S /Q tmp32
-      call del /F /S /Q lib\Release64
-      call del /F /S /Q obj
+      call del /F /S /Q sdk\release64
+      nmake clean
     </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>

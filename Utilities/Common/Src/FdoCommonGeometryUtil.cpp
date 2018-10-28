@@ -442,8 +442,8 @@ FdoIGeometry* FdoCommonGeometryUtil::ModifyRingOrientation(FdoIGeometry *geometr
             if (bPolygonCCW == false)
             {
                 FdoPtr<FdoPolygonCollection> newSubGeometries = FdoPolygonCollection::Create();
-                FdoInt32 numSubGeometries = derivedGeom->GetCount();
-                for (FdoInt32 i = 0; i<numSubGeometries; i++)
+                FdoInt32 numDerivedGeometries = derivedGeom->GetCount();
+                for (FdoInt32 i = 0; i< numDerivedGeometries; i++)
                 {
                     FdoPtr<FdoIPolygon> subGeom = derivedGeom->GetItem(i);
                     FdoPtr<FdoIGeometry> newSubGeometry = ModifyPolygonRingOrientation(subGeom);

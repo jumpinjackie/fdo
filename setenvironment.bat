@@ -34,7 +34,15 @@ goto usage
 rem VS 2015 will be default from now
 SET VCBEXTENSION=_vs15
 SET VC_COMPILER=vc140
-SET ACTIVENAMECHECK="Microsoft Visual Studio 15"
+SET ACTIVENAMECHECK="Microsoft Visual Studio 2017"
+rem Test [VS2017 + 2015 compiler workload] cases first
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS17Exist
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS17Exist
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS17Exist
+rem Then test for original VS 2015
 rem Test [VS2017 + 2015 compiler workload] cases first
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build"
 if exist %ACTIVEPATHCHECK% goto VS17Exist
@@ -125,7 +133,7 @@ SET ACTIVEPATHCHECK="C:\Program Files\7-Zip"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 
 SET ACTIVENAMECHECK="Graphviz"
-SET ACTIVEPATHCHECK="C:\Program Files\ATT\Graphviz\bin"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Graphviz2.38"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
@@ -135,19 +143,19 @@ if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% documentation package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
 SET ACTIVENAMECHECK="GnuWin32 Bison/Sed"
-SET ACTIVEPATHCHECK="c:\Program Files\GnuWin32\bin"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\GnuWin32\bin"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not recognized in the Windows PATH. Update the setenvironment.bat script file with the correct path
 
-SET ACTIVENAMECHECK="Python 2.4"
-SET ACTIVEPATHCHECK=C:\progra~1\Python24
-if exist %ACTIVEPATHCHECK% SET PYTHON_HOME=C:\progra~1\Python24
+SET ACTIVENAMECHECK="Python 2.7"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Python27"
+if exist %ACTIVEPATHCHECK% SET PYTHON_HOME="C:\Program Files (x86)\Python27"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
 
-SET ACTIVENAMECHECK="SWIG 1.3.31"
-SET ACTIVEPATHCHECK=C:\progra~1\swigwin-1.3.31
-if exist %ACTIVEPATHCHECK% SET SWIG_HOME=C:\progra~1\swigwin-1.3.31
+SET ACTIVENAMECHECK="SWIG 3.0.12"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\swigwin-3.0.12"
+if exist %ACTIVEPATHCHECK% SET SWIG_HOME="C:\Program Files (x86)\swigwin-3.0.12"
 if exist %ACTIVEPATHCHECK% set PATH=%PATH%;%ACTIVEPATHCHECK%
 if not exist %ACTIVEPATHCHECK% echo OPTIONAL %ACTIVENAMECHECK% package not found. Update the setenvironment.bat script file with the correct path
 

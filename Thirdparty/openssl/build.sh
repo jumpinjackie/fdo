@@ -132,7 +132,6 @@ export CPPFLAGS
 fi
 fi
 
-
 mkdir -p lib/linux
 
 chmod a+x ./config
@@ -161,8 +160,3 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    mv -f ./libssl.a ./lib/linux/libssl.a
    mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 fi
-
-
-
-
-

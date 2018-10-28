@@ -119,7 +119,7 @@ if test ! -e "$FDOODBC"; then
 fi
 
 # Location of the PYTHON lib files. Typically in /usr/lib/pythonXXX
-export PYTHON_LIB_PATH=/usr/lib/python2.4
+export PYTHON_LIB_PATH=/usr/lib64/python2.7
 if test ! -e "$PYTHON_LIB_PATH"; then
    echo ""
    echo "NOTE: The default path for the Python SDK lib files was not found. "
@@ -132,7 +132,7 @@ if test ! -e "$PYTHON_LIB_PATH"; then
 fi
 
 # Location of the PYTHON include files. Typically in /usr/include/pythonXXX
-export PYTHON_INCLUDE_PATH=/usr/include/python2.4
+export PYTHON_INCLUDE_PATH=/usr/include/python2.7
 if test ! -e "$PYTHON_INCLUDE_PATH"; then
    echo ""
    echo "NOTE: The default path for the Python SDK header files was not found. "
@@ -155,4 +155,3 @@ fi
 export XERCESCROOT=$FDOTHIRDPARTY/apache/xerces
 export XALANCROOT=$FDOTHIRDPARTY/apache/xalan
 export NLSDIR=$XALANCROOT/src/xalanc/NLS
-
