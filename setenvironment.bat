@@ -43,14 +43,6 @@ if exist %ACTIVEPATHCHECK% goto VS17Exist
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build"
 if exist %ACTIVEPATHCHECK% goto VS17Exist
 rem Then test for original VS 2015
-rem Test [VS2017 + 2015 compiler workload] cases first
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build"
-if exist %ACTIVEPATHCHECK% goto VS17Exist
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build"
-if exist %ACTIVEPATHCHECK% goto VS17Exist
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build"
-if exist %ACTIVEPATHCHECK% goto VS17Exist
-rem Then test for original VS 2015
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 14.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC"
