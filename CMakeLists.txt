@@ -4,6 +4,8 @@ project(fdo)
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # CMP0005: keep escaping behaviour for definitions added via add_definitions()
 cmake_policy( SET CMP0005 OLD )
+# CMP0026: Disallow use of the LOCATION target property
+cmake_policy( SET CMP0026 OLD )
 
 # Look first in internal modules
 set(CMAKE_MODULE_PATH 
@@ -127,7 +129,8 @@ endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 
 use_cxx11()
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions( -D__USE_GNU -Wno-write-strings -Wno-deprecated )
+    add_definitions( -D__USE_GNU )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-write-strings -Wno-deprecated -Wno-narrowing")
     set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
     if(FDO_CPU EQUAL 64)
         set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64" )
