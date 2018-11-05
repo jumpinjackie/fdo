@@ -6,7 +6,6 @@ INTERNAL_GDAL=FALSE
 INTERNAL_OPENSSL=FALSE
 INTERNAL_MYSQL=FALSE
 INTERNAL_POSTGRESQL=FALSE
-INTERNAL_BOOST=FALSE
 INTERNAL_CURL=FALSE
 INTERNAL_XERCESC=FALSE
 INTERNAL_XALANC=FALSE
@@ -31,7 +30,6 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             INTERNAL_OPENSSL=TRUE
             #INTERNAL_MYSQL=TRUE
             #INTERNAL_POSTGRESQL=TRUE
-            INTERNAL_BOOST=TRUE
             INTERNAL_CURL=TRUE
             INTERNAL_XERCESC=TRUE
             INTERNAL_XALANC=TRUE
@@ -51,9 +49,6 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         #--internal-postgresql)
         #    INTERNAL_POSTGRESQL=TRUE
         #    ;;
-        --internal-boost)
-            INTERNAL_BOOST=TRUE
-            ;;
         --internal-curl)
             INTERNAL_CURL=TRUE
             ;;
@@ -74,7 +69,6 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "  --internal-openssl [Use internal openssl]"
             #echo "  --internal-mysql [Use internal mysql]"
             #echo "  --internal-postgresql [Use internal postgresql]"
-            echo "  --internal-boost [Use internal boost]"
             echo "  --internal-curl [Use internal curl]"
             echo "  --internal-xerces [Use internal xerces]"
             echo "  --internal-xalan [Use internal xalan]"
@@ -122,7 +116,6 @@ echo "Internal gdal: $INTERNAL_GDAL"
 echo "Internal openssl: $INTERNAL_OPENSSL"
 echo "Internal mysql: $INTERNAL_MYSQL"
 echo "Internal postgresql: $INTERNAL_POSTGRESQL"
-echo "Internal boost: $INTERNAL_BOOST"
 echo "Internal curl: $INTERNAL_CURL"
 echo "Internal xerces: $INTERNAL_XERCESC"
 echo "Internal xalan: $INTERNAL_XALANC"
@@ -277,9 +270,6 @@ export NLSDIR=$XALANCROOT/src/xalanc/NLS
 ####################### End inline setenvironment.sh ######################
 
 # Patch various build scripts (to strip sudo)
-if test -f "$THIRDPARTY_WORK_DIR/Thirdparty/boost/build.sh"; then
-    sed -i "s#sudo ##g" $THIRDPARTY_WORK_DIR/Thirdparty/boost/build.sh
-fi
 if test -f "$THIRDPARTY_WORK_DIR/Thirdparty/apache/build2.sh"; then
     sed -i "s#sudo ##g" $THIRDPARTY_WORK_DIR/Thirdparty/apache/build2.sh
 fi
@@ -356,16 +346,6 @@ if test "$INTERNAL_GDAL" = "TRUE"; then
 else
     echo "Skipping internal gdal build"
 fi
-if test "$INTERNAL_BOOST" = "TRUE"; then
-    LIB_NAME="boost"
-    echo "Building internal $LIB_NAME"
-    cd $THIRDPARTY_WORK_DIR/Thirdparty/boost
-    chmod a+x ./build.sh
-    sh ./build.sh $CMDEX
-    check_build
-else
-    echo "Skipping internal boost build"
-fi
 if test "$INTERNAL_CURL" = "TRUE"; then
     LIB_NAME="libcurl"
     echo "Building internal $LIB_NAME"
@@ -396,7 +376,6 @@ echo "export INTERNAL_GDAL=$INTERNAL_GDAL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_OPENSSL=$INTERNAL_OPENSSL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_MYSQL=$INTERNAL_MYSQL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_POSTGRESQL=$INTERNAL_POSTGRESQL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_BOOST=$INTERNAL_BOOST" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_CURL=$INTERNAL_CURL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_XERCESC=$INTERNAL_XERCESC" >> $THIRDPARTY_WORK_DIR/env_vars.sh
 echo "export INTERNAL_XALANC=$INTERNAL_XALANC" >> $THIRDPARTY_WORK_DIR/env_vars.sh
