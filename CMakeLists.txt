@@ -2,10 +2,14 @@ project(fdo)
 
 # CMake base requires and policy tweaks
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
-# CMP0005: keep escaping behaviour for definitions added via add_definitions()
-cmake_policy( SET CMP0005 OLD )
-# CMP0026: Disallow use of the LOCATION target property
-cmake_policy( SET CMP0026 OLD )
+if (POLICY CMP0005)
+    # CMP0005: keep escaping behaviour for definitions added via add_definitions()
+    cmake_policy( SET CMP0005 OLD )
+endif (POLICY CMP0005)
+if (POLICY CMP0026)
+    # CMP0026: Disallow use of the LOCATION target property
+    cmake_policy( SET CMP0026 OLD )
+endif (POLICY CMP0026)
 
 # Look first in internal modules
 set(CMAKE_MODULE_PATH 
