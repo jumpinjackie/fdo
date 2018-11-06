@@ -35,7 +35,8 @@ FIND_PATH(CPPUNIT_INCLUDE_DIR cppunit/CompilerOutputter.h
 )
 
 # Want the static version as that is what we're linking against if using internal cppunit
-FIND_LIBRARY(CPPUNIT_LIBRARIES NAMES libcppunit.a
+# Fallback to dynamic if static version not available
+FIND_LIBRARY(CPPUNIT_LIBRARIES NAMES libcppunit.a libcppunit.so
     HINTS
     ${PC_CPPUNIT_LIBDIR}
     ${PC_CPPUNIT_LIBRARY_DIRS}
