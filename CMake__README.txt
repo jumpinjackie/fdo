@@ -33,7 +33,9 @@ Unix / Linux Instructions
 
 I. Requirements
     Base:
-        CMake
+        CMake (2.6.2 or higher)
+        A version of gcc with C++11 support (4.8 or higher)
+            For CentOS 6, you can install devtoolset for modern gcc (https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/)
     For system libraries, development packages for:
         openssl
         curl
@@ -80,7 +82,7 @@ III. Using internal provided Thirdparty libraries
     -DALL_THIRDPARTY=TRUE
     
     NOTE: It is *not* recommended to use the internal third party libraries, unless you are using
-        an older compiler which requires them.
+        an older compiler which requires them or you are attempting a distro-agnostic generic build
 
 IV. Debug mode
 
@@ -174,5 +176,27 @@ VI. Using the wrapper scripts
         make package
 
     You can pass the --help switch to both scripts to find out all available parameters that are supported.
+
+VII. Optional extras
+
+    Using ninja instead of make
+
+        ninja is a lightweight alternative to make that can build FDO up to 2x faster than make
+
+        You can use ninja over standard make by passing USE_NINJA=1 for the main FDO build or passing --ninja 
+        to ./cmake_build.sh
+
+        See "Known Issues" below for some gotchas with using ninja over make
+
+    Using gold linker instead of ld
+
+        gold is an alternative linker to ld that may link faster in some cases
+
+        You may also choose to use the gold linker over ld for linking by passing USE_LD_GOLD=ON for the main FDO build or
+        passing --use-ld-gold to ./cmake_build.sh
+
+VIII. Known Issues
+
+    - Ninja cannot be used as the build system if doing a full internal build of thirdparty libraries
 
 Please send any help questions, bug reports, enhancements, etc to the fdo-users mailing list <fdo-users@lists.osgeo.org>
