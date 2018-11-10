@@ -396,7 +396,7 @@ bool FdoStringP::IsNumber() const
     char    radix = '\0';
     struct lconv *nls;
 
-    if (msString == '\0')
+    if (*msString == '\0')
         return false;
 
     

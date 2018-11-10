@@ -101,7 +101,7 @@ public:
   s_data* FindClassDef(const std::wstring& OraOwner,const std::wstring& OraTable,const std::wstring& OraGeomColumn,const std::wstring& OverFdoClassName) // no ref count
   {
     if( OraOwner.empty() || OraTable.empty() )
-      return false;
+      return NULL;
     
     std::wstring keyname = OraOwner;
     keyname.append(OraTable);

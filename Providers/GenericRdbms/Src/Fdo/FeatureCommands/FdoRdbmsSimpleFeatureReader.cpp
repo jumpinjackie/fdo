@@ -738,7 +738,7 @@ FdoString* FdoRdbmsSimpleFeatureReader::GetString(FdoInt32 index)
     if (isNULL || tmpVal == NULL)
     {
         mSprops[i].EnsureSize(1);
-        mSprops[i].data = L'\0';
+        *(mSprops[i].data) = L'\0';
         mSprops[i].valid = 1;
         throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, _strNUllColumnExp, pCol->col.c_alias ));
     }

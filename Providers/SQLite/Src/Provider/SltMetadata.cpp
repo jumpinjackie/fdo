@@ -288,7 +288,7 @@ void SltMetadata::BuildMetadataInfo(SltConnection* conn, SltStringList* lst)
                         while (sqlite3_step(pstmtGeom) == SQLITE_ROW)
                         {
                             const char* colName = (const char*)sqlite3_column_text(pstmtGeom, 0);
-                            if (colName != NULL && colName != '\0')
+                            if (colName != NULL && *colName != '\0')
                             {
                                 SltColumnDefinition* pcolDef = new SltColumnDefinition();
                                 pcolDef->column_name = A2W_SLOW(colName);

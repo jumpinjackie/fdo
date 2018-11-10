@@ -3256,7 +3256,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     if (spContxName != NULL && *spContxName != '\0')
     {
         // we do not support SpatialExtents() mixed with other identifiers
-        if (propsCount == 2 && (spCountName == NULL || spCountName == '\0'))
+        if (propsCount == 2 && (spCountName == NULL || *spCountName == '\0'))
             throw FdoException::Create(L"SpatialExtents() can be mixed only with Count()", 1);
 
         FdoPtr<FdoIdentifier> identifier = props->GetItem(0);
