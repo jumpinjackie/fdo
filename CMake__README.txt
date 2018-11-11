@@ -33,7 +33,7 @@ Unix / Linux Instructions
 
 I. Requirements
     Base:
-        CMake (2.6.2 or higher)
+        CMake (2.8 or higher)
         A version of gcc with C++11 support (4.8 or higher)
             For CentOS 6, you can install devtoolset for modern gcc (https://www.softwarecollections.org/en/scls/rhscl/devtoolset-7/)
     For system libraries, development packages for:
