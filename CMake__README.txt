@@ -179,6 +179,10 @@ VI. Using the wrapper scripts
 
 VII. Optional extras
 
+    ccache will be used if found
+
+        If you have ccache installed it will be used for caching compilations
+
     Using ninja instead of make
 
         ninja is a lightweight alternative to make that can build FDO up to 2x faster than make
