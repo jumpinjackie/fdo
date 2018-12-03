@@ -21,8 +21,7 @@
 #include <Functions/Geometry/Util.h>
 #include <Spatial/SpatialStd.h>
 #include <Spatial/SpatialUtility.h>		// for TesselateCurve()
-#include <float.h>                      // for _isnan()
-#include <math.h>
+#include <cmath>
 #include <cstring>
 
 #define	EPS2               0.00000001
@@ -1209,12 +1208,7 @@ bool FdoExpressionEngineGeometryUtil::ArePositionsEqualXY(
 
 bool FdoExpressionEngineGeometryUtil::IsOrdinateNull(const double ordinate)
 {
-    return 
-#ifdef _WIN32
-        _isnan(ordinate)
-#else
-	    isnan(ordinate)
-#endif
+    return std::isnan(ordinate)
         || (m_nullOrd == ordinate);
 }
 
