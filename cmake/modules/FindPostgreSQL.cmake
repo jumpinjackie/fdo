@@ -20,10 +20,16 @@ endif (POSTGRESQL_INCLUDE_DIR AND POSTGRESQL_LIBRARIES)
 find_path(POSTGRESQL_INCLUDE_DIR libpq-fe.h
    /usr/include/pgsql/
    /usr/local/include/pgsql/
+   /usr/local/pgsql/include/
    /usr/include/postgresql/
 )
 
-find_library(POSTGRESQL_LIBRARIES NAMES pq)
+find_library(POSTGRESQL_LIBRARIES 
+  NAMES pq
+  PATHS
+    /usr/lib
+    /usr/local/pgsql/lib
+  )
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PostgreSQL DEFAULT_MSG

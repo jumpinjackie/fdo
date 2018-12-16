@@ -4,9 +4,14 @@ add_subdirectory( linux/mkcatdefs )
 # Thirdparty required internal libs
 add_subdirectory( Sqlite3.3.13 )
 
+# TODO/FIXME: 
+# The internal build steps do not work with the ninja generator. Fortunately, if you
+# have already pre-built these deps via cmake_bootstrap.sh, we can skip these build
+# steps
+
 # Build local CPPUNIT
 if( INTERNAL_CPPUNIT )
-	if( UNIX )
+	if( UNIX AND NOT CPPUNIT_LIBRARIES )
 		message( STATUS "Internal CppUnit will be compiled and used." )
 		add_custom_target( Internal_Cppunit
 			DEPENDS ${FDOTHIRDPARTY}/linux/cppunit/lib/libcppunit.a )
@@ -14,12 +19,14 @@ if( INTERNAL_CPPUNIT )
 			OUTPUT ${FDOTHIRDPARTY}/linux/cppunit/lib/libcppunit.a
 			COMMAND ${FDOTHIRDPARTY}/linux/cppunit/build
 			WORKING_DIRECTORY ${FDOTHIRDPARTY}/linux/cppunit )
-	endif( UNIX )
+	else ( UNIX AND NOT CPPUNIT_LIBRARIES )
+		message( STATUS "Internal CppUnit is already built and will be used")
+	endif( UNIX AND NOT CPPUNIT_LIBRARIES )
 endif( INTERNAL_CPPUNIT )
 
 # Build local GDAL
 if( INTERNAL_GDAL )
-	if( UNIX )
+	if( UNIX AND NOT GDAL_LIBRARY )
 		message( STATUS "Internal GDAL will be compiled and used." )
 		add_custom_target( Internal_GDAL
 			DEPENDS ${FDOTHIRDPARTY}/gdal/lib/libgdal.a )
@@ -45,12 +52,14 @@ if( INTERNAL_GDAL )
 			COMMAND cp ARGS -f alg/*.h ${FDOTHIRDPARTY}/gdal/include/
 			COMMAND cp ARGS -f ogr/*.h ${FDOTHIRDPARTY}/gdal/include/
 			WORKING_DIRECTORY ${FDOTHIRDPARTY}/gdal )
-	endif( UNIX )
+	else( UNIX AND NOT GDAL_LIBRARY )
+		message( STATUS "Internal GDAL is already built and will be used")
+	endif( UNIX AND NOT GDAL_LIBRARY )
 endif( INTERNAL_GDAL )
 
 # Build local Curl
 if( INTERNAL_CURL )
-	if( UNIX )
+	if( UNIX AND NOT CURL_LIBRARIES )
 		message( STATUS "Internal CURL will be compiled and used." )
 		add_custom_target( Internal_CURL
 			DEPENDS ${FDOTHIRDPARTY}/libcurl/lib/linux/libcurl.a )
@@ -62,12 +71,14 @@ if( INTERNAL_CURL )
 			COMMAND make
 			COMMAND cp ARGS -f ./lib/.libs/libcurl.a ./lib/linux
 			WORKING_DIRECTORY ${FDOTHIRDPARTY}/libcurl )
-	endif( UNIX )
+	else( UNIX AND NOT CURL_LIBRARIES )
+		message( STATUS "Internal CURL is already built and will be used")
+	endif( UNIX AND NOT CURL_LIBRARIES )
 endif( INTERNAL_CURL )
 
 # Build local openssl
 if( INTERNAL_OPENSSL )
-	if( UNIX )
+	if( UNIX AND NOT OPENSSL_LIBRARIES )
 		message( STATUS "Internal openssl will be compiled and used." )
 		add_custom_target( Internal_OpenSSL 
 			DEPENDS ${FDOTHIRDPARTY}/openssl/lib/linux/libssl.a )
@@ -79,5 +90,7 @@ if( INTERNAL_OPENSSL )
 			COMMAND make
 			COMMAND cp ARGS -f libssl.a libcrypto.a lib/linux
 			WORKING_DIRECTORY ${FDOTHIRDPARTY}/openssl )
-	endif( UNIX )
+	else( UNIX AND NOT OPENSSL_LIBRARIES )
+		message( STATUS "Internal openssl is already built and will be used")
+	endif( UNIX AND NOT OPENSSL_LIBRARIES )
 endif( INTERNAL_OPENSSL )

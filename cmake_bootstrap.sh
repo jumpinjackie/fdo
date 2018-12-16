@@ -9,6 +9,7 @@ INTERNAL_POSTGRESQL=FALSE
 INTERNAL_CURL=FALSE
 INTERNAL_XERCESC=FALSE
 INTERNAL_XALANC=FALSE
+USE_CCACHE=0
 
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
     case "$1" in
@@ -58,6 +59,9 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
         --internal-xalan)
             INTERNAL_XALANC=TRUE
             ;;
+        --with-ccache)
+            USE_CCACHE=1
+            ;;
         --help)
             echo "Usage: $0 (options)"
             echo "Options:"
@@ -73,6 +77,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             echo "  --internal-xerces [Use internal xerces]"
             echo "  --internal-xalan [Use internal xalan]"
             echo "  --all-internal [Use all internal thirdparty components]"
+            echo "  --with-ccache [Use ccache]"
             echo "  --help [Display usage]"
             exit
             ;;
@@ -119,6 +124,12 @@ echo "Internal postgresql: $INTERNAL_POSTGRESQL"
 echo "Internal curl: $INTERNAL_CURL"
 echo "Internal xerces: $INTERNAL_XERCESC"
 echo "Internal xalan: $INTERNAL_XALANC"
+
+if [ "$USE_CCACHE" = "1" ]; then
+    export CC="ccache gcc"
+    export CXX="ccache g++"
+    ccache -s
+fi
 
 echo "Creating thirdparty working dir if required"
 if [ ! -d $THIRDPARTY_WORK_DIR ]; then
@@ -368,18 +379,25 @@ else
 fi
 
 # dump vars to setup script
-echo "#!/bin/sh" > $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export BUILD_CPU=$BUILD_CPU" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export BUILD_CONFIG=$BUILD_CONFIG" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_CPPUNIT=$INTERNAL_CPPUNIT" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_GDAL=$INTERNAL_GDAL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_OPENSSL=$INTERNAL_OPENSSL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_MYSQL=$INTERNAL_MYSQL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_POSTGRESQL=$INTERNAL_POSTGRESQL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_CURL=$INTERNAL_CURL" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_XERCESC=$INTERNAL_XERCESC" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-echo "export INTERNAL_XALANC=$INTERNAL_XALANC" >> $THIRDPARTY_WORK_DIR/env_vars.sh
-chmod +x $THIRDPARTY_WORK_DIR/env_vars.sh
+{
+    echo "#!/bin/sh"
+    echo "export BUILD_CPU=$BUILD_CPU"
+    echo "export BUILD_CONFIG=$BUILD_CONFIG"
+    echo "export INTERNAL_CPPUNIT=$INTERNAL_CPPUNIT"
+    echo "export INTERNAL_GDAL=$INTERNAL_GDAL"
+    echo "export INTERNAL_OPENSSL=$INTERNAL_OPENSSL"
+    echo "export INTERNAL_MYSQL=$INTERNAL_MYSQL"
+    echo "export INTERNAL_POSTGRESQL=$INTERNAL_POSTGRESQL"
+    echo "export INTERNAL_CURL=$INTERNAL_CURL"
+    echo "export INTERNAL_XERCESC=$INTERNAL_XERCESC"
+    echo "export INTERNAL_XALANC=$INTERNAL_XALANC"
+} > "$THIRDPARTY_WORK_DIR/env_vars.sh"
+chmod +x "$THIRDPARTY_WORK_DIR/env_vars.sh"
+
+if [ "$USE_CCACHE" = "1" ]; then
+    ccache -s
+fi
+
 
 echo "$THIRDPARTY_WORK_DIR/env_vars.sh written"
 echo "Make sure to run cmake_build.sh with --thirdparty-working-dir set to: $THIRDPARTY_WORK_DIR"
