@@ -443,9 +443,13 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, const c
 				// string with '.' replaced by ',' then the largest value (that is, not truncated) 
 				// will be selected for output. 
 
-				char	buffer[50];
 				size_t	length = strlen((const char*)raw);
-				memcpy(buffer, (const char*)raw, length);
+                char* buffer = new char[length+1]();
+#ifdef _WIN32
+                memcpy_s(buffer, length, (const char*)raw, length);
+#else
+                memcpy(buffer, (const char*)raw, length);
+#endif // _WIN32
 				buffer[length] = '\0';
 
                 bool isScientific = false;
@@ -477,6 +481,7 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, const c
 				    if (fabs(value) > fabs(data->value.dData))
 					    data->value.dData = value;
                 }
+                delete[] buffer;
 			}
             break;
 
