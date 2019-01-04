@@ -168,11 +168,9 @@ cd $CMAKE_BUILD_DIR
 if test $USE_NINJA -eq 1; then
     cmake -G Ninja $SOURCE_DIR $CMAKE_ARGS
     check_build
-    ninja
-    check_build
 else
     cmake $SOURCE_DIR $CMAKE_ARGS
     check_build
-    make
-    check_build
 fi
+cmake --build .
+check_build
