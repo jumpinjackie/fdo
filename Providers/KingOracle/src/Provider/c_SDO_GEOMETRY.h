@@ -96,9 +96,9 @@ class c_SDO_GEOMETRY
   public:
     c_SDO_GEOMETRY(OCIEnv* Env=NULL,OCIError *Err=NULL,SDO_GEOMETRY_TYPE* Geom=NULL,SDO_GEOMETRY_ind* m_SdoGeomInd=NULL);
     c_SDO_GEOMETRY(const c_SDO_GEOMETRY* Geom);
-    ~c_SDO_GEOMETRY();
+    FDOKGORA_API ~c_SDO_GEOMETRY();
     
-    static c_SDO_GEOMETRY* Create(c_Oci_Connection* Conn);
+    FDOKGORA_API static c_SDO_GEOMETRY* Create(c_Oci_Connection* Conn);
     
     static c_SDO_GEOMETRY* CreateNull( c_Oci_Connection* Conn );
     

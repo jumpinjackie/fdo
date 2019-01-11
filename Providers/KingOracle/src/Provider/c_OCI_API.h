@@ -18,7 +18,11 @@
 #ifndef _c_OCI_API_h
 #define _c_OCI_API_h
 
-
+//This controls whether we're going to send/receive wide strings to/from OCI which will be true
+//on windows and false on Linux
+#ifdef _WIN32
+#define D_OCI_WIDE_STRINGS
+#endif
 
 #ifndef OCI_ORACLE
 #include <oci.h>
@@ -66,18 +70,18 @@ class c_Oci_Connection
     c_Oci_Connection(OCIEnv* OciEnv, OCIError* OciError);
     ~c_Oci_Connection();
     
-    c_Oci_Statement* CreateStatement()
+    FDOKGORA_API c_Oci_Statement* CreateStatement()
     {
       return new c_Oci_Statement(this);
     }
-    void TerminateStatement(c_Oci_Statement* Stm)
+    FDOKGORA_API void TerminateStatement(c_Oci_Statement* Stm)
     {
       delete Stm;
     }
     
     void LogOn(const wchar_t* UserName,const wchar_t* Password,const wchar_t* DbLink);
     void LogOff();
-    void OciCheckError(sword status);
+    FDOKGORA_API void OciCheckError(sword status, int lineNumber, const char* fileName);
     
     bool IsSdoTypes() { return m_OciType_SdoGeometry!=NULL && m_OciType_SdoDimArray!=NULL && m_OciType_SdoDimElement!=NULL; }
 
@@ -88,6 +92,12 @@ class c_Oci_Connection
   
   // Next handlers are allocated in  c_Oci_Connection 
   // Need to free them in destructor 
+
+  //#ifndef D_OCI_WIDE_STRINGS
+    OCIServer* m_OciServer;
+    OCISession* m_OciSession;
+  //#endif
+
     OCISvcCtx *m_OciHpServiceContext;
     OCIDescribe	*m_OciHpDescribe;
     OCIType *m_OciType_SdoGeometry;
@@ -102,7 +112,7 @@ class c_Oci_Connection
 class c_Oci_Exception
 {
   public:
-    c_Oci_Exception(int ErrorStatus,int ErrorCode=0,const wchar_t* ErrorText=NULL)
+    c_Oci_Exception(int ErrorStatus,int ErrorCode=0,const wchar_t* ErrorText=NULL, int lineNumber = -1, const char* fileName = NULL)
     {
       m_ErrorStatus = ErrorStatus;
       m_ErrorCode = ErrorCode;
@@ -115,9 +125,24 @@ class c_Oci_Exception
       }
       else
         m_ErrorText[0]=0;
+#ifdef _KGORA_ERROR_SOURCE
+      //Append file name and line number if given and we have space left on the buffer
+      if (fileName && lineNumber > 0) 
+      {
+        FdoStringP atSource = L" at(";
+        atSource += FdoStringP(fileName);
+        atSource += ", line: ";
+        atSource += FdoStringP::Format(L"%d", lineNumber);
+        atSource += ")";
+        if((wcslen(m_ErrorText) + atSource.GetLength()) <= D_OCI_ERROR_LEN )
+        {
+          wcscat(m_ErrorText, (FdoString*)atSource);
+        }
+      }
+#endif
     }
     
-    const wchar_t* GetErrorText() { return &m_ErrorText[0]; }
+    FDOKGORA_API const wchar_t* GetErrorText() { return &m_ErrorText[0]; }
     const wchar_t* what() { return GetErrorText(); }
     int GetErrorCode() { return m_ErrorCode; }
     
@@ -151,20 +176,20 @@ protected:
 public:  
   static bool IsInit();
   
-  static void OciInit();
+  FDOKGORA_API static void OciInit();
   
   //oracle::occi::Connection* m_Conn;
   //oracle::occi::Environment* m_Env;
   
   
-  static c_Oci_Connection* CreateConnection(const wchar_t*User,const wchar_t*Password,const wchar_t* DbLink);
+  FDOKGORA_API static c_Oci_Connection* CreateConnection(const wchar_t*User,const wchar_t*Password,const wchar_t* DbLink);
   //static oracle::occi::Connection * CreateConnection(const char*User,const char*Password,const char*DbLink);
   
   
   //static void c_OCI_API::CloseConnection(oracle::occi::Connection * Conn);
-  static void CloseConnection(c_Oci_Connection* Conn);
-  static void OciCheckError(OCIError *errhp, sword status);
-  static void OciTerminate();
+  FDOKGORA_API static void CloseConnection(c_Oci_Connection* Conn);
+  static void OciCheckError(OCIError *errhp, sword status, int lineNumber, const char* fileName);
+  FDOKGORA_API static void OciTerminate();
 
   // Returns column name's of primary key of given table.
   // No primary key - returns no column names
@@ -190,8 +215,6 @@ public:
   static OCIEnv 		*g_OciHpEnvironment;                       /* OCI general handles */
   static OCIError 	*g_OciHpError;
   //static OCICPool   *m_OciHpPool;
- 
-  
 };
 
 

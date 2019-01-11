@@ -23,9 +23,15 @@
 #define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
+// Format specifier for wide strings
+#define W_FMT L"%s"
+
 #else // _WIN32
 
-#define FDOKGORA_API
+// Format specifier for wide strings
+#define W_FMT L"%S"
+
+#include "KingOracle/fdokgoraprovider.h"
 
 #include <cstring>
 #include <stdlib.h>

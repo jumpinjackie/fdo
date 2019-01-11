@@ -83,7 +83,7 @@ void process_data(c_Oci_Connection* ociconn,SDO_GEOMETRY_TYPE **array_geomobjptr
     */
     if( gid )
       ociconn->OciCheckError( OCINumberToInt(ociconn->m_OciHpError, gid, 
-        (uword)sizeof(int),OCI_NUMBER_UNSIGNED,(dvoid *)&double_gid));
+        (uword)sizeof(int),OCI_NUMBER_UNSIGNED,(dvoid *)&double_gid), __LINE__, __FILE__);
 
     
     if( geomind->_atomic != OCI_IND_NULL )
@@ -95,7 +95,7 @@ void process_data(c_Oci_Connection* ociconn,SDO_GEOMETRY_TYPE **array_geomobjptr
 
       ociconn->OciCheckError( OCINumberToInt(ociconn->m_OciHpError, &(geomobj->sdo_gtype),
         (uword)sizeof(int), OCI_NUMBER_SIGNED,
-        (dvoid *)&gtype));
+        (dvoid *)&gtype), __LINE__, __FILE__);
       
       
       sdotoagf.SetGeometry(geomobj,geomind);
@@ -166,12 +166,12 @@ for(int loop=0;loop<1;loop++)
     
     /* initialize stmthp */
     OCIStmt 		*stmthp;
-    ociconn->OciCheckError( OCIHandleAlloc((dvoid *)ociconn->m_OciHpEnvironment, (dvoid **)&stmthp, (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0));
+    ociconn->OciCheckError( OCIHandleAlloc((dvoid *)ociconn->m_OciHpEnvironment, (dvoid **)&stmthp, (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0), __LINE__, __FILE__);
       
     /* parse query */
     ociconn->OciCheckError( OCIStmtPrepare(stmthp, ociconn->m_OciHpError, 
       (text *)sql.c_str(), (ub4)wcslen(sql.c_str())*sizeof(wchar_t), 
-      (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT));
+      (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT), __LINE__, __FILE__);
 
     
 
@@ -190,11 +190,11 @@ for(int loop=0;loop<1;loop++)
     OCIDefine *defn2p;
     ociconn->OciCheckError( OCIDefineByPos(stmthp, &defn2p, ociconn->m_OciHpError, (ub4)1, 
       (dvoid *)0, (sb4)0, SQLT_NTY, (dvoid *)0,
-      (ub2 *)0, (ub2 *)0, (ub4)OCI_DEFAULT));
+      (ub2 *)0, (ub2 *)0, (ub4)OCI_DEFAULT), __LINE__, __FILE__);
 
     ociconn->OciCheckError( OCIDefineObject(defn2p, ociconn->m_OciHpError, ociconn->m_OciType_SdoGeometry, 
       (dvoid **)global_geom_obj, (ub4 *)0, 
-      (dvoid **)global_geom_ind, (ub4 *)0));
+      (dvoid **)global_geom_ind, (ub4 *)0), __LINE__, __FILE__);
 
 
 
@@ -217,14 +217,14 @@ for(int loop=0;loop<1;loop++)
     else
     {
       has_more_data = TRUE;
-      ociconn->OciCheckError( status);
+      ociconn->OciCheckError( status, __LINE__, __FILE__);
     }
 
     /* process data */
     rows_fetched=0;rows_processed=0;
     ociconn->OciCheckError( OCIAttrGet((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT,
       (dvoid *)&rows_fetched, (ub4 *)0, 
-      (ub4)OCI_ATTR_ROW_COUNT, ociconn->m_OciHpError));
+      (ub4)OCI_ATTR_ROW_COUNT, ociconn->m_OciHpError), __LINE__, __FILE__);
     int rows_to_process = rows_fetched - rows_processed;
 
     process_data(ociconn,global_geom_obj,global_geom_ind,NULL, rows_to_process, &rows_processed);
@@ -243,7 +243,7 @@ for(int loop=0;loop<1;loop++)
       /* process data */
       ociconn->OciCheckError( OCIAttrGet((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT,
         (dvoid *)&rows_fetched, (ub4 *)0, 
-        (ub4)OCI_ATTR_ROW_COUNT, ociconn->m_OciHpError));
+        (ub4)OCI_ATTR_ROW_COUNT, ociconn->m_OciHpError), __LINE__, __FILE__);
       rows_to_process = rows_fetched - rows_processed;
 
       process_data(ociconn, global_geom_obj,global_geom_ind,NULL,rows_to_process, &rows_processed);
@@ -258,7 +258,7 @@ for(int loop=0;loop<1;loop++)
 
     /* initialize stmthp */
     
-    ociconn->OciCheckError( OCIHandleFree((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT));
+    ociconn->OciCheckError( OCIHandleFree((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT), __LINE__, __FILE__);
     
     c_OCI_API::CloseConnection(ociconn);
 

@@ -115,7 +115,7 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
           FdoStringP buff;
           
           if( TypeName )
-            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type '%s'!",TypeName);
+            buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type '" W_FMT "'!",TypeName);
           else
             buff = FdoStringP::Format(L"c_Oci_ColumnData::Set : Unsupported Named Type 'NULL'!");
 
@@ -157,7 +157,11 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
         m_DataStringPtrArray[ind] = new wchar_t[m_ColSize+1];
       }
       */
+  #ifdef D_OCI_WIDE_STRINGS
       m_DataStringPtr = new wchar_t[m_DataArraySize*(m_ColSize+1)];
+  #else
+      m_DataUtf8StringPtr = new char[m_DataArraySize*(m_ColSize+1)];
+  #endif
       m_ScalarInd = new sb2[m_DataArraySize];
     }
     break;
@@ -180,7 +184,7 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
       m_DataLobLocator = new OCILobLocator*[m_DataArraySize];
       for(int ind=0;ind<m_DataArraySize;ind++)
       {
-        m_OciConn->OciCheckError( OCIDescriptorAlloc(m_OciConn->m_OciHpEnvironment,(void**)&m_DataLobLocator[ind],OCI_DTYPE_LOB,0,0) );
+        m_OciConn->OciCheckError( OCIDescriptorAlloc(m_OciConn->m_OciHpEnvironment,(void**)&m_DataLobLocator[ind],OCI_DTYPE_LOB,0,0), __LINE__, __FILE__);
       }
       m_ScalarInd = new sb2[m_DataArraySize];      
     }
@@ -274,8 +278,11 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
       }
       delete []m_DataStringPtrArray;
       */
+  #ifdef D_OCI_WIDE_STRINGS
       delete []m_DataStringPtr;
-      
+  #else
+      delete []m_DataUtf8StringPtr;
+  #endif    
       delete []m_ScalarInd;
     }
     break;
@@ -330,7 +337,7 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
       {
         if( m_DataSdoGeom[ind] )
         {
-          c_OCI_API::OciCheckError(m_OciConn->m_OciHpError, OCIObjectFree(m_OciConn->m_OciHpEnvironment, m_OciConn->m_OciHpError,m_DataSdoGeom[ind],0));      
+          c_OCI_API::OciCheckError(m_OciConn->m_OciHpError, OCIObjectFree(m_OciConn->m_OciHpEnvironment, m_OciConn->m_OciHpError,m_DataSdoGeom[ind],0), __LINE__, __FILE__);      
           m_DataSdoGeom[ind] = NULL;
         }                
       }
@@ -426,11 +433,18 @@ const wchar_t* c_Oci_ColumnData::GetString()
   if( m_DataBufferType==e_OciString )
   {
     //return m_DataStringPtrArray[m_CurrentRow];
+  #ifdef D_OCI_WIDE_STRINGS
     return &m_DataStringPtr[m_CurrentRow*(m_ColSize+1)];
+  #else
+    //Update internal proxy before returning its contents
+    m_utStrProxy = &m_DataUtf8StringPtr[m_CurrentRow*(m_ColSize+1)];
+    return m_utStrProxy;
+  #endif
   }
   
-  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!", __LINE__, __FILE__);
 }
+
 SDO_GEOMETRY_TYPE* c_Oci_ColumnData::GetSdoGeom(SDO_GEOMETRY_ind** GeomInd)
 {
   if( m_DataBufferType==e_OciSdoGeometry)
@@ -448,7 +462,7 @@ long c_Oci_ColumnData::GetLongRawLength()
   if( m_DataBufferType==e_OciBlob || m_DataBufferType==e_OciClob )
   {
     ub4 length;
-    m_OciConn->OciCheckError(OCILobGetLength(m_OciConn->m_OciHpServiceContext,m_OciConn->m_OciHpError,m_DataLobLocator[m_CurrentRow],&length));
+    m_OciConn->OciCheckError(OCILobGetLength(m_OciConn->m_OciHpServiceContext,m_OciConn->m_OciHpError,m_DataLobLocator[m_CurrentRow],&length), __LINE__, __FILE__);
     return length;
   }
   if( m_DataBufferType==e_OciLongRaw || m_DataBufferType==e_OciBlob || m_DataBufferType==e_OciClob)
@@ -515,7 +529,7 @@ unsigned char* c_Oci_ColumnData::GetLongRaw()
       NULL, //OCICallbackLobRead2 (cbfp) (void *ctxp,const void *bufp,oraub8 lenp,ub1 piecep,void **changed_bufpp,oraub8 *changed_lenp)
       OCI_UTF16ID, // ub2                csid,
       SQLCS_IMPLICIT  // ub1                csfrm 
-      ));
+      ), __LINE__, __FILE__);
 
     return m_LobBuff;      
   }
@@ -541,7 +555,7 @@ void c_Oci_ColumnData::GetLobData(unsigned long& BuffSize,void* BuffPtr)
       NULL, //OCICallbackLobRead2 (cbfp) (void *ctxp,const void *bufp,oraub8 lenp,ub1 piecep,void **changed_bufpp,oraub8 *changed_lenp)
       OCI_UTF16ID, // ub2                csid,
       SQLCS_IMPLICIT  // ub1                csfrm 
-      ));
+      ), __LINE__, __FILE__);
       
     BuffSize =      amtp; 
     return;      
@@ -572,8 +586,12 @@ void* c_Oci_ColumnData::GetDataDefineBuffer()
     break;
     case e_OciString:
     {
+    #ifdef D_OCI_WIDE_STRINGS
       return m_DataStringPtr;
-      
+    #else
+      return m_DataUtf8StringPtr;
+    #endif
+ 
       /*
       if( m_DataArraySize == 1)
         return m_DataStringPtrArray[0];
@@ -761,7 +779,11 @@ long c_Oci_ColumnData::GetDataDefineSize()
     break;
     case e_OciString:
     {
-      return m_ColSize*sizeof(wchar_t) + sizeof(wchar_t);      
+    #ifdef D_OCI_WIDE_STRINGS
+      return m_ColSize*sizeof(wchar_t) + sizeof(wchar_t);
+    #else
+      return m_ColSize*sizeof(char) + sizeof(char);
+    #endif
     }
     break;
     case e_OciNumber:

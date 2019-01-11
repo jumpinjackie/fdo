@@ -375,7 +375,7 @@ bool c_FdoOra_API3::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
       else
       {
         FdoBooleanValue * boolval = (FdoBooleanValue*)DataValue;
-        string val;
+        std::string val;
         if( boolval->GetBoolean() )
           Statement->BindStringValue(SqlParamNum,L"1");          
         else
@@ -572,7 +572,7 @@ bool c_FdoOra_API3::SetOracleStatementData(c_Oci_Statement*  Statement,const wch
       else
       {
         FdoBooleanValue * boolval = (FdoBooleanValue*)DataValue;
-        string val;
+        std::string val;
         if( boolval->GetBoolean() )
           Statement->BindStringValue(SqlParamName,L"1");          
         else
@@ -1035,7 +1035,7 @@ bool c_FdoOra_API3::DescribeTableProperties(c_Oci_Connection * OciConn,const wch
           // data type
           if( !stm->IsColumnNull(6) )
           {
-            wstring datatype = stm->GetString(6);
+            std::wstring datatype = stm->GetString(6);
             
 
             isfdotype = OraTypeToFdoDataType(datatype.c_str(),precision,scale,length,fdotype);
@@ -1253,12 +1253,11 @@ where a.srid = b.srid (+) and a.owner = :1 ;
 c_KgOraSchemaDesc* c_FdoOra_API3::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema
                            ,const wchar_t* KingFdoViews,const wchar_t* SdeSchema)
 {
-      
-        FdoPtr<FdoFeatureSchemaCollection> fschema;
-        FdoPtr<FdoKgOraPhysicalSchemaMapping> phschema;
-        int alias_num=0;
-      
-  
+  D_KGORA_ELOG_WRITE("c_FdoOra_API3::DescribeSchema");
+  FdoPtr<FdoFeatureSchemaCollection> fschema;
+  FdoPtr<FdoKgOraPhysicalSchemaMapping> phschema;
+  int alias_num=0;
+
   bool isoracle9=false;    
   fschema = FdoFeatureSchemaCollection::Create(NULL);
   
@@ -1273,6 +1272,7 @@ c_KgOraSchemaDesc* c_FdoOra_API3::DescribeSchema(c_Oci_Connection* OciConn,const
 {
   if( SdeSchema && *SdeSchema )
   {
+    D_KGORA_ELOG_WRITE("c_FdoOra_API3::DescribeSchema - Create from SDE Schema");
     FdoPtr<FdoFeatureSchema> schema;
     
     schema = (FdoFeatureSchema*)fschema->FindItem(L"KingOra");
@@ -1293,6 +1293,7 @@ c_KgOraSchemaDesc* c_FdoOra_API3::DescribeSchema(c_Oci_Connection* OciConn,const
 // Create FDO classes from tables in SDO_GEOM_METADATA
 if( OciConn->IsSdoTypes() )
 {  
+  D_KGORA_ELOG_WRITE("c_FdoOra_API3::DescribeSchema - Create from SDO_GEOM_METADATA");
   FdoPtr<FdoFeatureSchema> schema;
 
   schema = (FdoFeatureSchema*)fschema->FindItem(L"KingOra");
@@ -1622,6 +1623,7 @@ if( OciConn->IsSdoTypes() )
 // Create FDO classes from tables in KingFDOViews table
 if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
 { 
+  D_KGORA_ELOG_WRITE("c_FdoOra_API3::DescribeSchema - Create from KingFDOViews table");
   // FdoPtr<FdoFeatureSchema> schema = fschema->FindItem(L"KingFdoClass"); 
   // If I set different schema than when selecting feature in MG, it will not select one feature
   // but it will render all features blue. Workaround was to have one just one schema
@@ -1661,7 +1663,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
             L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ,k.FDO_SPATIALTABLE_OWNER ,k.FDO_SPATIALTABLE_NAME ";
         
-        FdoStringP fromtable = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP fromtable = FdoStringP::Format(L" FROM " W_FMT " k ", KingFdoViews);
         
         sqlfrom = sqlfrom + (FdoString*)fromtable;
         
@@ -1692,7 +1694,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
               L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ,k.FDO_SPATIALTABLE_OWNER ,k.FDO_SPATIALTABLE_NAME  ";
         
-        FdoStringP fromtable = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP fromtable = FdoStringP::Format(L" FROM " W_FMT " k ", KingFdoViews);
         
         sqlfrom = sqlfrom + (FdoString*)fromtable;
         
@@ -2329,7 +2331,6 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
       // so I need to check not to duplicate classes
       if( !FdoClasses->FindItem( w_fdo_classname ) )
       {
-      
         FdoPtr<FdoFeatureClass> fc_geom;
         FdoPtr<FdoClass> fc_nogeom;
         FdoClassDefinition* fc;
@@ -2338,11 +2339,13 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
             || ( (override_point_x_col.length() > 0) && (override_point_y_col.length() > 0) )
           )
         {
+          D_KGORA_ELOG_WRITE2("c_FdoOra_API3::DescribeSchemaSQL - Setting up feature class (%S, len: %d)", (FdoString*)w_fdo_classname, w_fdo_classname.GetLength());
           fc_geom = FdoFeatureClass::Create(w_fdo_classname, L"");      
           fc = fc_geom.p;
         }
         else
         {
+          D_KGORA_ELOG_WRITE2("c_FdoOra_API3::DescribeSchemaSQL - Setting up non-feature class (%S, len: %d)", (FdoString*)w_fdo_classname, w_fdo_classname.GetLength());
           fc_nogeom = FdoClass::Create(w_fdo_classname, L"");      
           fc = fc_nogeom.p;
         }
@@ -2376,7 +2379,9 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
           }
         }
         phys_class->SetName( w_fdo_classname );
-        phys_class->SetOracleFullTableName( FdoStringP(ora_fullname.c_str()) );
+        FdoStringP oraTableNameFull(ora_fullname.c_str());
+        phys_class->SetOracleFullTableName(oraTableNameFull);
+        D_KGORA_ELOG_WRITE2("c_FdoOra_API3::DescribeSchemaSQL - Set table (%S) for class (%S)", (FdoString*)oraTableNameFull, (FdoString*)w_fdo_classname);
         AliasNum++;
         phys_class->SetOraTableAliasNum( AliasNum );
       
@@ -2444,7 +2449,7 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
           {
             gpd->SetSpatialContextAssociation( spatial_context->GetName() );
           }
-          
+          D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL -- Adding geometry property (%S)", gpd->GetName());
           pdc->Add(gpd);
           
           if( fc_geom.p ) fc_geom->SetGeometryProperty(gpd);
@@ -2466,6 +2471,7 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
             }
             
             pdc->Add(gpd);
+            D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL -- Adding KING_FDO_POINT property (%S)", gpd->GetName());
             
             if( fc_geom.p ) fc_geom->SetGeometryProperty(gpd);
             
@@ -2610,7 +2616,7 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
   {
     FdoStringP gstr = ex->GetErrorText();
      #ifdef _KGORA_EXTENDED_LOG  
-      D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
+      D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL Error : '%s'",(const char*)gstr);      
      #endif
     delete ex;
     if( stm )
@@ -2727,7 +2733,7 @@ void c_FdoOra_API3::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       sde_geom_coord_dim = stm->IsColumnNull(8) ? 0 : stm->GetInteger(8);
 
       sde_full_geometry_table_name = sde_geom_owner + L"." + sde_geom_table;
-      FdoStringP temp2 = FdoStringP::Format(L"%s.S%ld",sde_geom_owner.c_str(),sde_layer_id);
+      FdoStringP temp2 = FdoStringP::Format(L"" W_FMT ".S%ld",sde_geom_owner.c_str(),sde_layer_id);
       sde_full_index_table_name = temp2;
       //sde_full_index_table_name = sde_geom_owner + sde_full_index_table_name;
 
@@ -3049,7 +3055,7 @@ bool c_FdoOra_API3::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
         {
           FdoInt32 len = propdata->GetLength();
           if( len <= 0  ) len = 4000;
-          OraType = FdoStringP::Format(L"%s(%ld)",L"VARCHAR2",len);
+          OraType = FdoStringP::Format(L"" W_FMT "(%ld)",L"VARCHAR2",len);
         }
         break;
         case FdoDataType_Decimal:
@@ -3070,22 +3076,22 @@ bool c_FdoOra_API3::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
           {
             if( (scale>=0) && (scale<=127) ) // Oracle supposrt from -84 but I thing that in FDO -1 means not defined
             {
-              OraType = FdoStringP::Format(L"%s(%ld,%ld)",L"NUMBER",prec,scale);
+              OraType = FdoStringP::Format(L"" W_FMT "(%ld,%ld)",L"NUMBER",prec,scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s(%ld,*)",L"NUMBER",prec);
+              OraType = FdoStringP::Format(L"" W_FMT "(%ld,*)",L"NUMBER",prec);
             }
           }
           else
           {
             if( (scale>=0) && (scale<=127) )
             {
-              OraType = FdoStringP::Format(L"%s(*,%ld)",L"NUMBER",scale);
+              OraType = FdoStringP::Format(L"" W_FMT "(*,%ld)",L"NUMBER",scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s",L"NUMBER");
+              OraType = FdoStringP::Format(W_FMT,L"NUMBER");
             }
           }
         }
@@ -3205,7 +3211,7 @@ try
 
   /* get the parameter handle */
   OciConn->OciCheckError(OCIAttrGet((dvoid *)dschp, OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0,
-    OCI_ATTR_PARAM, OciConn->m_OciHpError));
+    OCI_ATTR_PARAM, OciConn->m_OciHpError), __LINE__, __FILE__);
     
 
   /* The type information of the object, in this case, OCI_PTYPE_TABLE,
@@ -3213,12 +3219,12 @@ try
   /* get the number of columns in the table */
   int numcols = 0;
   OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&numcols, (ub4 *)0,
-    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError));
+    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError), __LINE__, __FILE__);
     
 
   /* get the handle to the column list of the table */
   OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&collsthd, (ub4 *)0,
-    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA);
+    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA, __LINE__, __FILE__);
     
 
   /* go through the column list and retrieve the data-type of each column,
@@ -3227,55 +3233,55 @@ try
   for (int i = 1; i <= numcols; i++)
   {
     /* get parameter for column i */
-    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i));
+    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i), __LINE__, __FILE__);
       
 
     ub2 col_type;
       OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_type, (ub4 *)0,
-      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError));
+      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError), __LINE__, __FILE__);
 
     /* for example, get datatype for ith column */
     wchar_t *col_name=NULL;
     int col_name_len=0;
     OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_name, (ub4 *)&col_name_len,
-      OCI_ATTR_NAME, OciConn->m_OciHpError));
+      OCI_ATTR_NAME, OciConn->m_OciHpError), __LINE__, __FILE__);
     
     // Retrieve the column type name attribute 
     wchar_t* col_type_name=NULL;
     int col_type_name_len = 0;
     OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
-      (OCIError *) OciConn->m_OciHpError ));
+      (OCIError *) OciConn->m_OciHpError ), __LINE__, __FILE__);
 
     /* Retrieve the length semantics for the column */
     ub4 char_semantics = 0;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
 
     ub4 col_width = 0;
     if (char_semantics)
       /* Retrieve the column width in characters */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
     else
       /* Retrieve the column width in bytes */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     // Retrieve the column precision
     ub1 col_precision=0;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     // Retrieve the column size
     ub1 col_scale=0;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     FdoDataType fdotype;      
     bool isfdotype = c_FdoOra_API3::OraTypeToFdoDataType(col_type,col_precision,col_scale,col_width,fdotype);

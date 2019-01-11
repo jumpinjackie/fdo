@@ -310,7 +310,7 @@ if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
 	double gymax = floor( maxy / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize1()));
 	// 1SPATIAL END
 
-    wstring indexname = m_phys_class->GetSdeIndexTableName();
+    std::wstring indexname = m_phys_class->GetSdeIndexTableName();
     indexname += L"_IX1";
     
     
@@ -348,7 +348,7 @@ if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
           		FdoPtr<FdoDoubleValue> fval_gymax2 = FdoDoubleValue::Create(gymax2);
         		FdoStringP param_gymax2 = m_ExpressionProcessor.PushParameter(*fval_gymax2);
         
-          		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= %s  AND  SP_.gx <= %s  AND  SP_.gy >= %s AND SP_.gy <= %s  /* GSize2=%.0lf */) "
+          		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= " W_FMT "  AND  SP_.gx <= " W_FMT "  AND  SP_.gy >= " W_FMT " AND SP_.gy <= " W_FMT "  /* GSize2=%.0lf */) "
           										,(const wchar_t*)param_gxmin2,(const wchar_t*)param_gxmax2,(const wchar_t*)param_gymin2,(const wchar_t*)param_gymax2
           										, m_phys_class->GetSdeGSize2() );
         
@@ -379,19 +379,19 @@ if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
     
     
     // this goes into FROM part of SQL
-    FdoStringP sbuff = FdoStringP::Format(L"(SELECT  /*+ INDEX(SP_ %s) */ DISTINCT sp_fid, eminx, eminy, emaxx,"
-        L" emaxy FROM %s SP_  WHERE "
+    FdoStringP sbuff = FdoStringP::Format(L"(SELECT  /*+ INDEX(SP_ " W_FMT ") */ DISTINCT sp_fid, eminx, eminy, emaxx,"
+        L" emaxy FROM " W_FMT " SP_  WHERE "
         // 1SPATIAL START
                // L" SP_.gx >= 0 AND SP_.gy >= 0"
         		L" ("
-        		L"  (SP_.gx >= %s AND SP_.gx <= %s"
-        		L"  AND SP_.gy >= %s AND SP_.gy <= %s"
+        		L"  (SP_.gx >= " W_FMT " AND SP_.gx <= " W_FMT ""
+        		L"  AND SP_.gy >= " W_FMT " AND SP_.gy <= " W_FMT ""
         		L"  /* XYUnit=%.0lf  GSize1=%.0lf  GSize2=%.0lf */) "
-        		L" %s "
+        		L" " W_FMT " "
         		L" )"        
         // 1SPATIAL END
-        L" AND SP_.eminx <= %s AND SP_.eminy <= %s AND"
-        L" SP_.emaxx >= %s AND SP_.emaxy >= %s) S_",
+        L" AND SP_.eminx <= " W_FMT " AND SP_.eminy <= " W_FMT " AND"
+        L" SP_.emaxx >= " W_FMT " AND SP_.emaxy >= " W_FMT ") S_",
         		indexname.c_str(),(const wchar_t*)m_phys_class->GetSdeIndexTableName()
         		// 1SPATIAL START
                 // ,maxx,maxy,minx,miny
@@ -408,7 +408,7 @@ if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
 
 
     // this goes into WHERE part of SQL
-    sbuff = FdoStringP::Format(L"S_.sp_fid = %s.fid",m_phys_class->GetSdeGeomTableAlias());
+    sbuff = FdoStringP::Format(L"S_.sp_fid = " W_FMT ".fid",m_phys_class->GetSdeGeomTableAlias());
     m_SDE_WhereSpatialIndex = sbuff;
     
     AppendString(L"1=1"); // just to satisfy boolean operator. Spatial condition can be combined with other filters and 

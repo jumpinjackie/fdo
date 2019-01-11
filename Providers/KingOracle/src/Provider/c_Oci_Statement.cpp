@@ -46,18 +46,40 @@ c_Oci_Statement::c_Oci_Statement( c_Oci_Connection* OciConn )
   
   m_OciConn = OciConn;
   m_OciHpStm=NULL;
-  OciConn->OciCheckError( OCIHandleAlloc((dvoid *)OciConn->m_OciHpEnvironment, (dvoid **)&m_OciHpStm, (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0));
+  OciConn->OciCheckError( OCIHandleAlloc((dvoid *)OciConn->m_OciHpEnvironment, (dvoid **)&m_OciHpStm, (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0), __LINE__, __FILE__);
 }
 
 c_Oci_Statement::~c_Oci_Statement()
 {
   if (m_OciHpStm)
     OCIHandleFree((dvoid *) m_OciHpStm, OCI_HTYPE_STMT);
-    
-    
+
   DeleteColumnData();    
-  
   DeleteBindValues();
+  DeleteColumnNames();
+  DeleteColumnTypeNames();
+}
+
+void c_Oci_Statement::DeleteColumnNames()
+{
+  std::map<int, wchar_t*>::iterator iter;
+  for (iter = m_columnNames.begin(); iter != m_columnNames.end(); iter++)
+  {
+    wchar_t* buff = iter->second;
+    delete[] buff;
+  }
+  m_columnNames.clear();
+}
+
+void c_Oci_Statement::DeleteColumnTypeNames()
+{
+  std::map<int, wchar_t*>::iterator iter;
+  for (iter = m_columnTypeNames.begin(); iter != m_columnTypeNames.end(); iter++)
+  {
+    wchar_t* buff = iter->second;
+    delete[] buff;
+  }
+  m_columnTypeNames.clear();
 }
 
 void c_Oci_Statement::DeleteBindValues()
@@ -79,13 +101,29 @@ void c_Oci_Statement::Prepare(const wchar_t* Sql,ub4 Prefetch/*=256*/)
   m_RowsFetched=0;
   ClearColumnData();
   DeleteBindValues();
-    
+
   /* parse query */
+#ifdef D_OCI_WIDE_STRINGS
+  ub4 len = (ub4)wcslen(Sql)*sizeof(wchar_t);
+  D_KGORA_ELOG_WRITE2("c_Oci_Statement::Prepare '%S' (length: '%d')", Sql, len);
   m_OciConn->OciCheckError( OCIStmtPrepare(m_OciHpStm, m_OciConn->m_OciHpError, 
-    (OraText *)Sql, (ub4)wcslen(Sql)*sizeof(wchar_t), 
-    (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT));
-    
-  m_OciConn->OciCheckError(OCIAttrSet (m_OciHpStm,OCI_HTYPE_STMT,&Prefetch,sizeof(Prefetch),OCI_ATTR_PREFETCH_ROWS,m_OciConn->m_OciHpError));
+    (OraText *)Sql, len, 
+    (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT)
+    , __LINE__, __FILE__);
+#else
+  FdoStringP tmpSql(Sql);
+  const char* utSql = tmpSql;
+  ub4 len = FdoStringP::Utf8Len(utSql);
+  //NOTE: Logging utSql irrevocably alters the string being logged (???) when subsequently
+  //passed down to OCIStmtPrepare below! So log the original wchar_t version for debugging purposes
+  D_KGORA_ELOG_WRITE2("c_Oci_Statement::Prepare SQL: '%S', Length: %d", (FdoString*)tmpSql, len);
+  m_OciConn->OciCheckError( OCIStmtPrepare(m_OciHpStm, m_OciConn->m_OciHpError, 
+    (text *)utSql, len,
+    (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT)
+    , __LINE__, __FILE__);
+#endif
+
+  m_OciConn->OciCheckError(OCIAttrSet (m_OciHpStm,OCI_HTYPE_STMT,&Prefetch,sizeof(Prefetch),OCI_ATTR_PREFETCH_ROWS,m_OciConn->m_OciHpError), __LINE__, __FILE__);
  
 }
 
@@ -119,13 +157,13 @@ int c_Oci_Statement::ExecuteNonQuery(int Mode)
     int rows;      
     m_OciConn->OciCheckError( OCIAttrGet((dvoid *)m_OciHpStm, (ub4)OCI_HTYPE_STMT,
       (dvoid *)&rows, (ub4 *)0, 
-      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError));
+      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError), __LINE__, __FILE__);
     return rows;      
   }
   
   if( status == OCI_NO_DATA)  return 0;  
   
-  m_OciConn->OciCheckError( status);
+  m_OciConn->OciCheckError( status, __LINE__, __FILE__);
   
   return 0;
   
@@ -138,27 +176,38 @@ int c_Oci_Statement::GetColumnsSize()
   int size;
   // Get the number of columns in the query 
 m_OciConn->OciCheckError(OCIAttrGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, (dvoid *)&size,
-                      (ub4 *)0, OCI_ATTR_PARAM_COUNT, m_OciConn->m_OciHpError));
+                      (ub4 *)0, OCI_ATTR_PARAM_COUNT, m_OciConn->m_OciHpError), __LINE__, __FILE__);
                       
   return size;                      
 }
 wchar_t* c_Oci_Statement::GetColumnName(int ColumnNumber)
 {
-  
-  
-  OCIParam     *param = (OCIParam *) 0;
-  m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
-               
-  
-  // Retrieve the column name attribute 
-  ub4 col_name_len = 0;
-  wchar_t* col_name;
-  m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
-           (dvoid**) &col_name, (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME,
-           (OCIError *) m_OciConn->m_OciHpError ));
-                      
-  return col_name;                      
+  if (m_columnNames.find(ColumnNumber) == m_columnNames.end())
+  {
+    OCIParam     *param = (OCIParam *) 0;
+    m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
+                (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
+
+    // Retrieve the column name attribute 
+    ub4 col_name_len = 0;
+  #ifdef D_OCI_WIDE_STRINGS
+    wchar_t* col_name;
+    m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
+            (dvoid**) &col_name, (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME,
+            (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+    wchar_t* col = new wchar_t[col_name_len+1];
+    wcscpy(col, col_name);
+  #else
+    char* ut_col_name;
+    m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
+            (dvoid**) &ut_col_name, (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME,
+            (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+    wchar_t* col = new wchar_t[col_name_len+1];
+    FdoStringP::Utf8ToUnicode(ut_col_name, col_name_len, col, col_name_len + 1);
+  #endif  
+    m_columnNames[ColumnNumber] = col;
+  }
+  return m_columnNames[ColumnNumber];
 }
 int c_Oci_Statement::GetColumnOciType(int ColumnNumber)
 {
@@ -166,35 +215,50 @@ int c_Oci_Statement::GetColumnOciType(int ColumnNumber)
   
   OCIParam     *param = (OCIParam *) 0;
   m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
+               (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
                
   
   // Retrieve the column name attribute 
   ub2          dtype;
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
   (dvoid*) &dtype,(ub4 *) 0, (ub4) OCI_ATTR_DATA_TYPE,
-  (OCIError *) m_OciConn->m_OciHpError  ));
+  (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
                       
   return dtype;                      
 }
 wchar_t* c_Oci_Statement::GetColumnTypeName(int ColumnNumber)
 {
-  
-  
-  OCIParam     *param = (OCIParam *) 0;
-  m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
-               
-  
-  // Retrieve the column name attribute 
- // Retrieve the column type name attribute 
-  wchar_t* col_type_name;
-  int col_type_name_len = 0;
-  m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
-           (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
-           (OCIError *) m_OciConn->m_OciHpError ));
-                      
-  return col_type_name;                      
+  if (m_columnTypeNames.find(ColumnNumber) == m_columnTypeNames.end())
+  {
+    OCIParam     *param = (OCIParam *) 0;
+    m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
+                (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
+
+    // Retrieve the column type name attribute
+    int col_type_name_len = 0;
+  #ifdef D_OCI_WIDE_STRINGS
+    wchar_t* col_type_name;
+    m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
+            (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
+            (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+    wchar_t* typeName = NULL;
+    if (NULL != col_type_name)
+    {
+        typeName = new wchar_t[col_type_name_len + 1];
+        wcscpy(typeName, col_type_name);
+    }
+  #else
+    char* ut_col_type_name;
+    m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
+            (dvoid**) &ut_col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
+            (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+    FdoStringP col_type_name(ut_col_type_name);
+    wchar_t* typeName = new wchar_t[col_type_name.GetLength()+1];
+    wcscpy(typeName, (FdoString*)col_type_name);
+  #endif
+    m_columnTypeNames[ColumnNumber] = typeName;
+  }
+  return m_columnTypeNames[ColumnNumber];
 }
 int c_Oci_Statement::GetColumnWidth(int ColumnNumber)
 {
@@ -202,28 +266,28 @@ int c_Oci_Statement::GetColumnWidth(int ColumnNumber)
   
   OCIParam     *param = (OCIParam *) 0;
   m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
+               (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
                
   
    // Retrieve the length semantics for the column 
   ub4 char_semantics = 0;
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
            (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
-           (OCIError *) m_OciConn->m_OciHpError  ));
+           (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
   ub4 col_width = 0;
   if (char_semantics)
   {
        // Retrieve the column width in characters 
     m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
                (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
-               (OCIError *) m_OciConn->m_OciHpError  ));
+               (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
   }
   else
   {
        /// Retrieve the column width in bytes 
     m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
                (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
-               (OCIError *) m_OciConn->m_OciHpError  ));                
+               (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);                
   }
                       
   return col_width;                      
@@ -234,14 +298,14 @@ int c_Oci_Statement::GetColumnPrecision(int ColumnNumber)
   
   OCIParam     *param = (OCIParam *) 0;
   m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
+               (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
                
   
      /// Retrieve the column width in bytes 
   ub4 col_precision=0;     
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
              (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
-             (OCIError *) m_OciConn->m_OciHpError  ));    
+             (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);    
                       
   return col_precision;                      
 }
@@ -251,14 +315,14 @@ int c_Oci_Statement::GetColumnScale(int ColumnNumber)
   
   OCIParam     *param = (OCIParam *) 0;
   m_OciConn->OciCheckError(OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
-               (dvoid **)&param, (ub4) ColumnNumber));
+               (dvoid **)&param, (ub4) ColumnNumber), __LINE__, __FILE__);
                
   
      /// Retrieve the column width in bytes 
   ub4 col_scale=0;     
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
              (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
-             (OCIError *) m_OciConn->m_OciHpError  ));    
+             (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);    
                       
   return col_scale;                      
 }
@@ -270,13 +334,25 @@ m_FetchArraySize = FetchSize;
 sword execstatus = OCIStmtExecute(m_OciConn->m_OciHpServiceContext, m_OciHpStm, m_OciConn->m_OciHpError, 0, 0, (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT );
 if( execstatus != OCI_SUCCESS && execstatus!=OCI_NO_DATA )
 {
-  m_OciConn->OciCheckError(execstatus);
+  m_OciConn->OciCheckError(execstatus, __LINE__, __FILE__);
 }
 
 OCIParam     *mypard = (OCIParam *) 0;
 sb4 parm_status;
 ub2          dtype;
+/*
+#ifdef D_OCI_WIDE_STRINGS
 wchar_t         *col_name,*col_type_name;
+#else
+char *ut_col_name;
+char *ut_col_type_name;
+#endif
+*/
+#ifdef D_OCI_WIDE_STRINGS
+wchar_t* col_type_name;
+#else
+char *ut_col_type_name;
+#endif
 ub4          counter, col_name_len, char_semantics,col_type_name_len;
 ub2          col_width;
 
@@ -296,46 +372,75 @@ while (parm_status == OCI_SUCCESS)
    // Retrieve the datatype attribute 
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
            (dvoid*) &dtype,(ub4 *) 0, (ub4) OCI_ATTR_DATA_TYPE,
-           (OCIError *) m_OciConn->m_OciHpError  ));
+           (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
 
-   // Retrieve the column name attribute 
+#ifdef D_OCI_WIDE_STRINGS
+  // Retrieve the column name attribute 
+  /*
   col_name_len = 0;
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
            (dvoid**) &col_name, (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME,
-           (OCIError *) m_OciConn->m_OciHpError ));
+           (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
            
-             
+  */         
   // Retrieve the column type name attribute 
   col_type_name_len = 0;
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
            (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
-           (OCIError *) m_OciConn->m_OciHpError ));
-
+           (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+#else
+  // Retrieve the column name attribute
+  /*
+  col_name_len = 0;
+  m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
+           (dvoid**) &ut_col_name, (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME,
+           (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+  */         
+  // Retrieve the column type name attribute 
+  col_type_name_len = 0;
+  m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
+           (dvoid**) &ut_col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
+           (OCIError *) m_OciConn->m_OciHpError ), __LINE__, __FILE__);
+#endif
    // Retrieve the length semantics for the column 
   char_semantics = 0;
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
            (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
-           (OCIError *) m_OciConn->m_OciHpError  ));
+           (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
   col_width = 0;
   if (char_semantics)
   {
        // Retrieve the column width in characters 
     m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
                (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
-               (OCIError *) m_OciConn->m_OciHpError  ));
+               (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);
   }
   else
   {
        /// Retrieve the column width in bytes 
     m_OciConn->OciCheckError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
                (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
-               (OCIError *) m_OciConn->m_OciHpError  ));                
+               (OCIError *) m_OciConn->m_OciHpError  ), __LINE__, __FILE__);                
   }
 
+/*
+#ifdef D_OCI_WIDE_STRINGS
   DefineColumn(counter,dtype,col_type_name,col_width,FetchSize);
-  
-  
-
+#else
+  FdoStringP col_type_name(ut_col_type_name);
+  wchar_t* col_name = new wchar_t[col_name_len+1];
+  FdoStringP::Utf8ToUnicode(ut_col_name, col_name_len, col_name, col_name_len + 1);
+  printf("Defining column %d: %S (len: %d, %s)\n", counter, col_name, col_name_len, ut_col_type_name);
+  delete [] col_name;
+  DefineColumn(counter,dtype,col_type_name,col_width,FetchSize);
+#endif
+*/
+#ifdef D_OCI_WIDE_STRINGS
+  DefineColumn(counter,dtype,col_type_name,col_width,FetchSize);
+#else
+  FdoStringP col_type_name(ut_col_type_name);
+  DefineColumn(counter,dtype,col_type_name,col_width,FetchSize);
+#endif
    // increment counter and get next descriptor, if there is one 
   counter++;
   parm_status = OCIParamGet((dvoid *)m_OciHpStm, OCI_HTYPE_STMT, m_OciConn->m_OciHpError,
@@ -349,7 +454,7 @@ if( execstatus == OCI_NO_DATA ) return 0;
 int fetched;
 m_OciConn->OciCheckError( OCIAttrGet((dvoid *)m_OciHpStm, (ub4)OCI_HTYPE_STMT,
       (dvoid *)&fetched, (ub4 *)0, 
-      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError));
+      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError), __LINE__, __FILE__);
 
 return fetched;
   
@@ -372,7 +477,7 @@ m_FetchArraySize = FetchSize;
 sword execstatus = OCIStmtExecute(m_OciConn->m_OciHpServiceContext, m_OciHpStm, m_OciConn->m_OciHpError, 0, 0, (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT);
 if( execstatus != OCI_SUCCESS && execstatus!=OCI_NO_DATA )
 {
-  m_OciConn->OciCheckError(execstatus);
+  m_OciConn->OciCheckError(execstatus, __LINE__, __FILE__);
 }
 
 
@@ -382,7 +487,7 @@ if( execstatus == OCI_NO_DATA ) return 0;
 int fetched;
 m_OciConn->OciCheckError( OCIAttrGet((dvoid *)m_OciHpStm, (ub4)OCI_HTYPE_STMT,
       (dvoid *)&fetched, (ub4 *)0, 
-      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError));
+      (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError), __LINE__, __FILE__);
 
 return fetched;
   
@@ -402,38 +507,33 @@ void c_Oci_Statement::DefineColumn( int ColNumber,int DataType,const wchar_t*Typ
   AddColumnData(coldata);
   coldata->Set(m_OciConn,ColNumber,DataType,TypeName,ColSize,FetchSize);
   
-  
   OCIDefine *defn1p;
-  
-    
-
-  
-  
-    if( coldata->GetDataDefineType() == SQLT_NTY )
-    {
-      m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
-      (dvoid *)0, 
-      0,SQLT_NTY,
-      (dvoid *)0, (ub2 *)0, (ub2 *)0, 
-      (ub4)OCI_DEFAULT));
-      
-      m_OciConn->OciCheckError( OCIDefineObject(defn1p, m_OciConn->m_OciHpError, coldata->GetDataOciType(), 
-          (dvoid **)coldata->GetDataDefineBuffer(), (ub4 *)0, 
-          (dvoid **)coldata->GetDataIndDefineBuffer(), (ub4 *)0));    
-          
-    }
-    else
-    {
-      m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
-      (dvoid *)coldata->GetDataDefineBuffer(), 
-      //(sb4)sizeof(OCINumber), SQLT_VNU,
-      coldata->GetDataDefineSize(),coldata->GetDataDefineType(),
-      (dvoid *)coldata->GetDataIndDefineBuffer(), (ub2 *)coldata->GetDataRealLengthBuffer(), (ub2 *)0, 
-      (ub4)OCI_DEFAULT));
-    }
-  
-    
-    
+  void* dataDefineBuffer = coldata->GetDataDefineBuffer();
+  void* dataIndDefineBuffer = coldata->GetDataIndDefineBuffer();
+  int dataDefineType = coldata->GetDataDefineType();
+  if( dataDefineType == SQLT_NTY )
+  {
+    OCIType* ociType = coldata->GetDataOciType();
+    m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
+        (dvoid *)0, 
+        0,SQLT_NTY,
+        (dvoid *)0, (ub2 *)0, (ub2 *)0, 
+        (ub4)OCI_DEFAULT), __LINE__, __FILE__);
+    m_OciConn->OciCheckError( OCIDefineObject(defn1p, m_OciConn->m_OciHpError, ociType, 
+        (dvoid **)dataDefineBuffer, (ub4 *)0, 
+        (dvoid **)dataIndDefineBuffer, (ub4 *)0), __LINE__, __FILE__);     
+  }
+  else
+  {
+    long dataDefineSize = coldata->GetDataDefineSize();
+    void* dataRealLengthBuffer = coldata->GetDataRealLengthBuffer();
+    m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
+        (dvoid *)dataDefineBuffer, 
+        //(sb4)sizeof(OCINumber), SQLT_VNU,
+        dataDefineSize, dataDefineType,
+        (dvoid *)dataIndDefineBuffer, (ub2 *)dataRealLengthBuffer, (ub2 *)0, 
+        (ub4)OCI_DEFAULT), __LINE__, __FILE__);
+  }
 }
 
 bool c_Oci_Statement::IsColumnNull( int ColNumber )
@@ -468,12 +568,12 @@ bool c_Oci_Statement::ReadNext()
     {
       if( status != OCI_SUCCESS )
       {
-        m_OciConn->OciCheckError( status);
+        m_OciConn->OciCheckError( status, __LINE__, __FILE__);
       }
     }
     m_OciConn->OciCheckError( OCIAttrGet((dvoid *)m_OciHpStm, (ub4)OCI_HTYPE_STMT,
         (dvoid *)&m_RowsFetched, (ub4 *)0, 
-        (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError));      
+        (ub4)OCI_ATTR_ROW_COUNT, m_OciConn->m_OciHpError), __LINE__, __FILE__);      
 
     //if ((status != OCI_SUCCESS) || m_RowsFetched<=m_RowsProcessed)
     if( m_RowsFetched<=m_RowsProcessed )
@@ -506,7 +606,7 @@ int c_Oci_Statement::GetInteger( int ColNumber )
   //      (uword)sizeof(int),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
   
   m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
-        (uword)sizeof(int),OCI_NUMBER_SIGNED,(dvoid *)&data));
+        (uword)sizeof(int),OCI_NUMBER_SIGNED,(dvoid *)&data), __LINE__, __FILE__);
   
   return data;
 }
@@ -522,7 +622,7 @@ FdoInt64 c_Oci_Statement::GetInt64( int ColNumber )
   //      (uword)sizeof(long),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
   
   m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
-        (uword)sizeof(FdoInt64),OCI_NUMBER_SIGNED,(dvoid *)&data));
+        (uword)sizeof(FdoInt64),OCI_NUMBER_SIGNED,(dvoid *)&data), __LINE__, __FILE__);
   
   return data;
 }
@@ -534,7 +634,7 @@ double c_Oci_Statement::GetDouble( int ColNumber )
   
   double data;
   m_OciConn->OciCheckError( OCINumberToReal(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
-        (uword)sizeof(double),(dvoid *)&data));
+        (uword)sizeof(double),(dvoid *)&data), __LINE__, __FILE__);
   
   return data;
 }
@@ -548,12 +648,12 @@ OCIDate* c_Oci_Statement::GetOciDate( int ColNumber )
   
   
 }
+
 const wchar_t* c_Oci_Statement::GetString( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
   if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
-  
   
   return coldata->GetString();  
 }
@@ -632,7 +732,7 @@ void c_Oci_Statement::Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 Dat
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
       (ub4)ColNumber, (dvoid *) ValuePtr,
       ValueSize, DataType, (dvoid *) 0,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
   }            
   else
   { 
@@ -640,27 +740,36 @@ void c_Oci_Statement::Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 Dat
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
       (ub4)ColNumber, (dvoid *) 0,
       (sword) 0, DataType, (dvoid *) &ind,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
   }
 }
 
 void c_Oci_Statement::Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType )
 {
   OCIBind  *bnd1p; 
+#ifdef D_OCI_WIDE_STRINGS
+  OraText* pName = (OraText*)Name;
+  ub4 nameLen = wcslen(Name)*sizeof(wchar_t);
+#else
+  FdoStringP tmpName(Name);
+  const char* utName = tmpName;
+  text* pName = (text*)utName;
+  ub4 nameLen = FdoStringP::Utf8Len(utName);
+#endif
   if( ValuePtr )
   {
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError
-      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) ValuePtr
+      ,pName, nameLen, (dvoid *) ValuePtr
       ,ValueSize, DataType, (dvoid *) 0,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
   }            
   else
   { 
     OCIInd ind=OCI_IND_NULL;
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
-      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
+      ,pName, nameLen, (dvoid *) 0,
       (sword) 0, DataType, (dvoid *) &ind,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
   }
 }
 
@@ -751,7 +860,7 @@ void c_Oci_Statement::BindDoubleValue( int ColNumber,double  Value )
 {
   OCINumber oci_number;
 
-  m_OciConn->OciCheckError( OCINumberFromReal(m_OciConn->m_OciHpError, (dvoid *)&Value,(uword)sizeof(double), &oci_number));
+  m_OciConn->OciCheckError( OCINumberFromReal(m_OciConn->m_OciHpError, (dvoid *)&Value,(uword)sizeof(double), &oci_number), __LINE__, __FILE__);
     
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(oci_number);
   m_VectorBindValue.push_back(newbuffer);
@@ -775,7 +884,7 @@ void c_Oci_Statement::BindDoubleValue( const wchar_t* Name,double  Value )
 {
   OCINumber oci_number;
 
-  m_OciConn->OciCheckError( OCINumberFromReal(m_OciConn->m_OciHpError, (dvoid *)&Value,(uword)sizeof(double), &oci_number));
+  m_OciConn->OciCheckError( OCINumberFromReal(m_OciConn->m_OciHpError, (dvoid *)&Value,(uword)sizeof(double), &oci_number), __LINE__, __FILE__);
 
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(oci_number);
   m_VectorBindValue.push_back(newbuffer);
@@ -791,9 +900,13 @@ void c_Oci_Statement::BindString( int ColNumber,const wchar_t* ValuePtr )
 {
   if( ValuePtr )
   {
+  #ifdef D_OCI_WIDE_STRINGS
     int bytesize = wcslen(ValuePtr)*sizeof(wchar_t)+sizeof(wchar_t); // + one more for zero value
     Bind(ColNumber,(void*)ValuePtr,bytesize,SQLT_STR);
-    
+  #else
+    const char* utValuePtr = FdoStringP(ValuePtr);
+    Bind(ColNumber, (void*)utValuePtr, FdoStringP::Utf8Len(utValuePtr), SQLT_STR);
+  #endif
   }
   else
   {
@@ -883,9 +996,9 @@ void c_Oci_Statement::BindSdoGeomNoNull( int ColNumber,c_SDO_GEOMETRY* ValuePtr 
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
               (ub4)ColNumber, (dvoid *) 0,
               (sword) 0, SQLT_NTY, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
-              m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0));               
+              m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0), __LINE__, __FILE__);
   }
   else
   {
@@ -897,13 +1010,21 @@ void c_Oci_Statement::BindSdoGeomNoNull( const wchar_t* Name,c_SDO_GEOMETRY* Val
   OCIBind  *bnd1p; 
   if( ValuePtr )
   {
-
+  #ifdef D_OCI_WIDE_STRINGS
+    OraText* pName = (OraText*)Name;
+    ub4 nameLen = wcslen(Name)*sizeof(wchar_t);
+  #else
+    FdoStringP tmpName(Name);
+    const char* utName = tmpName;
+    text* pName = (text*)utName;
+    ub4 nameLen = FdoStringP::Utf8Len(utName);
+  #endif
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
-      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
+      ,pName, nameLen, (dvoid *) 0,
       (sword) 0, SQLT_NTY, (dvoid *) 0,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
-      m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0));               
+      m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0), __LINE__, __FILE__);
   }
   else
   {
@@ -942,9 +1063,9 @@ void c_Oci_Statement::BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValueP
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
               (ub4)ColNumber, (dvoid *) 0,
               (sword) 0, SQLT_NTY, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
-              m_OciConn->m_OciType_SdoDimElement,  (void**)&ValuePtr->m_Dim_Element,0,(void**)&ValuePtr->m_Dim_Element_Ind,0));               
+              m_OciConn->m_OciType_SdoDimElement,  (void**)&ValuePtr->m_Dim_Element,0,(void**)&ValuePtr->m_Dim_Element_Ind,0), __LINE__, __FILE__);
   }
   
 }
@@ -957,9 +1078,9 @@ void c_Oci_Statement::BindSdoDimElement( const wchar_t* Name,c_SDO_DIM_ELEMENT* 
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
       ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
       (sword) 0, SQLT_NTY, (dvoid *) 0,
-      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT), __LINE__, __FILE__);
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
-      m_OciConn->m_OciType_SdoDimElement,  (void**)&ValuePtr->m_Dim_Element,0,(void**)&ValuePtr->m_Dim_Element_Ind,0));               
+      m_OciConn->m_OciType_SdoDimElement,  (void**)&ValuePtr->m_Dim_Element,0,(void**)&ValuePtr->m_Dim_Element_Ind,0), __LINE__, __FILE__);               
   }
 
 }

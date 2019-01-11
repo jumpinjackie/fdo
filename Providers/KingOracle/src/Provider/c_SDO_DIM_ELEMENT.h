@@ -65,9 +65,9 @@ class c_SDO_DIM_ELEMENT
 {
   public:
     c_SDO_DIM_ELEMENT(OCIEnv* Env=NULL,OCIError *Err=NULL,SDO_DIM_ELEMENT* Dim_Element=NULL,SDO_DIM_ELEMENT_ind* Dim_Element_Ind=NULL);
-    ~c_SDO_DIM_ELEMENT();
+    FDOKGORA_API ~c_SDO_DIM_ELEMENT();
     
-    static c_SDO_DIM_ELEMENT* Create(c_Oci_Connection* Conn);
+    FDOKGORA_API static c_SDO_DIM_ELEMENT* Create(c_Oci_Connection* Conn);
     static c_SDO_DIM_ELEMENT* CreateNull( c_Oci_Connection* Conn );
     
   public:
@@ -90,10 +90,10 @@ class c_SDO_DIM_ELEMENT
     double GetLB();
     double GetUB();
     
-    void SetLB(double Val);
-    void SetUB(double Val);
-    void SetTolerance(double Val);
-    void SetDimName(const wchar_t* Val);
+    FDOKGORA_API void SetLB(double Val);
+    FDOKGORA_API void SetUB(double Val);
+    FDOKGORA_API void SetTolerance(double Val);
+    FDOKGORA_API void SetDimName(const wchar_t* Val);
 };
 
 

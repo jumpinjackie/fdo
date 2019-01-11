@@ -52,11 +52,11 @@ int c_SdoGeomToAGF2::GetSdoElemInfo(int Index)
     (OCIColl *)(m_SdoGeom->sdo_elem_info), 
     (sb4)(Index), 
     (boolean *)&exists, 
-    (dvoid **)&oci_number, (dvoid **)0));
+    (dvoid **)&oci_number, (dvoid **)0), __LINE__, __FILE__);
   c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToInt(c_OCI_API::g_OciHpError, 
     oci_number, 
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
-    (dvoid *)&val));
+    (dvoid *)&val), __LINE__, __FILE__);
     
   return val;    
 }
@@ -78,7 +78,7 @@ double c_SdoGeomToAGF2::GetSdoPointX()
 
   c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.x, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;    
 }
 double c_SdoGeomToAGF2::GetSdoPointY()
@@ -87,7 +87,7 @@ double c_SdoGeomToAGF2::GetSdoPointY()
 
   c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.y, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;    
 }
 double c_SdoGeomToAGF2::GetSdoPointZ()
@@ -96,7 +96,7 @@ double c_SdoGeomToAGF2::GetSdoPointZ()
 
   c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.z, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;    
 }
 
@@ -110,10 +110,10 @@ double c_SdoGeomToAGF2::GetSdoOrdinate(int Index)
     (OCIColl *)(m_SdoGeom->sdo_ordinates), 
     (sb4)(Index), 
     (boolean *)&exists, 
-    (dvoid **)&oci_number, (dvoid **)0));
+    (dvoid **)&oci_number, (dvoid **)0), __LINE__, __FILE__);
   c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     oci_number, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
 
   return val;    
 }
@@ -145,7 +145,7 @@ int c_SdoGeomToAGF2::ToAGF()
   int sdo_gtype;
   c_OCI_API::OciCheckError( c_OCI_API::g_OciHpError, OCINumberToInt(c_OCI_API::g_OciHpError, &(m_SdoGeom->sdo_gtype),
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
-    (dvoid *)&sdo_gtype));
+    (dvoid *)&sdo_gtype), __LINE__, __FILE__);
     
   int ora_gtype = sdo_gtype % 100 ;    
   

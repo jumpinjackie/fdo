@@ -67,11 +67,6 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
   try
   {
     oci_stm = m_Connection->OCI_CreateStatement();
-    
-    #ifdef _KGORA_EXTENDED_LOG 
-      
-      D_KGORA_ELOG_WRITE1("c_KgOraSQLCommand.ExecuteNonQuery SQL: '%s'",(const char*)m_SqlStr);        
-    #endif
     oci_stm->Prepare( m_SqlStr);
  
 // set parameters
@@ -102,7 +97,7 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
     if( oci_stm ) m_Connection->OCI_TerminateStatement(oci_stm);
     FdoStringP gstr = ea->what();
     
-    D_KGORA_ELOG_WRITE2("(Conn %d) c_KgOraDelete.Execute Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
+    D_KGORA_ELOG_WRITE2("(Conn %d) c_KgOraDelete.ExecuteNonQuery Exception '%s'",m_Connection->m_ConnNo,(const char*)gstr);
     
     delete ea;
     throw FdoCommandException::Create( gstr );    

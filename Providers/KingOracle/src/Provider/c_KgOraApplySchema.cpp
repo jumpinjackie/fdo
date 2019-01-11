@@ -686,7 +686,7 @@ void c_KgOraApplySchema::CreateIndex(FdoString* TableName,FdoGeometricPropertyDe
   
   if( sqlstr_layer_gtype.GetLength() > 0 )
   {
-    sqlstr_params = sqlstr_params.Format(L"PARAMETERS ('sdo_indx_dims=2 layer_gtype=%s')",(const wchar_t*)sqlstr_layer_gtype);
+    sqlstr_params = sqlstr_params.Format(L"PARAMETERS ('sdo_indx_dims=2 layer_gtype=" W_FMT "')",(const wchar_t*)sqlstr_layer_gtype);
   }
   else
   {
@@ -743,7 +743,7 @@ void c_KgOraApplySchema::CreatePrimaryKey(FdoString* TableName,FdoDataPropertyDe
   FdoStringP pkeyname;
   pkeyname = TableName;
   pkeyname = pkeyname.Upper() + "_PK";
-  sqlstr = sqlstr.Format(L"ALTER TABLE %s ADD CONSTRAINT %s primary key (%s)",(FdoString*)TableName,(FdoString*)pkeyname,(FdoString*)cnames);
+  sqlstr = sqlstr.Format(L"ALTER TABLE " W_FMT " ADD CONSTRAINT " W_FMT " primary key (" W_FMT ")",(FdoString*)TableName,(FdoString*)pkeyname,(FdoString*)cnames);
   
  
   
@@ -778,7 +778,7 @@ void c_KgOraApplySchema::CreateTableSequence(FdoString* TableName)
   
   FdoStringP sqlstr;
   
-  sqlstr = sqlstr.Format(L"CREATE SEQUENCE %s_FDOSEQ",(FdoString*)TableName);
+  sqlstr = sqlstr.Format(L"CREATE SEQUENCE " W_FMT "_FDOSEQ",(FdoString*)TableName);
   
  
   

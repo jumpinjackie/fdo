@@ -44,7 +44,7 @@ protected:
   //vector<oracle::occi::MetaData> m_MetaData;
   
   FdoPtr<FdoStringCollection> m_SqlColumns;
-  vector<int> m_SqlColIndex; // represents index of coumn in resultset. array corespond to m_SqlColumns
+  std::vector<int> m_SqlColIndex; // represents index of coumn in resultset. array corespond to m_SqlColumns
                              // I need this one beacuse some column would not go into 
                              // m_SqlColumns - because of not recognised type
   

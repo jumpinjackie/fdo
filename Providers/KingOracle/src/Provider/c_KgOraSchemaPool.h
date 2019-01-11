@@ -25,7 +25,7 @@
 
 typedef struct t_SchemaPoolDesc
 {
-  string m_ConnectionString;
+  std::string m_ConnectionString;
   
   FdoPtr<c_KgOraSchemaDesc> m_SchemaData;
   
@@ -40,7 +40,7 @@ public:
   ~c_KgOraSchemaPool(void);
 
 protected:  
-  static vector<t_SchemaPoolDesc> g_SchemaPoolDesc;
+  static std::vector<t_SchemaPoolDesc> g_SchemaPoolDesc;
   
   static FdoCommonThreadMutex m_Mutex;
   

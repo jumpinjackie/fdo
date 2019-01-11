@@ -451,7 +451,7 @@ return false;
 
 bool c_Ora_API2::GetOracleVersion(c_Oci_Connection*Conn,int& MainVersion,int& SubVersion)
 {
-
+  D_KGORA_ELOG_WRITE("c_Ora_API2::GetOracleVersion");
   c_Oci_Statement* oci_stm=NULL;
   
   long srid = 0;

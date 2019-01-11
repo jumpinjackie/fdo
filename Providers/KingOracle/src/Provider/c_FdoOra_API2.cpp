@@ -262,7 +262,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
       else
       {
         FdoBooleanValue * boolval = (FdoBooleanValue*)DataValue;
-        string val;
+        std::string val;
         if( boolval->GetBoolean() )
           Statement->BindStringValue(SqlParamNum,L"1");          
         else
@@ -459,7 +459,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,const wch
       else
       {
         FdoBooleanValue * boolval = (FdoBooleanValue*)DataValue;
-        string val;
+        std::string val;
         if( boolval->GetBoolean() )
           Statement->BindStringValue(SqlParamName,L"1");          
         else
@@ -773,7 +773,7 @@ try
 
   /* get the parameter handle */
   OciConn->OciCheckError(OCIAttrGet((dvoid *)dschp, OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0,
-    OCI_ATTR_PARAM, OciConn->m_OciHpError));
+    OCI_ATTR_PARAM, OciConn->m_OciHpError), __LINE__, __FILE__);
     
 
   /* The type information of the object, in this case, OCI_PTYPE_TABLE,
@@ -781,12 +781,12 @@ try
   /* get the number of columns in the table */
   int numcols = 0;
   OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&numcols, (ub4 *)0,
-    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError));
+    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError), __LINE__, __FILE__);
     
 
   /* get the handle to the column list of the table */
   OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&collsthd, (ub4 *)0,
-    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA);
+    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA, __LINE__, __FILE__);
     
 
   /* go through the column list and retrieve the data-type of each column,
@@ -795,55 +795,55 @@ try
   for (int i = 1; i <= numcols; i++)
   {
     /* get parameter for column i */
-    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i));
+    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i), __LINE__, __FILE__);
       
 
     ub2 col_type;
       OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_type, (ub4 *)0,
-      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError));
+      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError), __LINE__, __FILE__);
 
     /* for example, get datatype for ith column */
     wchar_t *col_name=NULL;
     int col_name_len=0;
     OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_name, (ub4 *)&col_name_len,
-      OCI_ATTR_NAME, OciConn->m_OciHpError));
+      OCI_ATTR_NAME, OciConn->m_OciHpError), __LINE__, __FILE__);
     
     // Retrieve the column type name attribute 
     wchar_t* col_type_name=NULL;
     int col_type_name_len = 0;
     OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
-      (OCIError *) OciConn->m_OciHpError ));
+      (OCIError *) OciConn->m_OciHpError ), __LINE__, __FILE__);
 
     /* Retrieve the length semantics for the column */
     ub4 char_semantics = 0;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
 
     ub4 col_width = 0;
     if (char_semantics)
       /* Retrieve the column width in characters */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
     else
       /* Retrieve the column width in bytes */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     // Retrieve the column precision
     ub1 col_precision;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     // Retrieve the column size
     ub1 col_scale;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
       (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
-      (OCIError *) OciConn->m_OciHpError);
+      (OCIError *) OciConn->m_OciHpError), __LINE__, __FILE__);
       
     FdoDataType fdotype;      
     bool isfdotype = c_FdoOra_API2::OraTypeToFdoDataType(col_type,col_precision,col_scale,col_width,fdotype);
@@ -1254,7 +1254,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
             L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM " W_FMT " k ", KingFdoViews);
         
         sqljoin = L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -1277,7 +1277,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
               L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP sqlfrom = FdoStringP::Format(L" FROM " W_FMT " k ", KingFdoViews);
         
         sqljoin =  L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -2338,7 +2338,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       sde_geom_coord_dim = stm->IsColumnNull(8) ? 0 : stm->GetInteger(8);
 
       sde_full_geometry_table_name = sde_geom_owner + L"." + sde_geom_table;
-      FdoStringP temp2 = FdoStringP::Format(L"%s.S%ld",sde_geom_owner.c_str(),sde_layer_id);
+      FdoStringP temp2 = FdoStringP::Format(L"" W_FMT ".S%ld",sde_geom_owner.c_str(),sde_layer_id);
       sde_full_index_table_name = temp2;
       //sde_full_index_table_name = sde_geom_owner + sde_full_index_table_name;
 
@@ -2660,7 +2660,7 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
         {
           FdoInt32 len = propdata->GetLength();
           if( len <= 0  ) len = 4000;
-          OraType = FdoStringP::Format(L"%s(%ld)",L"VARCHAR2",len);
+          OraType = FdoStringP::Format(L"" W_FMT "(%ld)",L"VARCHAR2",len);
         }
         break;
         case FdoDataType_Decimal:
@@ -2681,22 +2681,22 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
           {
             if( (scale>=0) && (scale<=127) ) // Oracle supposrt from -84 but I thing that in FDO -1 means not defined
             {
-              OraType = FdoStringP::Format(L"%s(%ld,%ld)",L"NUMBER",prec,scale);
+              OraType = FdoStringP::Format(L"" W_FMT "(%ld,%ld)",L"NUMBER",prec,scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s(%ld,*)",L"NUMBER",prec);
+              OraType = FdoStringP::Format(L"" W_FMT "(%ld,*)",L"NUMBER",prec);
             }
           }
           else
           {
             if( (scale>=0) && (scale<=127) )
             {
-              OraType = FdoStringP::Format(L"%s(*,%ld)",L"NUMBER",scale);
+              OraType = FdoStringP::Format(L"" W_FMT "(*,%ld)",L"NUMBER",scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s",L"NUMBER");
+              OraType = FdoStringP::Format(W_FMT,L"NUMBER");
             }
           }
         }

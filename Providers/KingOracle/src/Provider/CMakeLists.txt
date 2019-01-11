@@ -60,6 +60,9 @@ set (KingOracleProvider_SRCS
     c_SdeGeom2AGF.cpp
 )
 
+#add_definitions(-D_KGORA_ERROR_SOURCE)
+#add_definitions(-D_KGORA_EXTENDED_LOG)
+
 if( UNIX )
     add_definitions(-D_FDO_3_2 -D_FDO_3_5)
 endif( UNIX )

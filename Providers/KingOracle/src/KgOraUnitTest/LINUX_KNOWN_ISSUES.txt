@@ -1,0 +1,5 @@
+Known Issues on Linux
+=====================
+
+1. Reading CLOB data does not work yet
+2. Can't FDO insert with unicode strings
