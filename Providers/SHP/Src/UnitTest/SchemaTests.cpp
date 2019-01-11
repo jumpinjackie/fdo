@@ -85,21 +85,9 @@ void SchemaTests::tearDown ()
 {
     try
     {  
-       // TODO: Determine Cause and Fix! 
-       // HACK: Temporarily prevent teardown failure to clean up class from causing complete test failure.  
-       try {
-            TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
-            TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test1");
-            TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test2");
-        }
-        catch (FdoException *ge)
-        {
-            printf(" >>> Exception in tearDown() : %ls\n", ge->GetExceptionMessage());
-        }
-        catch ( ... )
-        {
-            printf(" >>> Exception in tearDown(): The tearDown failed for an unknown reason \n");
-        }
+        ShpCleanup::CleanupClass(mConnection, NULL, L"Test");
+        ShpCleanup::CleanupClass(mConnection, NULL, L"Test1");
+        ShpCleanup::CleanupClass(mConnection, NULL, L"Test2");
 
         mConnection->Close ();
         FDO_SAFE_RELEASE(mConnection.p);

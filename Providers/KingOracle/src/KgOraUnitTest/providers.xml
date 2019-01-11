@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FeatureProviderRegistry>
+  <FeatureProvider>
+    <Name>King.Oracle.4.2</Name>
+    <DisplayName>King Oracle Provider</DisplayName>
+    <Description>King Oracle Provider</Description>
+    <IsManaged>False</IsManaged>
+    <Version>4.2.0.0</Version>
+    <FeatureDataObjectsVersion>4.2.0.0</FeatureDataObjectsVersion>
+    <LibraryPath>.\KingOracleProvider.dll</LibraryPath>
+  </FeatureProvider>
+</FeatureProviderRegistry>

@@ -91,13 +91,16 @@ class c_Oci_Statement
     
     std::vector<c_BindValueBuffer*>  m_VectorBindValue;
   
+    std::map<int, wchar_t*> m_columnNames;
+    std::map<int, wchar_t*> m_columnTypeNames;
+
   public:
-    void Prepare(const wchar_t* Sql,ub4 PrefetchSize=256);
+    FDOKGORA_API void Prepare(const wchar_t* Sql,ub4 PrefetchSize=256);
     
 
-    void BindInt( int ColNumber,int* ValuePtr );
+    FDOKGORA_API void BindInt( int ColNumber,int* ValuePtr );
     void BindInt( const wchar_t* Name,int* ValuePtr );
-    void BindIntValue( int ColNumber,int Value );
+    FDOKGORA_API void BindIntValue( int ColNumber,int Value );
     void BindIntValue( const wchar_t* Name,int Value );
 
     void BindInt64( int ColNumber,FdoInt64* ValuePtr );
@@ -108,40 +111,40 @@ class c_Oci_Statement
     void BindOciNumber( int ColNumber,OCINumber* ValuePtr );
     void BindOciNumber( const wchar_t* Name,OCINumber* ValuePtr );
 
-    void BindDouble( int ColNumber,double* ValuePtr );
+    FDOKGORA_API void BindDouble( int ColNumber,double* ValuePtr );
     void BindDouble( const wchar_t* Name,double* ValuePtr );
     void BindDoubleValue( int ColNumber,double Value );
     void BindDoubleValue( const wchar_t* Name,double Value );
 
-    void BindString( int ColNumber,const wchar_t* ValuePtr );
+    FDOKGORA_API void BindString( int ColNumber,const wchar_t* ValuePtr );
     void BindString( const wchar_t* Name,const wchar_t* ValuePtr );
     void BindStringValue( int ColNumber,const wchar_t* Value );
     void BindStringValue( const wchar_t* Name,const wchar_t* ValuePtr );
 
-    void BindDate( int ColNumber,OCIDate* ValuePtr );
+    FDOKGORA_API void BindDate( int ColNumber,OCIDate* ValuePtr );
     void BindDate( const wchar_t* Name,OCIDate* ValuePtr );
     void BindDateValue( int ColNumber,OCIDate Value );
     void BindDateValue( const wchar_t* Name,OCIDate Value );
 
     void BindSdoGeomNoNull( int ColNumber,c_SDO_GEOMETRY* ValuePtr ); // pointer will not be deleted, caller is responsible for pointer
     void BindSdoGeomNoNull( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr );
-    void BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value ); // pointer will be deleted by statement
+    FDOKGORA_API void BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value ); // pointer will be deleted by statement
     void BindSdoGeomValue( const wchar_t* Name,c_SDO_GEOMETRY* Value );
 
-    void BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr );
+    FDOKGORA_API void BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr );
     void BindSdoDimElement( const wchar_t* Name,c_SDO_DIM_ELEMENT* ValuePtr );
 
     void BindClob( int ColNumber,const char* ValuePtr,long Size );
     void BindClob( const wchar_t* Name,const char* ValuePtr,long Size );
     void BindBlob( int ColNumber,const char* ValuePtr,long Size );
     void BindBlob( const wchar_t* Name,const char* ValuePtr,long Size );
-    int ExecuteNonQuery(int ExecMode = OCI_COMMIT_ON_SUCCESS);  // OCI_COMMIT_ON_SUCCESS , OCI_DEFAULT
+    FDOKGORA_API int ExecuteNonQuery(int ExecMode = OCI_COMMIT_ON_SUCCESS);  // OCI_COMMIT_ON_SUCCESS , OCI_DEFAULT
     
     
     void DefineColumn( int ColNumber,int DataType,const wchar_t*TypeName,int ColSize,int FetchSize );
-    int ExecuteSelect(int FetchSize=1,int ExecMode = OCI_DEFAULT);
+    FDOKGORA_API int ExecuteSelect(int FetchSize=1,int ExecMode = OCI_DEFAULT);
     
-    int ExecuteSelectAndDefine(int FetchSize=1,int ExecMode = OCI_DEFAULT);
+    FDOKGORA_API int ExecuteSelectAndDefine(int FetchSize=1,int ExecMode = OCI_DEFAULT);
     
     int GetColumnsSize(); // returns number of columns in statement
     wchar_t* GetColumnName(int ColumnNumber);
@@ -151,15 +154,15 @@ class c_Oci_Statement
     int GetColumnPrecision(int ColumnNumber);
     int GetColumnScale(int ColumnNumber);
     
-    bool ReadNext();
+    FDOKGORA_API bool ReadNext();
     
-    bool IsColumnNull(int ColNumber);
+    FDOKGORA_API bool IsColumnNull(int ColNumber);
     
     int GetInteger(int ColNumber);
     FdoInt64 GetInt64( int ColNumber );
     double GetDouble(int ColNumber);
     OCIDate* GetOciDate(int ColNumber);
-    const wchar_t* GetString( int ColNumber );
+    FDOKGORA_API const wchar_t* GetString( int ColNumber );
     long GetLongRawLength( int ColNumber );
     unsigned char* GetLongRaw( int ColNumber );
     void GetLobData( int ColNumber,unsigned long& BuffSize,void* Buff );
@@ -167,9 +170,9 @@ class c_Oci_Statement
     bool IsColumnBlob(int ColNumber);
     
     //SDO_GEOMETRY_TYPE* GetSdoGeom( int ColNumber,SDO_GEOMETRY_ind** geom_ind=NULL );
-    c_SDO_GEOMETRY* GetSdoGeom( int ColNumber );
+    FDOKGORA_API c_SDO_GEOMETRY* GetSdoGeom( int ColNumber );
     //OCIArray* GetSdoDimArray( int ColNumber );
-    c_SDO_DIM_ARRAY GetSdoDimArray( int ColNumber );
+    FDOKGORA_API c_SDO_DIM_ARRAY GetSdoDimArray( int ColNumber );
 protected:
   void ClearColumnData()
     {
@@ -227,11 +230,8 @@ protected:
     void DeleteBindValues();
     void Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
     void Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
-    
-
-
-
-
+    void DeleteColumnNames();
+    void DeleteColumnTypeNames();
 };
 
 

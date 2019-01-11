@@ -65,7 +65,10 @@ FdoInt32 c_KgOraUpdate::Execute()
   
   FdoPtr<FdoIdentifier> classid = GetFeatureClassName();
   FdoPtr<FdoClassDefinition> classdef = schemadesc->FindClassDefinition(classid);
-  if( !classdef.p ) return NULL;
+  if( !classdef.p )
+  {
+    throw FdoException::Create(NlsMsgGet(M_KGORA_FEATURE_CLASS_NOT_FOUND, "FDO class '%1$ls' not found in schema.", classid->ToString()));
+  }
   
   
   FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);

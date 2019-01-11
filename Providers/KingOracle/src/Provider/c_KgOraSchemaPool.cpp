@@ -20,7 +20,7 @@
   
 #include "c_FdoOra_API3.h"
 
-vector<t_SchemaPoolDesc> c_KgOraSchemaPool::g_SchemaPoolDesc;
+std::vector<t_SchemaPoolDesc> c_KgOraSchemaPool::g_SchemaPoolDesc;
 
 c_KgOraSchemaPool::c_KgOraSchemaPool(void)
 {
@@ -35,7 +35,7 @@ FdoCommonThreadMutex c_KgOraSchemaPool::m_Mutex;
 
 c_KgOraSchemaDesc* c_KgOraSchemaPool::GetSchemaData(c_KgOraConnection* Connection)
 {
-  vector< t_SchemaPoolDesc>::iterator iter;
+  std::vector< t_SchemaPoolDesc>::iterator iter;
   
   FdoStringP connstr = Connection->GetConnectionString();
   m_Mutex.Enter();
@@ -55,7 +55,7 @@ c_KgOraSchemaDesc* c_KgOraSchemaPool::GetSchemaData(c_KgOraConnection* Connectio
 
 void c_KgOraSchemaPool::AddSchemaData(c_KgOraConnection* Connection,c_KgOraSchemaDesc* SchemaDesc)
 {
-      vector< t_SchemaPoolDesc>::iterator iter;
+  std::vector< t_SchemaPoolDesc>::iterator iter;
       
   FdoStringP connstr = Connection->GetConnectionString();
   m_Mutex.Enter();
@@ -81,7 +81,7 @@ void c_KgOraSchemaPool::AddSchemaData(c_KgOraConnection* Connection,c_KgOraSchem
 
 void c_KgOraSchemaPool::ClearCache(c_KgOraConnection* Connection)
 {
-      vector< t_SchemaPoolDesc>::iterator iter;
+  std::vector< t_SchemaPoolDesc>::iterator iter;
       
   FdoStringP connstr = Connection->GetConnectionString();
   m_Mutex.Enter();

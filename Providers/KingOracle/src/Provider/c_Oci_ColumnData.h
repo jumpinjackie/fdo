@@ -89,6 +89,9 @@ public:
   bool IsClob();
   bool IsBlob();
 protected:
+  //On non-Windows platforms, this serves as a char -> wchar_t conversion proxy
+  FdoStringP m_utStrProxy;
+
   int m_CurrentRow;
   sb2* m_CurrentPtr_ScalarInd;
 
@@ -117,8 +120,13 @@ protected:
     OCILobLocator** m_DataLobLocator;
     
     //wchar_t** m_DataStringPtrArray;
+
+    //#ifdef D_OCI_WIDE_STRINGS
     wchar_t* m_DataStringPtr;
-    
+    //#else
+    char* m_DataUtf8StringPtr;
+    //#endif
+
     SDO_GEOMETRY_TYPE** m_DataSdoGeom;
     
     OCIArray** m_DataSdoDimArray;

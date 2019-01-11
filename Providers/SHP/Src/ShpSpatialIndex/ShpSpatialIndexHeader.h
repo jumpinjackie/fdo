@@ -55,7 +55,7 @@ struct ShpSpatialIndexHeader
     unsigned m_minEntriesPerNode;           // minimum entries per R-Tree node
     unsigned m_rTreeHeight;                 // height of the R-Tree
     unsigned m_floatPrecision;              // floating point precision (in bits)
-    unsigned long m_rootNodeOffset;         // file offset of root node
+    shpidx_ulong m_rootNodeOffset;         // file offset of root node
     unsigned long m_freeInternalNode;       // file offset of free internal node
     unsigned long m_freeLeafNode;           // file offset of free leaf node
     unsigned long m_type;                   // type of object in the index

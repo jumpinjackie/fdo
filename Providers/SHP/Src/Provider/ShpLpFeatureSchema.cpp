@@ -174,18 +174,21 @@ void ShpLpFeatureSchema::ConvertPhysicalToLogical(
                         }
                     }
                     if (NULL == set)
-                        throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
-
+                    {
+                        continue;
+                        //throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
+                    }
                 }
                 else
                 {
                     set = m_physicalSchema->GetFileSet (name);
                     if (NULL == set)
                     {
-                        wchar_t* shp = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (name) + wcslen (SHP_EXTENSION) + 1));
-                        wcscpy (shp, name);
-                        wcscat (shp, SHP_EXTENSION);
-                        throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
+                        continue;
+                        //wchar_t* shp = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (name) + wcslen (SHP_EXTENSION) + 1));
+                        //wcscpy (shp, name);
+                        //wcscat (shp, SHP_EXTENSION);
+                        //throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
                     }
                 }
             }
@@ -194,10 +197,11 @@ void ShpLpFeatureSchema::ConvertPhysicalToLogical(
                 set = m_physicalSchema->GetFileSet (name);
                 if (NULL == set)
                 {
-                    wchar_t* shp = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (name) + wcslen (SHP_EXTENSION) + 1));
-                    wcscpy (shp, name);
-                    wcscat (shp, SHP_EXTENSION);
-                    throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
+                    continue;
+                    //wchar_t* shp = (wchar_t*)alloca (sizeof (wchar_t) * (wcslen (name) + wcslen (SHP_EXTENSION) + 1));
+                    //wcscpy (shp, name);
+                    //wcscat (shp, SHP_EXTENSION);
+                    //throw FdoException::Create (NlsMsgGet(SHP_NOT_FOUND, "Shp file '%1$ls' was not found.", shp));
                 }
             }
 			FdoPtr<ShpLpClassDefinition> pLpClassDefinition =

@@ -27,7 +27,7 @@ c_SDO_GEOMETRY::~c_SDO_GEOMETRY()
 {
   if( m_FreeObject )
   {
-    if(m_SdoGeom) c_OCI_API::OciCheckError(m_OciErr, OCIObjectFree(m_OciEnv, m_OciErr,m_SdoGeom,0));      
+    if(m_SdoGeom) c_OCI_API::OciCheckError(m_OciErr, OCIObjectFree(m_OciEnv, m_OciErr,m_SdoGeom,0), __LINE__, __FILE__);
     if(m_SdoGeomInd) delete m_SdoGeomInd;
   }
 }
@@ -37,7 +37,7 @@ c_SDO_GEOMETRY* c_SDO_GEOMETRY::Create( c_Oci_Connection* Conn )
   SDO_GEOMETRY_TYPE * oci_geom;
   Conn->OciCheckError(OCIObjectNew(Conn->m_OciHpEnvironment, Conn->m_OciHpError, Conn->m_OciHpServiceContext,
     OCI_TYPECODE_OBJECT, Conn->m_OciType_SdoGeometry, (dvoid *) 0,
-    OCI_DURATION_DEFAULT, TRUE, (dvoid **) &oci_geom));
+    OCI_DURATION_DEFAULT, TRUE, (dvoid **) &oci_geom), __LINE__, __FILE__);
     
   
   c_SDO_GEOMETRY * newgeom = new c_SDO_GEOMETRY(Conn->m_OciHpEnvironment, Conn->m_OciHpError);
@@ -135,7 +135,7 @@ int c_SDO_GEOMETRY::GetSdoGtype(  )
   int sdo_gtype;
   c_OCI_API::OciCheckError( m_OciErr, OCINumberToInt(m_OciErr, &(m_SdoGeom->sdo_gtype),
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
-    (dvoid *)&sdo_gtype));
+    (dvoid *)&sdo_gtype), __LINE__, __FILE__);
 
   return sdo_gtype;
 }
@@ -145,7 +145,7 @@ int c_SDO_GEOMETRY::GetSdoSrid(  )
   int sdo_srid;
   c_OCI_API::OciCheckError( m_OciErr, OCINumberToInt(m_OciErr, &(m_SdoGeom->sdo_srid),
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
-    (dvoid *)&sdo_srid));
+    (dvoid *)&sdo_srid), __LINE__, __FILE__);
 
   return sdo_srid;
 }
@@ -160,11 +160,11 @@ int c_SDO_GEOMETRY::GetSdoElemInfo( int Index )
     (OCIColl *)(m_SdoGeom->sdo_elem_info), 
     (sb4)(Index), 
     (boolean *)&exists, 
-    (dvoid **)&oci_number, (dvoid **)0));
+    (dvoid **)&oci_number, (dvoid **)0), __LINE__, __FILE__);
   c_OCI_API::OciCheckError(m_OciErr, OCINumberToInt(m_OciErr, 
     oci_number, 
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
-    (dvoid *)&val));
+    (dvoid *)&val), __LINE__, __FILE__);
 
   return val;
 }
@@ -187,10 +187,10 @@ double c_SDO_GEOMETRY::GetSdoOrdinate( int Index )
     (OCIColl *)(m_SdoGeom->sdo_ordinates), 
     (sb4)(Index), 
     (boolean *)&exists, 
-    (dvoid **)&oci_number, (dvoid **)0));
+    (dvoid **)&oci_number, (dvoid **)0), __LINE__, __FILE__);
   c_OCI_API::OciCheckError(m_OciErr, OCINumberToReal(m_OciErr, 
     oci_number, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
 
   return val;
 }
@@ -209,7 +209,7 @@ double c_SDO_GEOMETRY::GetSdoPointX()
 
   c_OCI_API::OciCheckError(m_OciErr, OCINumberToReal(m_OciErr, 
     &m_SdoGeom->sdo_point.x, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;
 }
 
@@ -219,7 +219,7 @@ double c_SDO_GEOMETRY::GetSdoPointY()
 
   c_OCI_API::OciCheckError(m_OciErr, OCINumberToReal(m_OciErr, 
     &m_SdoGeom->sdo_point.y, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;
 }
 
@@ -229,7 +229,7 @@ double c_SDO_GEOMETRY::GetSdoPointZ()
 
   c_OCI_API::OciCheckError(m_OciErr, OCINumberToReal(m_OciErr, 
     &m_SdoGeom->sdo_point.z, 
-    (uword)sizeof(double), (dvoid *)&val));
+    (uword)sizeof(double), (dvoid *)&val), __LINE__, __FILE__);
   return val;
 }
 
@@ -240,7 +240,7 @@ void c_SDO_GEOMETRY::SetSdoGtype( int Gtype )
     (const dvoid *)&Gtype, 
     (uword)sizeof(Gtype),
     (uword)OCI_NUMBER_SIGNED, 
-    &(m_SdoGeom->sdo_gtype)));
+    &(m_SdoGeom->sdo_gtype)), __LINE__, __FILE__);
     
   m_SdoGeomInd->sdo_gtype = OCI_IND_NOTNULL;    
 }
@@ -251,7 +251,7 @@ void c_SDO_GEOMETRY::SetSdoSrid( long Srid )
     (const dvoid *)&Srid, 
     (uword)sizeof(Srid),
     (uword)OCI_NUMBER_SIGNED, 
-    &(m_SdoGeom->sdo_srid)));
+    &(m_SdoGeom->sdo_srid)), __LINE__, __FILE__);
   
   m_SdoGeomInd->sdo_srid = OCI_IND_NOTNULL;
 }
@@ -268,12 +268,12 @@ void c_SDO_GEOMETRY::AppendElemInfoArray( int Val )
   c_OCI_API::OciCheckError(m_OciErr, 
     OCINumberFromInt(m_OciErr, (dvoid *)&Val,
     (uword)sizeof(Val), OCI_NUMBER_UNSIGNED, 
-    &oci_number));
+    &oci_number), __LINE__, __FILE__);
 
   c_OCI_API::OciCheckError(m_OciErr, OCICollAppend(m_OciEnv, m_OciErr, 
     (const void *)&oci_number, 
     (const void *)0, 
-    m_SdoGeom->sdo_elem_info));
+    m_SdoGeom->sdo_elem_info), __LINE__, __FILE__);
 
   m_SdoGeomInd->sdo_elem_info = OCI_IND_NOTNULL;
 }
@@ -284,12 +284,12 @@ void c_SDO_GEOMETRY::AppendSdoOrdinates( double Val )
 
   c_OCI_API::OciCheckError(m_OciErr, 
     OCINumberFromReal(m_OciErr, (dvoid *)&Val,
-    (uword)sizeof(Val), &oci_number));
+    (uword)sizeof(Val), &oci_number), __LINE__, __FILE__);
 
   c_OCI_API::OciCheckError(m_OciErr, OCICollAppend(m_OciEnv, m_OciErr, 
     (const void *)&oci_number, 
     (const void *)0, 
-    m_SdoGeom->sdo_ordinates));
+    m_SdoGeom->sdo_ordinates), __LINE__, __FILE__);
 
   m_SdoGeomInd->sdo_ordinates = OCI_IND_NOTNULL;
 }

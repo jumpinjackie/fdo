@@ -129,8 +129,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
   FdoPtr<FdoClassDefinition> classdef = schemadesc->FindClassDefinition(m_ClassId);
   if( !classdef.p ) 
   {
-    throw FdoException::Create(L"c_KgOraInsert::Execute: Unable to find class definition!");
-    
+    throw FdoException::Create(NlsMsgGet(M_KGORA_FEATURE_CLASS_NOT_FOUND, "FDO class '%1$ls' not found in schema.", m_ClassId->ToString()));
   }
 
   FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(m_ClassId);

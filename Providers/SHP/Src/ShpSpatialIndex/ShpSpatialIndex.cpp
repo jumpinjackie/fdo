@@ -35,6 +35,7 @@
 #include "ShpSpatialIndexHandle.h"
 #include <Constants.h>
 #include <FdoCommonStringUtil.h>
+#include <cassert>
 
 #ifdef _WIN32
 #include <io.h>
@@ -831,7 +832,6 @@ void ShpSpatialIndex::AddNodeEntry (ShpSpatialIndexNode *node, unsigned long fil
     node->m_childExt[node->m_nEntries] = *extent;
     node->m_nodeModified = TRUE;
     node->m_nEntries++;
-
 } // end: AddNodeEntry()
 
 
@@ -1521,7 +1521,7 @@ void ShpSpatialIndex::RemoveNodeEntry(ShpSpatialIndexNode *node, unsigned entryI
 
     // make sure last entry is reinitialized
 
-    node->m_fileOffset[lastEntry] = (unsigned long)-1L;
+    node->m_fileOffset[lastEntry] = (shpidx_ulong)-1L;
     ::memset(&node->m_childExt[lastEntry], 0, sizeof(node->m_childExt[lastEntry]));
 
     // decrement the number of entries and mark the node as modified
@@ -2495,7 +2495,7 @@ int ShpSpatialIndex::Defragment(ShpSpatialIndexFileCallback *callbackObj,
 //
 //-------------------------------------------------------------------------
 
-int ShpSpatialIndex::Defragment(ShpSpatialIndex* defragFile, unsigned long &ssiOffset,
+int ShpSpatialIndex::Defragment(ShpSpatialIndex* defragFile, shpidx_ulong &ssiOffset,
     ShpSpatialIndexFileCallback *callbackObj)
 {
     ShpSpatialIndexNode* node;
@@ -3303,7 +3303,7 @@ void ShpSpatialIndex::UnwindNodeStack()
 //
 //-------------------------------------------------------------------------
 
-void ShpSpatialIndex::AllocateNode(unsigned nodeLevel, unsigned long &ssiOffset)
+void ShpSpatialIndex::AllocateNode(unsigned nodeLevel, shpidx_ulong &ssiOffset)
 {
     // reclaim the node from one of the free lists if possible
     
@@ -3458,13 +3458,17 @@ void ShpSpatialIndex::ReadNode(unsigned long ssiOffset, unsigned nodeLevel,
         throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadNode(SetFilePointer64)");
 
     // read the node into an internal buffer
-
     unsigned char buffer[sizeof(ShpSpatialIndexNode)];
     unsigned nodeSize;
     if (AtLeafLevel(nodeLevel))
         nodeSize = m_ssiHeader->m_leafNodeSize;
     else
         nodeSize = m_ssiHeader->m_internalNodeSize;
+
+    // NOTE: sizeof(ShpSpatialIndexNode) on Windows != sizeof(ShpSpatialIndexNode) on Linux, however the struct
+    // size should statically be sufficiently greater than the node size. If this assumption turns out to be false
+    // we should turn the buffer into a dynamically allocated array
+    assert(sizeof(ShpSpatialIndexNode) >= nodeSize);
 
     if (!ReadFile(buffer, nodeSize))
         throw FdoCommonFile::LastErrorToException(L"ShpSpatialIndex::ReadNode(ReadBuffer)");
@@ -3478,7 +3482,7 @@ void ShpSpatialIndex::ReadNode(unsigned long ssiOffset, unsigned nodeLevel,
     node->m_nEntries = 0;
     for (i=0, bufferPos=0; i<m_ssiHeader->m_maxEntriesPerNode; i++, bufferPos+=4) {
         node->m_fileOffset[i] = DecodeUI(&buffer[bufferPos], 32);
-        if (node->m_fileOffset[i] != -1L)
+        if (node->m_fileOffset[i] != (shpidx_ulong)-1L) //Need to explicit cast for the -1L to stick on Linux
             node->m_nEntries++;
     }
 

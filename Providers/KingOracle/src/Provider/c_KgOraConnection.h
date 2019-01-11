@@ -36,8 +36,6 @@
 
 #include "c_OCI_API.h"
 
-using namespace std;
-
 class c_KgOraSchemaDesc;
 
 class c_KgOraConnection : public FdoIConnection

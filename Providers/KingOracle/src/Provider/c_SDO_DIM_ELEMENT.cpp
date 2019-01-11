@@ -40,7 +40,7 @@ c_SDO_DIM_ELEMENT::~c_SDO_DIM_ELEMENT()
 {
   if( m_FreeObject )
   {
-    if(m_Dim_Element) c_OCI_API::OciCheckError(m_OciErr, OCIObjectFree(m_OciEnv, m_OciErr,m_Dim_Element,0));      
+    if(m_Dim_Element) c_OCI_API::OciCheckError(m_OciErr, OCIObjectFree(m_OciEnv, m_OciErr,m_Dim_Element,0), __LINE__, __FILE__);
     if(m_Dim_Element_Ind) delete m_Dim_Element_Ind;
   }
 }
@@ -49,7 +49,7 @@ c_SDO_DIM_ELEMENT* c_SDO_DIM_ELEMENT::Create( c_Oci_Connection* Conn )
   SDO_DIM_ELEMENT * oci_geom;
   Conn->OciCheckError(OCIObjectNew(Conn->m_OciHpEnvironment, Conn->m_OciHpError, Conn->m_OciHpServiceContext,
     OCI_TYPECODE_OBJECT, Conn->m_OciType_SdoGeometry, (dvoid *) 0,
-    OCI_DURATION_DEFAULT, TRUE, (dvoid **) &oci_geom));
+    OCI_DURATION_DEFAULT, TRUE, (dvoid **) &oci_geom), __LINE__, __FILE__);
     
   
   c_SDO_DIM_ELEMENT * newgeom = new c_SDO_DIM_ELEMENT(Conn->m_OciHpEnvironment, Conn->m_OciHpError);
@@ -164,6 +164,12 @@ void c_SDO_DIM_ELEMENT::SetTolerance( double Val )
 
 void c_SDO_DIM_ELEMENT::SetDimName( const wchar_t* Val )
 {
+#ifdef D_OCI_WIDE_STRINGS
   OCIStringAssignText(m_OciEnv, m_OciErr, (const oratext*)Val, wcslen(Val)*sizeof(wchar_t), &m_Dim_Element->SDO_DIMNAME  );
+#else
+  FdoStringP tVal(Val);
+  const char* utVal = (const char*)tVal;
+  OCIStringAssignText(m_OciEnv, m_OciErr, (const oratext*)utVal, FdoStringP::Utf8Len(utVal), &m_Dim_Element->SDO_DIMNAME  );
+#endif
   m_Dim_Element_Ind->SDO_DIMNAME = OCI_IND_NOTNULL;
 }

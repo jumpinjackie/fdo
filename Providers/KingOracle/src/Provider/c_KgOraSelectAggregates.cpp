@@ -275,8 +275,8 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
             {
               if( FdoCommonOSUtil::wcsicmp(funcex->GetName(),FDO_FUNCTION_SPATIALEXTENTS) == 0)
               {
-                FdoStringP buff = FdoStringP::Format(L"min(%s.eminx) as sdo_fdo_eminx,min(%s.eminy) as sdo_fdo_eminy"
-                                                     L",max(%s.emaxx) as sdo_fdo_emaxx,max(%s.emaxy) as sdo_fdo_emaxy",phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias() );
+                FdoStringP buff = FdoStringP::Format(L"min(" W_FMT ".eminx) as sdo_fdo_eminx,min(" W_FMT ".eminy) as sdo_fdo_eminy"
+                                                     L",max(" W_FMT ".emaxx) as sdo_fdo_emaxx,max(" W_FMT ".emaxy) as sdo_fdo_emaxy",phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias() );
 
 
                 SqlColumns->Add("sdo_fdo_eminx");  
@@ -376,9 +376,9 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
                 
                 FdoStringP pointstr;
                 if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
-                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(" W_FMT "," W_FMT "," W_FMT "),NULL,NULL) as " W_FMT " ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
                 else
-                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
+                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(" W_FMT "," W_FMT ",NULL),NULL,NULL) as " W_FMT " ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
                           
                 sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
                 sep = ",";
@@ -435,9 +435,9 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
      
       
       if( GetDistinct() )
-        sbuff = FdoStringP::Format(L"SELECT DISTINCT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+        sbuff = FdoStringP::Format(L"SELECT DISTINCT " W_FMT " FROM " W_FMT " " W_FMT "",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
       else
-         sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);        
+         sbuff = FdoStringP::Format(L"SELECT " W_FMT " FROM " W_FMT " " W_FMT "",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
       
       sqlstr = (FdoString*)sbuff;
       
@@ -450,7 +450,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       
       
       // add geometry table
-      FdoStringP sbuffjoin = FdoStringP::Format(L", %s %s",(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias);
+      FdoStringP sbuffjoin = FdoStringP::Format(L", " W_FMT " " W_FMT "",(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias);
       sqlstr += (const wchar_t*)sbuffjoin;
       
       
@@ -465,7 +465,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       }
       
       // link geometry table to main table
-      sbuffjoin = FdoStringP::Format(L"%s.%s=%s.%s",(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+      sbuffjoin = FdoStringP::Format(L"" W_FMT "." W_FMT "=" W_FMT "." W_FMT,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
                                                     ,(const wchar_t*)sdegeom_table_alias,L"fid"); 
       
       
@@ -493,14 +493,14 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       FdoStringP sbuff;
       if( is_specialcase_constantextent )
       {
-        sbuff = FdoStringP::Format(L"SELECT %s FROM %s ",(const wchar_t*)sql_select_columns_part,L"dual");        
+        sbuff = FdoStringP::Format(L"SELECT " W_FMT " FROM " W_FMT " ",(const wchar_t*)sql_select_columns_part,L"dual");
       }
       else
       {
         if( GetDistinct() ) 
-          sbuff = FdoStringP::Format(L"SELECT DISTINCT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+          sbuff = FdoStringP::Format(L"SELECT DISTINCT " W_FMT " FROM " W_FMT " " W_FMT,(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
         else
-          sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+          sbuff = FdoStringP::Format(L"SELECT " W_FMT " FROM " W_FMT " " W_FMT,(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
       }
             
       sqlstr = (FdoString*)sbuff;
@@ -598,7 +598,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
 
 // just check for spatial filter
 // other filters ignored
-void c_KgOraSelectAggregates::CreateFilterSqlString(FdoFilter* Filter,string& WhereBuff)
+void c_KgOraSelectAggregates::CreateFilterSqlString(FdoFilter* Filter,std::string& WhereBuff)
 {
   
     if( !Filter ) return;

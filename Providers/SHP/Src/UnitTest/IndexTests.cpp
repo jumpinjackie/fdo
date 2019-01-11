@@ -75,6 +75,13 @@ void IndexTests::create ()
     CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE, true));
 }
 
+std::string IndexTests::doubleToString(double val)
+{
+    char buf[64] = { 0 };
+    int copied = sprintf(buf, "%.17g", val);
+    return std::string(buf, copied);
+}
+
 void IndexTests::populate ()
 {
     unsigned long size;
@@ -100,14 +107,30 @@ void IndexTests::populate ()
         CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1088 == shx.GetNumObjects ());
 
         // bounding box methods
-        CPPUNIT_ASSERT_MESSAGE ("min x bad", 202293.67187500000 == shx.GetBoundingBoxMinX ());
-        CPPUNIT_ASSERT_MESSAGE ("max x bad", 1763872.6250000000 == shx.GetBoundingBoxMaxX ());
-        CPPUNIT_ASSERT_MESSAGE ("min y bad", 11709796.000000000 == shx.GetBoundingBoxMinY ());
-        CPPUNIT_ASSERT_MESSAGE ("max y bad", 12897880.000000000 == shx.GetBoundingBoxMaxY ());
-        CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shx.GetBoundingBoxMinZ ());
-        CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shx.GetBoundingBoxMaxZ ());
-        CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shx.GetBoundingBoxMinM ());
-        CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shx.GetBoundingBoxMaxM ());
+        std::string msg = "min x bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinX ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 202293.67187500000 == shx.GetBoundingBoxMinX ());
+        msg = "max x bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxX ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 1763872.6250000000 == shx.GetBoundingBoxMaxX ());
+        msg = "min y bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinY ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 11709796.000000000 == shx.GetBoundingBoxMinY ());
+        msg = "max y bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxY ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 12897880.000000000 == shx.GetBoundingBoxMaxY ());
+        msg = "min z bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinZ ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 0.0 == shx.GetBoundingBoxMinZ ());
+        msg = "max z bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxZ ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 0.0 == shx.GetBoundingBoxMaxZ ());
+        msg = "min m bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinM ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 0.0 == shx.GetBoundingBoxMinM ());
+        msg = "max m bad. Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxM ());
+        CPPUNIT_ASSERT_MESSAGE (msg, 0.0 == shx.GetBoundingBoxMaxM ());
 
         BoundingBox limit;
         limit.xMin = numeric_limits<double>::max ();
@@ -133,14 +156,54 @@ void IndexTests::populate ()
 
         CPPUNIT_ASSERT_MESSAGE ("wrong count of index entries", shx.GetNumObjects () == index.GetNObjects ());
         index.GetSSIExtent (extents);
-        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == shx.GetBoundingBoxMinX ());
-        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == shx.GetBoundingBoxMaxX ());
-        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == shx.GetBoundingBoxMinY ());
-        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == shx.GetBoundingBoxMaxY ());
-        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == limit.xMin);
-        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == limit.xMax);
-        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == limit.yMin);
-        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == limit.yMax);
+        msg = "min x bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.xMin);
+        msg += " Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinX ());
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.xMin == shx.GetBoundingBoxMinX ());
+        msg = "max x bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.xMax);
+        msg += " Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxX ());
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.xMax == shx.GetBoundingBoxMaxX ());
+        msg = "min y bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.yMin);
+        msg += " Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMinY ());
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.yMin == shx.GetBoundingBoxMinY ());
+        msg = "max y bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.yMax);
+        msg += " Got: ";
+        msg += doubleToString(shx.GetBoundingBoxMaxY ());
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.yMax == shx.GetBoundingBoxMaxY ());
+        msg = "min x bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.xMin);
+        msg += " Got: ";
+        msg += doubleToString(limit.xMin);
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.xMin == limit.xMin);
+        msg = "max x bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.xMax);
+        msg += " Got: ";
+        msg += doubleToString(limit.xMax);
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.xMax == limit.xMax);
+        msg = "min y bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.yMin);
+        msg += " Got: ";
+        msg += doubleToString(limit.yMin);
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.yMin == limit.yMin);
+        msg = "max y bad. ";
+        msg += "Expected: ";
+        msg += doubleToString(extents.yMax);
+        msg += " Got: ";
+        msg += doubleToString(limit.yMax);
+        CPPUNIT_ASSERT_MESSAGE (msg, extents.yMax == limit.yMax);
     }
 
     CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE, true));
@@ -380,7 +443,44 @@ void IndexTests::check_limits ()
                 delete features[i];
             delete[] features;
 
-            CPPUNIT_ASSERT_MESSAGE ("limits not correct", test == limit);
+            std::string msg = "limits not correct\n";
+            msg += "Expected Min (x: ";
+            msg += doubleToString(limit.xMin);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMin);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMin);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMin);
+            msg += ")\n";
+            msg += "Expected Max (x: ";
+            msg += doubleToString(limit.xMax);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMax);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMax);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMax);
+            msg += ")\n";
+            msg += "Got Min (x: ";
+            msg += doubleToString(test.xMin);
+            msg += ", y: ";
+            msg += doubleToString(test.yMin);
+            msg += ", z: ";
+            msg += doubleToString(test.zMin);
+            msg += ", m: ";
+            msg += doubleToString(test.mMin);
+            msg += ")\n";
+            msg += "Got Max (x: ";
+            msg += doubleToString(test.xMax);
+            msg += ", y: ";
+            msg += doubleToString(test.yMax);
+            msg += ", z: ";
+            msg += doubleToString(test.zMax);
+            msg += ", m: ";
+            msg += doubleToString(test.mMax);
+            msg += ")\n";
+            CPPUNIT_ASSERT_MESSAGE (msg, test == limit);
         }
 
         CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE3, true));
@@ -470,7 +570,44 @@ void IndexTests::check_remove ()
                 delete features[i];
             delete[] features;
 
-            CPPUNIT_ASSERT_MESSAGE ("limits not correct", test == limit);
+            std::string msg = "limits not correct\n";
+            msg += "Expected Min (x: ";
+            msg += doubleToString(limit.xMin);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMin);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMin);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMin);
+            msg += ")\n";
+            msg += "Expected Max (x: ";
+            msg += doubleToString(limit.xMax);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMax);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMax);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMax);
+            msg += ")\n";
+            msg += "Got Min (x: ";
+            msg += doubleToString(test.xMin);
+            msg += ", y: ";
+            msg += doubleToString(test.yMin);
+            msg += ", z: ";
+            msg += doubleToString(test.zMin);
+            msg += ", m: ";
+            msg += doubleToString(test.mMin);
+            msg += ")\n";
+            msg += "Got Max (x: ";
+            msg += doubleToString(test.xMax);
+            msg += ", y: ";
+            msg += doubleToString(test.yMax);
+            msg += ", z: ";
+            msg += doubleToString(test.zMax);
+            msg += ", m: ";
+            msg += doubleToString(test.mMax);
+            msg += ")\n";
+            CPPUNIT_ASSERT_MESSAGE (msg, test == limit);
         }
 
         CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE3));
@@ -557,7 +694,44 @@ void IndexTests::check_defragment ()
                 delete features[i];
             delete[] features;
 
-            CPPUNIT_ASSERT_MESSAGE ("limits not correct", test == limit);
+            std::string msg = "limits not correct\n";
+            msg += "Expected Min (x: ";
+            msg += doubleToString(limit.xMin);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMin);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMin);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMin);
+            msg += ")\n";
+            msg += "Expected Max (x: ";
+            msg += doubleToString(limit.xMax);
+            msg += ", y: ";
+            msg += doubleToString(limit.yMax);
+            msg += ", z: ";
+            msg += doubleToString(limit.zMax);
+            msg += ", m: ";
+            msg += doubleToString(limit.mMax);
+            msg += ")\n";
+            msg += "Got Min (x: ";
+            msg += doubleToString(test.xMin);
+            msg += ", y: ";
+            msg += doubleToString(test.yMin);
+            msg += ", z: ";
+            msg += doubleToString(test.zMin);
+            msg += ", m: ";
+            msg += doubleToString(test.mMin);
+            msg += ")\n";
+            msg += "Got Max (x: ";
+            msg += doubleToString(test.xMax);
+            msg += ", y: ";
+            msg += doubleToString(test.yMax);
+            msg += ", z: ";
+            msg += doubleToString(test.zMax);
+            msg += ", m: ";
+            msg += doubleToString(test.mMax);
+            msg += ")\n";
+            CPPUNIT_ASSERT_MESSAGE (msg, test == limit);
         }
 
         CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE3, true));

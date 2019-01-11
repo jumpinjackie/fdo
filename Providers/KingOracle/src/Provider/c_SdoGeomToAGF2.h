@@ -32,9 +32,9 @@
   
 class c_SdoGeomToAGF2 
 {
-public:
-  c_SdoGeomToAGF2(SDO_GEOMETRY_TYPE* Geom=NULL,SDO_GEOMETRY_ind *GeomInd=NULL);
-  ~c_SdoGeomToAGF2(void);
+  public:
+    FDOKGORA_API c_SdoGeomToAGF2(SDO_GEOMETRY_TYPE* Geom=NULL,SDO_GEOMETRY_ind *GeomInd=NULL);
+    FDOKGORA_API ~c_SdoGeomToAGF2(void);
   
 public:
 
@@ -71,7 +71,7 @@ protected:
 
 public:  
   // Convert to Autodesk variant of format very similar to WKB well known binary
-  int ToAGF();
+  FDOKGORA_API int ToAGF();
   int ToAGFTest();
   int ToAGFTest_Recursive(int level);
   

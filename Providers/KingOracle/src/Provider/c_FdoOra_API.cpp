@@ -1443,7 +1443,7 @@ bool c_FdoOra_API::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoS
         {
           FdoInt32 len = propdata->GetLength();
           if( len <= 0  ) len = 4000;
-          OraType = FdoStringP::Format(L"%s(%ld)",L"VARCHAR2",len);
+          OraType = FdoStringP::Format(L"%S(%ld)",L"VARCHAR2",len);
         }
         break;
         case FdoDataType_Decimal:
@@ -1454,22 +1454,22 @@ bool c_FdoOra_API::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoS
           {
             if( (scale>=0) && (scale<=127) ) // Oracle supposrt from -84 but I thing that in FDO -1 means not defined
             {
-              OraType = FdoStringP::Format(L"%s(%ld,%ld)",L"NUMBER",prec,scale);
+              OraType = FdoStringP::Format(L"%S(%ld,%ld)",L"NUMBER",prec,scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s(%ld,*)",L"NUMBER",prec);
+              OraType = FdoStringP::Format(L"%S(%ld,*)",L"NUMBER",prec);
             }
           }
           else
           {
             if( (scale>=0) && (scale<=127) )
             {
-              OraType = FdoStringP::Format(L"%s(*,%ld)",L"NUMBER",scale);
+              OraType = FdoStringP::Format(L"%S(*,%ld)",L"NUMBER",scale);
             }
             else
             {
-              OraType = FdoStringP::Format(L"%s",L"NUMBER");
+              OraType = FdoStringP::Format(L"%S",L"NUMBER");
             }
           }
         }

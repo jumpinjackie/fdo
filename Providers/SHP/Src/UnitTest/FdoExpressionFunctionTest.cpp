@@ -11263,7 +11263,7 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
       for (int i = 0; i < 31; i++)
         AddFeature(current_connection, L"exfct_c1", i);
 
-      printf(" >>> ...... for class %s,%s \n", XYZM_POINT_CLASS, XYZM_LINE_CLASS);
+      printf(" >>> ...... for class %S,%S \n", XYZM_POINT_CLASS, XYZM_LINE_CLASS);
 
       AddXYZMFeature(current_connection);     
 

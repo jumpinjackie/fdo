@@ -55,6 +55,8 @@
 #include <TestCommonGeomUtil.h>
 #include <TestCommonSchemaUtil.h>
 
+#include "ShpCleanup.h"
+
 #define _CRTDBG_MAP_ALLOC
 
 #ifdef _WIN32

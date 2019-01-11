@@ -378,6 +378,10 @@ III. Running the FDO Unit Tests
             cd [FDO OpenSource]\Providers\SHP\Src\UnitTest
             Run ..\..\bin\win32\Debug\UnitTest.exe
 
+            Please note, on subsequent test runs, you should run [FDO OpenSource]/Providers/SHP/TestData/clean.cmd
+            first before running UnitTest.exe to clean out intermediate data files produced from the previous
+            test run. Failure to do this will generate false positive test failures
+
         ArcSDE:
 
             NOTE: Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
@@ -459,6 +463,25 @@ III. Running the FDO Unit Tests
             Access:      Dbg\UnitTestOdbc.exe OdbcAccessTests
             Excel:       Dbg\UnitTestOdbc.exe OdbcExcelTests
             Text:        Dbg\UnitTestOdbc.exe OdbcTextTests
+
+        King Oracle:
+
+            cd [FDO OpenSource]/Providers/KingOracle/src/KgOraUnitTest/bin/[Win32|Win64]/[Debug|Release]
+            Run KgOraUnitTest.exe
+
+            Before running KgOraUnitTest.exe make sure that you copy the oracle client libraries into the same folder as
+            KgOraUnitTest.exe or alternative add the path to your oracle client libraries to your PATH environment variable
+            
+            The test suite requires a running Oracle 11g XE instance on localhost listening on port 1521. If your oracle instance 
+            resides elsewhere you may set the following environment variables to tell the unit test runner where your oracle instance is:
+            
+             KG_DEFAULT_ORA_CONNECTION - The FDO connection string to your custom oracle instance (eg. Username=fdounittest;Password=fdounittest;Service=//localhost:1521/xe;OracleSchema=fdounittest)
+             KG_ORA_USERNAME - The oracle username (eg. fdounittest)
+             KG_ORA_PASSWORD - The password for your oracle username (eg. fdounittest)
+             KG_ORA_SERVICE - The oracle service (eg. //localhost:1521/xe)
+             
+            The unit test runner will run and set up connections via both connection string and user/pass/service triplets, so if you do set one of these environment
+            variables above, you should set it for all of them too
                         
         Python Scripts:
 
@@ -806,7 +829,17 @@ III. Running the FDO Unit Tests
         SHP:
 
             cd [FDO OpenSource]/Providers/SHP/Src/UnitTest
-            ./UnitTest
+            [../../TestData/clean &&] ./UnitTest
+
+            Please note, on subsequent test runs, you should run [FDO OpenSource]/Providers/SHP/TestData/clean
+            first before running ./UnitTest to clean out intermediate data files produced from the previous
+            test run. Failure to do this will generate false positive test failures
+
+            Also make sure that Japanese locales are installed as they are required by certain unit tests. An example
+            of how to set this up on Ubuntu is as follows:
+
+               sudo locale-gen ja_JP.EUC-JP
+               sudo update-locale
  
         ArcSDE:
 
@@ -892,6 +925,28 @@ III. Running the FDO Unit Tests
 
             MySql:   ./UnitTestOdbc OdbcMySqlTests
             Oracle:  ./UnitTestOdbc OdbcOracleTests
+
+        King Oracle:
+
+            cd [FDO OpenSource]/Providers/KingOracle/src/KgOraUnitTest
+            ./UnitTest
+
+            Before running ./UnitTest make sure that you first add the Oracle client library 
+            path to the LD_LIBRARY_PATH environment variable.
+            
+            The test suite requires a running Oracle 11g XE instance on localhost listening on port 1521. If you 
+            have docker installed, you can spin up an 11g XE docker container with the provided docker-env-11g.sh script.
+            
+            If your oracle instance resides elsewhere you may set the following environment variables to tell the unit test
+            runner where your oracle instance is:
+            
+             KG_DEFAULT_ORA_CONNECTION - The FDO connection string to your custom oracle instance (eg. Username=fdounittest;Password=fdounittest;Service=//localhost:1521/xe;OracleSchema=fdounittest)
+             KG_ORA_USERNAME - The oracle username (eg. fdounittest)
+             KG_ORA_PASSWORD - The password for your oracle username (eg. fdounittest)
+             KG_ORA_SERVICE - The oracle service (eg. //localhost:1521/xe)
+             
+            The unit test runner will run and set up connections via both connection string and user/pass/service triplets, so if you do set one of these environment
+            variables above, you should set it for all of them too
 
         Python Scripts:
     

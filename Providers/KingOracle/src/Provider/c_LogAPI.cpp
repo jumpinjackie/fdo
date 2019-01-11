@@ -113,7 +113,7 @@ void c_LogAPI::WriteLog(const char* text,...)
       fputs(cbuff,GisDebugFile);
       fclose(GisDebugFile);
       
-      delete cbuff;
+      delete [] cbuff;
     }
      m_Mutex.Leave();
 
