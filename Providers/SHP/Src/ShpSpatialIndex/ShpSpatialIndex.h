@@ -29,6 +29,8 @@
 #pragma once
 #endif // _WIN32
 
+#include "ShpSpatialIndexDataTypes.h"
+
 // constant definitions
 const unsigned long SHP_ERROR_SI_MAGIC_NUMBER = 0x41534947;  // SSI identifier ("ASSI")
 const int SHP_ERROR_SI_RTREE = 0;                            // R-Tree index identifier
@@ -217,7 +219,7 @@ protected:
 
     // internal method used to defragment the SSI
 
-    int Defragment(ShpSpatialIndex* defragFile, unsigned long &ssiOffset, 
+    int Defragment(ShpSpatialIndex* defragFile, shpidx_ulong &ssiOffset, 
         ShpSpatialIndexFileCallback *callbackObj);
 
     // various utility methods to manage the node cache, etc
@@ -229,7 +231,7 @@ protected:
     ShpSpatialIndexNode *GetCachedNode (unsigned long ssiOffset) const;
     ShpSpatialIndexNode *GetLRUNode ();
     void UpdateLRUStamp ();
-    void AllocateNode (unsigned nodeLevel, unsigned long &ssiOffset);
+    void AllocateNode (unsigned nodeLevel, shpidx_ulong &ssiOffset);
     void AddNodeToFreeList (ShpSpatialIndexNode *node);
     void InitializeNodeStack ();
     void PushNode (unsigned long ssiOffset, unsigned nodeLevel, BOOL checkCache = TRUE);

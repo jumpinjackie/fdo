@@ -57,7 +57,7 @@ void DeleteTests::setUp ()
 void DeleteTests::tearDown ()
 {
     // delete the class, if its there:
-    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
+    ShpCleanup::CleanupClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
 

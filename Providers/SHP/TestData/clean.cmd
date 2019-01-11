@@ -22,4 +22,5 @@ del Ontario\Test*.*
 del Ontario\MyClass*.*
 del Ontario\Ontario*.*
 del/Q Testing\*
+del/Q ExpressionEngineFunctionTest\*
 rmdir Testing

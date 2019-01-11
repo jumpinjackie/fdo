@@ -50,6 +50,7 @@ protected:
     void check_limits ();
     void check_remove ();
     void check_defragment ();
+    std::string doubleToString(double val);
 };
 
 #endif // CPP_UNIT_INDEXTESTS_H

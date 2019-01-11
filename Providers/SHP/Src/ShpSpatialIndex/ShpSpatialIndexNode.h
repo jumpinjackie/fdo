@@ -23,6 +23,7 @@
 #endif // _WIN32
 
 #include "ShpSpatialIndex.h"
+#include "ShpSpatialIndexDataTypes.h"
 
 #ifdef _WIN32
 #pragma pack(push)
@@ -41,9 +42,9 @@ struct ShpSpatialIndexNode {
 
     // bookkeeping information 
 
-    unsigned long m_ssiOffset;   // file offset of the node
+    shpidx_ulong m_ssiOffset;    // file offset of the node
     int m_refCount;              // reference count 
-    unsigned long m_lruStamp;    // least-recently-used stamp
+    shpidx_ulong m_lruStamp;     // least-recently-used stamp
     unsigned m_currentSubtree;   // current subtree being searched
     unsigned m_nodeLevel;        // level of the node
     BOOL m_nodeModified;         // has the node been modified?
@@ -51,7 +52,7 @@ struct ShpSpatialIndexNode {
 
     // data representing the R-Tree node
 
-    unsigned long m_fileOffset[MAX_NODE_ENTRIES]; // file offset of children
+    shpidx_ulong m_fileOffset[MAX_NODE_ENTRIES];  // file offset of children
     BoundingBoxEx m_childExt[MAX_NODE_ENTRIES];   // bounding boxes of children
 };
 

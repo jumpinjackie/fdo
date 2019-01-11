@@ -69,9 +69,9 @@ void InsertTests::tearDown ()
     mConnection->Open ();
 
     // Delete old class, if its there:
-    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
-    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test2");
-    TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"TestFdoClass");
+    ShpCleanup::CleanupClass(mConnection, NULL, L"Test");
+    ShpCleanup::CleanupClass(mConnection, NULL, L"Test2");
+    ShpCleanup::CleanupClass(mConnection, NULL, L"TestFdoClass");
 
     mConnection->Close ();
     FDO_SAFE_RELEASE(mConnection.p);

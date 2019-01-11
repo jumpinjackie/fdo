@@ -352,6 +352,10 @@ III. Running the FDO Unit Tests
             cd [FDO OpenSource]\Providers\SHP\Src\UnitTest
             Run ..\..\bin\win32\Debug\UnitTest.exe
 
+            Please note, on subsequent test runs, you should run [FDO OpenSource]/Providers/SHP/TestData/clean.cmd
+            first before running UnitTest.exe to clean out intermediate data files produced from the previous
+            test run. Failure to do this will generate false positive test failures
+
         ArcSDE:
 
             NOTE: Please refer to [FDO OpenSource]\Providers\ArcSDE\UnitTest_README.txt
@@ -782,7 +786,17 @@ III. Running the FDO Unit Tests
         SHP:
 
             cd [FDO OpenSource]/Providers/SHP/Src/UnitTest
-            ./UnitTest
+            [../../TestData/clean &&] ./UnitTest
+
+            Please note, on subsequent test runs, you should run [FDO OpenSource]/Providers/SHP/TestData/clean
+            first before running ./UnitTest to clean out intermediate data files produced from the previous
+            test run. Failure to do this will generate false positive test failures
+
+            Also make sure that Japanese locales are installed as they are required by certain unit tests. An example
+            of how to set this up on Ubuntu is as follows:
+
+               sudo locale-gen ja_JP.EUC-JP
+               sudo update-locale
  
         ArcSDE:
 
