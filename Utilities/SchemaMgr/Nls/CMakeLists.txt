@@ -10,7 +10,7 @@ add_custom_command(
     OUTPUT "${messagefile}"
     COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/SmMessage.mc ${CMAKE_CURRENT_BINARY_DIR}/SmMessage.msf \"*\" SmMessage
     COMMAND ${MKCATDEFS_EXE} ARGS SmMessage SmMessage.msf > SmMessage.tmp
-    COMMAND gencat ARGS  ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/SmMessage.cat SmMessage.tmp
+    COMMAND gencat ARGS  ${FDO_LOCAL_NLS_PATH}/linux/en_US/SmMessage.cat SmMessage.tmp
     COMMAND sed ARGS -i "\"/#include/d\""  SmMessage_msg.h
     COMMAND sed ARGS -i "/MF_/s/\"\(.*\).cat\"/1_cat/"  SmMessage_msg.h
     COMMAND cp ARGS -f SmMessage_msg.h ${messagefile}
@@ -19,4 +19,4 @@ add_custom_command(
 
 add_custom_target( SMMessage ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/SmMessage.cat DESTINATION nls COMPONENT ${FDO_COMPONENT} )
+install( FILES ${FDO_LOCAL_NLS_PATH}/linux/en_US/SmMessage.cat DESTINATION nls COMPONENT ${FDO_COMPONENT} )

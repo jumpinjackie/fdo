@@ -13,7 +13,7 @@ add_custom_command(
     OUTPUT "${messagefile}"
     COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${catalog}.mc ${CMAKE_CURRENT_BINARY_DIR}/${catalog}.msf \"*\" SHPMESSAGE
     COMMAND ${MKCATDEFS_EXE} ARGS ${catalog} ${catalog}.msf > ${catalog}.tmp
-    COMMAND gencat ARGS  ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat ${catalog}.tmp
+    COMMAND gencat ARGS  ${FDO_LOCAL_NLS_PATH}/linux/en_US/${catalog}.cat ${catalog}.tmp
     COMMAND sed ARGS -i "\"/#include/d\""  ${catalog}_msg.h
     COMMAND sed ARGS -i "/MF_/s/\"\(.*\).cat\"/1_cat/"  ${catalog}_msg.h
     COMMAND cp ${catalog}_msg.h ${messagefile}
@@ -22,4 +22,4 @@ add_custom_command(
 
 add_custom_target( ${catalog} ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
     
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat DESTINATION nls COMPONENT ${FDO_COMPONENT} )
+install( FILES ${FDO_LOCAL_NLS_PATH}/linux/en_US/${catalog}.cat DESTINATION nls COMPONENT ${FDO_COMPONENT} )
