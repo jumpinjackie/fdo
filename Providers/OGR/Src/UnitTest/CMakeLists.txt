@@ -34,3 +34,11 @@ target_link_libraries( OGRUnitTest
     ${CPPUNIT_LIBRARIES}
     FDO${FDO_VERSION_SUFFIX}
 )
+
+# Remove providers.xml from output as that is windows-only
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
+
+# Replace with our own configured version
+set(FDO_PROVIDER_NAME "OSGeo.OGR")
+set(FDO_PROVIDER_LIBRARY "../Provider/libOGRProvider${FDO_VERSION_SUFFIX}.so")
+configure_file(${CMAKE_MODULE_PATH}/../configs/providers.xml.in ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)

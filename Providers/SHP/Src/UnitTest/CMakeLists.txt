@@ -62,3 +62,8 @@ file(GLOB UnitTestSHP_TESTDATA
 file(COPY ${UnitTestSHP_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
+
+# Replace with our own configured version
+set(FDO_PROVIDER_NAME "OSGeo.SHP")
+set(FDO_PROVIDER_LIBRARY "../Provider/libSHPProvider${FDO_VERSION_SUFFIX}.so")
+configure_file(${CMAKE_MODULE_PATH}/../configs/providers.xml.in ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)

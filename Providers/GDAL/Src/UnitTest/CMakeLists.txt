@@ -58,3 +58,8 @@ file(GLOB UnitTestGDAL_TESTDATA
 file(COPY ${UnitTestGDAL_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
+
+# Replace with our own configured version
+set(FDO_PROVIDER_NAME "OSGeo.Gdal")
+set(FDO_PROVIDER_LIBRARY "../Provider/libGRFPProvider${FDO_VERSION_SUFFIX}.so")
+configure_file(${CMAKE_MODULE_PATH}/../configs/providers.xml.in ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)

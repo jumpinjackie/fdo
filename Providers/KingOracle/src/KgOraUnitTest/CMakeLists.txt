@@ -40,3 +40,11 @@ target_link_libraries( KgOraUnitTest
     ${ORACLE_LIBRARIES}
     dl
 )
+
+# Remove providers.xml from output as that is windows-only
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
+
+# Replace with our own configured version
+set(FDO_PROVIDER_NAME "King.Oracle")
+set(FDO_PROVIDER_LIBRARY "../Provider/libKingOracleProvider${FDO_VERSION_SUFFIX}.so")
+configure_file(${CMAKE_MODULE_PATH}/../configs/providers.xml.in ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)
