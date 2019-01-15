@@ -22,7 +22,6 @@ Current Status:
   None of the in-tree thirdparty components need to be built.
 
 TODO
-- Finish install part ( not tested yet )
 - Create a global instalable FindFDO.cmake to enable providers compile independent of full FDO source
 - Compile providers ( independent )
 
@@ -63,8 +62,8 @@ II. Usage
     - mkdir <MY_BUILDDIR>
     - cd <MY_BUILDDIR>
     - cmake <FDO_SOURCEDIR> -DWITH_SDF=TRUE -DWITH_SHP=TRUE -DWITH_SQLITE=TRUE
-    - make
-    - sudo make install
+    - cmake --build . [or: make]
+    - sudo cmake --build . --target install [or: sudo make install]
 
     The example enables the SDF, SHP and SQlite provider builds. 
         You can pass any definition to compiler through this method.
@@ -190,8 +189,6 @@ VII. Optional extras
         You can use ninja over standard make by passing USE_NINJA=1 for the main FDO build or passing --ninja 
         to ./cmake_build.sh
 
-        See "Known Issues" below for some gotchas with using ninja over make
-
     Using gold linker instead of ld
 
         gold is an alternative linker to ld that may link faster in some cases
@@ -199,8 +196,136 @@ VII. Optional extras
         You may also choose to use the gold linker over ld for linking by passing USE_LD_GOLD=ON for the main FDO build or
         passing --use-ld-gold to ./cmake_build.sh
 
-VIII. Known Issues
+VIII. Running unit tests
 
-    - Ninja cannot be used as the build system if doing a full internal build of thirdparty libraries
+    The CMake build builds unit test runner executables for every provider that provides unit tests.
+
+    The CMake build will generate all message catalogs to a local [MY_BUILDDIR]/nls/linux/en_US directory.
+
+    Before running any of the unit tests below, you should set the NLSPATH environment variable to the above
+    path so that tests that check for certain FDO/Provider error messages do not fail.
+
+        FDO:
+
+            cd [MY_BUILDDIR]/Fdo/UnitTest
+            ./UnitTest
+
+        WMS:
+
+            cd [MY_BUILDDIR]/Providers/WMS/Src/UnitTest
+            ./UnitTest
+
+        SDF:
+
+            cd [MY_BUILDDIR]/Providers/SDF/Src/UnitTest
+            ./UnitTest
+ 
+        SHP:
+
+            cd [MY_BUILDDIR]/Providers/SHP/Src/UnitTest
+            [../../TestData/clean &&] ./UnitTest
+
+            Please note, on subsequent test runs, you should run [MY_BUILDDIR]/Providers/SHP/TestData/clean
+            first before running ./UnitTest to clean out intermediate data files produced from the previous
+            test run. Failure to do this will generate false positive test failures
+
+            Also make sure that Japanese locales are installed as they are required by certain unit tests. An example
+            of how to set this up on Ubuntu is as follows:
+
+               sudo locale-gen ja_JP.EUC-JP
+               sudo update-locale
+
+        GDAL:
+
+            cd [MY_BUILDDIR]/Providers/GDAL/Src/UnitTest
+            ./UnitTest
+          
+        MySql:
+
+            cd [MY_BUILDDIR]/Providers/GenericRdbms/Src/UnitTest
+
+            If you wish to run the MySql unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "MySqlInit.txt" file with valid values for username, password and 
+            service for the service against which the unit tests should be  
+            executed and run ./UnitTestMySql with no additional parameters.
+
+            NOTE: Do not drop MySqlInit.txt in subversion if you choose to 
+            modify it
+
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for 
+            username, password and service and run the unit test by specifying
+            the initialization file on the command line when executing the unit
+            tests. 
+
+            e.g. ./UnitTestMySql initfiletest=MySqlInitEx.txt
+
+            NOTE: The initialization file must contain values for service, 
+            username and password.
+
+            e.g.: service=mysqlserver;username=root;password=xxxx;
+
+        Odbc:
+
+            cd [MY_BUILDDIR]/Providers/GenericRdbms/Src/UnitTest
+
+            you must have the DSN created before you will run the unit tests.
+            DSN name can be specified using DSNOracle, DSNMySql, DSNSqlServer.
+
+            If you wish to run the ODBC unit tests without specifying 
+            an initialization file, update the default initialization file 
+            "OdbcInit.txt" file with valid values for username, password and 
+            service for the services against which the unit tests should  
+            be executed and run ./UnitTestOdbc with no additional parameters.
+
+            NOTE: Do not drop OdbcInit.txt in subversion if you choose to 
+            modify it.
+
+            If you wish to run the unit test and specify your own 
+            initialization file, create your the file with valid values for  
+            username, password and the service names. Run the unit test by  
+            specifying the initialization file on the command line when 
+            executing the unit tests. 
+
+            e.g. ./UnitTestOdbc initfiletest=OdbcInitEx.txt
+
+            NOTE: The initialization file must contain values for service, 
+            username and password.
+
+            The initialization file must contain service, username and 
+            password for each server type.
+
+            e.g.: 
+
+            serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLE;
+            serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQL;
+
+            NOTE: You can also run the unit tests separately for each ODBC subtype:
+
+            MySql:   ./UnitTestOdbc OdbcMySqlTests
+            Oracle:  ./UnitTestOdbc OdbcOracleTests
+
+        King Oracle:
+
+            cd [MY_BUILDDIR]/Providers/KingOracle/src/KgOraUnitTest
+            ./UnitTest
+
+            Before running ./UnitTest make sure that you first add the Oracle client library 
+            path to the LD_LIBRARY_PATH environment variable.
+            
+            The test suite requires a running Oracle 11g XE instance on localhost listening on port 1521. If you 
+            have docker installed, you can spin up an 11g XE docker container with the provided docker-env-11g.sh script.
+            
+            If your oracle instance resides elsewhere you may set the following environment variables to tell the unit test
+            runner where your oracle instance is:
+            
+             KG_DEFAULT_ORA_CONNECTION - The FDO connection string to your custom oracle instance (eg. Username=fdounittest;Password=fdounittest;Service=//localhost:1521/xe;OracleSchema=fdounittest)
+             KG_ORA_USERNAME - The oracle username (eg. fdounittest)
+             KG_ORA_PASSWORD - The password for your oracle username (eg. fdounittest)
+             KG_ORA_SERVICE - The oracle service (eg. //localhost:1521/xe)
+             
+            The unit test runner will run and set up connections via both connection string and user/pass/service triplets, so if you do set one of these environment
+            variables above, you should set it for all of them too
 
 Please send any help questions, bug reports, enhancements, etc to the fdo-users mailing list <fdo-users@lists.osgeo.org>
