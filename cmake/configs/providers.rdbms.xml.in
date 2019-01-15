@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <FeatureProviderRegistry>
   <FeatureProvider>
-    <Name>@FDO_MYSQL_PROVIDER_NAME@</Name>
+    <Name>@FDO_MYSQL_PROVIDER_NAME@.@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@</Name>
     <DisplayName>OSGeo FDO Provider for MySQL</DisplayName>
     <Description>FDO Provider for MySql</Description>
     <IsManaged>False</IsManaged>
@@ -10,7 +10,7 @@
     <LibraryPath>@FDO_MYSQL_PROVIDER_LIBRARY@</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>@FDO_ODBC_PROVIDER_NAME@</Name>
+    <Name>@FDO_ODBC_PROVIDER_NAME@.@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@</Name>
     <DisplayName>OSGeo FDO Provider for ODBC</DisplayName>
     <Description>Autodesk FDO Provider for ODBC</Description>
     <IsManaged>False</IsManaged>
@@ -19,7 +19,7 @@
     <LibraryPath>@FDO_ODBC_PROVIDER_LIBRARY@</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>@FDO_POSTGRESQL_PROVIDER_NAME@</Name>
+    <Name>@FDO_POSTGRESQL_PROVIDER_NAME@.@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@</Name>
     <DisplayName>OSGeo FDO Provider for PostgreSQL with PostGIS</DisplayName>
     <Description>FDO Provider for PostGIS</Description>
     <IsManaged>False</IsManaged>
@@ -28,7 +28,7 @@
     <LibraryPath>@FDO_POSTGRESQL_PROVIDER_LIBRARY@</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>@FDO_SQLSERVER_PROVIDER_NAME@</Name>
+    <Name>@FDO_SQLSERVER_PROVIDER_NAME@.@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@</Name>
     <DisplayName>OSGeo FDO Provider for SQL Server Spatial</DisplayName>
     <Description>Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</Description>
     <IsManaged>False</IsManaged>
