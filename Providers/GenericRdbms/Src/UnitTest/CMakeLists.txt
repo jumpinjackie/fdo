@@ -249,3 +249,18 @@ target_link_libraries( UnitTestPostGis
     PostgreSQLOverrides${FDO_VERSION_SUFFIX}
     PostgreSQLProvider${FDO_VERSION_SUFFIX}
 )
+
+# Remove providers.xml from output as that is windows-only
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
+
+# Replace with our own configured version
+set(FDO_MYSQL_PROVIDER_NAME "OSGeo.MySQL")
+set(FDO_MYSQL_PROVIDER_LIBRARY "../MySQL/libMySQLProvider${FDO_VERSION_SUFFIX}.so")
+set(FDO_ODBC_PROVIDER_NAME "OSGeo.ODBC")
+set(FDO_ODBC_PROVIDER_LIBRARY "../ODBC/libODBCProvider${FDO_VERSION_SUFFIX}.so")
+set(FDO_POSTGRESQL_PROVIDER_NAME "OSGeo.PostgreSQL")
+set(FDO_POSTGRESQL_PROVIDER_LIBRARY "../PostGis/libPostgreSQLProvider${FDO_VERSION_SUFFIX}.so")
+# This provider doesn't exist on Linux, but if/when it does ...
+set(FDO_SQLSERVER_PROVIDER_NAME "OSGeo.SQLServerSpatial")
+set(FDO_SQLSERVER_PROVIDER_LIBRARY "../SQLServerSpatial/libSQLServerSpatialProvider${FDO_VERSION_SUFFIX}.so")
+configure_file(${CMAKE_MODULE_PATH}/../configs/providers.rdbms.xml.in ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)

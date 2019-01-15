@@ -6,7 +6,7 @@
     <Description>FDO Provider</Description>
     <IsManaged>False</IsManaged>
     <Version>@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@.0.0</Version>
-    <FeatureDataObjectsVersion>@FDO_VERSION@.@FDO_VERSION_MINOR@.0.0</FeatureDataObjectsVersion>
+    <FeatureDataObjectsVersion>@FDO_VERSION_MAJOR@.@FDO_VERSION_MINOR@.0.0</FeatureDataObjectsVersion>
     <LibraryPath>@FDO_PROVIDER_LIBRARY@</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>
