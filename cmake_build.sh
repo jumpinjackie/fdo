@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do    # Until you run out of parameters...
             ORACLE_LIB="$2"
             shift
             ;;
-        --wtih-oci-version)
+        --with-oci-version)
             ORACLE_OCI_VERSION="$2"
             shift
             ;;
