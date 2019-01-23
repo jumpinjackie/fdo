@@ -222,8 +222,12 @@ VIII. Running unit tests
  
         SHP:
 
+            export LD_LIBRARY_PATH=/usr/local/fdo-x.y.z/lib[64]
             cd [MY_BUILDDIR]/Providers/SHP/Src/UnitTest
+            rm providers.xml
             [../../TestData/clean &&] ./UnitTest
+
+            Where x.y.z matches the installed version of FDO
 
             Please note, on subsequent test runs, you should run [MY_BUILDDIR]/Providers/SHP/TestData/clean
             first before running ./UnitTest to clean out intermediate data files produced from the previous
@@ -235,10 +239,22 @@ VIII. Running unit tests
                sudo locale-gen ja_JP.EUC-JP
                sudo update-locale
 
+            Also note: Due to a working directory bug in the provider and/or the test executable, the SHP unit test
+            executable cannot be run directly from where the executable is built. You need to install FDO after building,
+            export this path out to LD_LIBRARY_PATH and delete the local providers.xml before running the test executable
+
         GDAL:
 
+            export LD_LIBRARY_PATH=/usr/local/fdo-x.y.z/lib[64]
             cd [MY_BUILDDIR]/Providers/GDAL/Src/UnitTest
+            rm providers.xml
             ./UnitTest
+            
+            Where x.y.z matches the installed version of FDO
+            
+            Note: Due to a working directory bug in the provider and/or the test executable, the GDAL unit test
+            executable cannot be run directly from where the executable is built. You need to install FDO after building,
+            export this path out to LD_LIBRARY_PATH and delete the local providers.xml before running the test executable
           
         MySql:
 
