@@ -89,6 +89,16 @@ if test "$SHOWHELP" == yes; then
    exit 0
 fi
 
+# If you're building this copy of libcurl, chances are very high you also built the internal 
+# openssl, and want to build/link against that internal copy.
+#
+# If you have a system-provided OpenSSL (chances are very high that this is the case) then
+# libcurl will build against it by default even if you built the internal copy of openssl. Per 
+# curl's build docs, if we want to *force* it to build/link against our internal openssl we have to
+# append the internal openssl include/lib paths to CPPFLAGS and LDFLAGS.
+CPPFLAGSEX="-I$PWD/../openssl/include"
+LDFLAGSEX="-L$PWD/../openssl/lib/linux"
+
 if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
 CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
 echo "Exporting CFLAGS: "$CFLAGS""
@@ -96,13 +106,13 @@ export CFLAGS
 fi
 
 if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
+CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE $CPPFLAGSEX"
 echo "Exporting CPPFLAGS: "$CPPFLAGS""
 export CPPFLAGS
 fi
 
 if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
+LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE $LDFLAGSEX"
 echo "Exporting LDFLAGS: "$LDFLAGS""
 export LDFLAGS
 fi
@@ -119,7 +129,10 @@ fi
 
 chmod a+x ./configure
 
-./configure --enable-silent-rules --without-libidn --without-librtmp --disable-ldap
+# In conjunction with appending the internal openssl paths to CPPFLAGS/LDFLAGS, it also needs to be
+# passed to --with-ssl so that the configure script takes the hint that we want to build/link against
+# our internal copy of openssl
+./configure --enable-silent-rules --without-libidn --without-librtmp --disable-ldap --with-ssl=$PWD/../openssl
 
 mkdir -p lib/linux
 
