@@ -89,16 +89,6 @@ if test "$SHOWHELP" == yes; then
    exit 0
 fi
 
-# If you're building this copy of libcurl, chances are very high you also built the internal 
-# openssl, and want to build/link against that internal copy.
-#
-# If you have a system-provided OpenSSL (chances are very high that this is the case) then
-# libcurl will build against it by default even if you built the internal copy of openssl. Per 
-# curl's build docs, if we want to *force* it to build/link against our internal openssl we have to
-# append the internal openssl include/lib paths to CPPFLAGS and LDFLAGS.
-CPPFLAGSEX="-I$PWD/../openssl/include"
-LDFLAGSEX="-L$PWD/../openssl/lib/linux"
-
 if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
 CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
 echo "Exporting CFLAGS: "$CFLAGS""
@@ -129,10 +119,16 @@ fi
 
 chmod a+x ./configure
 
-# In conjunction with appending the internal openssl paths to CPPFLAGS/LDFLAGS, it also needs to be
-# passed to --with-ssl so that the configure script takes the hint that we want to build/link against
-# our internal copy of openssl
-./configure --enable-silent-rules --without-libidn --without-librtmp --disable-ldap --with-ssl=$PWD/../openssl
+# If we built internal openssl, it will do an internal layout install under openssl/_install
+# So if this directory exists, assume we want to build internal libcurl against internal openssl
+OPENSSL_INTERNAL_INSTALL=$PWD/../openssl/_install
+if [ -d "$OPENSSL_INTERNAL_INSTALL" ]; then
+    echo "Building libcurl against internal OpenSSL at: $OPENSSL_INTERNAL_INSTALL"
+    ./configure --enable-silent-rules --without-libidn --without-librtmp --disable-ldap --with-ssl=$OPENSSL_INTERNAL_INSTALL
+else
+    echo "Building libcurl against system-provided OpenSSL"
+    ./configure --enable-silent-rules --without-libidn --without-librtmp --disable-ldap
+fi
 
 mkdir -p lib/linux
 

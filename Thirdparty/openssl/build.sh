@@ -136,7 +136,9 @@ mkdir -p lib/linux
 
 chmod a+x ./config
 
-./config no-asm no-ssl3
+# For this openssl static build to be usable for internal libcurl, we have to do a
+# full layout install, so set up install prefix to be "_install" in this directory
+./config no-asm no-ssl3 no-shared --prefix=$PWD/_install
 if [ "$?" -ne 0 ] ; then
   exit 1
 fi
@@ -150,7 +152,7 @@ if test "$TYPEACTION" == clean ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   make
+   make && make install
    if [ "$?" -ne 0 ] ; then
      exit 1
    fi

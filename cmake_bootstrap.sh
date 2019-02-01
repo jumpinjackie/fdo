@@ -357,16 +357,6 @@ if test "$INTERNAL_GDAL" = "TRUE"; then
 else
     echo "Skipping internal gdal build"
 fi
-if test "$INTERNAL_CURL" = "TRUE"; then
-    LIB_NAME="libcurl"
-    echo "Building internal $LIB_NAME"
-    cd $THIRDPARTY_WORK_DIR/Thirdparty/libcurl
-    chmod a+x ./build.sh
-    sh ./build.sh $CMDEX
-    check_build
-else
-    echo "Skipping internal curl build"
-fi
 if test "$INTERNAL_OPENSSL" = "TRUE"; then
     LIB_NAME="openssl"
     echo "Building internal $LIB_NAME"
@@ -376,6 +366,16 @@ if test "$INTERNAL_OPENSSL" = "TRUE"; then
     check_build
 else
     echo "Skipping internal openssl build"
+fi
+if test "$INTERNAL_CURL" = "TRUE"; then
+    LIB_NAME="libcurl"
+    echo "Building internal $LIB_NAME"
+    cd $THIRDPARTY_WORK_DIR/Thirdparty/libcurl
+    chmod a+x ./build.sh
+    sh ./build.sh $CMDEX
+    check_build
+else
+    echo "Skipping internal curl build"
 fi
 
 # dump vars to setup script
