@@ -95,6 +95,7 @@ endif (CPACK_MONOLITHIC_INSTALL)
 
 if (CMAKE_BUILD_TYPE MATCHES Release)
     message(STATUS "Binaries will be stripped as part of packaging")
+    set(CPACK_STRIP_FILES TRUE)
 endif (CMAKE_BUILD_TYPE MATCHES Release)
 
 # Make CPack available to easy generate binary packages
@@ -198,18 +199,29 @@ configure_file(cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmak
 # Install the global template, not the internal one used for whole source build
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules)
 
-# If we're using internal xerces/xalan/gdal we must make sure these libs are also installed
+# If we're using internal xerces/xalan/gdal we must make sure these libs are also installed. Strip them as well
+# if in release mode as CPack only strips .so files built within CMake and not .so files built from external build
+# systems
 if (INTERNAL_XERCESC)
-    install(FILES ${FDOTHIRDPARTY}/apache/xerces/lib/libxerces-c-3.1.so DESTINATION ${LIB_INSTALL_DIR})
     install(FILES ${FDOTHIRDPARTY}/apache/xerces/lib/libxerces-c.so DESTINATION ${LIB_INSTALL_DIR})
+    install(FILES ${FDOTHIRDPARTY}/apache/xerces/lib/libxerces-c-3.1.so DESTINATION ${LIB_INSTALL_DIR})
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        execute_process(COMMAND strip --strip-unneeded ${LIB_INSTALL_DIR}/libxerces-c-3.1.so)
+    endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif (INTERNAL_XERCESC)
 if (INTERNAL_XALANC)
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so DESTINATION ${LIB_INSTALL_DIR})
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so.111 DESTINATION ${LIB_INSTALL_DIR})
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalan-c.so.111.0 DESTINATION ${LIB_INSTALL_DIR})
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        execute_process(COMMAND strip --strip-unneeded ${LIB_INSTALL_DIR}/libxalan-c.so.111.0)
+    endif (CMAKE_BUILD_TYPE MATCHES Release)
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so DESTINATION ${LIB_INSTALL_DIR})
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so.111 DESTINATION ${LIB_INSTALL_DIR})
     install(FILES ${FDOTHIRDPARTY}/apache/xalan/lib/libxalanMsg.so.111.0 DESTINATION ${LIB_INSTALL_DIR})
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        execute_process(COMMAND strip --strip-unneeded ${LIB_INSTALL_DIR}/libxalanMsg.so.111.0)
+    endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif (INTERNAL_XALANC)
 if (INTERNAL_GDAL)
     # The link target doesn't have to exist at this point in time, the symlink will be valid at install time
@@ -218,4 +230,7 @@ if (INTERNAL_GDAL)
     execute_process(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libgdal.so.20.3.2 ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libgdal.so DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${component})
     install(FILES ${FDOTHIRDPARTY}/gdal/lib/libgdal.so.20.3.2 DESTINATION ${LIB_INSTALL_DIR})
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        execute_process(COMMAND strip --strip-unneeded ${LIB_INSTALL_DIR}/libgdal.so.20.3.2)
+    endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif (INTERNAL_GDAL)
