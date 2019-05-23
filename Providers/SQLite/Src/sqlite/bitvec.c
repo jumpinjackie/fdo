@@ -37,12 +37,11 @@
 #include "sqliteInt.h"
 
 /* Size of the Bitvec structure in bytes. */
-#define BITVEC_SZ        512
+#define BITVEC_SZ        (sizeof(void*)*128)  /* 512 on 32bit.  1024 on 64bit */
 
 /* Round the union size down to the nearest pointer boundary, since that's how 
 ** it will be aligned within the Bitvec struct. */
-#define BITVEC_USIZE \
-    (((BITVEC_SZ-(3*sizeof(u32)))/sizeof(Bitvec*))*sizeof(Bitvec*))
+#define BITVEC_USIZE     (((BITVEC_SZ-(3*sizeof(u32)))/sizeof(Bitvec*))*sizeof(Bitvec*))
 
 /* Type of the array "element" for the bitmap representation. 
 ** Should be a power of 2, and ideally, evenly divide into BITVEC_USIZE. 
@@ -73,7 +72,7 @@
 /*
 ** A bitmap is an instance of the following structure.
 **
-** This bitmap records the existence of zero or more bits
+** This bitmap records the existance of zero or more bits
 ** with values between 1 and iSize, inclusive.
 **
 ** There are three possible representations of the bitmap.
@@ -127,10 +126,10 @@ Bitvec *sqlite3BitvecCreate(u32 iSize){
 ** If p is NULL (if the bitmap has not been created) or if
 ** i is out of range, then return false.
 */
-int sqlite3BitvecTestNotNull(Bitvec *p, u32 i){
-  assert( p!=0 );
+int sqlite3BitvecTest(Bitvec *p, u32 i){
+  if( p==0 ) return 0;
+  if( i>p->iSize || i==0 ) return 0;
   i--;
-  if( i>=p->iSize ) return 0;
   while( p->iDivisor ){
     u32 bin = i/p->iDivisor;
     i = i%p->iDivisor;
@@ -149,9 +148,6 @@ int sqlite3BitvecTestNotNull(Bitvec *p, u32 i){
     }
     return 0;
   }
-}
-int sqlite3BitvecTest(Bitvec *p, u32 i){
-  return p!=0 && sqlite3BitvecTestNotNull(p,i);
 }
 
 /*
@@ -177,7 +173,7 @@ int sqlite3BitvecSet(Bitvec *p, u32 i){
     i = i%p->iDivisor;
     if( p->u.apSub[bin]==0 ){
       p->u.apSub[bin] = sqlite3BitvecCreate( p->iDivisor );
-      if( p->u.apSub[bin]==0 ) return SQLITE_NOMEM_BKPT;
+      if( p->u.apSub[bin]==0 ) return SQLITE_NOMEM;
     }
     p = p->u.apSub[bin];
   }
@@ -212,7 +208,7 @@ bitvec_set_rehash:
     int rc;
     u32 *aiValues = sqlite3StackAllocRaw(0, sizeof(p->u.aHash));
     if( aiValues==0 ){
-      return SQLITE_NOMEM_BKPT;
+      return SQLITE_NOMEM;
     }else{
       memcpy(aiValues, p->u.aHash, sizeof(p->u.aHash));
       memset(p->u.apSub, 0, sizeof(p->u.apSub));
@@ -293,7 +289,7 @@ u32 sqlite3BitvecSize(Bitvec *p){
   return p->iSize;
 }
 
-#ifndef SQLITE_UNTESTABLE
+#ifndef SQLITE_OMIT_BUILTIN_TEST
 /*
 ** Let V[] be an array of unsigned characters sufficient to hold
 ** up to N bits.  Let I be an integer between 0 and N.  0<=I<N.
@@ -344,9 +340,10 @@ int sqlite3BitvecBuiltinTest(int sz, int *aOp){
   /* Allocate the Bitvec to be tested and a linear array of
   ** bits to act as the reference */
   pBitvec = sqlite3BitvecCreate( sz );
-  pV = sqlite3MallocZero( (sz+7)/8 + 1 );
-  pTmpSpace = sqlite3_malloc64(BITVEC_SZ);
+  pV = sqlite3_malloc( (sz+7)/8 + 1 );
+  pTmpSpace = sqlite3_malloc(BITVEC_SZ);
   if( pBitvec==0 || pV==0 || pTmpSpace==0  ) goto bitvec_end;
+  memset(pV, 0, (sz+7)/8 + 1);
 
   /* NULL pBitvec tests */
   sqlite3BitvecSet(0, 1);
@@ -408,4 +405,4 @@ bitvec_end:
   sqlite3BitvecDestroy(pBitvec);
   return rc;
 }
-#endif /* SQLITE_UNTESTABLE */
+#endif /* SQLITE_OMIT_BUILTIN_TEST */

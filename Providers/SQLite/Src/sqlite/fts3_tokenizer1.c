@@ -22,13 +22,15 @@
 **     * The FTS3 module is being built into the core of
 **       SQLite (in which case SQLITE_ENABLE_FTS3 is defined).
 */
-#include "fts3Int.h"
 #if !defined(SQLITE_CORE) || defined(SQLITE_ENABLE_FTS3)
+
+#include "fts3Int.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "fts3_tokenizer.h"
 
@@ -50,9 +52,6 @@ typedef struct simple_tokenizer_cursor {
 
 static int simpleDelim(simple_tokenizer *t, unsigned char c){
   return c<0x80 && t->delim[c];
-}
-static int fts3_isalnum(int x){
-  return (x>='0' && x<='9') || (x>='A' && x<='Z') || (x>='a' && x<='z');
 }
 
 /*
@@ -88,7 +87,7 @@ static int simpleCreate(
     /* Mark non-alphanumeric ASCII characters as delimiters */
     int i;
     for(i=1; i<0x80; i++){
-      t->delim[i] = !fts3_isalnum(i) ? -1 : 0;
+      t->delim[i] = !isalnum(i) ? -1 : 0;
     }
   }
 
@@ -194,7 +193,7 @@ static int simpleNext(
         ** case-insensitivity.
         */
         unsigned char ch = p[iStartOffset+i];
-        c->pToken[i] = (char)((ch>='A' && ch<='Z') ? ch-'A'+'a' : ch);
+        c->pToken[i] = (char)(ch<0x80 ? tolower(ch) : ch);
       }
       *ppToken = c->pToken;
       *pnBytes = n;
@@ -218,7 +217,6 @@ static const sqlite3_tokenizer_module simpleTokenizerModule = {
   simpleOpen,
   simpleClose,
   simpleNext,
-  0,
 };
 
 /*

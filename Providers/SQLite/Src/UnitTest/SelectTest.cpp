@@ -1,4 +1,4 @@
-// Copyright (C) 2019  Autodesk, Inc.
+// Copyright (C) 2004-2006  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -79,10 +79,7 @@ void SelectTest::TestSimpleSelect ()
 
         FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
         int rez = 0;
-        while (reader->ReadNext())
-        {
-            rez++;
-        }
+        while(reader->ReadNext())rez++;
         printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 29);
     }
@@ -125,10 +122,7 @@ void SelectTest::TestBindSelect ()
         parms->Add(parm);
         FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
         int rez = 0;
-        while (reader->ReadNext())
-        {
-            rez++;
-        }
+        while(reader->ReadNext())rez++;
         printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 29);
     }
@@ -891,7 +885,7 @@ void SelectTest::TestSelectMultipleCS ()
         FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
         while(reader->ReadNext())
         {
-            CPPUNIT_ASSERT(TestCommonMiscUtil::FuzzyEqual(reader->GetDouble(L"area"), 0.0954025671197484));            
+            CPPUNIT_ASSERT(TestCommonMiscUtil::FuzzyEqual(reader->GetDouble(L"area"),840286918.3210836));
             break;
         }
         reader->Close();

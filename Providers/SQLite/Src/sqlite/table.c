@@ -17,6 +17,8 @@
 ** if they are not used.
 */
 #include "sqliteInt.h"
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef SQLITE_OMIT_GET_TABLE
 
@@ -27,10 +29,10 @@
 typedef struct TabResult {
   char **azResult;   /* Accumulated output */
   char *zErrMsg;     /* Error message text, if an error occurs */
-  u32 nAlloc;        /* Slots allocated for azResult[] */
-  u32 nRow;          /* Number of rows in the result */
-  u32 nColumn;       /* Number of columns in the result */
-  u32 nData;         /* Slots used in azResult[].  (nRow+1)*nColumn */
+  int nAlloc;        /* Slots allocated for azResult[] */
+  int nRow;          /* Number of rows in the result */
+  int nColumn;       /* Number of columns in the result */
+  int nData;         /* Slots used in azResult[].  (nRow+1)*nColumn */
   int rc;            /* Return code from sqlite3_exec() */
 } TabResult;
 
@@ -56,7 +58,7 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
   if( p->nData + need > p->nAlloc ){
     char **azNew;
     p->nAlloc = p->nAlloc*2 + need;
-    azNew = sqlite3_realloc64( p->azResult, sizeof(char*)*p->nAlloc );
+    azNew = sqlite3_realloc( p->azResult, sizeof(char*)*p->nAlloc );
     if( azNew==0 ) goto malloc_failed;
     p->azResult = azNew;
   }
@@ -71,7 +73,7 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
       if( z==0 ) goto malloc_failed;
       p->azResult[p->nData++] = z;
     }
-  }else if( (int)p->nColumn!=nCol ){
+  }else if( p->nColumn!=nCol ){
     sqlite3_free(p->zErrMsg);
     p->zErrMsg = sqlite3_mprintf(
        "sqlite3_get_table() called with two or more incompatible queries"
@@ -88,7 +90,7 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
         z = 0;
       }else{
         int n = sqlite3Strlen30(argv[i])+1;
-        z = sqlite3_malloc64( n );
+        z = sqlite3_malloc( n );
         if( z==0 ) goto malloc_failed;
         memcpy(z, argv[i], n);
       }
@@ -99,7 +101,7 @@ static int sqlite3_get_table_cb(void *pArg, int nCol, char **argv, char **colv){
   return 0;
 
 malloc_failed:
-  p->rc = SQLITE_NOMEM_BKPT;
+  p->rc = SQLITE_NOMEM;
   return 1;
 }
 
@@ -124,9 +126,6 @@ int sqlite3_get_table(
   int rc;
   TabResult res;
 
-#ifdef SQLITE_ENABLE_API_ARMOR
-  if( !sqlite3SafetyCheckOk(db) || pazResult==0 ) return SQLITE_MISUSE_BKPT;
-#endif
   *pazResult = 0;
   if( pnColumn ) *pnColumn = 0;
   if( pnRow ) *pnRow = 0;
@@ -137,10 +136,10 @@ int sqlite3_get_table(
   res.nData = 1;
   res.nAlloc = 20;
   res.rc = SQLITE_OK;
-  res.azResult = sqlite3_malloc64(sizeof(char*)*res.nAlloc );
+  res.azResult = sqlite3_malloc(sizeof(char*)*res.nAlloc );
   if( res.azResult==0 ){
      db->errCode = SQLITE_NOMEM;
-     return SQLITE_NOMEM_BKPT;
+     return SQLITE_NOMEM;
   }
   res.azResult[0] = 0;
   rc = sqlite3_exec(db, zSql, sqlite3_get_table_cb, &res, pzErrMsg);
@@ -165,11 +164,11 @@ int sqlite3_get_table(
   }
   if( res.nAlloc>res.nData ){
     char **azNew;
-    azNew = sqlite3_realloc64( res.azResult, sizeof(char*)*res.nData );
+    azNew = sqlite3_realloc( res.azResult, sizeof(char*)*res.nData );
     if( azNew==0 ){
       sqlite3_free_table(&res.azResult[1]);
       db->errCode = SQLITE_NOMEM;
-      return SQLITE_NOMEM_BKPT;
+      return SQLITE_NOMEM;
     }
     res.azResult = azNew;
   }
@@ -183,7 +182,7 @@ int sqlite3_get_table(
 ** This routine frees the space the sqlite3_get_table() malloced.
 */
 void sqlite3_free_table(
-  char **azResult            /* Result returned from sqlite3_get_table() */
+  char **azResult            /* Result returned from from sqlite3_get_table() */
 ){
   if( azResult ){
     int i, n;

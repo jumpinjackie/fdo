@@ -2075,25 +2075,25 @@ void RegisterExtensions (sqlite3* db)
         { "monthsbetween",      2, 5,  SQLITE_UTF8,    0, dateFunc },
         
 
-        { g_spatial_op_map[FdoSpatialOperations_Contains],  2, FdoSpatialOperations_Contains,   SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Crosses],   2, FdoSpatialOperations_Crosses,    SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Disjoint],  2, FdoSpatialOperations_Disjoint,   SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Equals],    2, FdoSpatialOperations_Equals,     SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Intersects],2, FdoSpatialOperations_Intersects, SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Overlaps],  2, FdoSpatialOperations_Overlaps,   SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Touches],   2, FdoSpatialOperations_Touches,    SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Within],    2, FdoSpatialOperations_Within,     SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_CoveredBy], 2, FdoSpatialOperations_CoveredBy,  SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_Inside],    2, FdoSpatialOperations_Inside,     SQLITE_UTF8,    0, spatialOpFunc },
-        { g_spatial_op_map[FdoSpatialOperations_EnvelopeIntersects],  2, FdoSpatialOperations_EnvelopeIntersects, SQLITE_UTF8, 0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Contains],  2, FdoSpatialOperations_Contains|SQLITE_SPEVAL_FUNCTION,   SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Crosses],   2, FdoSpatialOperations_Crosses|SQLITE_SPEVAL_FUNCTION,    SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Disjoint],  2, FdoSpatialOperations_Disjoint|SQLITE_SPEVAL_FUNCTION,   SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Equals],    2, FdoSpatialOperations_Equals|SQLITE_SPEVAL_FUNCTION,     SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Intersects],2, FdoSpatialOperations_Intersects|SQLITE_SPEVAL_FUNCTION, SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Overlaps],  2, FdoSpatialOperations_Overlaps|SQLITE_SPEVAL_FUNCTION,   SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Touches],   2, FdoSpatialOperations_Touches|SQLITE_SPEVAL_FUNCTION,    SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Within],    2, FdoSpatialOperations_Within|SQLITE_SPEVAL_FUNCTION,     SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_CoveredBy], 2, FdoSpatialOperations_CoveredBy|SQLITE_SPEVAL_FUNCTION,  SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_Inside],    2, FdoSpatialOperations_Inside|SQLITE_SPEVAL_FUNCTION,     SQLITE_UTF8,    0, spatialOpFunc },
+        { g_spatial_op_map[FdoSpatialOperations_EnvelopeIntersects],  2, FdoSpatialOperations_EnvelopeIntersects|SQLITE_SPEVAL_FUNCTION, SQLITE_UTF8, 0, spatialOpFunc },
 
         { "X",                  1, 1, SQLITE_UTF8,     0, xyzmFunc },
         { "Y",                  1, 2, SQLITE_UTF8,     0, xyzmFunc },
         { "Z",                  1, 3, SQLITE_UTF8,     0, xyzmFunc },
         { "M",                  1, 4, SQLITE_UTF8,     0, xyzmFunc },
 
-        { "Length2D",           1, 1, SQLITE_UTF8,     0, geomFunc },
-        { "Area2D",             1, 2, SQLITE_UTF8,     0, geomFunc },
+        { "Length2D",           1, (SQLITE_SPCALC_FUNCTION|1), SQLITE_UTF8,     0, geomFunc },
+        { "Area2D",             1, (SQLITE_SPCALC_FUNCTION|2), SQLITE_UTF8,     0, geomFunc },
 
         { "GeomFromText",       1, 0, SQLITE_UTF8, 0, GeomFromText },
 
@@ -2148,6 +2148,6 @@ void RegisterExtensions (sqlite3* db)
     {
         void *pArg = (void*)(int)aAggs[i].argType;
         sqlite3CreateFunc(db, aAggs[i].zName, aAggs[i].nArg, SQLITE_UTF8, 
-            pArg, 0, aAggs[i].xStep, aAggs[i].xFinalize, NULL,NULL, NULL);
+            pArg, 0, aAggs[i].xStep, aAggs[i].xFinalize);
     }
 }
