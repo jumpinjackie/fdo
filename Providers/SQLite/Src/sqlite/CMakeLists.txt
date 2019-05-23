@@ -3,23 +3,40 @@ set( sqlitefdoprovider3_SRCS
 	analyze.c
 	attach.c
 	auth.c
+	backup.c
 	bitvec.c
 	btmutex.c
 	btree.c
 	build.c
-	backup.c
 	callback.c
 	complete.c
+	ctime.c
 	date.c
+	dbpage.c
+	dbstat.c
 	delete.c
 	expr.c
 	fault.c
+	fkey.c
+	fts3_aux.c
+	fts3.c
 	fts3_expr.c
+	fts3_hash.c
+	fts3_icu.c
+	fts3_porter.c
+	fts3_snippet.c
+	fts3_tokenizer1.c
+	fts3_tokenizer.c
+	fts3_tokenize_vtab.c
+	fts3_unicode2.c
+	fts3_unicode.c
+	fts3_write.c
+	fts5.c
 	func.c
 	global.c
 	hash.c
 	insert.c
-	journal.c
+	json1.c
 	legacy.c
 	loadext.c
 	main.c
@@ -29,18 +46,21 @@ set( sqlitefdoprovider3_SRCS
 	mem2.c
 	mem3.c
 	mem5.c
+	memdb.c
 	memjournal.c
 	mutex.c
 	mutex_noop.c
 	mutex_unix.c
+	mutex_w32.c
 	notify.c
 	opcodes.c
 	os.c
 	os_unix.c
+	os_win.c
 	pager.c
 	parse.c
-	pcache.c
 	pcache1.c
+	pcache.c
 	pragma.c
 	prepare.c
 	printf.c
@@ -50,11 +70,17 @@ set( sqlitefdoprovider3_SRCS
 	rtree.c
 	select.c
 	shell.c
+	sqlite3rbu.c
+	sqlite3session.c
 	status.c
+	stmt.c
 	table.c
+	threads.c
 	tokenize.c
+	treeview.c
 	trigger.c
 	update.c
+	upsert.c
 	utf.c
 	util.c
 	vacuum.c
@@ -63,27 +89,28 @@ set( sqlitefdoprovider3_SRCS
 	vdbeblob.c
 	vdbe.c
 	vdbemem.c
+	vdbesort.c
+	vdbetrace.c
 	vtab.c
+	wal.c
 	walker.c
 	where.c
-	vdbetrace.c
-	ctime.c
-	fkey.c
-	fts3_snippet.c
-	fts3_write.c
-	wal.c
+	wherecode.c
+	whereexpr.c
+	window.c
 ) 
 
 add_definitions(
 	-DSQLITE_ENABLE_COLUMN_METADATA 
 	-DSQLITE_OMIT_TRACE 
 	-DSQLITE_OMIT_PROGRESS_CALLBACK 
-	-DSQLITE_OMIT_AUTHORIZATION
+	#-DSQLITE_OMIT_AUTHORIZATION
 	-DSQLITE_OMIT_UTF16 
 	-DSQLITE_OMIT_SHARED_CACHEXXX 
-	-DSQLITE_THREADSAFE=2 
+	-DSQLITE_THREADSAFE=2
 	-DSQLITE_ENABLE_RTREE 
 	-DSQLITE_CORE
+	-DSQLITE_SOUNDEX
 	-DPIC
 	-fPIC
 	)
