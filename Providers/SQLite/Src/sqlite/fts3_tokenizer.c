@@ -23,17 +23,23 @@
 **     * The FTS3 module is being built into the core of
 **       SQLite (in which case SQLITE_ENABLE_FTS3 is defined).
 */
+#include "fts3Int.h"
 #if !defined(SQLITE_CORE) || defined(SQLITE_ENABLE_FTS3)
 
-#include "sqlite3ext.h"
-#ifndef SQLITE_CORE
-  SQLITE_EXTENSION_INIT1
-#endif
-
-#include "fts3Int.h"
 #include <assert.h>
-#include <ctype.h>
 #include <string.h>
+
+/*
+** Return true if the two-argument version of fts3_tokenizer()
+** has been activated via a prior call to sqlite3_db_config(db,
+** SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER, 1, 0);
+*/
+static int fts3TokenizerEnabled(sqlite3_context *context){
+  sqlite3 *db = sqlite3_context_db_handle(context);
+  int isEnabled = 0;
+  sqlite3_db_config(db,SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER,-1,&isEnabled);
+  return isEnabled;
+}
 
 /*
 ** Implementation of the SQL scalar function for accessing the underlying 
@@ -55,7 +61,7 @@
 ** is a blob containing the pointer stored as the hash data corresponding
 ** to string <key-name> (after the hash-table is updated, if applicable).
 */
-static void scalarFunc(
+static void fts3TokenizerFunc(
   sqlite3_context *context,
   int argc,
   sqlite3_value **argv
@@ -73,20 +79,26 @@ static void scalarFunc(
   nName = sqlite3_value_bytes(argv[0])+1;
 
   if( argc==2 ){
-    void *pOld;
-    int n = sqlite3_value_bytes(argv[1]);
-    if( n!=sizeof(pPtr) ){
-      sqlite3_result_error(context, "argument type mismatch", -1);
-      return;
-    }
-    pPtr = *(void **)sqlite3_value_blob(argv[1]);
-    pOld = sqlite3Fts3HashInsert(pHash, (void *)zName, nName, pPtr);
-    if( pOld==pPtr ){
-      sqlite3_result_error(context, "out of memory", -1);
+    if( fts3TokenizerEnabled(context) ){
+      void *pOld;
+      int n = sqlite3_value_bytes(argv[1]);
+      if( zName==0 || n!=sizeof(pPtr) ){
+        sqlite3_result_error(context, "argument type mismatch", -1);
+        return;
+      }
+      pPtr = *(void **)sqlite3_value_blob(argv[1]);
+      pOld = sqlite3Fts3HashInsert(pHash, (void *)zName, nName, pPtr);
+      if( pOld==pPtr ){
+        sqlite3_result_error(context, "out of memory", -1);
+      }
+    }else{
+      sqlite3_result_error(context, "fts3tokenize disabled", -1);
       return;
     }
   }else{
-    pPtr = sqlite3Fts3HashFind(pHash, zName, nName);
+    if( zName ){
+      pPtr = sqlite3Fts3HashFind(pHash, zName, nName);
+    }
     if( !pPtr ){
       char *zErr = sqlite3_mprintf("unknown tokenizer: %s", zName);
       sqlite3_result_error(context, zErr, -1);
@@ -94,11 +106,10 @@ static void scalarFunc(
       return;
     }
   }
-
   sqlite3_result_blob(context, (void *)&pPtr, sizeof(pPtr), SQLITE_TRANSIENT);
 }
 
-static int fts3IsIdChar(char c){
+int sqlite3Fts3IsIdChar(char c){
   static const char isFtsIdChar[] = {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  /* 0x */
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  /* 1x */
@@ -136,9 +147,9 @@ const char *sqlite3Fts3NextToken(const char *zStr, int *pn){
         break;
 
       default:
-        if( fts3IsIdChar(*z1) ){
+        if( sqlite3Fts3IsIdChar(*z1) ){
           z2 = &z1[1];
-          while( fts3IsIdChar(*z2) ) z2++;
+          while( sqlite3Fts3IsIdChar(*z2) ) z2++;
         }else{
           z1++;
         }
@@ -151,40 +162,32 @@ const char *sqlite3Fts3NextToken(const char *zStr, int *pn){
 
 int sqlite3Fts3InitTokenizer(
   Fts3Hash *pHash,                /* Tokenizer hash table */
-  const char *zArg,               /* Possible tokenizer specification */
+  const char *zArg,               /* Tokenizer name */
   sqlite3_tokenizer **ppTok,      /* OUT: Tokenizer (if applicable) */
-  const char **pzTokenizer,       /* OUT: Set to zArg if is tokenizer */
   char **pzErr                    /* OUT: Set to malloced error message */
 ){
   int rc;
   char *z = (char *)zArg;
-  int n;
+  int n = 0;
   char *zCopy;
   char *zEnd;                     /* Pointer to nul-term of zCopy */
   sqlite3_tokenizer_module *m;
 
-  if( !z ){
-    zCopy = sqlite3_mprintf("simple");
-  }else{
-    if( sqlite3_strnicmp(z, "tokenize", 8) || fts3IsIdChar(z[8])){
-      return SQLITE_OK;
-    }
-    zCopy = sqlite3_mprintf("%s", &z[8]);
-    *pzTokenizer = zArg;
-  }
-  if( !zCopy ){
-    return SQLITE_NOMEM;
-  }
-
+  zCopy = sqlite3_mprintf("%s", zArg);
+  if( !zCopy ) return SQLITE_NOMEM;
   zEnd = &zCopy[strlen(zCopy)];
 
   z = (char *)sqlite3Fts3NextToken(zCopy, &n);
+  if( z==0 ){
+    assert( n==0 );
+    z = zCopy;
+  }
   z[n] = '\0';
   sqlite3Fts3Dequote(z);
 
-  m = (sqlite3_tokenizer_module *)sqlite3Fts3HashFind(pHash, z, (int)strlen(z)+1);
+  m = (sqlite3_tokenizer_module *)sqlite3Fts3HashFind(pHash,z,(int)strlen(z)+1);
   if( !m ){
-    *pzErr = sqlite3_mprintf("unknown tokenizer: %s", z);
+    sqlite3Fts3ErrMsg(pzErr, "unknown tokenizer: %s", z);
     rc = SQLITE_ERROR;
   }else{
     char const **aArg = 0;
@@ -207,7 +210,7 @@ int sqlite3Fts3InitTokenizer(
     rc = m->xCreate(iArg, aArg, ppTok);
     assert( rc!=SQLITE_OK || *ppTok );
     if( rc!=SQLITE_OK ){
-      *pzErr = sqlite3_mprintf("unknown tokenizer");
+      sqlite3Fts3ErrMsg(pzErr, "unknown tokenizer");
     }else{
       (*ppTok)->pModule = m; 
     }
@@ -221,16 +224,19 @@ int sqlite3Fts3InitTokenizer(
 
 #ifdef SQLITE_TEST
 
-#include <tcl.h>
+#if defined(INCLUDE_SQLITE_TCL_H)
+#  include "sqlite_tcl.h"
+#else
+#  include "tcl.h"
+#endif
 #include <string.h>
 
 /*
 ** Implementation of a special SQL scalar function for testing tokenizers 
 ** designed to be used in concert with the Tcl testing framework. This
-** function must be called with two arguments:
+** function must be called with two or more arguments:
 **
-**   SELECT <function-name>(<key-name>, <input-string>);
-**   SELECT <function-name>(<key-name>, <pointer>);
+**   SELECT <function-name>(<key-name>, ..., <input-string>);
 **
 ** where <function-name> is the name passed as the second argument
 ** to the sqlite3Fts3InitHashTable() function (e.g. 'fts3_tokenizer')
@@ -267,50 +273,53 @@ static void testFunc(
   const char *zInput;
   int nInput;
 
-  const char *zArg = 0;
+  const char *azArg[64];
 
   const char *zToken;
-  int nToken;
-  int iStart;
-  int iEnd;
-  int iPos;
+  int nToken = 0;
+  int iStart = 0;
+  int iEnd = 0;
+  int iPos = 0;
+  int i;
 
   Tcl_Obj *pRet;
 
-  assert( argc==2 || argc==3 );
+  if( argc<2 ){
+    sqlite3_result_error(context, "insufficient arguments", -1);
+    return;
+  }
 
   nName = sqlite3_value_bytes(argv[0]);
   zName = (const char *)sqlite3_value_text(argv[0]);
   nInput = sqlite3_value_bytes(argv[argc-1]);
   zInput = (const char *)sqlite3_value_text(argv[argc-1]);
 
-  if( argc==3 ){
-    zArg = (const char *)sqlite3_value_text(argv[1]);
-  }
-
   pHash = (Fts3Hash *)sqlite3_user_data(context);
   p = (sqlite3_tokenizer_module *)sqlite3Fts3HashFind(pHash, zName, nName+1);
 
   if( !p ){
-    char *zErr = sqlite3_mprintf("unknown tokenizer: %s", zName);
-    sqlite3_result_error(context, zErr, -1);
-    sqlite3_free(zErr);
+    char *zErr2 = sqlite3_mprintf("unknown tokenizer: %s", zName);
+    sqlite3_result_error(context, zErr2, -1);
+    sqlite3_free(zErr2);
     return;
   }
 
   pRet = Tcl_NewObj();
   Tcl_IncrRefCount(pRet);
 
-  if( SQLITE_OK!=p->xCreate(zArg ? 1 : 0, &zArg, &pTokenizer) ){
+  for(i=1; i<argc-1; i++){
+    azArg[i-1] = (const char *)sqlite3_value_text(argv[i]);
+  }
+
+  if( SQLITE_OK!=p->xCreate(argc-2, azArg, &pTokenizer) ){
     zErr = "error in xCreate()";
     goto finish;
   }
   pTokenizer->pModule = p;
-  if( SQLITE_OK!=p->xOpen(pTokenizer, zInput, nInput, &pCsr) ){
+  if( sqlite3Fts3OpenTokenizer(pTokenizer, 0, zInput, nInput, &pCsr) ){
     zErr = "error in xOpen()";
     goto finish;
   }
-  pCsr->pTokenizer = pTokenizer;
 
   while( SQLITE_OK==p->xNext(pCsr, &zToken, &nToken, &iStart, &iEnd, &iPos) ){
     Tcl_ListObjAppendElement(0, pRet, Tcl_NewIntObj(iPos));
@@ -359,6 +368,7 @@ int registerTokenizer(
 
   return sqlite3_finalize(pStmt);
 }
+
 
 static
 int queryTokenizer(
@@ -430,11 +440,13 @@ static void intTestFunc(
   assert( 0==strcmp(sqlite3_errmsg(db), "unknown tokenizer: nosuchtokenizer") );
 
   /* Test the storage function */
-  rc = registerTokenizer(db, "nosuchtokenizer", p1);
-  assert( rc==SQLITE_OK );
-  rc = queryTokenizer(db, "nosuchtokenizer", &p2);
-  assert( rc==SQLITE_OK );
-  assert( p2==p1 );
+  if( fts3TokenizerEnabled(context) ){
+    rc = registerTokenizer(db, "nosuchtokenizer", p1);
+    assert( rc==SQLITE_OK );
+    rc = queryTokenizer(db, "nosuchtokenizer", &p2);
+    assert( rc==SQLITE_OK );
+    assert( p2==p1 );
+  }
 
   sqlite3_result_text(context, "ok", -1, SQLITE_STATIC);
 }
@@ -444,13 +456,13 @@ static void intTestFunc(
 /*
 ** Set up SQL objects in database db used to access the contents of
 ** the hash table pointed to by argument pHash. The hash table must
-** been initialised to use string keys, and to take a private copy 
+** been initialized to use string keys, and to take a private copy 
 ** of the key when a value is inserted. i.e. by a call similar to:
 **
 **    sqlite3Fts3HashInit(pHash, FTS3_HASH_STRING, 1);
 **
 ** This function adds a scalar function (see header comment above
-** scalarFunc() in this file for details) and, if ENABLE_TABLE is
+** fts3TokenizerFunc() in this file for details) and, if ENABLE_TABLE is
 ** defined at compilation time, a temporary virtual table (see header 
 ** comment above struct HashTableVtab) to the database schema. Both 
 ** provide read/write access to the contents of *pHash.
@@ -478,15 +490,20 @@ int sqlite3Fts3InitHashTable(
   }
 #endif
 
-  if( SQLITE_OK!=rc
-   || SQLITE_OK!=(rc = sqlite3_create_function(db, zName, 1, any, p, scalarFunc, 0, 0))
-   || SQLITE_OK!=(rc = sqlite3_create_function(db, zName, 2, any, p, scalarFunc, 0, 0))
+  if( SQLITE_OK==rc ){
+    rc = sqlite3_create_function(db, zName, 1, any, p, fts3TokenizerFunc, 0, 0);
+  }
+  if( SQLITE_OK==rc ){
+    rc = sqlite3_create_function(db, zName, 2, any, p, fts3TokenizerFunc, 0, 0);
+  }
 #ifdef SQLITE_TEST
-   || SQLITE_OK!=(rc = sqlite3_create_function(db, zTest, 2, any, p, testFunc, 0, 0))
-   || SQLITE_OK!=(rc = sqlite3_create_function(db, zTest, 3, any, p, testFunc, 0, 0))
-   || SQLITE_OK!=(rc = sqlite3_create_function(db, zTest2, 0, any, pdb, intTestFunc, 0, 0))
+  if( SQLITE_OK==rc ){
+    rc = sqlite3_create_function(db, zTest, -1, any, p, testFunc, 0, 0);
+  }
+  if( SQLITE_OK==rc ){
+    rc = sqlite3_create_function(db, zTest2, 0, any, pdb, intTestFunc, 0, 0);
+  }
 #endif
-   );
 
 #ifdef SQLITE_TEST
   sqlite3_free(zTest);

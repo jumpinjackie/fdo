@@ -433,7 +433,7 @@ static void *memsys3MallocUnsafe(int nByte){
 ** This function assumes that the necessary mutexes, if any, are
 ** already held by the caller. Hence "Unsafe".
 */
-void memsys3FreeUnsafe(void *pOld){
+static void memsys3FreeUnsafe(void *pOld){
   Mem3Block *p = (Mem3Block*)pOld;
   int i;
   u32 size, x;
@@ -476,7 +476,7 @@ void memsys3FreeUnsafe(void *pOld){
 */
 static int memsys3Size(void *p){
   Mem3Block *pBlock;
-  if( p==0 ) return 0;
+  assert( p!=0 );
   pBlock = (Mem3Block*)p;
   assert( (pBlock[-1].u.hdr.size4x&1)!=0 );
   return (pBlock[-1].u.hdr.size4x&~3)*2 - 4;
@@ -508,7 +508,7 @@ static void *memsys3Malloc(int nBytes){
 /*
 ** Free memory.
 */
-void memsys3Free(void *pPrior){
+static void memsys3Free(void *pPrior){
   assert( pPrior );
   memsys3Enter();
   memsys3FreeUnsafe(pPrior);
@@ -518,7 +518,7 @@ void memsys3Free(void *pPrior){
 /*
 ** Change the size of an existing memory allocation
 */
-void *memsys3Realloc(void *pPrior, int nBytes){
+static void *memsys3Realloc(void *pPrior, int nBytes){
   int nOld;
   void *p;
   if( pPrior==0 ){

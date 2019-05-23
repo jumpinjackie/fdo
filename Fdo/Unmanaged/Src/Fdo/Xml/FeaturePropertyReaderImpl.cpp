@@ -621,7 +621,8 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
             {
                 // first check the predefined elements
                 // then find in the schema mappings
-                if (((wcscmp(elementUri, L"http://www.opengis.net/wfs") == 0 || wcscmp(elementUri, L"http://www.opengis.net/wfs/2.0") == 0) &&
+                if (((wcscmp(elementUri, L"http://www.opengis.net/wfs") == 0 || wcscmp(elementUri, L"http://www.opengis.net/wfs/2.0") == 0 ||
+                    wcscmp(elementUri, FdoXml::mGmlUri) == 0 || wcscmp(elementUri, FdoXml::mGmlUri32) == 0) &&
                     wcscmp(elementName, L"FeatureCollection") == 0) ||
                     isTypeOf(elementName, elementUri, FdoGml212::mAbstractFeatureCollection, false))
                     rv = GmlBaseType_FeatureCollection;

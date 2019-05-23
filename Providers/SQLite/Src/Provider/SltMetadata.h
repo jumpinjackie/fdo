@@ -1,6 +1,6 @@
 // 
 //  
-//  Copyright (C) 2008 Autodesk Inc.
+//  Copyright (C) 2019 Autodesk Inc.
 //  
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -70,6 +70,7 @@ private:
             op = pOp;
         }
     };
+    static bool ExtractConstraints(ExprList * node, std::vector<SQLiteExpression>& result);
     static bool ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& result);
     static void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
     static void FixConstraintTypeValues(FdoDataPropertyDefinition* prop);

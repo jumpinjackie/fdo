@@ -179,7 +179,7 @@ static int sqlite3MemSize(void *p){
     return 0;
   }
   pHdr = sqlite3MemsysGetHeader(p);
-  return pHdr->iSize;
+  return (int)pHdr->iSize;
 }
 
 /*
@@ -221,7 +221,7 @@ static void randomFill(char *pBuf, int nByte){
   x = SQLITE_PTR_TO_INT(pBuf);
   y = nByte | 1;
   while( nByte >= 4 ){
-    x = (x>>1) ^ (-(x&1) & 0xd0000001);
+    x = (x>>1) ^ (-(int)(x&1) & 0xd0000001);
     y = y*1103515245 + 12345;
     r = x ^ y;
     *(int*)pBuf = r;
@@ -229,7 +229,7 @@ static void randomFill(char *pBuf, int nByte){
     nByte -= 4;
   }
   while( nByte-- > 0 ){
-    x = (x>>1) ^ (-(x&1) & 0xd0000001);
+    x = (x>>1) ^ (-(int)(x&1) & 0xd0000001);
     y = y*1103515245 + 12345;
     r = x ^ y;
     *(pBuf++) = r & 0xff;
@@ -324,9 +324,9 @@ static void sqlite3MemFree(void *pPrior){
   }
   z = (char*)pBt;
   z -= pHdr->nTitle;
-  adjustStats(pHdr->iSize, -1);
+  adjustStats((int)pHdr->iSize, -1);
   randomFill(z, sizeof(void*)*pHdr->nBacktraceSlots + sizeof(*pHdr) +
-                pHdr->iSize + sizeof(int) + pHdr->nTitle);
+                (int)pHdr->iSize + sizeof(int) + pHdr->nTitle);
   free(z);
   sqlite3_mutex_leave(mem.mutex);  
 }
@@ -344,12 +344,13 @@ static void *sqlite3MemRealloc(void *pPrior, int nByte){
   struct MemBlockHdr *pOldHdr;
   void *pNew;
   assert( mem.disallow==0 );
+  assert( (nByte & 7)==0 );     /* EV: R-46199-30249 */
   pOldHdr = sqlite3MemsysGetHeader(pPrior);
   pNew = sqlite3MemMalloc(nByte);
   if( pNew ){
-    memcpy(pNew, pPrior, nByte<pOldHdr->iSize ? nByte : pOldHdr->iSize);
+    memcpy(pNew, pPrior, (int)(nByte<pOldHdr->iSize ? nByte : pOldHdr->iSize));
     if( nByte>pOldHdr->iSize ){
-      randomFill(&((char*)pNew)[pOldHdr->iSize], nByte - pOldHdr->iSize);
+      randomFill(&((char*)pNew)[pOldHdr->iSize], nByte - (int)pOldHdr->iSize);
     }
     sqlite3MemFree(pPrior);
   }
@@ -378,7 +379,7 @@ void sqlite3MemSetDefault(void){
 ** Set the "type" of an allocation.
 */
 void sqlite3MemdebugSetType(void *p, u8 eType){
-  if( p ){
+  if( p && sqlite3GlobalConfig.m.xMalloc==sqlite3MemMalloc ){
     struct MemBlockHdr *pHdr;
     pHdr = sqlite3MemsysGetHeader(p);
     assert( pHdr->iForeGuard==FOREGUARD );
@@ -393,27 +394,42 @@ void sqlite3MemdebugSetType(void *p, u8 eType){
 ** This routine is designed for use within an assert() statement, to
 ** verify the type of an allocation.  For example:
 **
-**     assert( sqlite3MemdebugHasType(p, MEMTYPE_DB) );
+**     assert( sqlite3MemdebugHasType(p, MEMTYPE_HEAP) );
 */
 int sqlite3MemdebugHasType(void *p, u8 eType){
   int rc = 1;
-  if( p ){
+  if( p && sqlite3GlobalConfig.m.xMalloc==sqlite3MemMalloc ){
     struct MemBlockHdr *pHdr;
     pHdr = sqlite3MemsysGetHeader(p);
     assert( pHdr->iForeGuard==FOREGUARD );         /* Allocation is valid */
-    assert( (pHdr->eType & (pHdr->eType-1))==0 );  /* Only one type bit set */
     if( (pHdr->eType&eType)==0 ){
-      void **pBt;
-      pBt = (void**)pHdr;
-      pBt -= pHdr->nBacktraceSlots;
-      backtrace_symbols_fd(pBt, pHdr->nBacktrace, fileno(stderr));
-      fprintf(stderr, "\n");
       rc = 0;
     }
   }
   return rc;
 }
- 
+
+/*
+** Return TRUE if the mask of type in eType matches no bits of the type of the
+** allocation p.  Also return true if p==NULL.
+**
+** This routine is designed for use within an assert() statement, to
+** verify the type of an allocation.  For example:
+**
+**     assert( sqlite3MemdebugNoType(p, MEMTYPE_LOOKASIDE) );
+*/
+int sqlite3MemdebugNoType(void *p, u8 eType){
+  int rc = 1;
+  if( p && sqlite3GlobalConfig.m.xMalloc==sqlite3MemMalloc ){
+    struct MemBlockHdr *pHdr;
+    pHdr = sqlite3MemsysGetHeader(p);
+    assert( pHdr->iForeGuard==FOREGUARD );         /* Allocation is valid */
+    if( (pHdr->eType&eType)!=0 ){
+      rc = 0;
+    }
+  }
+  return rc;
+}
 
 /*
 ** Set the number of backtrace levels kept for each allocation.
@@ -449,7 +465,7 @@ void sqlite3MemdebugSync(){
   for(pHdr=mem.pFirst; pHdr; pHdr=pHdr->pNext){
     void **pBt = (void**)pHdr;
     pBt -= pHdr->nBacktraceSlots;
-    mem.xBacktrace(pHdr->iSize, pHdr->nBacktrace-1, &pBt[1]);
+    mem.xBacktrace((int)pHdr->iSize, pHdr->nBacktrace-1, &pBt[1]);
   }
 }
 

@@ -1,6 +1,6 @@
 // 
 //  
-//  Copyright (C) 2008 Autodesk Inc.
+//  Copyright (C) 2019 Autodesk Inc.
 //  
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -58,11 +58,11 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
     vals = sqlite3_data_count(pStmt);
     pOut = &pVm->pResultSet[i];
   }else{
-    static const Mem nullMem = {{0}, 0.0, 0, (char*)"", 0, MEM_Null, SQLITE_NULL, 0, 0, 0 };
+    static const Mem nullMem = { MEM_Null, MEM_Null, SQLITE_UTF16, 0, 0, (char*)"", 0, 0, 0, NULL, NULL };
     if( pVm->db ){
         //We compile without thread safety anyway...
       //sqlite3_mutex_enter(pVm->db->mutex);
-      sqlite3Error(pVm->db, SQLITE_RANGE, 0);
+      sqlite3Error(pVm->db, SQLITE_RANGE);
     }
     pOut = (Mem*)&nullMem;
   }
@@ -599,13 +599,6 @@ void SltReader::Requery2()
     }
 
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
-
-    //If the reader was constructed for a Select that is known
-    //to be safe for fast SQLite reading (no null termination
-    //and memcopy for column values is needed), set a flag inidicating
-    //that on the SQLite query execution engine
-    if (m_useFastStepping && !m_isViewSelect)
-        ((Vdbe*)m_pStmt)->fdo = 1;
 }
 
 	//-------------------------------------------------------
@@ -708,83 +701,40 @@ FdoString* SltReader::GetString(int index)
 	if (m_sprops[i].valid)
 		return m_sprops[i].data;
 
-    //If the fdo flag is set on the VDBE, it means
-    //the SQLite is not allocating memory to copy row data into.
-    //Therefore we cannot ask it for strings using the regular API,
-    //since it will attempt to null terminate them, with disastrous
-    //results. We will fetch the raw string directly from row cache memory.
-    if (((Vdbe*)m_pStmt)->fdo)
+    int type = sqlite3_column_type(m_pStmt, i);
+    if (type == SQLITE_INTEGER)
     {
-	    Mem* textmem = columnMem(m_pStmt, i);
-
-		if (textmem->type == SQLITE_INTEGER)
-		{
-			m_sprops[i].EnsureSize(32);
+        FdoInt64 val = sqlite3_column_int64(m_pStmt, i);
+		m_sprops[i].EnsureSize(32);
 #ifdef _WIN32
-			_i64tow_s(textmem->u.i, m_sprops[i].data, 32, 10);
+		_i64tow_s(val, m_sprops[i].data, 32, 10);
 #else
-		    swprintf(m_sprops[i].data, 256, L"%lld", (long long int)textmem->u.i);
+		swprintf(m_sprops[i].data, 256, L"%lld", (long long int)val);
 #endif
-			m_sprops[i].valid = 1;
-		}
-		else if(textmem->type == SQLITE_FLOAT)
-		{
-			m_sprops[i].EnsureSize(256);
-			swprintf(m_sprops[i].data, 256, L"%.16g", textmem->r);
-			m_sprops[i].valid = 1;
-		}
-		else if(textmem->type == SQLITE_NULL)
-		{
-			return L"";
-		}
-		else
-		{
-			if (!textmem->n) 
-				return L""; //empty string L"" better than NULL, since callers may not be used to NULL :)
-
-			int len = (int)textmem->n;
-			m_sprops[i].EnsureSize(len+1);
-			A2W_FAST(m_sprops[i].data, len + 1, (const char*)textmem->z, len);
-			m_sprops[i].valid = 1;
-		}
+		m_sprops[i].valid = 1;
+        return m_sprops[i].data;;
     }
-    else
+    else if (type == SQLITE_FLOAT)
     {
-        int type = sqlite3_column_type(m_pStmt, i);
-        if (type == SQLITE_INTEGER)
-        {
-            FdoInt64 val = sqlite3_column_int64(m_pStmt, i);
-			m_sprops[i].EnsureSize(32);
-#ifdef _WIN32
-			_i64tow_s(val, m_sprops[i].data, 32, 10);
-#else
-		    swprintf(m_sprops[i].data, 256, L"%lld", (long long int)val);
-#endif
-			m_sprops[i].valid = 1;
-            return m_sprops[i].data;;
-        }
-        else if (type == SQLITE_FLOAT)
-        {
-            double val = sqlite3_column_double(m_pStmt, i);
-			m_sprops[i].EnsureSize(256);
-			swprintf(m_sprops[i].data, 256, L"%.16g", val);
-			m_sprops[i].valid = 1;
-            return m_sprops[i].data;;
-        }
-        const char* text = (const char*)sqlite3_column_text(m_pStmt, i);
-
-        if (!text)
-            return NULL;
-
-	    int len = (int)strlen(text);
-	    m_sprops[i].EnsureSize(len+1);
-	    A2W_FAST(m_sprops[i].data, len+1, text, len);
-	    m_sprops[i].valid = 1;
+        double val = sqlite3_column_double(m_pStmt, i);
+		m_sprops[i].EnsureSize(256);
+		swprintf(m_sprops[i].data, 256, L"%.16g", val);
+		m_sprops[i].valid = 1;
+        return m_sprops[i].data;;
     }
+    const char* text = (const char*)sqlite3_column_text(m_pStmt, i);
+
+    if (!text)
+        return NULL;
+
+	int len = (int)strlen(text);
+	m_sprops[i].EnsureSize(len+1);
+	A2W_FAST(m_sprops[i].data, len+1, text, len);
+	m_sprops[i].valid = 1;
 
 	return m_sprops[i].data;
-
 }
+
 FdoString* SltReader::GetString(FdoString* propertyName)
 {
     return SltReader::GetString(NameToIndex(propertyName));
@@ -1029,34 +979,15 @@ bool SltReader::ReadNext()
                 //to skip the initialization as well (it would lock the table again without
                 //it being freed, since we are not going to finish the previous step
                 //which would have freed the previous lock.
-                //Here is sample bytecode generated for the type of select statement we use
-                //for spatial queries:
-                /*
-                sqlite> explain select rowid,geometry from Legal_Parcel where rowid=?;
-                addr  opcode         p1    p2    p3    p4             p5  comment
-                ----  -------------  ----  ----  ----  -------------  --  -------------
-                0     Trace          0     0     0                    00
-                1     Variable       1     1     1                    00
-                2     Goto           0     11    0                    00
-                3     OpenRead       0     61    0     2              00
-                4     MustBeInt      1     9     0                    00
-                5     NotExists      0     9     1                    00
-                6     Rowid          0     3     0                    00
-                7     Column         0     1     4                    00
-                8     ResultRow      3     2     0                    00
-                9     Close          0     0     0                    00
-                10    Halt           0     0     0                    00
-                11    Transaction    0     0     0                    00
-                12    VerifyCookie   0     9     0                    00
-                13    TableLock      0     61    0     Legal_Parcel   00
-                14    Goto           0     3     0                    00
-                */
-                //Note that we compile without Trace, so the instruction addresses in our case
-                //are less by 1 each. We want to set the bytecode execution to repeat itself for 
-                //each next ID starting at operation NotExists, up to operation ResultRow.
-                //Hence we need to set the instruction pointer back to 5, or in our case 4, since
-                //we omit the initial trace instruction.
-                v->pc = 4;
+                //SQLite will translate the SQL statement into a list of operations. Each operation
+                //has its own operation code which is called opcode. The operations are performed 
+                //one by one. For a SELECT statement, there are some operations for initialization.
+                //Then there is a OP_SeekRowid operation for searching the specified Row ID. 
+                //This is the status of SQLite 3.27.2. Later, the operations may be changed if SQLite is upgraded.
+                //v->pc needs to be updated according to the list of the operations. For SQLite 3.27.2, 
+                //v->pc of OP_SeekRowid is 3. So the execution of the operations starts from OP_SeekRowid to OP_ResultRow
+                //for one call of sqlite3_step.
+                v->pc = 3;
             }
             else
             {
