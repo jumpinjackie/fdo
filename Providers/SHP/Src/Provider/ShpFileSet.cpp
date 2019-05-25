@@ -511,7 +511,7 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
 				wchar_t *idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (GetSpatialIndex ()->FileName ())));
 				wcscpy (idx_file, GetSpatialIndex ()->FileName ());
 				mSSI->CloseFile ();
-				if (!FdoCommonFile::Delete (idx_file))
+				if (!FdoCommonFile::Delete (idx_file, true))
 				{
 					FdoString * fileName = (FdoString *)GetShapeIndexFile()->FileName();
 					delete mSSI;
