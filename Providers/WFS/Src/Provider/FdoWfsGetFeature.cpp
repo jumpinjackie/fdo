@@ -24,18 +24,21 @@
 // this line have been added for debug purposes
 //#define DEBUG_LIMIT_FEATURES
 
-FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName, 
+FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace,
+                                    FdoString* targetNamespaceName,
+                                    FdoString* srsName,
                                     FdoStringCollection* propertiesToSelect,
                                     FdoString* from,
                                     FdoFilter* where,
                                     FdoString* schemaName,
                                     FdoString* version,
                                     FdoBoolean invertAxis) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
-                                    m_targetNamespace(targetNamespace), m_srsName(srsName),
+                                    m_targetNamespace(targetNamespace), m_targetNamespaceName(targetNamespaceName), m_srsName(srsName),
                                     m_propertiesToSelect(propertiesToSelect),
                                     m_from(from), m_where(where), m_schemaName(schemaName), m_invertAxis(invertAxis)
 {
     m_encodeWithClassName = false;
+    m_encodeWithNamespaceName = false;
 	FdoOwsRequest::SetVersion (version ? version : FdoWfsGlobals::WfsVersion);
     FDO_SAFE_ADDREF(propertiesToSelect);
     FDO_SAFE_ADDREF(where);
@@ -45,10 +48,10 @@ FdoWfsGetFeature::~FdoWfsGetFeature()
 {
 }
 
-FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* srsName, FdoStringCollection* propertiesToSelect,
+FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* targetNamespaceName, FdoString* srsName, FdoStringCollection* propertiesToSelect,
                             FdoString* from, FdoFilter* where, FdoString* schemaName, FdoString* version, FdoBoolean invertAxis)
 {
-    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName, version, invertAxis);
+    return new FdoWfsGetFeature(targetNamespace, targetNamespaceName, srsName, propertiesToSelect, from, where, schemaName, version, invertAxis);
 }
 
 FdoStringP FdoWfsGetFeature::EncodeKVP()
@@ -112,13 +115,19 @@ FdoStringP FdoWfsGetFeature::EncodeKVP()
         ns += FdoXml::mGmlNs;
         writer->WriteAttribute(ns, FdoXml::mGmlUri);
         // application namespace
-        //ns = FdoXml::mXmlnsPref;
-        //ns += L":";
-        //ns += FdoWfsGlobals::appns;
-        //writer->WriteAttribute(ns, m_targetNamespace);
+        if (m_targetNamespace != L"" && m_targetNamespaceName != L"")
+        {
+            ns = FdoXml::mXmlnsPref;
+            ns += L":";
+            ns += m_targetNamespaceName;
+            writer->WriteAttribute(ns, m_targetNamespace);
+        }
 
-        FdoOwsOgcFilterSerializer::Serialize(m_where, writer, m_srsName, NULL, m_invertAxis);
-        
+        FdoStringP prefix;
+        if (m_encodeWithNamespaceName && m_targetNamespaceName != L"")
+            prefix = m_targetNamespaceName;
+        FdoOwsOgcFilterSerializer::Serialize(m_where, writer, m_srsName, prefix, m_invertAxis);
+
         writer = NULL;
         stream->Reset();
         FdoInt64 length = stream->GetLength();

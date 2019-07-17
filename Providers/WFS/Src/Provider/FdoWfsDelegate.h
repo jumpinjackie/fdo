@@ -55,7 +55,9 @@ public:
     FdoFeatureSchemaCollection* DescribeFeatureType(FdoStringCollection* typeNames,FdoString* version);
     FdoIFeatureReader* GetFeature(FdoFeatureSchemaCollection* schemas, 
                                     FdoPhysicalSchemaMappingCollection* schemaMappings, 
-                                    FdoString* targetNamespace, FdoString* srsName,
+                                    FdoString* targetNamespace,
+                                    FdoString* targetNamesapceName,
+                                    FdoString* srsName,
                                     FdoStringCollection* propertiesToSelect,
                                     FdoString* from,
                                     FdoFilter* where,

@@ -88,8 +88,11 @@ namespace FdoOwsGlobals
     static FdoString* href                                  = L"http://www.w3.org/1999/xlink:href";
 	static FdoString* type									= L"http://www.w3.org/1999/xlink:type";
     static FdoString* ServiceExceptionReport                = L"ServiceExceptionReport";
+    static FdoString* ExceptionReport                       = L"ExceptionReport";
     static FdoString* ServiceException                      = L"ServiceException";
+    static FdoString* Exception                             = L"Exception";
     static FdoString* code                                  = L"code";
+    static FdoString* ExceptionCode                         = L"ExceptionCode";
     static FdoString* REQUEST                               = L"REQUEST";
     static FdoString* Equal                                 = L"=";
     static FdoString* service                               = L"service";

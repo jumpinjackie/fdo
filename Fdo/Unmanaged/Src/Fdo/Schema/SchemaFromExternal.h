@@ -2888,6 +2888,7 @@ static const char* schemaFromExternal[] = {
 "        <xsl:choose>",
 "          <xsl:when test=\"$typeName='boolean'\">boolean</xsl:when>",
 "          <xsl:when test=\"$typeName='dateTime'\">datetime</xsl:when>",
+"          <xsl:when test=\"$typeName='date'\">string</xsl:when>",
 "          <xsl:when test=\"$typeName='double'\">double</xsl:when>",
 "          <xsl:when test=\"$typeName='float'\">single</xsl:when>",
 "          <xsl:when test=\"$typeName='hexBinary'\">blob</xsl:when>",

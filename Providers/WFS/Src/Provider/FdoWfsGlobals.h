@@ -42,6 +42,7 @@ namespace FdoWfsGlobals
     static FdoString* Abstract                          = L"Abstract";
     static FdoString* Keywords                          = L"Keywords";
     static FdoString* MetadataURL                       = L"MetadataURL";
+    static FdoString* OutputFormats                     = L"OutputFormats";
     static FdoString* LatLongBoundingBox                = L"LatLongBoundingBox";
     static FdoString* WGS84BoundingBox                  = L"WGS84BoundingBox";
     static FdoString* minx                              = L"minx";

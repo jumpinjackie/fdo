@@ -69,7 +69,8 @@ FdoXmlSaxHandler* FdoWfsFeatureType::XmlStartElement(
                     FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Title) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Abstract) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Keywords) == 0 ||
-					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::MetadataURL) == 0 )
+					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::MetadataURL) == 0 ||
+                    FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::OutputFormats) == 0)
                 {
                     FdoPtr<FdoXmlCharDataHandler> charDataHandler = FdoXmlCharDataHandler::Create();
                     myContext->SetFeatureTypeCharDataHandler(charDataHandler);
@@ -178,7 +179,7 @@ FdoBoolean FdoWfsFeatureType::XmlEndElement(FdoXmlSaxContext* context, FdoString
                         FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultCRS) == 0)
                     {
                         m_srs = charDataHandler->GetString();
-                        m_srs = m_srs.Upper();
+                        // m_srs = m_srs.Upper();
                     }
                     else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Title) == 0)
                         m_title = charDataHandler->GetString();
@@ -186,9 +187,10 @@ FdoBoolean FdoWfsFeatureType::XmlEndElement(FdoXmlSaxContext* context, FdoString
 						m_abstract = charDataHandler->GetString();
 					else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Keywords) == 0)
 						m_keywords = charDataHandler->GetString();
-					else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::MetadataURL) ==0)
+					else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::MetadataURL) ==0 ||
+                        FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::OutputFormats) == 0)
 					{
-						// For now, we don't make use of MetadataURL tag. 
+						// For now, we don't make use of MetadataURL/OutputFormats tag. 
 						// So we just ignore them.
 					}
 

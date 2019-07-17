@@ -119,6 +119,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 	    FdoString* featureTypeName = NULL;
         FdoStringP featureTypeNameCheck;
 	    FdoString* targetNamespace = L"";
+        FdoString* targetNamespaceName = L"";
 	    FdoPtr<FdoFeatureSchemaCollection> schemas = mConnection->GetSchemas();
 	    FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = schemas->GetXmlSchemaMappings();
         FdoPtr<FdoXmlClassMapping> elementClass;
@@ -142,6 +143,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 						        featureTypeName = elementMapping->GetName();
                                 schemaFeatureName = schema->GetName();
 						        targetNamespace = mapping->GetTargetNamespace();
+                                targetNamespaceName = mapping->GetName();
 						        break;
 					        }
 				        }
@@ -169,11 +171,20 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
             FdoPtr<FdoWfsFeatureType> featureType = metadata->GetFeatureType(mClassName);
             if (featureType == NULL)
             {
-                // handle the case which 'real' class name ends with "_"
+                // handle the case which 'real' class name ends with "_" or "_Feature"
                 FdoStringP cName = mClassName->GetText();
-                cName += L"_";
-                FdoPtr<FdoIdentifier> cNameIdentifier = FdoIdentifier::Create(cName);
-                featureType = metadata->GetFeatureType(cNameIdentifier);
+                FdoStringP realName = cName + L"_";
+                FdoPtr<FdoIdentifier> realNameIdentifier = FdoIdentifier::Create(realName);
+                featureType = metadata->GetFeatureType(realNameIdentifier);
+                if (featureType == NULL)
+                {
+                    FdoInt32 len = cName.GetLength();
+                    FdoStringP suffix = cName.Mid(len - 8, 8);
+                    if (wcsicmp(L"_Feature", suffix) == 0)
+                        realName = cName.Mid(0, len - 7);
+                    realNameIdentifier = FdoIdentifier::Create(realName);
+                    featureType = metadata->GetFeatureType(realNameIdentifier);
+                }
             }
             if (featureType != NULL)
                 srsName = featureType->GetSRS();
@@ -284,6 +295,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
             schemas, 
             mappings, 
             targetNamespace, 
+            targetNamespaceName,
             srsName, 
             bHasComputedProperties ? FdoPtr<FdoStringCollection>() : props, // Computed properties may reference other properties so retrieve all of them.
             featureTypeName, 

@@ -59,7 +59,8 @@ FdoXmlSaxHandler* FdoOwsExceptionReport::XmlStartElement(
     // we are now in document root, possible subelements include only <ServiceExceptionReport/>
     case 0:
         {
-            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceExceptionReport) == 0)
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceExceptionReport) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ExceptionReport) == 0)
                 myContext->SetStateExceptionReport(1);
             else
                 throw FdoException::Create(FdoException::NLSGetMessage(
@@ -71,11 +72,15 @@ FdoXmlSaxHandler* FdoOwsExceptionReport::XmlStartElement(
     // we are now in nested level 1, possible subelements include only <ServiceException/>
     case 1:
         {
-            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceException) == 0)
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceException) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Exception) == 0)
             {
                 FdoPtr<FdoXmlAttribute> attr = atts->FindItem(FdoOwsGlobals::code);
+                if (NULL == attr)
+                    attr = atts->FindItem(FdoOwsGlobals::ExceptionCode);
                 if (attr != NULL)
                     m_exceptionMessage = attr->GetValue();
+
                 FdoPtr<FdoXmlCharDataHandler> handler = FdoXmlCharDataHandler::Create();
                 myContext->SetExceptionReportCharDataHandler(handler);
                 pRet = handler.p;
@@ -111,7 +116,8 @@ FdoBoolean FdoOwsExceptionReport::XmlEndElement(FdoXmlSaxContext* context, FdoSt
         }
     case 1:
         {
-            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceException) == 0)
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceException) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Exception) == 0)
             {
                 FdoPtr<FdoXmlCharDataHandler> handler = myContext->ExceptionReportCharDataHandler();
                 if (handler != NULL) // exception message provided in the content
@@ -125,7 +131,8 @@ FdoBoolean FdoOwsExceptionReport::XmlEndElement(FdoXmlSaxContext* context, FdoSt
                     myContext->SetExceptionReportCharDataHandler(NULL);
                 }
             }
-            else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceExceptionReport) == 0)
+            else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceExceptionReport) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ExceptionReport) == 0)
                 myContext->SetStateExceptionReport(0);
             break;
         }

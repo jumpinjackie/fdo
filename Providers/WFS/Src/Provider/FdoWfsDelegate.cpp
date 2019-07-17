@@ -104,6 +104,7 @@ FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollect
 FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schemas, 
                                               FdoPhysicalSchemaMappingCollection* schemaMappings, 
                                               FdoString* targetNamespace,
+                                              FdoString* targetNamespaceName,
                                               FdoString* srsName,
                                               FdoStringCollection* propertiesToSelect,
                                               FdoString* from,
@@ -114,6 +115,7 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                               void* handleData)
 {
     FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, 
+                                                                targetNamespaceName,
                                                                 srsName, 
                                                                 propertiesToSelect, 
                                                                 from, 
@@ -127,35 +129,45 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
     {
         response = Invoke(request);
     }
-    catch(FdoException* exc) // some servers request to have the class name in the front of properties, so we will try to place them
+    catch(FdoException* exc) // some servers request to have the class or namespace name in the front of properties, so we will try to place them
     {
         exc1 = exc;
-        request->EncodeWithClassName(true);
+        request->EncodeWithNamespaceName(true);
         try
         {
             response = Invoke(request);
         }
-        catch(FdoException* exc2) // rare cases
+        catch (FdoException* exc2)
         {
             exc2->Release();
-            request->SetSchemaName(L""); // remove schema name
-            request->EncodeWithClassName(false);
+            request->EncodeWithNamespaceName(false);
+            request->EncodeWithClassName(true);
             try
             {
                 response = Invoke(request);
             }
-            catch(FdoException* exc3)
+            catch (FdoException* exc3) // rare cases
             {
                 exc3->Release();
-                request->EncodeWithClassName(true);
+                request->SetSchemaName(L""); // remove schema name
+                request->EncodeWithClassName(false);
                 try
                 {
                     response = Invoke(request);
                 }
-                catch(FdoException* exc4)
+                catch (FdoException* exc4)
                 {
                     exc4->Release();
-                    throw exc1;
+                    request->EncodeWithClassName(true);
+                    try
+                    {
+                        response = Invoke(request);
+                    }
+                    catch (FdoException* exc5)
+                    {
+                        exc5->Release();
+                        throw exc1;
+                    }
                 }
             }
         }

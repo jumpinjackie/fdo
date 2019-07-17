@@ -32,11 +32,20 @@ FdoWfsSpatialExtentsAggregateReader::FdoWfsSpatialExtentsAggregateReader(FdoWfsC
     FdoPtr<FdoWfsFeatureType> featureType = serviceMetadata->GetFeatureType(className);
     if (featureType == NULL)
     {
-        // handle the case which 'real' class name ends with "_"
+        // handle the case which 'real' class name ends with "_" or "_Feature"
         FdoStringP cName = className->GetText();
-        cName += L"_";
-        FdoPtr<FdoIdentifier> cNameIdentifier = FdoIdentifier::Create(cName);
-        featureType = serviceMetadata->GetFeatureType(cNameIdentifier);
+        FdoStringP realName = cName + L"_";
+        FdoPtr<FdoIdentifier> realNameIdentifier = FdoIdentifier::Create(realName);
+        featureType = serviceMetadata->GetFeatureType(realNameIdentifier);
+        if (featureType == NULL)
+        {
+            FdoInt32 len = cName.GetLength();
+            FdoStringP suffix = cName.Mid(len - 8, 8);
+            if (wcsicmp(L"_Feature", suffix) == 0)
+                realName = cName.Mid(0, len - 7);
+            realNameIdentifier = FdoIdentifier::Create(realName);
+            featureType = serviceMetadata->GetFeatureType(realNameIdentifier);
+        }
     }
     if (featureType == NULL)
         throw FdoCommandException::Create (

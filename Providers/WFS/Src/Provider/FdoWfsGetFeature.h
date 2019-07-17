@@ -31,14 +31,18 @@ private:
     FdoStringP m_from;
     FdoPtr<FdoFilter> m_where;
     FdoStringP m_targetNamespace;
+    FdoStringP m_targetNamespaceName;
     FdoStringP m_srsName;
     bool m_encodeWithClassName;
+    bool m_encodeWithNamespaceName;
     FdoStringP m_schemaName;
     FdoBoolean m_invertAxis;
 
 protected:
     FdoWfsGetFeature() {};
-    FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsName,
+    FdoWfsGetFeature(FdoString* targetNamespace,
+                                FdoString* targetNamespaceName,
+                                FdoString* srsName,
                                 FdoStringCollection* propertiesToSelect,
                                 FdoString* from,
                                 FdoFilter* where,
@@ -49,7 +53,9 @@ protected:
     virtual void Dispose() { delete this; }
 
 public:
-    static FdoWfsGetFeature* Create(FdoString* targetNamespace, FdoString* srsName,
+    static FdoWfsGetFeature* Create(FdoString* targetNamespace,
+                                FdoString* targetNamespaceName,
+                                FdoString* srsName,
                                 FdoStringCollection* propertiesToSelect,
                                 FdoString* from,
                                 FdoFilter* where,
@@ -61,6 +67,7 @@ public:
     virtual FdoStringP EncodeXml();
 
     virtual void EncodeWithClassName(bool bVal) {m_encodeWithClassName = bVal;};
+    virtual void EncodeWithNamespaceName(bool bVal) { m_encodeWithNamespaceName = bVal; }
     virtual void SetSchemaName(FdoStringP schemaName) {m_schemaName = schemaName;}
 };
 
