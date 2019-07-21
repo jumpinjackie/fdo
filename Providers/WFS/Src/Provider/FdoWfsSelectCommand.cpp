@@ -180,7 +180,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
                 {
                     FdoInt32 len = cName.GetLength();
                     FdoStringP suffix = cName.Mid(len - 8, 8);
-                    if (wcsicmp(L"_Feature", suffix) == 0)
+                    if (FdoCommonOSUtil::wcsicmp(L"_Feature", suffix) == 0)
                         realName = cName.Mid(0, len - 7);
                     realNameIdentifier = FdoIdentifier::Create(realName);
                     featureType = metadata->GetFeatureType(realNameIdentifier);

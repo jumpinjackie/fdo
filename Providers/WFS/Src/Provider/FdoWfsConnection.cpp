@@ -213,7 +213,7 @@ FdoConnectionState FdoWfsConnection::Open ()
     }
 
     FdoCommonConnStringParser parser (NULL, GetConnectionString ());
-    // check the validity of the connection string, i.e. it doesn’t contain unknown properties
+    // check the validity of the connection string, i.e. it doesnï¿½t contain unknown properties
     // e.g. DefaultFLocation instead of DefaultFileLocation
     if (!parser.IsConnStringValid())
         throw FdoException::Create (NlsMsgGet(WFS_INVALID_CONNECTION_STRING, "Invalid connection string '%1$ls'", GetConnectionString ()));
@@ -691,7 +691,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         // But the name in feature collection is "AAAA_".
                         FdoInt32 len = NameFeat.GetLength();
                         FdoStringP suffix = NameFeat.Mid(len - 8, 8);
-                        if (wcsicmp(L"_Feature", suffix) == 0)
+                        if (FdoCommonOSUtil::wcsicmp(L"_Feature", suffix) == 0)
                             NameFeat = NameFeat.Mid(0, len - 7);
                         else
                             NameFeat += L"_";
