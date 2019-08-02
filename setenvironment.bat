@@ -34,8 +34,16 @@ goto usage
 rem VS 2015 will be default from now
 SET VCBEXTENSION=_vs15
 SET VC_COMPILER=vc140
+rem Test for [VS2019 + 2015 compiler workload] first
+SET ACTIVENAMECHECK="Microsoft Visual Studio 2019"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS19Exist
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS19Exist
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
+if exist %ACTIVEPATHCHECK% goto VS19Exist
+rem Then test for [VS2017 + 2015 compiler workload]
 SET ACTIVENAMECHECK="Microsoft Visual Studio 2017"
-rem Test [VS2017 + 2015 compiler workload] cases first
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build"
 if exist %ACTIVEPATHCHECK% goto VS17Exist
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build"
@@ -43,6 +51,7 @@ if exist %ACTIVEPATHCHECK% goto VS17Exist
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build"
 if exist %ACTIVEPATHCHECK% goto VS17Exist
 rem Then test for original VS 2015
+SET ACTIVENAMECHECK="Microsoft Visual Studio 2015"
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 14.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
 SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC"
@@ -50,6 +59,7 @@ if exist %ACTIVEPATHCHECK% goto VSExist
 
 goto error
 
+:VS19Exist
 :VS17Exist
 rem This will instruct the 2017 vcvarsall to use the v140 toolset
 rem https://docs.microsoft.com/en-us/visualstudio/releasenotes/vs2017-relnotes-v15.3#C++ToolsetLibs15
