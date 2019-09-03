@@ -1,0 +1,83 @@
+# AppVeyor configuration to build FDO
+version: 4.2.0.{build}
+build: false
+image: Visual Studio 2017
+clone_depth: 10
+cache:
+  - "%LOCALAPPDATA%\\fdo_downloads"
+environment:
+  FDO_MSVC_VER: vc140
+  matrix:
+    # x64 release
+    - FDO_BUILD_CPU: x64      
+      FDO_WIN_CPU: Win64
+      FDO_OUTDIR: release_Win64
+      FDO_BUILD_CONFIG: release
+    # x86 release
+    - FDO_BUILD_CPU: Win32
+      FDO_WIN_CPU: Win32
+      FDO_OUTDIR: release_Win32
+      FDO_BUILD_CONFIG: release
+    # x64 debug
+    - FDO_BUILD_CPU: x64      
+      FDO_WIN_CPU: Win64
+      FDO_OUTDIR: debug_Win64
+      FDO_BUILD_CONFIG: debug
+    # x86 debug
+    - FDO_BUILD_CPU: Win32
+      FDO_WIN_CPU: Win32
+      FDO_OUTDIR: debug_Win32
+      FDO_BUILD_CONFIG: debug
+  
+matrix:
+  fast_finish: false # Slower yes, but we don't want one failing config to cancel the rest
+
+init:
+  - git config --global core.autocrlf true
+
+install:
+  # The 3 lines below assume a whole bunch of fdo_thirdparty packages are available for us to download and extract.
+  - if not exist "%LOCALAPPDATA%\fdo_downloads" mkdir "%LOCALAPPDATA%\fdo_downloads"
+  - if not exist "%LOCALAPPDATA%\fdo_downloads\fdo_thirdparty_%FDO_OUTDIR%.7z" appveyor DownloadFile "https://github.com/jumpinjackie/fdo/releases/download/appveyor_test/fdo_thirdparty_%FDO_OUTDIR%.7z" -FileName "%LOCALAPPDATA%\fdo_downloads\fdo_thirdparty_%FDO_OUTDIR%.7z"
+  - 7z x "%LOCALAPPDATA%\fdo_downloads\fdo_thirdparty_%FDO_OUTDIR%.7z" -y >nul
+  - echo FDO_BUILD_CPU    = %FDO_BUILD_CPU%
+  - echo FDO_BUILD_CONFIG = %FDO_BUILD_CONFIG%
+  - echo FDO_WIN_CPU      = %FDO_WIN_CPU%
+  - echo FDO_MSVC_VER     = %FDO_MSVC_VER%
+  - echo FDO_OUTDIR       = %FDO_OUTDIR%
+  - call setenvironment.bat x86_amd64
+  # Uncomment if you need to build a fresh fdo_thirdparty package (ie. Internal thirdparty deps were updated). If you do this, comment out the first 3 lines above
+  # - call build_thirdparty.bat -p=%FDO_BUILD_CPU% -c=%FDO_BUILD_CONFIG% -o=%FDO_OUTDIR% -a=buildinstall
+  # - call package_thirdparty.bat
+  - call build.bat -p=%FDO_BUILD_CPU% -c=%FDO_BUILD_CONFIG% -o=%FDO_OUTDIR% -a=buildinstall
+  - cd %FDO_OUTDIR%\Fdo
+  - 7z a fdosdk-%APPVEYOR_BUILD_VERSION%-%FDO_WIN_CPU%-%FDO_BUILD_CONFIG%-%FDO_MSVC_VER%.7z * "-xr!*.pdb"
+
+# test_script:
+#   - echo FDO_BUILD_CPU    = %FDO_BUILD_CPU%
+#   - echo FDO_BUILD_CONFIG = %FDO_BUILD_CONFIG%
+#   - echo FDO_WIN_CPU      = %FDO_WIN_CPU%
+#   - echo FDO_MSVC_VER     = %FDO_MSVC_VER%
+#   - echo FDO_OUTDIR       = %FDO_OUTDIR%
+#   - cd /D C:\projects\fdo\Fdo\UnitTest
+#   - ..\Unmanaged\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+#   - cd /D C:\projects\fdo\Providers\SHP\Src\UnitTest
+#   - ..\..\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+#   - cd /D C:\projects\fdo\Providers\SDF\Src\UnitTest
+#   - ..\..\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+#   - cd /D C:\projects\fdo\Providers\SQLite\Src\UnitTest
+#   - ..\..\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+#   - cd /D C:\projects\fdo\Providers\GDAL\Src\UnitTest
+#   - ..\..\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+#   - cd /D C:\projects\fdo\Providers\OGR\Src\UnitTest
+#   - ..\..\Bin\%FDO_WIN_CPU%\%FDO_BUILD_CONFIG%\UnitTest.exe -NoWAIT
+#   - if errorlevel 1 exit /B 1
+
+artifacts:
+  - path: '**\*.7z'
+    name: fdo_sdk

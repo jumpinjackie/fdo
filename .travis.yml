@@ -1,0 +1,20 @@
+dist: trusty
+sudo: required
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.ccache
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y ccache bison libssl-dev libcurl4-openssl-dev libexpat-dev libmysqlclient-dev unixodbc-dev libpq-dev libcppunit-dev libxalan-c-dev libxerces-c-dev libgdal-dev ninja-build
+
+script:
+  - ccache -M 1G
+  - ccache -s
+  - mkdir build_area
+  - cd build_area
+  - cmake -G Ninja .. -DCMAKE_BUILD_TYPE=Debug -DSANITIZE_ADDRESS=ON -DWITH_SDF=TRUE -DWITH_SHP=TRUE -DWITH_SQLITE=TRUE -DWITH_WFS=TRUE -DWITH_WMS=TRUE -DWITH_OGR=TRUE -DWITH_GDAL=TRUE -DWITH_GENERICRDBMS=TRUE
+  - ninja
+  - sudo ninja package
