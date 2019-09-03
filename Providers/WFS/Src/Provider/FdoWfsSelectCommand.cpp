@@ -171,7 +171,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
             FdoPtr<FdoWfsFeatureType> featureType = metadata->GetFeatureType(mClassName);
             if (featureType == NULL)
             {
-                // handle the case which 'real' class name ends with "_" or "_Feature"
+                // handle the case which 'real' class name ends with "_" or "Feature"
                 FdoStringP cName = mClassName->GetText();
                 FdoStringP realName = cName + L"_";
                 FdoPtr<FdoIdentifier> realNameIdentifier = FdoIdentifier::Create(realName);
@@ -179,8 +179,8 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
                 if (featureType == NULL)
                 {
                     FdoInt32 len = cName.GetLength();
-                    FdoStringP suffix = cName.Mid(len - 8, 8);
-                    if (FdoCommonOSUtil::wcsicmp(L"_Feature", suffix) == 0)
+                    FdoStringP suffix = cName.Mid(len - 7, 7);
+                    if (wcsicmp(FdoCommonOSUtil::L"Feature", suffix) == 0)
                         realName = cName.Mid(0, len - 7);
                     realNameIdentifier = FdoIdentifier::Create(realName);
                     featureType = metadata->GetFeatureType(realNameIdentifier);

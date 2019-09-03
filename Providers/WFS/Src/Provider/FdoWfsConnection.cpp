@@ -690,8 +690,8 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         // Another special case is the type name is like AAAA_FeatureType. Fdo XML reader will read the name as "AAAA_Feature".
                         // But the name in feature collection is "AAAA_".
                         FdoInt32 len = NameFeat.GetLength();
-                        FdoStringP suffix = NameFeat.Mid(len - 8, 8);
-                        if (FdoCommonOSUtil::wcsicmp(L"_Feature", suffix) == 0)
+                        FdoStringP suffix = NameFeat.Mid(len - 7, 7);
+                        if (FdoCommonOSUtil::wcsicmp(L"Feature", suffix) == 0)
                             NameFeat = NameFeat.Mid(0, len - 7);
                         else
                             NameFeat += L"_";
